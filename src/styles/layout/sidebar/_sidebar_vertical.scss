@@ -1,0 +1,138 @@
+.layout-sidebar {
+    position: fixed;
+    width: 14rem;
+    display: flex;
+    flex-direction: column;
+    height: calc(100% - 5rem);
+    left: 0;
+    top: 5rem;
+    user-select: none;
+    background: var(--v-body-bg);
+    z-index: 999;
+
+    .layout-menu-container {
+        overflow: auto;
+        flex: 1;
+        height: 100%;
+        padding: 1rem 1.5rem;
+    }
+
+    .layout-menu {
+        margin: 0;
+        padding: 0;
+        list-style-type: none;
+
+        .layout-root-menuitem {
+            > .layout-menuitem-root-text {
+                font-size: 0.857rem;
+                text-transform: uppercase;
+                font-weight: 700;
+                padding: 1rem 0 0.5rem 0;
+                color: var(--v-menuitem-text-color-secondary);
+
+                .active-route {
+                    font-weight: 700;
+                }
+            }
+
+            > a {
+                display: none;
+            }
+        }
+
+        li {
+            &.active-menuitem {
+                > a {
+                    .layout-submenu-toggler {
+                        transform: rotate(-180deg);
+                    }
+                }
+                > ul {
+                    max-height: 1000px;
+                    transition: max-height 1s ease-in-out;
+                }
+            }
+        }
+
+        ul {
+            margin: 0;
+            padding: 0;
+            list-style-type: none;
+
+            a {
+                display: flex;
+                align-items: center;
+                outline: 0 none;
+                position: relative;
+                color: var(--v-menuitem-text-color);
+                padding: 0.5rem;
+                margin-bottom: 0.25rem;
+                border-radius: var(--border-radius);
+                line-height: 1;
+                transition: background-color var(--transition-duration), box-shadow var(--transition-duration);
+                cursor: pointer;
+
+                .layout-menuitem-icon {
+                    margin-right: 0.5rem;
+                }
+
+                .layout-submenu-toggler {
+                    font-size: 75%;
+                    margin-left: auto;
+                    transition: transform var(--transition-duration);
+                }
+
+                &.active-route {
+                    font-weight: 700;
+                }
+
+                &:hover {
+                    background: var(--v-menuitem-hover-bg);
+                }
+            }
+
+            ul {
+                overflow: hidden;
+                border-radius: var(--border-radius);
+                max-height: 0;
+                transition: max-height 0.45s cubic-bezier(0.86, 0, 0.07, 1);
+
+                li {
+                    a {
+                        padding-left: 1.5rem;
+                    }
+
+                    li {
+                        a {
+                            padding-left: 2.5rem;
+                        }
+
+                        li {
+                            a {
+                                padding-left: 3.5rem;
+                            }
+
+                            li {
+                                a {
+                                    padding-left: 4.5rem;
+                                }
+
+                                li {
+                                    a {
+                                        padding-left: 5.5rem;
+                                    }
+
+                                    li {
+                                        a {
+                                            padding-left: 6.5rem;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

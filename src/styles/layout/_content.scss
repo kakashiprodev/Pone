@@ -1,0 +1,20 @@
+.layout-content-wrapper {
+    transition: margin-left var(--transition-duration);
+    padding-top: 5rem;
+
+    .layout-content {
+        border-top: 1px solid var(--surface-border);
+        overflow: auto;
+        height: calc(100vh - 5rem);
+        padding: 2rem;
+        background-color: var(--surface-ground);
+        border-top-left-radius: 30px;
+        box-shadow: inset 0px 3px 4px rgb(0 0 0 / 10%);
+
+        .layout-content-inner {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+    }
+}

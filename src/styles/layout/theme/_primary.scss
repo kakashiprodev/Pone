@@ -1,0 +1,10 @@
+.layout-primary {
+    --v-body-bg: linear-gradient(147.38deg, var(--primary-500) 0%, var(--primary-800) 100%);
+    --v-menuitem-text-color-secondary: var(--primary-color-text);
+    --v-menuitem-text-color: var(--primary-color-text);
+    --v-menuitem-hover-bg: rgba(255, 255, 255, .1);
+    --v-overlay-menuitem-text-color: var(--text-color);
+    --v-overlay-menuitem-hover-bg: var(--surface-hover);
+    --v-topbar-search-button-bg: var(--primary-color-text);
+    --v-topbar-search-button-icon-color: var(--primary-color);
+}

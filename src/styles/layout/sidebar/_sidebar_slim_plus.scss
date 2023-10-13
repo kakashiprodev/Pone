@@ -1,0 +1,153 @@
+@media screen and (min-width: $breakpoint) {
+    .layout-container {
+        &.layout-slim-plus {
+            .layout-topbar {
+                .app-logo {
+                    width: 5rem;
+                    justify-content: center;
+                    span {
+                        display: none;
+                    }
+                }
+                .topbar-menu{
+                    margin: 0 2rem;
+                }
+            }
+            
+            .topbar-menubutton {
+                display: none;
+            }
+            
+            .layout-sidebar {
+                width: 7rem;
+                overflow: visible;
+
+                .layout-menu-container {
+                    overflow: auto;
+                    display: flex;
+                    justify-content: center;
+                    padding: 0;  
+
+                    &::-webkit-scrollbar {
+                        display: none;
+                    }
+                }
+            }
+
+            .layout-content-wrapper {
+                margin-left: 7rem;
+            }
+
+            .layout-menu {
+                ul {
+                    display: none;
+                }
+                
+                li.active-menuitem {
+                    > ul {
+                        display: block;
+                    }
+                }
+                .layout-root-menuitem {
+                    > .layout-menuitem-root-text {
+                        display: none;
+                    }
+
+                    > a {
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                        justify-content: center;
+                        border-radius: var(--border-radius);
+                        text-align: center;
+                        cursor: pointer;
+                        outline: none;
+                        transition: background-color var(--transition-duration);
+                        width: auto;
+                        height: auto;
+                        margin: 0 auto 1rem auto;
+                        padding: 0.75rem 0;
+                        color: var(--v-menuitem-text-color);
+
+                        &:hover {
+                            background: var(--v-menuitem-hover-bg);
+                        }
+
+                        .layout-submenu-toggler {
+                            display: none;
+                        }
+
+                        .layout-menuitem-icon {
+                            font-size: 1.75rem;
+                        }
+
+                        .layout-menuitem-text {
+                            font-size: 0.875rem;
+                            display: block;
+                            margin-top: 0.25rem;
+                            color: var(--menuitem-text-color);
+                        }
+                    }
+
+                    > ul {
+                        position: absolute;
+                        left: 7rem;
+                        top: 0;
+                        min-width: 15rem;
+                        background-color: var(--surface-overlay);
+                        border-radius: var(--border-radius);
+                        box-shadow: 0px 4px 10px rgb(0 0 0 / 3%), 0px 0px 2px rgb(0 0 0 / 6%), 0px 2px 6px rgb(0 0 0 / 12%);
+                        padding: 1rem;
+                        max-height: 20rem;
+                        overflow: auto;
+                        z-index: 999;
+
+                        a {
+                            color: var(--v-overlay-menuitem-text-color);
+
+                            &:hover {
+                                background: var(--v-overlay-menuitem-hover-bg);
+                            }
+                        }
+
+                        li {
+                            a {
+                                padding-left: 0.5rem;
+                            }
+            
+                            li {
+                                a {
+                                    padding-left: 1.5rem;
+                                }
+            
+                                li {
+                                    a {
+                                        padding-left: 2.5rem;
+                                    }
+            
+                                    li {
+                                        a {
+                                            padding-left: 3.5rem;
+                                        }
+            
+                                        li {
+                                            a {
+                                                padding-left: 4.5rem;
+                                            }
+            
+                                            li {
+                                                a {
+                                                    padding-left: 5.5rem;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
