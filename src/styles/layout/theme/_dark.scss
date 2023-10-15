@@ -1,5 +1,5 @@
 .layout-dark {
-    --v-body-bg: #293B51;
+    --v-body-bg: #0e525f;
     --v-menuitem-text-color-secondary: var(--text-color-secondary);
     --v-menuitem-text-color: var(--text-color);
     --v-menuitem-hover-bg: var(--surface-hover);
@@ -7,4 +7,5 @@
     --v-overlay-menuitem-hover-bg: var(--surface-hover);
     --v-topbar-search-button-bg: var(--surface-ground);
     --v-topbar-search-button-icon-color: var(--v-menuitem-text-color-secondary);
+    --surface-ground: #113f48;
 }

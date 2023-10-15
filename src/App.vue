@@ -5,10 +5,19 @@
 
 <script setup lang="ts">
 import Toast from 'primevue/toast';
-import './styles/global.scss';
-// import './styles/theme.scss';
+import './styles/theme.scss';
 import './styles/layout/layout.scss';
+import DataProvider from "./services/dataprovider";
+import { useRouter } from 'vue-router';
+const router = useRouter();
+
+DataProvider.checkLogin()
+  .then((loggedIn) => {
+    if (loggedIn) {
+      router.push('/dashboard');
+    } else {
+      router.push('/login');
+    }
+  })
 
 </script>
-
-<style lang="scss"></style>

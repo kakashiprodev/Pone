@@ -14,39 +14,15 @@
 <script setup lang="ts">
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
-import { input } from 'src/services/types';
+import { UserInput } from './../services/types';
+import DataProvider from "./../services/dataprovider";
+import { Ref, ref } from 'vue';
 
+const data: Ref<UserInput[]> = ref([]);
 
-const data: input[] = [
-    {
-        id: "1",
-        scope: "scope1",
-        name: "object1",
-        value: 10,
-        equivalent: 20,
-        manualEquivalent: null,
-        validity: "P1M",
-        timestamp: "2022-01-01T00:00:00.000Z"
-    },
-    {
-        id: "2",
-        scope: "scope2",
-        name: "object2",
-        value: 5,
-        equivalent: 10,
-        manualEquivalent: 15,
-        validity: "P1Y",
-        timestamp: "2022-02-01T00:00:00.000Z"
-    },
-    {
-        id: "3",
-        scope: "scope3",
-        name: "object3",
-        value: 100,
-        equivalent: 200,
-        manualEquivalent: null,
-        validity: "P1M",
-        timestamp: "2022-03-01T00:00:00.000Z"
-    }
-];
+const getData = async () => {
+    data.value = await DataProvider.readUserInputs();
+}
+
+getData();
 </script>

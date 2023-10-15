@@ -4,9 +4,13 @@ $primaryDarkColor: #3dbf98 !default;
 $primaryDarkerColor: #36aa87 !default;
 $primaryTextColor: #162a41;
 
-$highlightBg: rgba($primaryColor,0.15);
+$highlightBg: rgba($primaryColor, 0.15);
 $highlightTextColor: $primaryLightColor;
 $highlightFocusBg: rgba($primaryColor, .24) !default;
 
 @import './_variables';
 @import './_extensions';
+
+:root {
+    --primary-color: #44D4A9;
+}

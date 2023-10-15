@@ -12,6 +12,11 @@ const routes = [
         name: "login",
       },
       {
+        path: "/user",
+        component: () => import("../views/UsersProfile.vue"),
+        name: "user",
+      },
+      {
         path: "/dashboard",
         component: () => import("../views/Dashboard.vue"),
         name: "dashboard",
@@ -31,6 +36,6 @@ const routes = [
 ];
 
 export const router = VueRouter.createRouter({
-  history: VueRouter.createWebHashHistory(),
+  history: VueRouter.createWebHistory(),
   routes,
 });
