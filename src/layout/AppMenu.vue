@@ -26,17 +26,22 @@ const model = ref([
     {
         label: 'Scope 1',
         icon: 'fa-solid fa-1',
-        to: '/scope1',
+        to: '/inputs/scope1',
     },
     {
         label: 'Scope 2',
         icon: 'fa-solid fa-2',
-        to: '/scope1',
+        to: '/inputs/scope2',
     },
     {
         label: 'Scope 3',
         icon: 'fa-solid fa-3',
-        to: '/scope1',
+        to: '/inputs/scope3',
+    },
+    {
+        label: 'Äquivalente',
+        icon: 'fa-solid fa-hashtag',
+        to: '/equivalents',
     },
 ]);
 </script>

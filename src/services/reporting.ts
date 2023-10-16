@@ -15,6 +15,14 @@ const months = [
   "dec",
 ];
 
+export const getAverageFromArray = (arr: number[]) => {
+  let sum = 0;
+  arr.forEach((val) => {
+    sum += val;
+  });
+  return sum / arr.length;
+};
+
 export const getAverageEquivalent = (equivalent: Partial<Equivalent>) => {
   let sum = 0;
   months.forEach((month) => {
@@ -43,7 +51,7 @@ export const getSumForInput = (
   if (!factor) {
     throw new Error("Factor is undefined for users input " + input.name);
   }
-  sum += input.value * factor;
+  sum += input.sumValue * factor;
   return sum;
 };
 

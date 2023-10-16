@@ -22,14 +22,14 @@ const routes = [
         name: "dashboard",
       },
       {
-        path: "/inputs",
+        path: "/inputs/:scope?",
         component: () => import("../views/Inputs.vue"),
         name: "inputs",
       },
       {
-        path: "/scope1",
-        component: () => import("../views/Inputs.vue"),
-        name: "scope1",
+        path: "/equivalents/",
+        component: () => import("../views/EquivalentList.vue"),
+        name: "equivalents",
       },
     ],
   },

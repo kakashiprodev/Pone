@@ -34,6 +34,7 @@ export default class DataProvider {
       // set globalStore username and company
       globalStore.username = res.items[0].username;
       globalStore.company = res.items[0].expand?.company.companyName;
+      globalStore.project = res.items[0].expand?.company.prefix;
 
       return true;
     } catch (error) {
@@ -74,7 +75,7 @@ export default class DataProvider {
   }
 
   async createEquivalent(data: Equivalent) {
-    await this.pb.collection("equivalents").create<Equivalent>(
+    return await this.pb.collection("equivalents").create<Equivalent>(
       data,
     );
   }
@@ -84,7 +85,7 @@ export default class DataProvider {
       .collection("equivalents").update<Equivalent>(data.id, data);
   }
 
-  async deleteEquivalents(id: string) {
+  async deleteEquivalent(id: string) {
     return await this.pb.collection("equivalents").delete(id);
   }
 
@@ -105,6 +106,7 @@ export default class DataProvider {
         filter: `year = ${globalStore.selectedYear}${
           query?.scope ? " && scope = '" + query.scope + "'" : ""
         }`,
+        expand: "equivalent",
       });
     return res.items;
   }

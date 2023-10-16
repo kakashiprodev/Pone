@@ -16,20 +16,21 @@ export interface Equivalent {
   oct: null | number;
   nov: null | number;
   dec: null | number;
+  year: number;
   project: string;
   source: string;
+  monthlyValues: boolean;
 }
 
 export interface UserInput {
   id: string;
   project: string;
   name: string;
-  value: number;
+  sumValue: number;
   equivalent: null | string;
   equivalentManual: null | number;
   comment: string;
-  validity: "P1Y" | "P1M";
-  timestamp: string;
+  year: number;
 }
 
 export interface UserInputQuery {
