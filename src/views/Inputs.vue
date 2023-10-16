@@ -2,13 +2,13 @@
     <Toolbar class="mb-2">
         <template #start>
             <Button v-if="scope !== 'all'" icon="fa-solid fa-plus"
-                @click="selectedValue = clone(emptyInput); showDialog = true" />
+                @click="selectedValue = clone(emptyInput); showDialog = true" class="mr-1" />
             <Button icon="fa-solid fa-download" @click="download()" />
         </template>
     </Toolbar>
 
     <Dialog id="choose-equivalent" v-model:visible="showChooseEquivalent" modal header="Äquivalent auswählen"
-        :style="{ width: '50vw' }">
+        :class="{ 'w-6': windowWidth > 990, 'w-full': windowWidth < 990, 'h-screen': windowWidth < 990 }">
         <h4>Wähle ein Äquivalent</h4>
         <ChooseComponent v-model="selectedValue.equivalent" />
         <div class="mt-4">
@@ -20,7 +20,8 @@
     </Dialog>
 
     <Dialog id="edit-create-input" v-model:visible="showDialog" modal
-        :header="selectedValue.id === 'new' ? 'Anlegen' : 'Bearbeiten'" :style="{ width: '50vw' }">
+        :header="selectedValue.id === 'new' ? 'Anlegen' : 'Bearbeiten'"
+        :class="{ 'w-6': windowWidth > 990, 'w-full': windowWidth < 990, 'h-screen': windowWidth < 990 }">
         <div>
             <div class="field">
                 <label for="userinput-name">Name</label>
@@ -87,9 +88,11 @@
         <Column field="comment" header="Kommentar"></Column>
         <Column header="">
             <template #body="{ data }">
-                <Button icon="fa-solid fa-edit"
-                    @click="selectedValue = data; originalValue = clone(data); showDialog = true" />
-                <Button icon="fa-solid fa-trash" class="ml-1" @click="deleteEntry(data, $event)" />
+                <div class="flex">
+                    <Button icon="fa-solid fa-edit"
+                        @click="selectedValue = data; originalValue = clone(data); showDialog = true" />
+                    <Button icon="fa-solid fa-trash" class="ml-1" @click="deleteEntry(data, $event)" />
+                </div>
             </template>
         </Column>
     </DataTable>
@@ -112,7 +115,9 @@ import { useRoute } from 'vue-router';
 import { useGlobalStore } from './../stores/global';
 import { error } from './../services/toast';
 import { useConfirm } from 'primevue/useconfirm';
-import { getSumForInput } from "./../services/reporting"
+import { getSumForInput } from "./../services/reporting";
+
+const windowWidth = ref(window.innerWidth);
 
 // get scope from route and reload data on change
 const route = useRoute();

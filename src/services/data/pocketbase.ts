@@ -1,6 +1,6 @@
 import PocketBase from "pocketbase";
 import { Equivalent, UserInput, UserInputQuery } from "./../types";
-import { error } from "./../toast";
+import { error, info } from "./../toast";
 import { globalStore } from "./../../main";
 import { getSumForInput } from "./../reporting";
 

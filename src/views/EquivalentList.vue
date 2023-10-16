@@ -6,7 +6,7 @@
     </Toolbar>
 
     <Dialog v-model:visible="showDialog" modal :header="selectedValue.id === 'new' ? 'Anlegen' : 'Bearbeiten'"
-        :style="{ width: '50vw' }">
+        :class="{ 'w-6': windowWidth > 990, 'w-full': windowWidth < 990, 'h-screen': windowWidth < 990 }">
         <div>
             <div class="field">
                 <label for="equivalent-name">Name</label>
@@ -155,7 +155,7 @@
         <Column field="project" header="Projekt"></Column> -->
         <Column header="">
             <template #body="{ data }">
-                <div v-if="data.project !== 'system'">
+                <div v-if="data.project !== 'system'" class="flex">
                     <Button icon="fa-solid fa-edit" @click="selectedValue = data; showDialog = true" />
                     <Button icon="fa-solid fa-trash" @click="deleteEquivalent(data, $event)" class="ml-1" />
                 </div>
@@ -180,6 +180,8 @@ import { Ref, ref, watchEffect } from 'vue';
 import { Equivalent } from './../services/types';
 import { error } from './../services/toast';
 import { useConfirm } from "primevue/useconfirm";
+
+const windowWidth = ref(window.innerWidth);
 
 const confirm = useConfirm();
 const global = useGlobalStore();

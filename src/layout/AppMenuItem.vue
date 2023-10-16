@@ -1,7 +1,8 @@
 <template>
     <li ref="menuItemRef"
-        :class="{ 'layout-root-menuitem': root, 'active-menuitem': isStatic || isOverlay ? !root && isActiveMenu : isActiveMenu }">
-        <div v-if="root && item.visible !== false" class="layout-menuitem-root-text">
+        :class="{ 'layout-root-menuitem': root, 'active-menuitem': isOverlay ? !root && isActiveMenu : isActiveMenu }">
+        <div v-if="root && item.visible !== false" class="layout-menuitem-root-text"
+            :class="{ 'cursor-pointer': !isDesktop }" @click="!isDesktop ? openTo(item.to) : null">
             <span>{{ item.label }}</span> <i class="layout-menuitem-root-icon"></i>
         </div>
         <a v-if="(!item.to || item.items) && item.visible !== false" :href="item.url" @click="itemClick($event, item)"
@@ -11,6 +12,7 @@
             <span class="layout-menuitem-text">{{ item.label }}</span>
             <i class="pi pi-fw pi-angle-down layout-submenu-toggler" v-if="item.items"></i>
         </a>
+
         <router-link v-if="item.to && !item.items && item.visible !== false" @click="itemClick($event, item)"
             :class="[item.class, { 'active-route': checkActiveRoute(item) }]" tabindex="0" :to="item.to"
             @mouseenter="onMouseEnter"
@@ -129,6 +131,8 @@ const handleRouteChange = (newPath: any) => {
 watch(() => route.path, handleRouteChange);
 
 const itemClick = async (event: any, item: any) => {
+    // console.log('itemClick', item);
+
     if (item.disabled) {
         event.preventDefault();
         return;
@@ -219,4 +223,9 @@ const calculatePosition = (overlay: any, target: any) => {
 const checkActiveRoute = (item: any) => {
     return route.path === item.to;
 };
+
+const openTo = (to: string) => {
+    router.push(to);
+    onMenuToggle();
+}
 </script>
