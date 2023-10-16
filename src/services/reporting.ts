@@ -34,24 +34,23 @@ export const getAverageEquivalent = (equivalent: Partial<Equivalent>) => {
   return sum / 12;
 };
 
+/**
+ * Returns the sum of the input value multiplied with the equivalent factor
+ */
 export const getSumForInput = (
   input: UserInput,
   equivalents: { [key: string]: Equivalent },
 ) => {
-  let sum = 0;
-  let factor = input.equivalentManual;
+  let factor = 1;
   // check if equivalentRef is set. then overwrite factor with equivalent avg value
-  console.log("equivalentRef: ", input.equivalent);
-  if (input.equivalent) {
-    console.log("equivalentRef: ", input.equivalent);
+  if (input.equivalent && input.equivalent !== "") {
     if (equivalents[input.equivalent]) {
       factor = equivalents[input.equivalent].avgValue;
+    } else {
+      throw new Error("Factor is undefined for users input " + input.name);
     }
   }
-  if (!factor) {
-    throw new Error("Factor is undefined for users input " + input.name);
-  }
-  sum += input.sumValue * factor;
+  const sum = input.rawValue * factor;
   return sum;
 };
 

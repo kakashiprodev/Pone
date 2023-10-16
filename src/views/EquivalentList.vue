@@ -135,7 +135,6 @@
         <div>
             <Button :label="selectedValue.id === 'new' ? 'Anlegen' : 'Speichern'" @click="save" />
         </div>
-
     </Dialog>
 
     <ConfirmPopup></ConfirmPopup>

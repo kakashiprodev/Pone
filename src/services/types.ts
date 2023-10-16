@@ -22,15 +22,18 @@ export interface Equivalent {
   monthlyValues: boolean;
 }
 
+export type Scope = "scope1" | "scope2" | "scope3";
+
 export interface UserInput {
   id: string;
-  project: string;
+  scope: Scope;
   name: string;
+  rawValue: number;
   sumValue: number;
   equivalent: null | string;
-  equivalentManual: null | number;
-  comment: string;
+  project: string;
   year: number;
+  comment: string;
 }
 
 export interface UserInputQuery {

@@ -2,6 +2,7 @@ import PocketBase from "pocketbase";
 import { Equivalent, UserInput, UserInputQuery } from "./../types";
 import { error } from "./../toast";
 import { globalStore } from "./../../main";
+import { getSumForInput } from "./../reporting";
 
 export default class DataProvider {
   private pb: PocketBase;
@@ -90,32 +91,37 @@ export default class DataProvider {
   }
 
   // CRUD für UserInput
-  async createUserInputs(data: UserInput) {
+  async createUserInput(data: UserInput) {
+    // calculate sum
+    data.sumValue = getSumForInput(data, globalStore.equivalentDict);
     return await this.pb
-      .collection("userInputs").create<UserInput>(data);
+      .collection("inputs").create<UserInput>(data);
   }
 
   async readUserInput(id: string) {
     return await this.pb
-      .collection("userInputs").getOne<UserInput>(id);
+      .collection("inputs").getOne<UserInput>(id);
   }
 
   async readUserInputs(query?: UserInputQuery) {
     const res = await this.pb
-      .collection("userInputs").getList<UserInput>(1, 500, {
+      .collection("inputs").getList<UserInput>(1, 500, {
         filter: `year = ${globalStore.selectedYear}${
           query?.scope ? " && scope = '" + query.scope + "'" : ""
         }`,
-        expand: "equivalent",
+        // expand: "equivalent",
       });
     return res.items;
   }
 
-  async updateUserInputs(id: string, data: Partial<UserInput>) {
-    return await this.pb.collection("userInputs").update<UserInput>(id, data);
+  async updateUserInput(data: UserInput) {
+    // calculate sum
+    data.sumValue = getSumForInput(data, globalStore.equivalentDict);
+    if (data.id == null) throw new Error("id is null");
+    return await this.pb.collection("inputs").update<UserInput>(data.id, data);
   }
 
-  async deleteUserInputs(id: string) {
-    return await this.pb.collection("userInputs").delete(id);
+  async deleteUserInput(id: string) {
+    return await this.pb.collection("inputs").delete(id);
   }
 }
