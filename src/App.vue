@@ -16,12 +16,12 @@ DataProvider.checkLogin()
   .then((loggedIn) => {
     if (loggedIn) {
       if (route.name === 'login') {
-        router.push('/dashboard');
+        router.push({ name: 'dashboard' });
       } else {
         console.log('logged in');
       }
     } else {
-      router.push({name: 'login'});
+      router.push({ name: 'login' });
     }
   })
 
