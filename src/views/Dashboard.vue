@@ -9,16 +9,16 @@
             <h1 class="text-center mt-5">Noch keine Daten für das Jahr {{ global.selectedYear }} vorhanden</h1>
         </div>
 
-        <div v-if="chartDataScope1.datasets.length > 0">
+        <div v-if="chartDataScope1.datasets.length > 0" class="mt-5">
             <h2 class="text-center">Scope 1</h2>
             <Chart v-if="chartDataScope1.datasets.length > 0" type="bar" :data="chartDataScope1"
                 :options="scopeChartOptions" class="h-30rem" />
         </div>
-        <div v-if="chartDataScope2.datasets.length > 0">
+        <div v-if="chartDataScope2.datasets.length > 0" class="mt-5">
             <h2 class="text-center">Scope 2</h2>
             <Chart type="bar" :data="chartDataScope2" :options="scopeChartOptions" class="h-30rem" />
         </div>
-        <div v-if="chartDataScope3.datasets.length > 0">
+        <div v-if="chartDataScope3.datasets.length > 0" class="mt-5">
             <h2 class="text-center">Scope 3</h2>
             <Chart type="bar" :data="chartDataScope3" :options="scopeChartOptions" class="h-30rem" />
         </div>
@@ -49,10 +49,8 @@ const scopeChartOptions = {
     aspectRatio: 0.8,
     plugins: {
         legend: {
-            // labels: {
-            //     fontColor: 'black',
-            // }
-            display: false,
+            position: 'right',
+            display: true,
         }
     },
     scales: {
@@ -99,36 +97,37 @@ const loadDasboard = async () => {
         datasets: [
             {
                 data: [data.scope1.sum, data.scope2.sum, data.scope3.sum],
+                backgroundColor: ['#6bc5b7', '#009ca6', '#00494e'],
             }
         ]
     }
 
     chartDataScope1.value = {
-        labels: data.scope1.list.map((item: any) => item.name),
+        labels: ["Mengen"],
         datasets: data.scope1.list.map((item: any) => {
             return {
                 data: [item.value],
-                backgroundColor: '#555555',
+                backgroundColor: '#6bc5b7',
                 label: item.name,
             }
         }),
     }
     chartDataScope2.value = {
-        labels: data.scope2.list.map((item: any) => item.name),
+        labels: ["Mengen"],
         datasets: data.scope2.list.map((item: any) => {
             return {
                 data: [item.value],
-                backgroundColor: '#555555',
+                backgroundColor: '#6bc5b7',
                 label: item.name,
             }
         }),
     }
     chartDataScope3.value = {
-        labels: data.scope3.list.map((item: any) => item.name),
+        labels: ["Mengen"],
         datasets: data.scope3.list.map((item: any) => {
             return {
                 data: [item.value],
-                backgroundColor: '#555555',
+                backgroundColor: '#6bc5b7',
                 label: item.name,
             }
         }),
