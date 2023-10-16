@@ -18,7 +18,7 @@ import InputNumber from 'primevue/inputnumber';
 import Dropdown from 'primevue/dropdown';
 import { PropType, Ref, ref, computed } from 'vue';
 // import Checkbox from 'primevue/checkbox';
-import { FlexibleInput } from "./../views/Dashboard.vue";
+import { FlexibleInput } from "./TestSmartInput.vue";
 
 // define props. input is an array of FlexibleInput objects
 const props = defineProps({

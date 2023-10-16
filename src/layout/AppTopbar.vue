@@ -11,8 +11,8 @@
 
         <ul class="topbar-menu">
             <li v-for="(item, i) in tabs" :key="i">
-                <router-link :to="item.to" :exact-active-class="'active-route'">
-                    <span> {{ item.label }}</span>
+                <router-link :to="item.to ?? ''" :exact-active-class="'active-route'">
+                    <span> {{ item.label ?? '' }}</span>
                 </router-link>
                 <i class="pi pi-times" @click="onCloseTab(i)"></i>
             </li>
@@ -72,10 +72,8 @@ import { useLayout } from './composables/layout';
 import { useRouter } from 'vue-router';
 import { usePrimeVue } from 'primevue/config';
 import { useGlobalStore } from "./../stores/global";
-// import ToggleButton from 'primevue/togglebutton';
 import DataProvider from "./../services/dataprovider";
 import Button from 'primevue/button';
-import InputNumber from 'primevue/inputnumber';
 
 const $primevue = usePrimeVue();
 const global = useGlobalStore();
@@ -161,7 +159,7 @@ const bindOutsideClickListener = () => {
 };
 const unbindOutsideClickListener = () => {
     if (outsideClickListener.value) {
-        document.removeEventListener('click', outsideClickListener);
+        document.removeEventListener('click', outsideClickListener as any);
         outsideClickListener.value = null;
     }
 };

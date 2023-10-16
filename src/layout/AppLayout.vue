@@ -17,7 +17,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, watch, ref, onBeforeUnmount } from 'vue';
+import { computed, watch, ref, onBeforeUnmount, Ref } from 'vue';
 // import { usePrimeVue } from 'primevue/config';
 import AppTopbar from './AppTopbar.vue';
 // import AppConfig from './AppConfig.vue';
@@ -32,7 +32,7 @@ const global = useGlobalStore();
 // const $primevue = usePrimeVue();
 const { layoutConfig, layoutState, isSidebarActive } = useLayout();
 
-const outsideClickListener = ref(null);
+const outsideClickListener: Ref<any> = ref(null);
 const topbarRef = ref(null);
 
 watch(isSidebarActive, (newVal) => {
@@ -81,7 +81,7 @@ const bindOutsideClickListener = () => {
 };
 const unbindOutsideClickListener = () => {
     if (outsideClickListener.value) {
-        document.removeEventListener('click', outsideClickListener);
+        document.removeEventListener('click', outsideClickListener as any);
         outsideClickListener.value = null;
     }
 };

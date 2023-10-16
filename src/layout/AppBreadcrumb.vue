@@ -1,10 +1,10 @@
-<script setup>
+<script setup lang="ts">
 import { useRoute } from 'vue-router';
-import { ref, watch } from 'vue';
+import { ref, watch, Ref } from 'vue';
 
 const route = useRoute();
 const home = { icon: 'pi pi-home', to: '/' };
-const breadcrumbRoutes = ref([]);
+const breadcrumbRoutes: Ref<any> = ref([]);
 
 const setBreadcrumbRoutes = () => {
     if (route.meta.breadcrumb) {

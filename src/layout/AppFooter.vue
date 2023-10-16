@@ -1,7 +1,4 @@
-<script setup>
-import { useLayout } from './composables/layout';
-
-const { layoutConfig } = useLayout();
+<script setup lang="ts">
 </script>
 
 <template>
