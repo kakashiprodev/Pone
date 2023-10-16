@@ -21,7 +21,7 @@ DataProvider.checkLogin()
         console.log('logged in');
       }
     } else {
-      router.push('/login');
+      router.push({name: 'login'});
     }
   })
 

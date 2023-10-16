@@ -45,10 +45,10 @@ export const useGlobalStore = defineStore("global", {
 
   actions: {
     async redirectToMain() {
-      await router.push({ path: "/" });
+      await router.push({ name: "dashboard" });
     },
     async redirectToLogin() {
-      await router.push({ path: "/login" });
+      await router.push({ name: "login" });
     },
     async incrementYear() {
       this.selectedYear++;
