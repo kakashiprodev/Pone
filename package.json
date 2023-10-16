@@ -10,7 +10,8 @@
     "format": "prettier -w . \"./src/**/*.{vue,ts}\"",
     "docs:dev": "vitepress dev viewer",
     "docs:build": "vitepress build viewer",
-    "docs:preview": "vitepress preview viewer"
+    "docs:preview": "vitepress preview viewer",
+    "start": "npx http-server -P http://127.0.0.1:${PORT} ./dist"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.4.2",
