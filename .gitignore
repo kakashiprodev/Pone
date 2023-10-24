@@ -43,3 +43,4 @@ viewer/assets/
 .dev/pb_data/**/*
 .dev/pb_public/**/*
 viewer/[path].paths.ts.*.mjs
+assets/pocketbase/import/__pycache__/**/*
