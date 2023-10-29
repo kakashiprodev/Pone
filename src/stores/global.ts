@@ -107,6 +107,8 @@ export const useGlobalStore = defineStore("global", {
       // load equivalents and reports for the selected project
       await this.refreshEquivalents();
       await this.refreshReports();
+      // select report with the highest year
+      this.loadLatestReport();
 
       this.isLoading = false;
     },
@@ -323,6 +325,18 @@ export const useGlobalStore = defineStore("global", {
         this.reports = await dataprovider.readReports();
       }
     },
+
+    /**
+     * Load the report with the highest year.
+     */
+    loadLatestReport() {
+      if (this.reports.length > 0) {
+        this.selectedReport = this.reports.reduce((a, b) =>
+          a.year > b.year ? a : b
+        );
+      }
+    },
+
     /**
      * Add a new report to the cache and backend.
      * A report belongs to the selected project.
@@ -330,10 +344,12 @@ export const useGlobalStore = defineStore("global", {
     async addReport(report: ReportEntry) {
       const entryToAdd: any = report;
       delete entryToAdd.id;
-      const created = await dataprovider.createReport(report);
+      const created = await dataprovider.createReport(entryToAdd);
       this.reports.push(created);
+      this.selectedReport = created;
       return created;
     },
+
     /**
      * Drop a report from the cache and backend.
      * A user can only drop reports that belong to projects that belong to him.
@@ -343,6 +359,7 @@ export const useGlobalStore = defineStore("global", {
       await dataprovider.deleteReport(report.id);
       this.reports = this.reports.filter((r) => r.id !== report.id);
     },
+
     /**
      * Update a report in the cache and backend.
      * A user can only update reports that belong to projects that belong to him.
@@ -354,6 +371,7 @@ export const useGlobalStore = defineStore("global", {
       if (index > -1) {
         this.reports[index] = updated;
       }
+      this.selectedReport = updated;
       return updated;
     },
 

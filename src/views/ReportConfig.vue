@@ -4,30 +4,32 @@
             <template #start>
                 <span>Ausgewählter Bericht</span>
                 <Dropdown v-model="global.selectedReport" :options="global.reports" optionLabel="year"
-                    placeholder="Select a Report" />
-                <Button icon="fa-solid fa-plus" @click="addReport()" label="Add" />
+                    placeholder="Select a Report" :disabled="reportForm?.id === 'new'" class="ml-3" />
+                <Button icon="fa-solid fa-plus" @click="reportForm = global.getNewReport()" label="Add"
+                    :disabled="reportForm?.id === 'new'" class="ml-1" />
                 <Button v-if="global.selectedReport" icon="fa-solid fa-trash"
-                    @click="confirmDelete(global.selectedReport, $event)" label="Delete" />
+                    @click="confirmDelete(global.selectedReport, $event)" label="Delete"
+                    :disabled="reportForm?.id === 'new'" class="ml-1" />
             </template>
         </Toolbar>
 
-        <div v-if="global.reports.length === 0" class="card">
+        <div v-if="global.isLoading" class="card">
+            <p>Wird geladen...</p>
+        </div>
+        <div v-else-if="global.reports.length === 0" class="card">
             <p>Es sind noch keine Berichte vorhanden. Bitte legen Sie einen neuen Bericht an.</p>
-            <Button icon="fa-solid fa-plus" @click="global.selectedReport = global.getNewReport()"
-                label="Bericht anlegen" />
+            <Button icon="fa-solid fa-plus" @click="reportForm = global.getNewReport()" label="Bericht anlegen" />
         </div>
 
-        <div class="card">
-            <div class="card">
-                <h5>Basisdaten des CO2-Berichts</h5>
-                <div class="field grid" v-for="entry in Object.entries(reportSchema.object)" :key="entry[0]">
-                    <label :for="entry[0]" class="col-12 mb-2 md:col-4 md:mb-0">{{ reportTranslations[entry[0]] }}</label>
-                    <div class="col-12 md:col-8">
-                        <InputText v-if="entry[1].schema === 'string'" :id="entry[0]" v-model="reportForm[entry[0]]"
-                            class="w-full" />
-                        <InputNumber v-if="entry[1].schema === 'number'" :id="entry[0]" v-model="reportForm[entry[0]]"
-                            :useGrouping="false" class="w-full" />
-                    </div>
+        <div class="card" v-if="reportForm">
+            <h5>Basisdaten des CO2-Berichts</h5>
+            <div class="field grid" v-for="entry in Object.entries(reportSchema.object)" :key="entry[0]">
+                <label :for="entry[0]" class="col-12 mb-2 md:col-4 md:mb-0">{{ reportTranslations[entry[0]] }}</label>
+                <div class="col-12 md:col-8">
+                    <InputText v-if="entry[1].schema === 'string'" :id="entry[0]" v-model="reportForm[entry[0]]"
+                        class="w-full" :disabled="entry[0] === 'id' || entry[0] === 'project'" />
+                    <InputNumber v-if="entry[1].schema === 'number'" :id="entry[0]" v-model="reportForm[entry[0]]"
+                        :useGrouping="false" class="w-full" />
                 </div>
             </div>
 
@@ -47,13 +49,13 @@ import Dropdown from 'primevue/dropdown';
 import InputNumber from 'primevue/inputnumber';
 import InputText from 'primevue/inputtext';
 import Toolbar from 'primevue/toolbar';
-import { minLength, maxLength, object, string, number, minValue, maxValue, email } from 'valibot';
-import { error } from './../services/toast';
+import { minLength, maxLength, object, string, number, minValue, maxValue, email, parse } from 'valibot';
+import { error, info } from './../services/toast';
 
 const global = useGlobalStore();
 const confirm = useConfirm();
 
-const reportForm: Ref<ReportEntry> = ref(global.selectedReport || global.getNewReport());
+const reportForm: Ref<null | ReportEntry> = ref(global.selectedReport);
 const reportSchema = object({
     id: string(),
     project: string([minLength(4), maxLength(255)]),
@@ -75,7 +77,7 @@ const reportSchema = object({
 
 const reportTranslations = {
     id: "ID",
-    project: "Projekt",
+    project: "Projekt-ID",
     year: "Jahr",
     companyName: "Firmenname",
     companyStreet: "Straße",
@@ -92,31 +94,52 @@ const reportTranslations = {
     baseEquivalentSource: "Quelle",
 };
 
-const addReport = () => {
-    global.selectedReport = null;
-    global.selectedReport = global.getNewReport();
-};
-
 const confirmDelete = async (report: ReportEntry, event: any) => {
     confirm.require({
         target: event.currentTarget,
         message: 'Soll dieser Zeitraum wirklich gelöscht werden?',
         icon: 'fa-solid fa-question',
         accept: async () => {
-            await global.dropReport(report);
+            try {
+                await global.dropReport(report);
+                // get the next report with the highest year
+                global.loadLatestReport();
+                if (global.selectedReport) {
+                    reportForm.value = global.selectedReport;
+                }
+                info('Bericht wurde erfolgreich gelöscht');
+            } catch (e) {
+                error(e + "");
+            }
         },
     });
 };
 
 const saveReport = async () => {
+    if (!reportForm.value) {
+        return;
+    }
     try {
-        if (global.selectedReport?.id === 'new') {
+        parse(reportSchema, reportForm.value);
+        if (reportForm.value.id === 'new') {
             reportForm.value = await global.addReport(reportForm.value);
         } else {
             reportForm.value = await global.updateReport(reportForm.value);
         }
+        info('Bericht gespeichert');
     } catch (e) {
         error(e + "")
     }
 };
+
+const init = async () => {
+    while (global.isLoading) {
+        console.log('waiting for global store to load');
+        await new Promise(resolve => setTimeout(resolve, 500));
+    }
+    if (global.selectedReport) {
+        reportForm.value = global.selectedReport;
+    }
+}
+init();
 </script>
