@@ -1,5 +1,12 @@
+/**
+ * This service is used to generate reports
+ * It will use the data from the database and calculate the CO2 values
+ * It will calculate chains of equivalent values
+ * It will calculate the sum of all inputs
+ */
+
 import dataprovider from "./dataprovider";
-import { Equivalent, UserInput } from "./types";
+import { Equivalent, InputEntry } from "./types";
 
 const months = [
   "jan",
@@ -38,7 +45,7 @@ export const getAverageEquivalent = (equivalent: Partial<Equivalent>) => {
  * Returns the sum of the input value multiplied with the equivalent factor
  */
 export const getSumForInput = (
-  input: UserInput,
+  input: InputEntry,
   equivalents: { [key: string]: Equivalent },
 ) => {
   let factor = 1;
@@ -55,7 +62,7 @@ export const getSumForInput = (
 };
 
 export const getSumForInputs = (
-  inputs: UserInput[],
+  inputs: InputEntry[],
   equivalents: { [key: string]: Equivalent },
 ) => {
   let sum = 0;
@@ -66,7 +73,7 @@ export const getSumForInputs = (
 };
 
 export const getListOfInputValues = (
-  inputs: UserInput[],
+  inputs: InputEntry[],
   equivalents: { [key: string]: Equivalent },
 ) => {
   return inputs.map((input) => {
@@ -81,9 +88,9 @@ export const getListOfInputValues = (
 export const getScopeSums = async () => {
   const equivalents = await dataprovider.readEquivalentsAsDict();
 
-  const scope1 = await dataprovider.readUserInputs({ scope: "scope1" });
-  const scope2 = await dataprovider.readUserInputs({ scope: "scope2" });
-  const scope3 = await dataprovider.readUserInputs({ scope: "scope3" });
+  const scope1 = await dataprovider.readUserInputs({ scope: 1 });
+  const scope2 = await dataprovider.readUserInputs({ scope: 2 });
+  const scope3 = await dataprovider.readUserInputs({ scope: 3 });
 
   return {
     scope1: {

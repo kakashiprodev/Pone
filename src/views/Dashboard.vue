@@ -1,12 +1,12 @@
 <template>
     <!-- <SmartInput :data="demo" /> -->
-    <div class="report" v-if="!loading">
+    <div class="report" v-if="!loading && global.selectedReport">
         <div v-if="chartData.datasets.length > 0">
-            <h1 class="text-center">Auswertung {{ global.selectedYear }}</h1>
+            <h1 class="text-center">Auswertung {{ global.selectedReport.year }}</h1>
             <Chart style="margin: 0 auto;" type="pie" :data="chartData" :options="chartOptions" class="w-full md:w-30rem" />
         </div>
         <div v-else>
-            <h1 class="text-center mt-5">Noch keine Daten für das Jahr {{ global.selectedYear }} vorhanden</h1>
+            <h1 class="text-center mt-5">Noch keine Daten für das Jahr {{ global.selectedReport.year }} vorhanden</h1>
         </div>
 
         <div v-if="chartDataScope1.datasets.length > 0" class="mt-5">

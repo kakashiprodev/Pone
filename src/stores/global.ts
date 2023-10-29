@@ -1,61 +1,119 @@
 import { defineStore } from "pinia";
 import { router } from "./../router/index";
-import { Equivalent } from "./../services/types";
+import {
+  CategoryEntry,
+  Equivalent,
+  ProjectEntry,
+  ReportEntry,
+  SourceEntry,
+} from "./../services/types";
 import dataprovider from "./../services/dataprovider";
-import { error, info } from "./../services/toast";
+import { TreeNode } from "primevue/tree";
+
+const constructCategoriesTree = (categories: CategoryEntry[]): TreeNode[] => {
+  const nodes: TreeNode[] = [];
+
+  const findChildren = (parentId: string | null): TreeNode[] => {
+    return categories
+      .filter((cat) => cat.parent === parentId)
+      .map((cat) => {
+        const childNode: TreeNode = {
+          key: cat.id,
+          label: cat.name,
+          type: cat.equivalent ? "entry" : "folder",
+          icon: cat.equivalent ? "entry-icon" : "folder-icon",
+          expandedIcon: "open-folder-icon",
+          collapsedIcon: "closed-folder-icon",
+          children: findChildren(cat.id),
+        };
+        return childNode;
+      });
+  };
+  nodes.push(...findChildren(null));
+  return nodes;
+};
 
 export interface GlobalState {
   isLoading: boolean;
   isLoggenIn: boolean;
   requestPending: boolean;
-  //
-  selectedYear: number;
-  // selectedMonth: number;
+  // layout and theme
+  theme: "light" | "dark";
   // user information
   username: string;
-  company: string;
-  project: string;
-  // layout information
-  theme: "light" | "dark";
+  // equivalent sources, e.g. GEMIS
+  sources: SourceEntry[];
   // equivalents
   equivalents: Equivalent[];
   equivalentDict: { [key: string]: Equivalent };
+  // projects
+  projects: ProjectEntry[];
+  selectedProject: null | ProjectEntry;
+  // reports
+  reports: ReportEntry[];
+  selectedReport: null | ReportEntry;
+  // categories tree. ??? maybe this can be moved to a Scope1-3 ViewComponent!!!
+  categoriesTree: TreeNode[];
 }
 
-const lastYear = new Date().getFullYear() - 1;
-
 export const useGlobalStore = defineStore("global", {
-  state: () => ({
+  state: (): GlobalState => ({
     isLoading: false,
     isLoggenIn: false,
     requestPending: false,
     //
-    selectedYear: lastYear,
-    // selectedMonth: 1,
-    // user information
     username: "",
-    company: "",
-    project: "",
-    // layout information
     theme: "light" as "light" | "dark",
-    // equivalents
+    //
+    sources: [],
+    //
     equivalents: [],
     equivalentDict: {},
-  } as GlobalState),
+    //
+    projects: [],
+    selectedProject: null,
+    //
+    reports: [],
+    selectedReport: null,
+    //
+    categoriesTree: [],
+  }),
 
   actions: {
+    //login actions
     async redirectToMain() {
       await router.push({ name: "dashboard" });
     },
     async redirectToLogin() {
       await router.push({ name: "login" });
     },
-    async incrementYear() {
-      this.selectedYear++;
+
+    /**
+     * MAIN FUNCTION when App is loaded.
+     */
+    async initializeStore() {
+      await Promise.all([
+        this.refreshSources(),
+        this.refreshCategories(),
+        this.refreshProjects(),
+      ]);
+      // select the first project
+      // HACK: in the future the last selected project could be loaded from the local storage
+      await this.ensureProjectSelected();
+      // load equivalents and reports for the selected project
+      this.refreshEquivalents();
+      this.refreshReports();
     },
-    async decrementYear() {
-      this.selectedYear--;
-    },
+
+    // *************************************************************
+    // CRUD cache for "equivalents"
+    // *************************************************************
+
+    /**
+     * reload the cache for "equivalents" from backend.
+     * will not overwrite it if still data in cache. (use force = true to overwrite)
+     * HACK: All euquivalents belong to ONE project.
+     */
     async refreshEquivalents(force = false) {
       if (force || this.equivalents.length === 0) {
         this.equivalents = await dataprovider.readEquivalents();
@@ -68,49 +126,233 @@ export const useGlobalStore = defineStore("global", {
         );
       }
     },
+    /**
+     * Add a new equivalent to the cache and backend.
+     * This euquvalent will always be a project specific equivalent!
+     * HACK: this must be checked in the backend!
+     */
     async addEquivalent(equivalent: Equivalent) {
-      try {
-        const created = await dataprovider.createEquivalent(equivalent);
-        // add equivalent to local store at position 0
-        this.equivalents.push(created);
-        // sort by "name"
-        this.equivalents.sort((a, b) => a.name.localeCompare(b.name));
-        this.equivalentDict[equivalent.id] = created;
-        info("Equivalent wurde erstellt.");
-        return created;
-      } catch (e) {
-        error("Equivalent konnte nicht erstellt werden. " + e);
-      }
+      const entryToAdd: any = equivalent;
+      delete entryToAdd.id;
+      const created = await dataprovider.createEquivalent(equivalent);
+      // add equivalent to local store at position 0
+      this.equivalents.push(created);
+      // sort by "name"
+      this.equivalents.sort((a, b) => a.name.localeCompare(b.name));
+      this.equivalentDict[equivalent.id] = created;
+      return created;
     },
-    async dropEquivalent(equivalent: Equivalent) {
-      try {
-        await dataprovider.deleteEquivalent(equivalent.id);
-        // drop equivalent from local store
-        this.equivalents = this.equivalents.filter((e) =>
-          e.id !== equivalent.id
-        );
-        delete this.equivalentDict[equivalent.id];
-        info("Equivalent wurde gelöscht.");
-      } catch (e) {
-        error("Equivalent konnte nicht gelöscht werden. " + e);
-      }
-    },
+    /**
+     * Update an equivalent in the cache and backend.
+     * Only project specific equivalents can be updated.
+     * HACK: this must be checked in the backend!
+     */
     async updateEquivalent(equivalent: Equivalent) {
-      try {
-        const updated = await dataprovider.updateEquivalents(equivalent);
-        // get index of existing equivalent
-        const index = this.equivalents.findIndex((e) => e.id === equivalent.id);
-        // replace
-        if (index > -1) {
-          this.equivalents.splice(index, 1, updated);
-        }
-        // update dict
-        this.equivalentDict[equivalent.id] = updated;
-        info("Equivalent wurde aktualisiert.");
-        return updated;
-      } catch (e) {
-        error("Equivalent konnte nicht aktualisiert werden. " + e);
+      const updated = await dataprovider.updateEquivalents(equivalent);
+      // get index of existing equivalent
+      const index = this.equivalents.findIndex((e) => e.id === equivalent.id);
+      // replace
+      if (index > -1) {
+        this.equivalents.splice(index, 1, updated);
       }
+      // update dict
+      this.equivalentDict[equivalent.id] = updated;
+      return updated;
+    },
+    /**
+     * Drop an equivalent from the cache and backend.
+     * Only project specific equivalents can be dropped.
+     * HACK: this must be checked in the backend!
+     */
+    async dropEquivalent(equivalent: Equivalent) {
+      await dataprovider.deleteEquivalent(equivalent.id);
+      // drop equivalent from local store
+      this.equivalents = this.equivalents.filter((e) => e.id !== equivalent.id);
+      delete this.equivalentDict[equivalent.id];
+    },
+
+    // *************************************************************
+    // CRUD cache for "projects"
+    // *************************************************************
+
+    /**
+     * ensure that a project is selected and that a project is existing.
+     */
+    async ensureProjectSelected() {
+      // if a user has NO projects, he can not use the app
+      // so we need to create one here
+      if (this.projects.length === 0) {
+        await this.addProject({ id: "new", name: "Mein erstes Projekt" });
+        this.selectedProject = this.projects[0];
+      } else {
+        this.selectedProject = this.projects[0];
+      }
+    },
+
+    /**
+     * reload the cache for "projects" from backend.
+     * this will only be done if the cache is empty. (use force = true to overwrite)
+     * this will only list projects that belong to the current user.
+     * HACK: this must be checked in the backend!
+     */
+    async refreshProjects(force = false) {
+      if (force || this.projects.length === 0) {
+        this.projects = await dataprovider.readProjects();
+      }
+    },
+    /**
+     * Add a new project to the cache and backend.
+     * A user can only add projects that belong to him any can add users later.
+     * HACK: this must be checked in the backend!
+     */
+    async addProject(project: ProjectEntry) {
+      const entryToAdd: any = project;
+      delete entryToAdd.id;
+      const created = await dataprovider.createProject(project);
+      this.projects.push(created);
+      return created;
+    },
+    /**
+     * Update a project in the cache and backend.
+     * A user can only update projects that belong to him.
+     * HACK: this must be checked in the backend!
+     */
+    async updateProject(project: ProjectEntry) {
+      const updated = await dataprovider.updateProject(project);
+      const index = this.projects.findIndex((p) => p.id === project.id);
+      if (index > -1) {
+        this.projects[index] = updated;
+      }
+      return updated;
+    },
+    /**
+     * Drop a project from the cache and backend.
+     * A user can only drop projects that belong to him.
+     * HACK: this must be checked in the backend!
+     */
+    async dropProject(project: ProjectEntry) {
+      await dataprovider.deleteProject(project.id);
+      this.projects = this.projects.filter((p) => p.id !== project.id);
+      this.ensureProjectSelected();
+    },
+
+    /**
+     * Action to change the current project.
+     * This will also reload the reports for the new project.
+     * This will also reload the equivalents for the new project.
+     * HACK: this must be checked in the backend!
+     */
+    async changeProject(project: ProjectEntry) {
+      this.selectedProject = project;
+      this.reports = await dataprovider.readReports();
+      this.reports = this.reports.filter((report) =>
+        report.project === project.id
+      );
+      this.equivalents = await dataprovider.readEquivalents();
+      this.equivalents = this.equivalents.filter(
+        (equivalent) => equivalent.project === project.id,
+      );
+    },
+
+    /**
+     * reload the cache for "sources" from backend.
+     * this will only be done if the cache is empty. (use force = true to overwrite)
+     * No CRUD is needed here since sources are system wide any only created by us.
+     */
+    async refreshSources(force = false) {
+      if (this.sources.length === 0 || force) {
+        this.sources = await dataprovider.readSources();
+      }
+    },
+
+    /**
+     * Fetch categories and construct the nested tree for the Scope1-3 ViewComponent.
+     * HACK: This can be done in a service or in the backend.
+     */
+    async refreshCategories() {
+      const categories = await dataprovider.readCategories();
+      this.categoriesTree = constructCategoriesTree(categories);
+    },
+
+    // *************************************************************
+    // CRUD cache for "reports"
+    // *************************************************************
+
+    /**
+     * create an empty report object.
+     */
+    getNewReport(): ReportEntry {
+      const report: ReportEntry = {
+        id: "new",
+        project: "",
+        year: new Date().getFullYear(),
+        companyName: "",
+        companyStreet: "",
+        companyPostal: "",
+        companyCity: "",
+        companyCountry: "",
+        contactName: "",
+        contactTelephone: "",
+        contactEmail: "",
+        contactDomain: "",
+        countEmployees: 0,
+        businessTurnover: 0,
+        baseYear: new Date().getFullYear(),
+        baseEquivalentSource: null,
+      };
+      return report;
+    },
+
+    /**
+     * reload the cache for "reports" from backend.
+     * this will only be done if the cache is empty. (use force = true to overwrite)
+     * All projects belong to ONE project.
+     * HACK: this must be checked in the backend!
+     */
+    async refreshReports(force = false) {
+      if (force || this.reports.length === 0) {
+        this.reports = await dataprovider.readReports();
+      }
+    },
+    /**
+     * Add a new report to the cache and backend.
+     * A report belongs to the selected project.
+     */
+    async addReport(report: ReportEntry) {
+      const entryToAdd: any = report;
+      delete entryToAdd.id;
+      const created = await dataprovider.createReport(report);
+      this.reports.push(created);
+      return created;
+    },
+    /**
+     * Drop a report from the cache and backend.
+     * A user can only drop reports that belong to projects that belong to him.
+     * HACK: this must be checked in the backend!
+     */
+    async dropReport(report: ReportEntry) {
+      await dataprovider.deleteReport(report.id);
+      this.reports = this.reports.filter((r) => r.id !== report.id);
+    },
+    /**
+     * Update a report in the cache and backend.
+     * A user can only update reports that belong to projects that belong to him.
+     * HACK: this must be checked in the backend!
+     */
+    async updateReport(report: ReportEntry) {
+      const updated = await dataprovider.updateReport(report);
+      const index = this.reports.findIndex((r) => r.id === report.id);
+      if (index > -1) {
+        this.reports[index] = updated;
+      }
+      return updated;
+    },
+
+    /**
+     * Update the theme in the store.
+     */
+    changeTheme(theme: "light" | "dark") {
+      this.theme = theme;
     },
   },
 });

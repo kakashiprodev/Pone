@@ -32,6 +32,16 @@ const routes = [
         component: () => import("../views/EquivalentList.vue"),
         name: "equivalents",
       },
+      {
+        path: "/report-config/",
+        component: () => import("../views/ReportConfig.vue"),
+        name: "reportConfig",
+      },
+      {
+        path: "/project-config/",
+        component: () => import("../views/ReportConfig.vue"),
+        name: "projectConfig",
+      },
     ],
   },
 ];

@@ -1,4 +1,9 @@
-import PocketBaseDataProvider from "./data/pocketbase";
+/**
+ * Global Data Provider
+ * will be used to provide data from different sources
+ */
+
+import PocketBaseDataProvider from "./provider/pocketbase";
 
 const provider = {
   pocketbase: PocketBaseDataProvider,

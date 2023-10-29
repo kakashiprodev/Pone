@@ -23,7 +23,7 @@ import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
 import { useGlobalStore } from "./../stores/global";
 import { Ref, ref, watch } from 'vue';
-import { UserInput } from './../services/types';
+import { InputEntry } from './../services/types';
 // import { Equivalent } from './../services/types';
 
 const global = useGlobalStore();
@@ -33,7 +33,7 @@ global.refreshEquivalents();
 const emits = defineEmits(['update:modelValue']);
 const props = defineProps(['modelValue']);
 
-const selection: Ref<null | UserInput> = ref(null);
+const selection: Ref<null | InputEntry> = ref(null);
 watch(selection, (value) => {
     if (value) {
         // console.log('update:modelValue', value);

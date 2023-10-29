@@ -1,3 +1,4 @@
+// table "equivalents"
 export interface Equivalent {
   id: string;
   name: string;
@@ -24,7 +25,8 @@ export interface Equivalent {
   out: string; // output unit
 }
 
-export interface UserInput {
+// table "inputs"
+export interface InputEntry {
   id: string;
   name: string;
   scope: number; // 1-3
@@ -35,11 +37,14 @@ export interface UserInput {
   report: string; // reference on table reports
 }
 
+// query object for table "inputs"
 export interface UserInputQuery {
   scope?: number;
 }
 
+// table "reports"
 export interface ReportEntry {
+  id: string;
   project: string; // the project id
   year: number;
   companyName: string;
@@ -51,23 +56,25 @@ export interface ReportEntry {
   contactTelephone: string;
   contactEmail: string;
   contactDomain: string;
-  companyDomain: string;
   countEmployees: number;
   businessTurnover: number;
   baseYear: number;
   baseEquivalentSource: null | string; // reference on table sources
 }
 
+// table "sources"
 export interface SourceEntry {
   id: string;
   name: string;
 }
 
+// table "projects"
 export interface ProjectEntry {
   id: string;
   name: string;
 }
 
+// table "categories"
 export interface CategoryEntry {
   id: string;
   name: string;
