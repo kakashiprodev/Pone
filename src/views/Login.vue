@@ -24,7 +24,9 @@ import TextInput from 'primevue/inputtext';
 import { useRouter } from 'vue-router';
 import DataProvider from "./../services/dataprovider";
 import { Ref, ref } from 'vue';
+import { useGlobalStore } from './../stores/global';
 const router = useRouter();
+const global = useGlobalStore();
 
 const username: Ref<string> = ref('');
 const password: Ref<string> = ref('');
@@ -32,7 +34,8 @@ const password: Ref<string> = ref('');
 const login = async () => {
   const loggedIn = await DataProvider.login(username.value, password.value);
   if (loggedIn) {
-    router.push('/dashboard');
+    await global.initializeStore();
+    router.push({ name: 'dashboard' });
   }
 }
 </script>

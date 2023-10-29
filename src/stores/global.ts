@@ -9,6 +9,7 @@ import {
 } from "./../services/types";
 import dataprovider from "./../services/dataprovider";
 import { TreeNode } from "primevue/tree";
+import { info } from "../services/toast";
 
 const constructCategoriesTree = (categories: CategoryEntry[]): TreeNode[] => {
   const nodes: TreeNode[] = [];
@@ -58,7 +59,7 @@ export interface GlobalState {
 
 export const useGlobalStore = defineStore("global", {
   state: (): GlobalState => ({
-    isLoading: false,
+    isLoading: true,
     isLoggenIn: false,
     requestPending: false,
     //
@@ -92,6 +93,9 @@ export const useGlobalStore = defineStore("global", {
      * MAIN FUNCTION when App is loaded.
      */
     async initializeStore() {
+      console.log("initializeStore");
+      this.isLoading = true;
+      // load all data from backend
       await Promise.all([
         this.refreshSources(),
         this.refreshCategories(),
@@ -101,8 +105,10 @@ export const useGlobalStore = defineStore("global", {
       // HACK: in the future the last selected project could be loaded from the local storage
       await this.ensureProjectSelected();
       // load equivalents and reports for the selected project
-      this.refreshEquivalents();
-      this.refreshReports();
+      await this.refreshEquivalents();
+      await this.refreshReports();
+
+      this.isLoading = false;
     },
 
     // *************************************************************
@@ -182,6 +188,9 @@ export const useGlobalStore = defineStore("global", {
       // if a user has NO projects, he can not use the app
       // so we need to create one here
       if (this.projects.length === 0) {
+        info(
+          "Es wurde kein Projekt gefunden. Ein neues Projekt wird automatisch angelegt.",
+        );
         await this.addProject({ id: "new", name: "Mein erstes Projekt" });
         this.selectedProject = this.projects[0];
       } else {

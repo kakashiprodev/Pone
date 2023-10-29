@@ -39,7 +39,7 @@ const routes = [
       },
       {
         path: "/project-config/",
-        component: () => import("../views/ReportConfig.vue"),
+        component: () => import("../views/ProjectConfig.vue"),
         name: "projectConfig",
       },
     ],
