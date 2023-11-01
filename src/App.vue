@@ -1,6 +1,6 @@
 <template>
   <Toast />
-  <router-view />
+  <router-view v-if="!global.isLoading" />
 </template>
 
 <script setup lang="ts">

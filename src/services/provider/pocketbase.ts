@@ -111,8 +111,8 @@ export default class DataProvider {
   async readUserInputs(query?: UserInputQuery) {
     const res = await this.pb
       .collection("inputs").getList<InputEntry>(1, 500, {
-        filter: `report = ${globalStore.selectedReport}${
-          query?.scope ? " && scope = " + query.scope : ""
+        filter: `report = '${globalStore.selectedReport?.id}'${
+          query?.scope ? " && " + query.scope.map((s) => `scope="${s}"`).join(" || ") : ""
         }`,
         // expand: "equivalent",
       });

@@ -1,5 +1,12 @@
 <template>
     <div>
+        <h5>
+            Projekte
+        </h5>
+        <p>
+            Hier können Sie Projekte anlegen und verwalten. Pro Kunde und Standort sollte ein Projekt angelegt werden.
+            Ein Projekt kann mehrere Berichte enthalten.
+        </p>
         <Toolbar>
             <template #start>
                 <span>Ausgewähltes Projekt</span>
@@ -35,6 +42,26 @@
                         <InputText id="projectname" class="w-full" v-model="projectForm.name" />
                     </div>
                 </div>
+                <div class="field grid">
+                    <label for="targetDefined" class="col-12 mb-2 md:col-4 md:mb-0">Klimaziel für Projekt
+                        definieren?</label>
+                    <div class="col-12 md:col-8">
+                        <Checkbox id="targetDefined" v-model="projectForm.targetDefined" :binary="true" />
+                    </div>
+                </div>
+                <div class="field grid" v-if="projectForm.targetDefined">
+                    <label for="targetYear" class="col-12 mb-2 md:col-4 md:mb-0">Ziel-Jahr</label>
+                    <div class="col-12 md:col-8">
+                        <InputNumber :useGrouping="false" :min="1960" :max="2100" id="targetYear" class="w-full"
+                            v-model="projectForm.targetYear" />
+                    </div>
+                </div>
+                <div class="field grid" v-if="projectForm.targetDefined">
+                    <label for="targetValue" class="col-12 mb-2 md:col-4 md:mb-0">Ziel in Tonnen CO2-Equivalenten</label>
+                    <div class="col-12 md:col-8">
+                        <InputNumber id="targetValue" class="w-full" v-model="projectForm.targetValue" />
+                    </div>
+                </div>
             </div>
 
             <Button class="mt-3" @click="saveProject()" :label="projectForm.id === 'new' ? 'Hinzufügen' : 'Speichern'" />
@@ -51,7 +78,9 @@ import Button from 'primevue/button';
 import Dropdown from 'primevue/dropdown';
 import InputText from 'primevue/inputtext';
 import Toolbar from 'primevue/toolbar';
+import Checkbox from 'primevue/checkbox';
 import ConfirmDialog from 'primevue/confirmdialog';
+import InputNumber from 'primevue/inputnumber';
 import { minLength, maxLength, object, string, parse } from 'valibot';
 import { error, info } from './../services/toast';
 
@@ -62,6 +91,9 @@ const emptyProject = (): ProjectEntry => {
     return {
         id: 'new',
         name: '',
+        targetDefined: false,
+        targetValue: 0,
+        targetYear: 2050,
     }
 };
 

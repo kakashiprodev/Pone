@@ -47,18 +47,31 @@ export const getAverageEquivalent = (equivalent: Partial<Equivalent>) => {
 export const getSumForInput = (
   input: InputEntry,
   equivalents: { [key: string]: Equivalent },
-) => {
-  let factor = 1;
-  // check if equivalentRef is set. then overwrite factor with equivalent avg value
-  if (input.equivalent && input.equivalent !== "") {
-    if (equivalents[input.equivalent]) {
-      factor = equivalents[input.equivalent].avgValue;
-    } else {
-      throw new Error("Factor is undefined for users input " + input.name);
-    }
+): number => {
+  return calculateEquivalentFactor(input.equivalent, equivalents) *
+    input.rawValue;
+};
+
+const calculateEquivalentFactor = (
+  equivalentId: null | string,
+  equivalents: { [key: string]: Equivalent },
+): number => {
+  if (!equivalentId || equivalentId === "") {
+    return 1;
   }
-  const sum = input.rawValue * factor;
-  return sum;
+
+  const equivalent = equivalents[equivalentId];
+  if (!equivalent) {
+    console.error("Equivalent not found for id " + equivalentId);
+    return 1;
+    // throw new Error("Factor is undefined for users input " + equivalentId);
+  }
+
+  const parentFactor = calculateEquivalentFactor(
+    equivalent.parent,
+    equivalents,
+  );
+  return equivalent.avgValue * parentFactor;
 };
 
 export const getSumForInputs = (
@@ -88,9 +101,9 @@ export const getListOfInputValues = (
 export const getScopeSums = async () => {
   const equivalents = await dataprovider.readEquivalentsAsDict();
 
-  const scope1 = await dataprovider.readUserInputs({ scope: 1 });
-  const scope2 = await dataprovider.readUserInputs({ scope: 2 });
-  const scope3 = await dataprovider.readUserInputs({ scope: 3 });
+  const scope1 = await dataprovider.readUserInputs({ scope: [1] });
+  const scope2 = await dataprovider.readUserInputs({ scope: [2] });
+  const scope3 = await dataprovider.readUserInputs({ scope: [3] });
 
   return {
     scope1: {
@@ -106,4 +119,50 @@ export const getScopeSums = async () => {
       sum: getSumForInputs(scope3, equivalents),
     },
   };
+};
+
+// ausgabe als schrift:
+export const getCalculationSteps = (
+  input: InputEntry,
+  equivalents: { [key: string]: Equivalent },
+): string[] => {
+  const steps: string[] = [];
+  calculateEquivalentFactorWithSteps(
+    input.rawValue,
+    input.equivalent,
+    equivalents,
+    steps,
+  );
+  return steps;
+};
+
+const calculateEquivalentFactorWithSteps = (
+  value: number,
+  equivalentId: null | string,
+  equivalents: { [key: string]: Equivalent },
+  steps: string[],
+): number => {
+  if (!equivalentId) {
+    return value;
+  }
+
+  const equivalent = equivalents[equivalentId];
+  if (!equivalent) {
+    throw new Error("Equivalent is undefined for ID " + equivalentId);
+  }
+
+  // Wenn ein Parent vorhanden ist, dann den Wert für den Parent zuerst berechnen
+  const parentValue = calculateEquivalentFactorWithSteps(
+    value,
+    equivalent.parent,
+    equivalents,
+    steps,
+  );
+
+  const intermediateResult = parentValue * equivalent.avgValue;
+  steps.push(
+    `${parentValue}[${equivalent.in}] * ${equivalent.avgValue}[${equivalent.in}/${equivalent.out}] = ${intermediateResult}[${equivalent.out}]`,
+  );
+
+  return intermediateResult;
 };

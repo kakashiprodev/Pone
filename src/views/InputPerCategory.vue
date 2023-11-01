@@ -1,38 +1,23 @@
 <template>
+    <h5>
+        {{ translations[category as keyof any] }}
+    </h5>
+
     <Toolbar class="mb-2">
-        <template #start>
-            <label class="ml-2">Ansicht der Scopes:</label>
-            <label class="ml-1" for="scope1Active">1</label>
-            <Checkbox id="scope1Active" v-model="scope1Active" value="1" class="ml-2" :binary="true" @change="getData" />
-            <label class="ml-1" for="scope2Active">2</label>
-            <Checkbox id="scope2Active" v-model="scope2Active" value="1" class="ml-2" :binary="true" @change="getData" />
-            <label class="ml-1" for="scope3Active">3</label>
-            <Checkbox id="scope3Active" v-model="scope3Active" value="1" class="ml-2" :binary="true" @change="getData" />
-        </template>
         <template #end>
             <Button icon="fa-solid fa-plus" @click="selectedValue = clone(emptyInput); showDialog = true" class="mr-1" />
-            <Button icon="fa-solid fa-download" @click="download()" />
         </template>
-    </Toolbar>   
-
-    <Dialog id="choose-equivalent" v-model:visible="showChooseEquivalent" modal header="Äquivalent auswählen"
-        :class="{ 'w-8': windowWidth > 990, 'w-full': windowWidth < 990, 'h-screen': windowWidth < 990 }">
-        <ChooseComponent v-model="selectedValue.equivalent" />
-        <div class="mt-4">
-            <Button label="Ok" @click="showChooseEquivalent = false;" />
-            <Button class="ml-1" label="Auswahl leeren"
-                @click="selectedValue.equivalent = null; showChooseEquivalent = false;" />
-            <Button class="ml-1" label="Abbrechen" @click="selectedValue = originalValue; showChooseEquivalent = false;" />
-        </div>
-    </Dialog>
+    </Toolbar>
 
     <Dialog id="edit-create-input" v-model:visible="showDialog" modal
         :header="selectedValue.id === 'new' ? 'Anlegen' : 'Bearbeiten'"
         :class="{ 'w-6': windowWidth > 990, 'w-full': windowWidth < 990, 'h-screen': windowWidth < 990 }">
+
         <div>
             <div class="field">
-                <label for="userinput-scope">Scope</label>
-                <Dropdown class="w-full" id="userinput-scope" v-model="selectedValue.scope" :options="[1, 2, 3]" />
+                <label for="userinput-name">Vorauswahl</label>
+                <Listbox v-model="selectedPreset" :options="presets" filter optionLabel="name" class="w-full"
+                    @change="selectPreset" />
             </div>
             <div class="field">
                 <label for="userinput-name">Name</label>
@@ -41,17 +26,6 @@
             <div class="field">
                 <label for="userinput-comment">Kommentar</label>
                 <InputText class="w-full" v-model="selectedValue.comment" id="userinput-comment" />
-            </div>
-            <div class="field">
-                <label for="userinput-equivalent">Äquivalent</label>
-                <div>
-                    <div v-if="selectedValue.equivalent != null && selectedValue.equivalent !== ''"
-                        @click="showChooseEquivalent = true"
-                        class="bg-teal-300 text-white border-round m-2 flex align-items-center justify-content-center cursor-pointer p-2">
-                        {{ global.equivalentDict[selectedValue.equivalent]?.name ?? 'Reference error' }}
-                    </div>
-                    <Button v-else label="Auswählen" @click="showChooseEquivalent = true" />
-                </div>
             </div>
             <div class="field">
                 <label for="userinput-rawvalue">
@@ -70,7 +44,7 @@
             <div class="field">
                 <label for="userinput-sum">Menge (berechnet)</label>
                 <InputNumber :disabled="true" class="w-full" v-model="computedSumValue" id="userinput-sum"
-                    :use-grouping="false" />
+                    :use-grouping="false" suffix=" to" />
             </div>
         </div>
         <div>
@@ -80,8 +54,6 @@
 
     <ConfirmPopup></ConfirmPopup>
     <DataTable v-if="global.equivalents.length > 0" :value="data" class="cst-no-hover">
-        <!-- <Column field="id" header="ID"></Column> -->
-        <Column field="scope" header="Scope"></Column>
         <Column field="name" header="Name"></Column>
         <Column field="rawValue" header="Eingabewert"></Column>
         <Column field="equivalent" header="Äquivalent">
@@ -120,9 +92,7 @@ import ConfirmPopup from 'primevue/confirmpopup';
 import InputNumber from 'primevue/inputnumber';
 import InputText from 'primevue/inputtext';
 import Dialog from 'primevue/dialog';
-import Checkbox from 'primevue/checkbox';
-import Dropdown from 'primevue/dropdown';
-import ChooseComponent from './../components/ChooseComponent.vue';
+import Listbox from 'primevue/listbox';
 import { Equivalent, InputEntry } from './../services/types';
 import dataprovider from "./../services/dataprovider";
 import { Ref, ref, computed, watch, ComputedRef } from 'vue';
@@ -132,41 +102,29 @@ import { error } from './../services/toast';
 import { useConfirm } from 'primevue/useconfirm';
 import { getSumForInput, getCalculationSteps } from "./../services/reporting";
 import { useRouter } from 'vue-router';
+
+const translations: any = {
+    'gases': 'Kühlmittelverlust und Isoliergase'
+}
+
 const router = useRouter();
-
-// toolbar
-const scope1Active = ref(true);
-const scope2Active = ref(true);
-const scope3Active = ref(true);
-
 const windowWidth = ref(window.innerWidth);
 
-// get "scope" from route
+// get "category" from route
 const route = useRoute();
-const setScopeFilter = () => {
-    const param = route.params.scope; // "scope1", "scope2", "scope3", "all"
-    // is param is not an Array and is one of the valid strings then return only the number
-    // else return 1
-    const scope = !Array.isArray(param) && ['scope1', 'scope2', 'scope3', 'all'].indexOf(param) > -1 ? param.replace('scope', '') : 'all';
-    if (scope === 'all') {
-        scope1Active.value = true;
-        scope2Active.value = true;
-        scope3Active.value = true;
-    } else {
-        scope1Active.value = scope === '1';
-        scope2Active.value = scope === '2';
-        scope3Active.value = scope === '3';
-    }
-}
-// on fist loading
-setScopeFilter();
+const category = computed(() => {
+    return route.params.category;
+
+});
+console.log(category.value);
+
 // on change
-watch(route, () => {
-    setScopeFilter();
+watch(category, async () => {
+    await getData();
 });
 
 // choose equivalent
-const showChooseEquivalent = ref(false);
+// const showChooseEquivalent = ref(false);
 const choosenEquivalent: ComputedRef<null | Equivalent> = computed(() => {
     try {
         return global.equivalentDict[selectedValue.value.equivalent ?? ""];
@@ -201,6 +159,15 @@ const clone = (input: InputEntry) => {
 }
 const selectedValue: Ref<InputEntry> = ref(emptyInput);
 const originalValue: Ref<InputEntry> = ref(emptyInput);
+
+// preset selection
+const selectedPreset = ref('');
+const presets: any = ref([]);
+const selectPreset = (val: any) => {
+    console.log(val);
+    selectedValue.value.name = val.value.name;
+    selectedValue.value.equivalent = val.value.equivalent;
+}
 
 const computedSumValue = computed(() => {
     return getSumForInput(selectedValue.value, global.equivalentDict);
@@ -253,50 +220,20 @@ const deleteEntry = async (entry: InputEntry, event: any) => {
 // get data
 const data: Ref<InputEntry[]> = ref([]);
 const getData = async () => {
-    const scope: number[] = [];
-    if (scope1Active.value) {
-        scope.push(1);
-    };
-    if (scope2Active.value) {
-        scope.push(2);
-    };
-    if (scope3Active.value) {
-        scope.push(3);
-    };
-    data.value = await dataprovider.readUserInputs({
-        scope,
-    });
+    // filter by "maincategory"
+    // data.value = await dataprovider.readUserInputs();
+
+    // get possible presets
+    presets.value = [
+        { id: 'R134a', name: 'R134a', equivalent: 'cidbp04ls48osv5', },
+        { id: 'R404A', name: 'R404A', equivalent: 'cidbp04ls48osv5', },
+        { id: 'R407C', name: 'R407C', equivalent: 'cidbp04ls48osv5', },
+    ]
 }
 
 // initial get data
 getData();
 
-// export
-const download = async () => {
-    // export data as CSV and download
-    let csv = 'ID;Name;Kommentar;Projekt;Scope;Menge;Eingabewert;Äquivalent;Gültigkeit\r\n';
-    csv += data.value.map((item) => {
-        return [
-            item.id,
-            item.name,
-            item.comment,
-            item.report,
-            item.scope,
-            item.sumValue,
-            item.rawValue,
-            item.equivalent,
-            "item.year",// HACK!!!
-        ].join(';');
-    }).join('\r\n');
-    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.setAttribute("href", url);
-    link.setAttribute("download", "Eingaben_Export.csv");
-    link.style.visibility = 'hidden';
-    document.body.appendChild(link);
-    link.click();
-}
 </script>
 
 <style>

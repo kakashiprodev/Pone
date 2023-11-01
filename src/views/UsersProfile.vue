@@ -3,15 +3,6 @@
     <h1>Benutzerprofil</h1>
     <div class="p-fluid">
       <h2>
-        Ausgewähltes Jahr
-      </h2>
-      <div class="flex align-content-center">
-        <Button icon="fa-solid fa-caret-left" class="surface-100 border-0 mr-1" @click="global.decrementYear()"></Button>
-        <InputNumber v-model="global.selectedYear" :use-grouping="false" class="w-full" />
-        <Button icon="fa-solid fa-caret-right" class="surface-100 border-0 ml-1" @click="global.incrementYear()"></Button>
-      </div>
-      <!--login with username and password -->
-      <h2>
         Passwort ändern
       </h2>
       <div class="p-fluid">
@@ -41,13 +32,10 @@
 <script setup lang="ts">
 import Button from 'primevue/button';
 import TextInput from 'primevue/inputtext';
-// import { useRouter } from 'vue-router';
-// import DataProvider from "./../services/dataprovider";
 import { Ref, ref } from 'vue';
 import Divider from 'primevue/divider';
 import { error } from './../services/toast';
 import { useGlobalStore } from "./../stores/global";
-import InputNumber from 'primevue/inputnumber';
 
 const global = useGlobalStore();
 // const router = useRouter();

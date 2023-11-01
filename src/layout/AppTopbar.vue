@@ -19,6 +19,15 @@
             <!-- <li v-if="!tabs || tabs.length === 0" class="topbar-menu-empty">Use (cmd + click) to open a tab</li> -->
         </ul>
 
+        <ul class="topbar-menu-custom text-xl list-none">
+            <li style="float: left;" class="ml-5">
+                <router-link to="/report-config">
+                    <i class="fa-solid fa-building text-800"></i>
+                    <span class="ml-2 text-600">Berichtsdaten</span>
+                </router-link>
+            </li>
+        </ul>
+
         <!-- <div class="topbar-search" :class="{ 'topbar-search-active': searchActive }">
             <Button class="topbar-searchbutton p-link" type="button" @click="activateSearch()">
                 <i class="pi pi-search"></i>
@@ -43,20 +52,30 @@
                 <i class="fa-solid fa-user mr-3"></i>
                 <span class="profile-details">
                     <span class="profile-name">{{ global.username }}</span>
-                    <span class="profile-job">{{ global.company }}</span>
+                    <span class="profile-job">{{ global.selectedProject?.name }}</span>
                 </span>
                 <i class="fa-solid fa-angle-down"></i>
             </button>
             <ul v-if="showUsersMenu"
                 class="list-none p-3 m-0 border-round shadow-2 absolute surface-overlay origin-top w-full sm:w-12rem mt-2 right-0 top-auto">
                 <li>
-                    <a v-ripple href="/user" @click="showUsersMenu = false"
-                        class="p-ripple flex p-2 border-round align-items-center hover:surface-hover transition-colors transition-duration-150 cursor-pointer">
+                    <a href="/#/project-config" @click="showUsersMenu = false"
+                        class="text-800 flex fadein p-2 border-round align-items-center hover:surface-hover transition-colors transition-duration-150 cursor-pointer">
+                        <i class="fa-solid fa-people-group mr-3"></i>
+                        <span>Projekte verwalten</span>
+                    </a>
+                    <a href="/#/equivalents" @click="showUsersMenu = false"
+                        class="text-800 flex fadein p-2 border-round align-items-center hover:surface-hover transition-colors transition-duration-150 cursor-pointer">
+                        <i class="fa-solid fa-list mr-3"></i>
+                        <span>Äquivalente verwalten</span>
+                    </a>
+                    <a href="/#/user" @click="showUsersMenu = false"
+                        class="text-800 flex fadein p-2 border-round align-items-center hover:surface-hover transition-colors transition-duration-150 cursor-pointer">
                         <i class="fa-solid fa-user mr-3"></i>
                         <span>Benutzerprofil</span>
                     </a>
-                    <a v-ripple @click="logout"
-                        class="p-ripple flex p-2 border-round align-items-center hover:surface-hover transition-colors transition-duration-150 cursor-pointer">
+                    <a @click="logout"
+                        class="text-800 flex fadein p-2 border-round align-items-center hover:surface-hover transition-colors transition-duration-150 cursor-pointer">
                         <i class="fa-solid fa-right-from-bracket mr-3"></i>
                         <span>Ausloggen</span>
                     </a>

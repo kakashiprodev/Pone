@@ -1,9 +1,26 @@
 <template>
     <Toolbar>
         <template #start>
-            <Button icon="fa-solid fa-plus" @click="selectedValue = emptyEquivalent; showDialog = true" />
+            <Button icon="fa-solid fa-plus" @click="selectedValue = emptyEquivalent(); showDialog = true" />
         </template>
     </Toolbar>
+
+    <Dialog v-model:visible="showChooseEquivalent" modal header="Wählen Sie einen Faktor"
+        :class="{ 'w-6': windowWidth > 990, 'w-full': windowWidth < 990, 'h-screen': windowWidth < 990 }">
+        <DataTable class="cst-no-hover mt-3" :value="filteredEquivalents">
+            <Column field="name" header="Name"></Column>
+            <Column field="comment" header="Kommentar"></Column>
+            <Column field="in" header="Eingang"></Column>
+            <Column field="out" header="Ausgang"></Column>
+            <Column header="">
+                <template #body="{ data }">
+                    <Button icon="fa-solid fa-check"
+                        @click="selectedValue.parent = data.id; showChooseEquivalent = false" />
+                </template>
+            </Column>
+        </DataTable>
+        <Button label="Abbrechen" @click="showChooseEquivalent = false;" />
+    </Dialog>
 
     <Dialog v-model:visible="showDialog" modal :header="selectedValue.id === 'new' ? 'Anlegen' : 'Bearbeiten'"
         :class="{ 'w-6': windowWidth > 990, 'w-full': windowWidth < 990, 'h-screen': windowWidth < 990 }">
@@ -17,17 +34,22 @@
                 <InputText class="w-full" v-model="selectedValue.comment" id="equivalent-comment" />
             </div>
             <div class="field">
-                <label for="equivalent-unit">Einheit</label>
-                <InputText class="w-full" v-model="selectedValue.unit" id="equivalent-unit" />
+                <label for="equivalent-unit-in">Einheit Eingang</label>
+                <InputText class="w-full" v-model="selectedValue.in" id="equivalent-unit-in" />
+            </div>
+            <div class="field">
+                <label for="equivalent-unit-out">Einheit Ausgang</label>
+                <InputText class="w-full" v-model="selectedValue.out" id="equivalent-unit-out" />
             </div>
             <div class="field">
                 <label for="equivalent-source">Quelle</label>
-                <InputText class="w-full" v-model="selectedValue.source" id="equivalent-source" />
+                <InputText class="w-full"
+                    :value="selectedValue.source != null ? global.sourcesDict[selectedValue.source].name : 'Benutzereingabe'"
+                    id="equivalent-source" disabled="true" />
             </div>
             <div class="field">
                 <label for="equivalent-validity">Gültigkeit (Jahr)</label>
-                <InputNumber :disabled="true" class="w-full" v-model="selectedValue.year" id="equivalent-validity"
-                    :use-grouping="false" />
+                <InputNumber class="w-full" v-model="selectedValue.year" id="equivalent-validity" :use-grouping="false" />
             </div>
             <div class="field">
                 <label for="equivalent-monthlyValues">Monatliche Eingaben?</label>
@@ -129,7 +151,17 @@
                 <label for="equivalent-value-year">Wert (Jahresdurschnitt)</label>
                 <InputNumber v-if="!selectedValue.monthlyValues" class="w-full" v-model="selectedValue.avgValue"
                     id="equivalent-value-year" :use-grouping="false" />
-                <div v-else>{{ selectedValue.avgValue }} (automatisch berechnet)</div>
+                <div v-else>{{ roundString(selectedValue.avgValue) }} (automatisch berechnet)</div>
+            </div>
+            <div class="field">
+                <label for="equivalent-parent-selector">Überliegende Berechnung (optional)</label>
+                <div>
+                    <Button
+                        :label="selectedValue.parent ? global.equivalentDict[selectedValue.parent].name : 'Wählen Sie einen Faktor'"
+                        @click="showChooseEquivalent = true" />
+                    <Button v-if="selectedValue.parent" icon="fa-solid fa-trash" @click="selectedValue.parent = null"
+                        class="ml-1" />
+                </div>
             </div>
         </div>
         <div>
@@ -144,20 +176,32 @@
         <Column field="comment" header="Kommentar"></Column>
         <Column field="source" header="Quelle">
             <template #body="{ data }">
-                <span>{{ data.source }}</span>
-                <span v-if="data.project === 'system'"> (Systemwert)</span>
+                <span>{{ global.sourcesDict[data.source]?.name ?? "Benutzereingabe" }}</span>
             </template>
         </Column>
-        <!-- <Column field="year" header="Gültigkeit (Jahr)"></Column> -->
-        <Column field="avgValue" header="Jahres Durschnittswert"></Column>
-        <Column field="unit" header="Einheit"></Column>
-        <!-- <Column field="monthlyValues" header="Monatliche Eingaben?"></Column>
-        <Column field="project" header="Projekt"></Column> -->
+        <Column header="Jahres Durschnittswert">
+            <template #body="{ data }">
+                <span>{{ roundString(data.avgValue) }}</span>
+            </template>
+        </Column>
+        <Column header="Einheit">
+            <template #body="{ data }">
+                <span>{{ data.in }}/{{ data.out }}</span>
+            </template>
+        </Column>
+        <Column header="Überliegend">
+            <template #body="{ data }">
+                <span v-if="data.parent">{{ global.equivalentDict[data.parent]?.name }}</span>
+            </template>
+        </Column>
         <Column header="">
             <template #body="{ data }">
-                <div v-if="data.project !== 'system'" class="flex">
+                <div v-if="data.source.length < 1" class="flex">
                     <Button icon="fa-solid fa-edit" @click="selectedValue = data; showDialog = true" />
                     <Button icon="fa-solid fa-trash" @click="deleteEquivalent(data, $event)" class="ml-1" />
+                </div>
+                <div v-else>
+                    -
                 </div>
             </template>
         </Column>
@@ -176,10 +220,12 @@ import Dialog from 'primevue/dialog';
 import ConfirmPopup from 'primevue/confirmpopup';
 import { getAverageEquivalent } from "./../services/reporting";
 import { useGlobalStore } from "./../stores/global";
-import { Ref, ref, watchEffect } from 'vue';
+import { Ref, ref, watchEffect, computed } from 'vue';
 import { Equivalent } from './../services/types';
-import { error } from './../services/toast';
+import { error, info } from './../services/toast';
 import { useConfirm } from "primevue/useconfirm";
+import { parse, string, object, number, boolean } from "valibot";
+import { roundString } from './../pipes';
 
 const windowWidth = ref(window.innerWidth);
 
@@ -188,32 +234,71 @@ const global = useGlobalStore();
 global.refreshEquivalents();
 
 const showDialog = ref(false);
+const showChooseEquivalent = ref(false);
 
-const emptyEquivalent = {
-    id: 'new',
-    name: '',
-    comment: '',
-    unit: '',
-    source: 'Benutzereingabe',
-    year: global.selectedYear,
-    avgValue: 0.1,
-    monthlyValues: false,
-    project: global.project,
-    jan: 0.1,
-    feb: 0.1,
-    mar: 0.1,
-    apr: 0.1,
-    may: 0.1,
-    jun: 0.1,
-    jul: 0.1,
-    aug: 0.1,
-    sep: 0.1,
-    oct: 0.1,
-    nov: 0.1,
-    dec: 0.1,
+const filteredEquivalents = computed(() => {
+    if (selectedValue.value.out !== '') {
+        return global.equivalents.filter(e => e.in === selectedValue.value.out);
+    } else {
+        return global.equivalents;
+    }
+});
+
+const emptyEquivalent = (): Equivalent => {
+    return {
+        id: 'new',
+        name: '',
+        comment: '',
+        in: '',
+        out: '',
+        source: null,
+        avgValue: 0.1,
+        monthlyValues: false,
+        project: global.selectedProject?.id ?? '',
+        jan: 0.1,
+        feb: 0.1,
+        mar: 0.1,
+        apr: 0.1,
+        may: 0.1,
+        jun: 0.1,
+        jul: 0.1,
+        aug: 0.1,
+        sep: 0.1,
+        oct: 0.1,
+        nov: 0.1,
+        dec: 0.1,
+        parent: null,
+        year: global.selectedReport?.year ?? ((new Date()).getFullYear() - 1),
+    }
 }
 
-const selectedValue: Ref<Equivalent> = ref(emptyEquivalent);
+const equivalentSchema = object({
+    id: string(),
+    name: string(),
+    comment: string(),
+    in: string(),
+    out: string(),
+    // source: string(),
+    avgValue: number(),
+    monthlyValues: boolean(),
+    project: string(),
+    jan: number(),
+    feb: number(),
+    mar: number(),
+    apr: number(),
+    may: number(),
+    jun: number(),
+    jul: number(),
+    aug: number(),
+    sep: number(),
+    oct: number(),
+    nov: number(),
+    dec: number(),
+    // parent: string(),
+    year: number(),
+});
+
+const selectedValue: Ref<Equivalent> = ref(emptyEquivalent());
 
 // calculate avg value for the year
 watchEffect(() => {
@@ -225,31 +310,27 @@ watchEffect(() => {
 
 const save = async () => {
     // validate inputs
-    if (selectedValue.value.name.length < 3
-        || selectedValue.value.avgValue < 0
-        || selectedValue.value.avgValue === 0
-        || selectedValue.value.unit.length < 1
-        || selectedValue.value.project !== global.project
-        || selectedValue.value.year !== global.selectedYear
-    ) {
-        error('Feherhafte Eingaben. Bitte überprüfen.');
-        return;
-    }
-    if (selectedValue.value.id === 'new') {
-        // make copy
-        const insert: any = { ...selectedValue.value };
-        delete insert.id;
-        const e = await global.addEquivalent(insert);
-        if (e != null) {
-            selectedValue.value = e;
-            showDialog.value = false;
+    try {
+        parse(equivalentSchema, selectedValue.value);
+        if (selectedValue.value.id === 'new') {
+            // make a copy and drop the id
+            const insert: any = { ...selectedValue.value };
+            delete insert.id;
+            const e = await global.addEquivalent(insert);
+            if (e != null) {
+                selectedValue.value = e;
+                showDialog.value = false;
+            }
+        } else {
+            const u = await global.updateEquivalent(selectedValue.value);
+            if (u != null) {
+                selectedValue.value = u;
+                showDialog.value = false;
+            }
         }
-    } else {
-        const u = await global.updateEquivalent(selectedValue.value);
-        if (u != null) {
-            selectedValue.value = u;
-            showDialog.value = false;
-        }
+        info('Erfolgreich gespeichert');
+    } catch (e) {
+        error(e + "");
     }
 }
 
@@ -259,7 +340,11 @@ const deleteEquivalent = async (equivalent: Equivalent, event: any) => {
         message: 'Soll der Wert wirklich gelöscht werden?',
         icon: 'fa-solid fa-question',
         accept: async () => {
-            await global.dropEquivalent(equivalent);
+            try {
+                await global.dropEquivalent(equivalent);
+            } catch (e) {
+                error(e + "");
+            }
         },
     });
 }

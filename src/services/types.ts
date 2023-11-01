@@ -39,11 +39,12 @@ export interface InputEntry {
 
 // query object for table "inputs"
 export interface UserInputQuery {
-  scope?: number;
+  scope?: number[];
 }
 
 // table "reports"
 export interface ReportEntry {
+  [key: string]: any;
   id: string;
   project: string; // the project id
   year: number;
@@ -72,6 +73,9 @@ export interface SourceEntry {
 export interface ProjectEntry {
   id: string;
   name: string;
+  targetDefined: boolean;
+  targetValue: number;
+  targetYear: number;
 }
 
 // table "categories"
@@ -79,5 +83,5 @@ export interface CategoryEntry {
   id: string;
   name: string;
   parent: null | string; // reference on table categories. flat structure
-  equivalent: null | string; // single reference on table equivalents
+  equivalent: string; // single reference on table equivalents
 }

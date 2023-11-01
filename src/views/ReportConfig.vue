@@ -1,5 +1,12 @@
 <template>
     <div>
+        <h5>
+            Berichtszeiträume
+        </h5>
+        <p>
+            Hier legen Sie die Berichtszeiträume für das ausgewählte Projekt fest.
+            Jeder Bericht umfasst ein Jahr.
+        </p>
         <Toolbar>
             <template #start>
                 <span>Ausgewählter Bericht</span>
@@ -21,7 +28,7 @@
             <Button icon="fa-solid fa-plus" @click="reportForm = global.getNewReport()" label="Bericht anlegen" />
         </div>
 
-        <div class="card" v-if="reportForm">
+        <div class="card mt-5" v-if="reportForm">
             <h5>Basisdaten des CO2-Berichts</h5>
             <div class="field grid" v-for="entry in Object.entries(reportSchema.object)" :key="entry[0]">
                 <label :for="entry[0]" class="col-12 mb-2 md:col-4 md:mb-0">{{ reportTranslations[entry[0]] }}</label>
@@ -33,8 +40,10 @@
                 </div>
             </div>
 
-            <Button class="mt-3" v-if="global.selectedReport" @click="saveReport()"
-                :label="global.selectedReport.id === 'new' ? 'Hinzufügen' : 'Speichern'" />
+            <Button class="mt-3" v-if="reportForm" @click="saveReport()"
+                :label="reportForm.id === 'new' ? 'Hinzufügen' : 'Speichern'" />
+            <Button v-if="reportForm.id === 'new'" class="ml-3" label="Abbrechen"
+                @click="reportForm = global.selectedReport" />
         </div>
     </div>
 </template>
@@ -58,7 +67,7 @@ const confirm = useConfirm();
 const reportForm: Ref<null | ReportEntry> = ref(global.selectedReport);
 const reportSchema = object({
     id: string(),
-    project: string([minLength(4), maxLength(255)]),
+    project: string("Minimum length 4, maximum length 255 chars.", [minLength(4), maxLength(255)]),
     year: number([minValue(1900), maxValue(2100)]),
     companyName: string([minLength(4), maxLength(255)]),
     companyStreet: string([minLength(4), maxLength(255)]),
@@ -75,7 +84,7 @@ const reportSchema = object({
     baseEquivalentSource: string([minLength(4), maxLength(255)]),
 });
 
-const reportTranslations = {
+const reportTranslations: any = {
     id: "ID",
     project: "Projekt-ID",
     year: "Jahr",

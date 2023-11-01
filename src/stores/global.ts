@@ -16,16 +16,28 @@ const constructCategoriesTree = (categories: CategoryEntry[]): TreeNode[] => {
 
   const findChildren = (parentId: string | null): TreeNode[] => {
     return categories
-      .filter((cat) => cat.parent === parentId)
+      .filter((cat) =>
+        parentId == null
+          ? cat.parent === parentId || cat.parent === ""
+          : cat.parent === parentId
+      )
       .map((cat) => {
         const childNode: TreeNode = {
           key: cat.id,
           label: cat.name,
-          type: cat.equivalent ? "entry" : "folder",
-          icon: cat.equivalent ? "entry-icon" : "folder-icon",
-          expandedIcon: "open-folder-icon",
-          collapsedIcon: "closed-folder-icon",
+          data: {},
+          // type: cat.equivalent != null && cat.equivalent !== ""
+          //   ? "input"
+          //   : "category",
+          icon: cat.equivalent != null && cat.equivalent !== ""
+            ? "fa-solid fa-hashtag"
+            : "fa-solid fa-folder",
+          // expandedIcon: "fa-solid fa-folder-open",
+          // collapsedIcon: "fa-solid fa-folder",
           children: findChildren(cat.id),
+          // equivalent: cat.equivalent != null && cat.equivalent !== ""
+          //   ? cat.equivalent
+          //   : null,
         };
         return childNode;
       });
@@ -44,6 +56,7 @@ export interface GlobalState {
   username: string;
   // equivalent sources, e.g. GEMIS
   sources: SourceEntry[];
+  sourcesDict: { [key: string]: SourceEntry };
   // equivalents
   equivalents: Equivalent[];
   equivalentDict: { [key: string]: Equivalent };
@@ -67,6 +80,7 @@ export const useGlobalStore = defineStore("global", {
     theme: "light" as "light" | "dark",
     //
     sources: [],
+    sourcesDict: {},
     //
     equivalents: [],
     equivalentDict: {},
@@ -193,7 +207,13 @@ export const useGlobalStore = defineStore("global", {
         info(
           "Es wurde kein Projekt gefunden. Ein neues Projekt wird automatisch angelegt.",
         );
-        await this.addProject({ id: "new", name: "Mein erstes Projekt" });
+        await this.addProject({
+          id: "new",
+          name: "Mein erstes Projekt",
+          targetDefined: false,
+          targetValue: 0,
+          targetYear: 0,
+        });
         this.selectedProject = this.projects[0];
       } else {
         this.selectedProject = this.projects[0];
@@ -273,6 +293,10 @@ export const useGlobalStore = defineStore("global", {
     async refreshSources(force = false) {
       if (this.sources.length === 0 || force) {
         this.sources = await dataprovider.readSources();
+        this.sourcesDict = this.sources.reduce(
+          (acc, cur) => ({ ...acc, [cur.id]: cur }),
+          {},
+        );
       }
     },
 
@@ -283,6 +307,7 @@ export const useGlobalStore = defineStore("global", {
     async refreshCategories() {
       const categories = await dataprovider.readCategories();
       this.categoriesTree = constructCategoriesTree(categories);
+      console.log(this.categoriesTree);
     },
 
     // *************************************************************
@@ -293,6 +318,18 @@ export const useGlobalStore = defineStore("global", {
      * create an empty report object.
      */
     getNewReport(): ReportEntry {
+      // check if a older report is existing
+      if (this.reports.length > 0) {
+        // get the latest report. so sort by year and get the last one
+        const sorted = this.reports.sort((a, b) => a.year - b.year);
+        const latest = sorted[sorted.length - 1];
+        const report: ReportEntry = {
+          ...latest,
+          id: "new",
+          year: latest.year + 1,
+        };
+        return report;
+      }
       const report: ReportEntry = {
         id: "new",
         project: "",

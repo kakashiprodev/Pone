@@ -1,18 +1,22 @@
 <template>
     <DataTable class="cst-no-hover" v-if="global.equivalents.length > 0" :value="global.equivalents" selection-mode="single"
-        v-model:selection="selection" dataKey="id" style="height: 300px;">
+        v-model:selection="selection" dataKey="id" scrollable scrollHeight="300px">
         <!-- <Column field="id" header="Id"></Column> -->
         <Column field="name" header="Name"></Column>
+        <Column field="in" header="Eingabe Einheit"></Column>
         <Column field="comment" header="Kommentar"></Column>
         <Column field="source" header="Quelle">
             <template #body="{ data }">
-                <span>{{ data.source }}</span>
-                <span v-if="data.project === 'system'"> (Systemwert)</span>
+                <span>{{ data.source.length > 0 ? global.sourcesDict[data.source].name : 'Benutzereingabe' }}</span>
             </template>
         </Column>
         <!-- <Column field="year" header="Gültigkeit (Jahr)"></Column> -->
-        <Column field="avgValue" header="Jahres Durschnittswert"></Column>
-        <Column field="unit" header="Einheit"></Column>
+        <!-- <Column field="avgValue" header="Jahres Durschnittswert"></Column> -->
+        <Column header="Verkettet?">
+            <template #body="{ data }">
+                <span>{{ data.parent != null && data.parent !== '' ? 'Ja' : 'Nein' }}</span>
+            </template>
+        </Column>
         <!-- <Column field="monthlyValues" header="Monatliche Eingaben?"></Column>
         <Column field="project" header="Projekt"></Column> -->
     </DataTable>
