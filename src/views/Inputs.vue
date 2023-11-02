@@ -13,7 +13,7 @@
             <Button icon="fa-solid fa-plus" @click="selectedValue = clone(emptyInput); showDialog = true" class="mr-1" />
             <Button icon="fa-solid fa-download" @click="download()" />
         </template>
-    </Toolbar>   
+    </Toolbar>
 
     <Dialog id="choose-equivalent" v-model:visible="showChooseEquivalent" modal header="Äquivalent auswählen"
         :class="{ 'w-8': windowWidth > 990, 'w-full': windowWidth < 990, 'h-screen': windowWidth < 990 }">
@@ -195,6 +195,7 @@ const emptyInput: InputEntry = {
     sumValue: 0.1,
     rawValue: 0.1,
     equivalent: null,
+    category: null,
 }
 const clone = (input: InputEntry) => {
     return JSON.parse(JSON.stringify(input));

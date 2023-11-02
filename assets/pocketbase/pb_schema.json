@@ -1,60 +1,5 @@
 [
   {
-    "id": "pypwyu3aaq0z2vv",
-    "name": "categories",
-    "type": "base",
-    "system": false,
-    "schema": [
-      {
-        "id": "tblcyxkt",
-        "name": "name",
-        "type": "text",
-        "system": false,
-        "required": true,
-        "options": {
-          "min": null,
-          "max": null,
-          "pattern": ""
-        }
-      },
-      {
-        "id": "fp9faosn",
-        "name": "parent",
-        "type": "relation",
-        "system": false,
-        "required": false,
-        "options": {
-          "collectionId": "pypwyu3aaq0z2vv",
-          "cascadeDelete": false,
-          "minSelect": null,
-          "maxSelect": 1,
-          "displayFields": []
-        }
-      },
-      {
-        "id": "z5llnoa6",
-        "name": "equivalent",
-        "type": "relation",
-        "system": false,
-        "required": false,
-        "options": {
-          "collectionId": "r26fui0286m4xaq",
-          "cascadeDelete": false,
-          "minSelect": null,
-          "maxSelect": null,
-          "displayFields": []
-        }
-      }
-    ],
-    "indexes": [],
-    "listRule": "@request.auth.id != \"\"",
-    "viewRule": "@request.auth.id != \"\"",
-    "createRule": "@request.auth.id != \"\"",
-    "updateRule": "@request.auth.id != \"\"",
-    "deleteRule": "@request.auth.id != \"\"",
-    "options": {}
-  },
-  {
     "id": "eqlgkjaxzu2fwoc",
     "name": "sources",
     "type": "base",
@@ -79,33 +24,6 @@
     "createRule": "@request.auth.id != \"\"",
     "updateRule": "@request.auth.id != \"\"",
     "deleteRule": "@request.auth.id != \"\"",
-    "options": {}
-  },
-  {
-    "id": "61iwwi03fob8tyg",
-    "name": "projects",
-    "type": "base",
-    "system": false,
-    "schema": [
-      {
-        "id": "gl2awepk",
-        "name": "companyName",
-        "type": "text",
-        "system": false,
-        "required": true,
-        "options": {
-          "min": null,
-          "max": null,
-          "pattern": ""
-        }
-      }
-    ],
-    "indexes": [],
-    "listRule": "",
-    "viewRule": "",
-    "createRule": "",
-    "updateRule": "",
-    "deleteRule": "",
     "options": {}
   },
   {
@@ -157,107 +75,6 @@
       "onlyEmailDomains": null,
       "requireEmail": false
     }
-  },
-  {
-    "id": "b7xjrlfqhm5ml0q",
-    "name": "inputs",
-    "type": "base",
-    "system": false,
-    "schema": [
-      {
-        "id": "cyj7ynav",
-        "name": "name",
-        "type": "text",
-        "system": false,
-        "required": true,
-        "options": {
-          "min": null,
-          "max": null,
-          "pattern": ""
-        }
-      },
-      {
-        "id": "mx2n0uta",
-        "name": "scope",
-        "type": "number",
-        "system": false,
-        "required": true,
-        "options": {
-          "min": 1,
-          "max": 3
-        }
-      },
-      {
-        "id": "ca6vlwzp",
-        "name": "comment",
-        "type": "text",
-        "system": false,
-        "required": false,
-        "options": {
-          "min": null,
-          "max": null,
-          "pattern": ""
-        }
-      },
-      {
-        "id": "a0tnw1kp",
-        "name": "rawValue",
-        "type": "number",
-        "system": false,
-        "required": false,
-        "options": {
-          "min": null,
-          "max": null
-        }
-      },
-      {
-        "id": "fjncojhc",
-        "name": "sumValue",
-        "type": "text",
-        "system": false,
-        "required": true,
-        "options": {
-          "min": null,
-          "max": null,
-          "pattern": ""
-        }
-      },
-      {
-        "id": "ph2cdv4j",
-        "name": "equivalent",
-        "type": "relation",
-        "system": false,
-        "required": false,
-        "options": {
-          "collectionId": "r26fui0286m4xaq",
-          "cascadeDelete": false,
-          "minSelect": null,
-          "maxSelect": 1,
-          "displayFields": null
-        }
-      },
-      {
-        "id": "il1c5rof",
-        "name": "report",
-        "type": "relation",
-        "system": false,
-        "required": false,
-        "options": {
-          "collectionId": "lppp5lvzbwt7lwu",
-          "cascadeDelete": false,
-          "minSelect": null,
-          "maxSelect": 1,
-          "displayFields": []
-        }
-      }
-    ],
-    "indexes": [],
-    "listRule": "@collection.inputs.report.project.id ~ @request.auth.projects.id",
-    "viewRule": "@collection.inputs.report.project.id ~ @request.auth.projects.id",
-    "createRule": "@request.data.report.project.id ~ @request.auth.projects.id",
-    "updateRule": "@request.data.report.project.id ~ @request.auth.projects.id",
-    "deleteRule": "@request.data.report.project.id ~ @request.auth.projects.id",
-    "options": {}
   },
   {
     "id": "r26fui0286m4xaq",
@@ -726,11 +543,369 @@
       }
     ],
     "indexes": [],
-    "listRule": null,
-    "viewRule": null,
-    "createRule": null,
-    "updateRule": null,
-    "deleteRule": null,
+    "listRule": "@request.auth.id != \"\"",
+    "viewRule": "@request.auth.id != \"\"",
+    "createRule": "@request.auth.id != \"\"",
+    "updateRule": "@request.auth.id != \"\"",
+    "deleteRule": "@request.auth.id != \"\"",
+    "options": {}
+  },
+  {
+    "id": "61iwwi03fob8tyg",
+    "name": "projects",
+    "type": "base",
+    "system": false,
+    "schema": [
+      {
+        "id": "gl2awepk",
+        "name": "name",
+        "type": "text",
+        "system": false,
+        "required": true,
+        "options": {
+          "min": null,
+          "max": null,
+          "pattern": ""
+        }
+      },
+      {
+        "id": "diquejl9",
+        "name": "targetDefined",
+        "type": "bool",
+        "system": false,
+        "required": false,
+        "options": {}
+      },
+      {
+        "id": "ae0b08rv",
+        "name": "targetYear",
+        "type": "number",
+        "system": false,
+        "required": false,
+        "options": {
+          "min": null,
+          "max": null
+        }
+      },
+      {
+        "id": "ckui0skr",
+        "name": "targetValue",
+        "type": "number",
+        "system": false,
+        "required": false,
+        "options": {
+          "min": null,
+          "max": null
+        }
+      }
+    ],
+    "indexes": [],
+    "listRule": "@request.auth.id != \"\"",
+    "viewRule": "@request.auth.id != \"\"",
+    "createRule": "@request.auth.id != \"\"",
+    "updateRule": "@request.auth.id != \"\"",
+    "deleteRule": "@request.auth.id != \"\"",
+    "options": {}
+  },
+  {
+    "id": "b7xjrlfqhm5ml0q",
+    "name": "inputs",
+    "type": "base",
+    "system": false,
+    "schema": [
+      {
+        "id": "cyj7ynav",
+        "name": "name",
+        "type": "text",
+        "system": false,
+        "required": true,
+        "options": {
+          "min": null,
+          "max": null,
+          "pattern": ""
+        }
+      },
+      {
+        "id": "mx2n0uta",
+        "name": "scope",
+        "type": "number",
+        "system": false,
+        "required": true,
+        "options": {
+          "min": 1,
+          "max": 3
+        }
+      },
+      {
+        "id": "ca6vlwzp",
+        "name": "comment",
+        "type": "text",
+        "system": false,
+        "required": false,
+        "options": {
+          "min": null,
+          "max": null,
+          "pattern": ""
+        }
+      },
+      {
+        "id": "a0tnw1kp",
+        "name": "rawValue",
+        "type": "number",
+        "system": false,
+        "required": false,
+        "options": {
+          "min": null,
+          "max": null
+        }
+      },
+      {
+        "id": "fjncojhc",
+        "name": "sumValue",
+        "type": "text",
+        "system": false,
+        "required": true,
+        "options": {
+          "min": null,
+          "max": null,
+          "pattern": ""
+        }
+      },
+      {
+        "id": "ph2cdv4j",
+        "name": "equivalent",
+        "type": "relation",
+        "system": false,
+        "required": false,
+        "options": {
+          "collectionId": "r26fui0286m4xaq",
+          "cascadeDelete": false,
+          "minSelect": null,
+          "maxSelect": 1,
+          "displayFields": null
+        }
+      },
+      {
+        "id": "il1c5rof",
+        "name": "report",
+        "type": "relation",
+        "system": false,
+        "required": false,
+        "options": {
+          "collectionId": "lppp5lvzbwt7lwu",
+          "cascadeDelete": false,
+          "minSelect": null,
+          "maxSelect": 1,
+          "displayFields": []
+        }
+      },
+      {
+        "id": "8exs6qca",
+        "name": "category",
+        "type": "relation",
+        "system": false,
+        "required": false,
+        "options": {
+          "collectionId": "y2m4qsbrjekwui0",
+          "cascadeDelete": false,
+          "minSelect": null,
+          "maxSelect": 1,
+          "displayFields": []
+        }
+      }
+    ],
+    "indexes": [],
+    "listRule": "@collection.inputs.report.project.id ~ @request.auth.projects.id",
+    "viewRule": "@collection.inputs.report.project.id ~ @request.auth.projects.id",
+    "createRule": "@request.data.report.project.id ~ @request.auth.projects.id",
+    "updateRule": "@request.data.report.project.id ~ @request.auth.projects.id",
+    "deleteRule": "@request.data.report.project.id ~ @request.auth.projects.id",
+    "options": {}
+  },
+  {
+    "id": "pypwyu3aaq0z2vv",
+    "name": "categories_tmp",
+    "type": "base",
+    "system": false,
+    "schema": [
+      {
+        "id": "tblcyxkt",
+        "name": "name",
+        "type": "text",
+        "system": false,
+        "required": true,
+        "options": {
+          "min": null,
+          "max": null,
+          "pattern": ""
+        }
+      },
+      {
+        "id": "fp9faosn",
+        "name": "parent",
+        "type": "relation",
+        "system": false,
+        "required": false,
+        "options": {
+          "collectionId": "pypwyu3aaq0z2vv",
+          "cascadeDelete": false,
+          "minSelect": null,
+          "maxSelect": 1,
+          "displayFields": []
+        }
+      },
+      {
+        "id": "z5llnoa6",
+        "name": "equivalent",
+        "type": "relation",
+        "system": false,
+        "required": false,
+        "options": {
+          "collectionId": "r26fui0286m4xaq",
+          "cascadeDelete": false,
+          "minSelect": null,
+          "maxSelect": 1,
+          "displayFields": []
+        }
+      }
+    ],
+    "indexes": [],
+    "listRule": "@request.auth.id != \"\"",
+    "viewRule": "@request.auth.id != \"\"",
+    "createRule": "@request.auth.id != \"\"",
+    "updateRule": "@request.auth.id != \"\"",
+    "deleteRule": "@request.auth.id != \"\"",
+    "options": {}
+  },
+  {
+    "id": "y2m4qsbrjekwui0",
+    "name": "categories",
+    "type": "base",
+    "system": false,
+    "schema": [
+      {
+        "id": "11wuhh7u",
+        "name": "name",
+        "type": "text",
+        "system": false,
+        "required": false,
+        "options": {
+          "min": null,
+          "max": null,
+          "pattern": ""
+        }
+      },
+      {
+        "id": "udkb6awx",
+        "name": "label",
+        "type": "text",
+        "system": false,
+        "required": false,
+        "options": {
+          "min": null,
+          "max": null,
+          "pattern": ""
+        }
+      },
+      {
+        "id": "p8nrh3yk",
+        "name": "scope",
+        "type": "number",
+        "system": false,
+        "required": false,
+        "options": {
+          "min": null,
+          "max": null
+        }
+      },
+      {
+        "id": "6grqh1yf",
+        "name": "langCode",
+        "type": "text",
+        "system": false,
+        "required": false,
+        "options": {
+          "min": null,
+          "max": null,
+          "pattern": ""
+        }
+      },
+      {
+        "id": "jfi32qru",
+        "name": "project",
+        "type": "relation",
+        "system": false,
+        "required": false,
+        "options": {
+          "collectionId": "61iwwi03fob8tyg",
+          "cascadeDelete": false,
+          "minSelect": null,
+          "maxSelect": 1,
+          "displayFields": []
+        }
+      }
+    ],
+    "indexes": [],
+    "listRule": "@request.auth.id != ''",
+    "viewRule": "@request.auth.id != ''",
+    "createRule": "@request.auth.id != ''",
+    "updateRule": "@request.auth.id != ''",
+    "deleteRule": "@request.auth.id != ''",
+    "options": {}
+  },
+  {
+    "id": "qknt19be7m3fin0",
+    "name": "presets",
+    "type": "base",
+    "system": false,
+    "schema": [
+      {
+        "id": "nocqocc4",
+        "name": "category",
+        "type": "relation",
+        "system": false,
+        "required": false,
+        "options": {
+          "collectionId": "y2m4qsbrjekwui0",
+          "cascadeDelete": false,
+          "minSelect": null,
+          "maxSelect": 1,
+          "displayFields": []
+        }
+      },
+      {
+        "id": "vpjfgdo3",
+        "name": "name",
+        "type": "text",
+        "system": false,
+        "required": false,
+        "options": {
+          "min": null,
+          "max": null,
+          "pattern": ""
+        }
+      },
+      {
+        "id": "rogx6ofe",
+        "name": "equivalent",
+        "type": "relation",
+        "system": false,
+        "required": false,
+        "options": {
+          "collectionId": "r26fui0286m4xaq",
+          "cascadeDelete": false,
+          "minSelect": null,
+          "maxSelect": 1,
+          "displayFields": []
+        }
+      }
+    ],
+    "indexes": [],
+    "listRule": "@request.auth.id != ''",
+    "viewRule": "@request.auth.id != ''",
+    "createRule": "@request.auth.id != ''",
+    "updateRule": "@request.auth.id != ''",
+    "deleteRule": "@request.auth.id != ''",
     "options": {}
   }
 ]

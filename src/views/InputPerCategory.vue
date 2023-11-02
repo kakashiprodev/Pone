@@ -1,6 +1,6 @@
 <template>
     <h5>
-        {{ translations[category as keyof any] }}
+        {{ global.categories.find((item) => item.name === category)?.label ?? 'Category not found' }}
     </h5>
 
     <Toolbar class="mb-2">
@@ -93,7 +93,7 @@ import InputNumber from 'primevue/inputnumber';
 import InputText from 'primevue/inputtext';
 import Dialog from 'primevue/dialog';
 import Listbox from 'primevue/listbox';
-import { Equivalent, InputEntry } from './../services/types';
+import { Equivalent, InputEntry, PresetEntry } from './../services/types';
 import dataprovider from "./../services/dataprovider";
 import { Ref, ref, computed, watch, ComputedRef } from 'vue';
 import { useRoute } from 'vue-router';
@@ -101,30 +101,21 @@ import { useGlobalStore } from './../stores/global';
 import { error } from './../services/toast';
 import { useConfirm } from 'primevue/useconfirm';
 import { getSumForInput, getCalculationSteps } from "./../services/reporting";
-import { useRouter } from 'vue-router';
 
-const translations: any = {
-    'gases': 'Kühlmittelverlust und Isoliergase'
-}
-
-const router = useRouter();
 const windowWidth = ref(window.innerWidth);
+const global = useGlobalStore();
 
 // get "category" from route
 const route = useRoute();
 const category = computed(() => {
     return route.params.category;
-
 });
-console.log(category.value);
-
 // on change
 watch(category, async () => {
     await getData();
 });
 
-// choose equivalent
-// const showChooseEquivalent = ref(false);
+// actual choosen equivalent. to show the name and unit in the input field
 const choosenEquivalent: ComputedRef<null | Equivalent> = computed(() => {
     try {
         return global.equivalentDict[selectedValue.value.equivalent ?? ""];
@@ -132,16 +123,6 @@ const choosenEquivalent: ComputedRef<null | Equivalent> = computed(() => {
         return null;
     }
 });
-
-// edit/new
-const global = useGlobalStore();
-global.refreshEquivalents();
-
-// ensure that a report is selected
-if (!global.selectedReport) {
-    error('Bitte wählen Sie einenzunächste einen Bericht aus.');
-    router.push({ name: 'reportConfig' })
-}
 
 const showDialog = ref(false);
 const emptyInput: InputEntry = {
@@ -153,6 +134,7 @@ const emptyInput: InputEntry = {
     sumValue: 0.1,
     rawValue: 0.1,
     equivalent: null,
+    category: global.categories.find((item) => item.name === category.value)?.id ?? null,
 }
 const clone = (input: InputEntry) => {
     return JSON.parse(JSON.stringify(input));
@@ -162,7 +144,7 @@ const originalValue: Ref<InputEntry> = ref(emptyInput);
 
 // preset selection
 const selectedPreset = ref('');
-const presets: any = ref([]);
+
 const selectPreset = (val: any) => {
     console.log(val);
     selectedValue.value.name = val.value.name;
@@ -199,6 +181,9 @@ const save = async () => {
     }
 }
 
+/**
+ * Delete an entry
+ */
 const confirm = useConfirm();
 const deleteEntry = async (entry: InputEntry, event: any) => {
     confirm.require({
@@ -219,25 +204,30 @@ const deleteEntry = async (entry: InputEntry, event: any) => {
 
 // get data
 const data: Ref<InputEntry[]> = ref([]);
+const presets: Ref<PresetEntry[]> = ref([]);
+
+/**
+ * Load presets for the category
+ */
 const getData = async () => {
-    // filter by "maincategory"
-    // data.value = await dataprovider.readUserInputs();
-
-    // get possible presets
-    presets.value = [
-        { id: 'R134a', name: 'R134a', equivalent: 'cidbp04ls48osv5', },
-        { id: 'R404A', name: 'R404A', equivalent: 'cidbp04ls48osv5', },
-        { id: 'R407C', name: 'R407C', equivalent: 'cidbp04ls48osv5', },
-    ]
+    data.value = [];
+    // get the id of the category and load the presets
+    const id = global.categories.find((item) => item.name === category.value)?.id;
+    if (id) {
+        presets.value = global.presets.filter((item) => item.category === id);
+        // load the inputs
+        data.value = await dataprovider.readUserInputs({
+            category: [id],
+        });
+    } else {
+        console.error('Category "' + category.value + '" not found');
+    }
 }
-
-// initial get data
 getData();
-
 </script>
 
 <style>
-.cst-no-hover>*>*>.p-datatable-tbody>tr:focus {
+/* .cst-no-hover>*>*>.p-datatable-tbody>tr:focus {
     outline: none !important;
-}
+} */
 </style>

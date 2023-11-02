@@ -3,6 +3,7 @@ import {
   CategoryEntry,
   Equivalent,
   InputEntry,
+  PresetEntry,
   ProjectEntry,
   ReportEntry,
   SourceEntry,
@@ -112,7 +113,13 @@ export default class DataProvider {
     const res = await this.pb
       .collection("inputs").getList<InputEntry>(1, 500, {
         filter: `report = '${globalStore.selectedReport?.id}'${
-          query?.scope ? " && " + query.scope.map((s) => `scope="${s}"`).join(" || ") : ""
+          query?.scope
+            ? " && " + query.scope.map((s) => `scope="${s}"`).join(" || ")
+            : ""
+        }${
+          query?.category
+            ? " && " + query.category.map((c) => `category="${c}"`).join(" || ")
+            : ""
         }`,
         // expand: "equivalent",
       });
@@ -244,5 +251,14 @@ export default class DataProvider {
 
   async deleteCategory(id: string) {
     return await this.pb.collection("categories").delete(id);
+  }
+
+  // R for "presets"
+  async readPresets() {
+    const res = await this.pb.collection("presets").getList<PresetEntry>(
+      1,
+      500,
+    );
+    return res.items;
   }
 }

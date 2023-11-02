@@ -44,9 +44,27 @@ const model = ref([
         visible: true,
     },
     {
+        label: 'Flottenverbrauch',
+        icon: 'fa-solid fa-gas-pump',
+        to: '/inputPerCategory/mobility',
+        visible: true,
+    },
+    {
+        label: 'Direkte Verbrennung',
+        icon: 'fa-solid fa-fire',
+        to: '/inputPerCategory/combustion',
+        visible: true,
+    },
+    {
+        label: 'Raumheizung',
+        icon: 'fa-solid fa-fire-flame-curved',
+        to: '/inputPerCategory/room-heating',
+        visible: true,
+    },
+    {
         label: 'Kühlmittelverlust und Isoliergase',
         icon: 'fa-solid fa-cloud',
-        to: '/inputPerCategory/gases',
+        to: '/inputPerCategory/insulating-gases',
         visible: true,
     },
     // {

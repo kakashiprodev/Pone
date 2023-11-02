@@ -3,48 +3,13 @@ import { router } from "./../router/index";
 import {
   CategoryEntry,
   Equivalent,
+  PresetEntry,
   ProjectEntry,
   ReportEntry,
   SourceEntry,
 } from "./../services/types";
 import dataprovider from "./../services/dataprovider";
-import { TreeNode } from "primevue/tree";
 import { info } from "../services/toast";
-
-const constructCategoriesTree = (categories: CategoryEntry[]): TreeNode[] => {
-  const nodes: TreeNode[] = [];
-
-  const findChildren = (parentId: string | null): TreeNode[] => {
-    return categories
-      .filter((cat) =>
-        parentId == null
-          ? cat.parent === parentId || cat.parent === ""
-          : cat.parent === parentId
-      )
-      .map((cat) => {
-        const childNode: TreeNode = {
-          key: cat.id,
-          label: cat.name,
-          data: {},
-          // type: cat.equivalent != null && cat.equivalent !== ""
-          //   ? "input"
-          //   : "category",
-          icon: cat.equivalent != null && cat.equivalent !== ""
-            ? "fa-solid fa-hashtag"
-            : "fa-solid fa-folder",
-          // expandedIcon: "fa-solid fa-folder-open",
-          // collapsedIcon: "fa-solid fa-folder",
-          children: findChildren(cat.id),
-          // equivalent: cat.equivalent != null && cat.equivalent !== ""
-          //   ? cat.equivalent
-          //   : null,
-        };
-        return childNode;
-      });
-  };
-  nodes.push(...findChildren(null));
-  return nodes;
-};
 
 export interface GlobalState {
   isLoading: boolean;
@@ -66,8 +31,9 @@ export interface GlobalState {
   // reports
   reports: ReportEntry[];
   selectedReport: null | ReportEntry;
-  // categories tree. ??? maybe this can be moved to a Scope1-3 ViewComponent!!!
-  categoriesTree: TreeNode[];
+  // categories
+  categories: CategoryEntry[];
+  presets: PresetEntry[];
 }
 
 export const useGlobalStore = defineStore("global", {
@@ -91,7 +57,8 @@ export const useGlobalStore = defineStore("global", {
     reports: [],
     selectedReport: null,
     //
-    categoriesTree: [],
+    categories: [],
+    presets: [],
   }),
 
   actions: {
@@ -305,9 +272,8 @@ export const useGlobalStore = defineStore("global", {
      * HACK: This can be done in a service or in the backend.
      */
     async refreshCategories() {
-      const categories = await dataprovider.readCategories();
-      this.categoriesTree = constructCategoriesTree(categories);
-      console.log(this.categoriesTree);
+      this.categories = await dataprovider.readCategories();
+      this.presets = await dataprovider.readPresets();
     },
 
     // *************************************************************

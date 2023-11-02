@@ -35,11 +35,13 @@ export interface InputEntry {
   sumValue: number;
   equivalent: null | string; // reference on table equivalents
   report: string; // reference on table reports
+  category: null | string; // reference on table categories
 }
 
 // query object for table "inputs"
 export interface UserInputQuery {
   scope?: number[];
+  category?: string[];
 }
 
 // table "reports"
@@ -82,6 +84,15 @@ export interface ProjectEntry {
 export interface CategoryEntry {
   id: string;
   name: string;
-  parent: null | string; // reference on table categories. flat structure
+  label: string;
+  scope: number; // 1-3
+  langCode: string; // "de"
+}
+
+// table "presets"
+export interface PresetEntry {
+  id: string;
+  category: string; // reference on table categories
+  name: string;
   equivalent: string; // single reference on table equivalents
 }
