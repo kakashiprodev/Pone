@@ -551,63 +551,6 @@
     "options": {}
   },
   {
-    "id": "61iwwi03fob8tyg",
-    "name": "projects",
-    "type": "base",
-    "system": false,
-    "schema": [
-      {
-        "id": "gl2awepk",
-        "name": "name",
-        "type": "text",
-        "system": false,
-        "required": true,
-        "options": {
-          "min": null,
-          "max": null,
-          "pattern": ""
-        }
-      },
-      {
-        "id": "diquejl9",
-        "name": "targetDefined",
-        "type": "bool",
-        "system": false,
-        "required": false,
-        "options": {}
-      },
-      {
-        "id": "ae0b08rv",
-        "name": "targetYear",
-        "type": "number",
-        "system": false,
-        "required": false,
-        "options": {
-          "min": null,
-          "max": null
-        }
-      },
-      {
-        "id": "ckui0skr",
-        "name": "targetValue",
-        "type": "number",
-        "system": false,
-        "required": false,
-        "options": {
-          "min": null,
-          "max": null
-        }
-      }
-    ],
-    "indexes": [],
-    "listRule": "@request.auth.id != \"\"",
-    "viewRule": "@request.auth.id != \"\"",
-    "createRule": "@request.auth.id != \"\"",
-    "updateRule": "@request.auth.id != \"\"",
-    "deleteRule": "@request.auth.id != \"\"",
-    "options": {}
-  },
-  {
     "id": "b7xjrlfqhm5ml0q",
     "name": "inputs",
     "type": "base",
@@ -819,19 +762,7 @@
         }
       },
       {
-        "id": "6grqh1yf",
-        "name": "langCode",
-        "type": "text",
-        "system": false,
-        "required": false,
-        "options": {
-          "min": null,
-          "max": null,
-          "pattern": ""
-        }
-      },
-      {
-        "id": "jfi32qru",
+        "id": "ptnb6fei",
         "name": "project",
         "type": "relation",
         "system": false,
@@ -886,17 +817,27 @@
         }
       },
       {
-        "id": "rogx6ofe",
-        "name": "equivalent",
-        "type": "relation",
+        "id": "7xnmzpsj",
+        "name": "searchTextEquivalent",
+        "type": "text",
         "system": false,
         "required": false,
         "options": {
-          "collectionId": "r26fui0286m4xaq",
-          "cascadeDelete": false,
-          "minSelect": null,
-          "maxSelect": 1,
-          "displayFields": []
+          "min": null,
+          "max": null,
+          "pattern": ""
+        }
+      },
+      {
+        "id": "kvdwyekw",
+        "name": "searchTextUnit",
+        "type": "text",
+        "system": false,
+        "required": false,
+        "options": {
+          "min": null,
+          "max": null,
+          "pattern": ""
         }
       }
     ],
@@ -906,6 +847,52 @@
     "createRule": "@request.auth.id != ''",
     "updateRule": "@request.auth.id != ''",
     "deleteRule": "@request.auth.id != ''",
+    "options": {}
+  },
+  {
+    "id": "61iwwi03fob8tyg",
+    "name": "projects",
+    "type": "base",
+    "system": false,
+    "schema": [
+      {
+        "id": "gl2awepk",
+        "name": "name",
+        "type": "text",
+        "system": false,
+        "required": true,
+        "options": {
+          "min": null,
+          "max": null,
+          "pattern": ""
+        }
+      },
+      {
+        "id": "diquejl9",
+        "name": "targetDefined",
+        "type": "bool",
+        "system": false,
+        "required": false,
+        "options": {}
+      },
+      {
+        "id": "ae0b08rv",
+        "name": "targetYear",
+        "type": "number",
+        "system": false,
+        "required": false,
+        "options": {
+          "min": null,
+          "max": null
+        }
+      }
+    ],
+    "indexes": [],
+    "listRule": "@request.auth.id != \"\"",
+    "viewRule": "@request.auth.id != \"\"",
+    "createRule": "@request.auth.id != \"\"",
+    "updateRule": "@request.auth.id != \"\"",
+    "deleteRule": "@request.auth.id != \"\"",
     "options": {}
   }
 ]
