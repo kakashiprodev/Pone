@@ -304,7 +304,7 @@ export const useGlobalStore = defineStore("global", {
       }
       const report: ReportEntry = {
         id: "new",
-        project: this.selectedProject?.id,
+        project: this.selectedProject?.id ?? "",
         year: new Date().getFullYear(),
         companyName: "",
         companyStreet: "",
