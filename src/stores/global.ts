@@ -178,7 +178,6 @@ export const useGlobalStore = defineStore("global", {
           id: "new",
           name: "Mein erstes Projekt",
           targetDefined: false,
-          targetValue: 0,
           targetYear: 0,
         });
         this.selectedProject = this.projects[0];

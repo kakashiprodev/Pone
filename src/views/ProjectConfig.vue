@@ -50,16 +50,11 @@
                     </div>
                 </div>
                 <div class="field grid" v-if="projectForm.targetDefined">
-                    <label for="targetYear" class="col-12 mb-2 md:col-4 md:mb-0">Ziel-Jahr</label>
+                    <label for="targetYear" class="col-12 mb-2 md:col-4 md:mb-0">Angestrebte Klimaneutralität bis
+                        Jahr</label>
                     <div class="col-12 md:col-8">
                         <InputNumber :useGrouping="false" :min="1960" :max="2100" id="targetYear" class="w-full"
                             v-model="projectForm.targetYear" />
-                    </div>
-                </div>
-                <div class="field grid" v-if="projectForm.targetDefined">
-                    <label for="targetValue" class="col-12 mb-2 md:col-4 md:mb-0">Ziel in Tonnen CO2-Equivalenten</label>
-                    <div class="col-12 md:col-8">
-                        <InputNumber id="targetValue" class="w-full" v-model="projectForm.targetValue" />
                     </div>
                 </div>
             </div>
@@ -92,7 +87,6 @@ const emptyProject = (): ProjectEntry => {
         id: 'new',
         name: '',
         targetDefined: false,
-        targetValue: 0,
         targetYear: 2050,
     }
 };

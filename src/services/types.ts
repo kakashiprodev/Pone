@@ -76,7 +76,6 @@ export interface ProjectEntry {
   id: string;
   name: string;
   targetDefined: boolean;
-  targetValue: number;
   targetYear: number;
 }
 
