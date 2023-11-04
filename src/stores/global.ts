@@ -88,12 +88,17 @@ export const useGlobalStore = defineStore("global", {
       // HACK: in the future the last selected project could be loaded from the local storage
       await this.ensureProjectSelected();
       // load equivalents and reports for the selected project
-      await this.refreshEquivalents();
-      await this.refreshReports();
-      // select report with the highest year
-      this.loadLatestReport();
+      await this.refreshProjectAndReport();
 
       this.isLoading = false;
+    },
+
+    async refreshProjectAndReport() {
+      // load equivalents and reports for the selected project
+      await this.refreshEquivalents(true);
+      await this.refreshReports(true);
+      // select report with the highest year
+      this.loadLatestReport();
     },
 
     // *************************************************************
@@ -299,7 +304,7 @@ export const useGlobalStore = defineStore("global", {
       }
       const report: ReportEntry = {
         id: "new",
-        project: "",
+        project: this.selectedProject?.id,
         year: new Date().getFullYear(),
         companyName: "",
         companyStreet: "",
@@ -338,6 +343,8 @@ export const useGlobalStore = defineStore("global", {
         this.selectedReport = this.reports.reduce((a, b) =>
           a.year > b.year ? a : b
         );
+      } else {
+        this.selectedReport = null;
       }
     },
 

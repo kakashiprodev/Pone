@@ -1,13 +1,19 @@
 <template>
+    <h4>Übersicht aller Eingaben</h4>
+    <InlineMessage severity="info" v-if="global.showTooltips" class="w-full mb-2">
+        Hier können Sie alle Eingaben für den aktuellen Bericht einsehen und bearbeiten.
+        Die Eingaben können außerdem als CSV-Datei exportiert werden.
+    </InlineMessage>
     <Toolbar class="mb-2">
         <template #start>
-            <label class="ml-2">Ansicht der Scopes:</label>
+            <label class="ml-2">Zeige Scopes:</label>
+            <Checkbox id="scope1Active" v-model="scope1Active" value="1" class="ml-3" :binary="true" @change="getData" />
             <label class="ml-1" for="scope1Active">1</label>
-            <Checkbox id="scope1Active" v-model="scope1Active" value="1" class="ml-2" :binary="true" @change="getData" />
+            <Checkbox id="scope2Active" v-model="scope2Active" value="1" class="ml-4" :binary="true" @change="getData" />
             <label class="ml-1" for="scope2Active">2</label>
-            <Checkbox id="scope2Active" v-model="scope2Active" value="1" class="ml-2" :binary="true" @change="getData" />
+            <Checkbox id="scope3Active" v-model="scope3Active" value="1" class="ml-4" :binary="true" @change="getData" />
             <label class="ml-1" for="scope3Active">3</label>
-            <Checkbox id="scope3Active" v-model="scope3Active" value="1" class="ml-2" :binary="true" @change="getData" />
+
         </template>
         <template #end>
             <Button icon="fa-solid fa-plus" @click="selectedValue = clone(emptyInput); showDialog = true" class="mr-1" />
@@ -33,14 +39,23 @@
             <div class="field">
                 <label for="userinput-scope">Scope</label>
                 <Dropdown class="w-full" id="userinput-scope" v-model="selectedValue.scope" :options="[1, 2, 3]" />
+                <InlineMessage v-if="global.showTooltips" class="w-full mt-1" severity="info">
+                    Auswahl des Scopes für den die Eingabe gilt.
+                </InlineMessage>
             </div>
             <div class="field">
                 <label for="userinput-name">Name</label>
                 <InputText class="w-full" v-model="selectedValue.name" id="userinput-name" />
+                <InlineMessage v-if="global.showTooltips" class="w-full mt-1" severity="info">
+                    Bezeichnung der Eingabe. Diese wird in der Liste und im Bericht als Name angezeigt.
+                </InlineMessage>
             </div>
             <div class="field">
                 <label for="userinput-comment">Kommentar</label>
                 <InputText class="w-full" v-model="selectedValue.comment" id="userinput-comment" />
+                <InlineMessage v-if="global.showTooltips" class="w-full mt-1" severity="info">
+                    Eine optionale Beschreibung der Eingabe.
+                </InlineMessage>
             </div>
             <div class="field">
                 <label for="userinput-equivalent">Äquivalent</label>
@@ -52,6 +67,12 @@
                     </div>
                     <Button v-else label="Auswählen" @click="showChooseEquivalent = true" />
                 </div>
+                <InlineMessage v-if="global.showTooltips" class="w-full mt-1" severity="info">
+                    Hier kann ein Äquivalent zugeordnet werden. Neue Äquivalente können unter dem Benutzermenü >
+                    "Äquivalente verwalten" hinzugefügt werden.
+                    Gelistet werden außerdem alle ausgelieferten Äquivalente. Ist kein Äquivalent ausgewählt, ist die
+                    Eingabe in [kg] CO2-Äquivalenten ohne weiteren Faktor.
+                </InlineMessage>
             </div>
             <div class="field">
                 <label for="userinput-rawvalue">
@@ -60,18 +81,28 @@
                 <InputNumber class="w-full" v-model="selectedValue.rawValue" id="userinput-rawvalue" :use-grouping="false"
                     :suffix="choosenEquivalent ? ' ' + choosenEquivalent.in : ''" :min-fraction-digits="0"
                     :max-fraction-digits="10" />
+                <InlineMessage v-if="global.showTooltips" class="w-full mt-1" severity="info">
+                    Der Eingabewert vor dem Umrechnen in CO2-Äquivalente. Wird mit dem Äquivalent verrechnet.
+                </InlineMessage>
             </div>
             <!-- helping information -->
-            <div class="field">
-                <label for="userinput-sum">Berechnung</label>
+            <div class="field" v-if="computedSumCalculation !== ''">
+                <label for="userinput-sum">Berechnungsschritte</label>
                 <p style="white-space: pre-wrap;">
                     {{ computedSumCalculation }}
                 </p>
+                <InlineMessage v-if="global.showTooltips" class="w-full mt-1" severity="info">
+                    Hier werden alle Berechnugnsschritte angezeigt, die zur Berechnung der Menge (Jahr) verwendet werden.
+                    Dies können z.B. Umrechnungsfaktoren sein.
+                </InlineMessage>
             </div>
             <div class="field">
                 <label for="userinput-sum">Menge (berechnet)</label>
                 <InputNumber :disabled="true" class="w-full" v-model="computedSumValue" id="userinput-sum"
-                    :use-grouping="false" :min-fraction-digits="0" :max-fraction-digits="10" />
+                    :use-grouping="true" :min-fraction-digits="0" :max-fraction-digits="10" :suffix="' kg'" />
+                <InlineMessage v-if="global.showTooltips" class="w-full mt-1" severity="info">
+                    Die Berechnung erfolgt automatisch aus dem Eingabewert und dem Äquivalent.
+                </InlineMessage>
             </div>
         </div>
         <div>
@@ -123,6 +154,7 @@ import InputText from 'primevue/inputtext';
 import Dialog from 'primevue/dialog';
 import Checkbox from 'primevue/checkbox';
 import Dropdown from 'primevue/dropdown';
+import InlineMessage from 'primevue/inlinemessage';
 import ChooseComponent from './../components/ChooseComponent.vue';
 import { Equivalent, InputEntry } from './../services/types';
 import dataprovider from "./../services/dataprovider";
@@ -182,7 +214,7 @@ global.refreshEquivalents();
 
 // ensure that a report is selected
 if (!global.selectedReport) {
-    error('Bitte wählen Sie einenzunächste einen Bericht aus.');
+    error('Bitte legen Sie einen zunächst einen Bericht an.');
     router.push({ name: 'reportConfig' })
 }
 
@@ -193,8 +225,8 @@ const emptyInput: InputEntry = {
     comment: '',
     report: global.selectedReport?.id ?? '',
     scope: 1,
-    sumValue: 0.1,
-    rawValue: 0.1,
+    sumValue: 0,
+    rawValue: null as any,
     equivalent: null,
     category: null,
 }

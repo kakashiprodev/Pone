@@ -150,6 +150,9 @@ export default class DataProvider {
     const res = await this.pb.collection("reports").getList<ReportEntry>(
       1,
       500,
+      {
+        filter: `project="${globalStore.selectedProject?.id}"`,
+      },
     );
     return res.items;
   }

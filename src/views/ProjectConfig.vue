@@ -24,7 +24,7 @@
         <div v-if="global.isLoading" class="card mt-2">
             <p>Wird geladen...</p>
         </div>
-        <div v-else-if="global.reports.length === 0" class="card mt-2">
+        <div v-else-if="global.projects.length === 0" class="card mt-2">
             <p>Es sind keine Projekte vorhanden. Bitte legen Sie mind. ein Projekt an.</p>
             <Button icon="fa-solid fa-plus" @click="projectForm = emptyProject()" label="Projekt anlegen" />
         </div>
@@ -117,7 +117,7 @@ watch(selectedProject, async (newValue) => {
     projectForm.value = newValue;
     // reload projekt specific data
     console.log('reload project specific data');
-    await global.refreshEquivalents(true);
+    await global.refreshProjectAndReport();
 });
 
 const projectForm: Ref<null | ProjectEntry> = ref(selectedProject.value);

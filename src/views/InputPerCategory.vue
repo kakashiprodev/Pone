@@ -112,9 +112,17 @@ import { useGlobalStore } from './../stores/global';
 import { error } from './../services/toast';
 import { useConfirm } from 'primevue/useconfirm';
 import { getSumForInput, getCalculationSteps } from "./../services/reporting";
+import { useRouter } from 'vue-router';
 
 const windowWidth = ref(window.innerWidth);
 const global = useGlobalStore();
+const router = useRouter();
+
+// ensure that a report is selected
+if (!global.selectedReport) {
+    error('Bitte legen Sie einen zunächst einen Bericht an.');
+    router.push({ name: 'reportConfig' })
+}
 
 // get "category" from route
 const route = useRoute();

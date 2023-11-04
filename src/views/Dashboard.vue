@@ -32,12 +32,22 @@
 import Chart from 'primevue/chart';
 import { getScopeSums } from "./../services/reporting";
 import { ref, Ref } from 'vue';
-import { useGlobalStore } from './../stores/global';
 import ProgressSpinner from 'primevue/progressspinner';
+import { useRouter } from 'vue-router';
+import { useGlobalStore } from './../stores/global';
+import { error } from './../services/toast';
+
+const global = useGlobalStore();
+const router = useRouter();
+
+// ensure that a report is selected
+if (!global.selectedReport) {
+    error('Bitte legen Sie einen zunächst einen Bericht an.');
+    router.push({ name: 'reportConfig' })
+}
 
 const loading = ref(true);
 
-const global = useGlobalStore();
 const chartData: Ref<any> = ref({});
 const chartDataScope1: Ref<any> = ref({});
 const chartDataScope2: Ref<any> = ref({});
