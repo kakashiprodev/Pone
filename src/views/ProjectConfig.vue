@@ -3,9 +3,11 @@
         <h5>
             Projekte
         </h5>
-        <p>
-            Hier können Sie Projekte anlegen und verwalten. Pro Kunde und Standort sollte ein Projekt angelegt werden.
-            Ein Projekt kann mehrere Berichte enthalten.
+        <p v-if="global.showTooltips">
+            <InlineMessage severity="info" class="w-full">
+                Hier können Sie Projekte anlegen und verwalten. Pro Kunde und Standort sollte ein Projekt angelegt werden.
+                Ein Projekt enthält beliebig viele Jahresberichte.
+            </InlineMessage>
         </p>
         <Toolbar>
             <template #start>
@@ -35,12 +37,20 @@
                     <div class="col-12 md:col-8">
                         <InputText id="id" class="w-full" disabled="true" v-model="projectForm.id" />
                     </div>
+                    <InlineMessage v-if="global.showTooltips" severity="info" class="w-full mt-2">
+                        Die ID wird automatisch vergeben und kann nicht geändert werden. Die Anzeige dient rein
+                        Support-Zwecken.
+                    </InlineMessage>
                 </div>
                 <div class="field grid">
                     <label for="projectname" class="col-12 mb-2 md:col-4 md:mb-0">Projektname</label>
                     <div class="col-12 md:col-8">
                         <InputText id="projectname" class="w-full" v-model="projectForm.name" />
                     </div>
+                    <InlineMessage v-if="global.showTooltips" severity="info" class="w-full mt-2">
+                        Der Projektname kann der Name der Organisation sein. Der Projektname kann auch Organisation und
+                        Standort im Namen enthalten. Die Mindestlänge ist 4 Zeichen.
+                    </InlineMessage>
                 </div>
                 <div class="field grid">
                     <label for="targetDefined" class="col-12 mb-2 md:col-4 md:mb-0">Klimaziel für Projekt
@@ -48,6 +58,10 @@
                     <div class="col-12 md:col-8">
                         <Checkbox id="targetDefined" v-model="projectForm.targetDefined" :binary="true" />
                     </div>
+                    <InlineMessage v-if="global.showTooltips" severity="info" class="w-full mt-2">
+                        Die Definition ist optional. Es wird das Jahr der angestrebten Klimaneutralität angegeben.
+                        -- DAS WIRD NOCH MAL ERWEITERT --
+                    </InlineMessage>
                 </div>
                 <div class="field grid" v-if="projectForm.targetDefined">
                     <label for="targetYear" class="col-12 mb-2 md:col-4 md:mb-0">Angestrebte Klimaneutralität bis
@@ -78,6 +92,7 @@ import ConfirmDialog from 'primevue/confirmdialog';
 import InputNumber from 'primevue/inputnumber';
 import { minLength, maxLength, object, string, parse } from 'valibot';
 import { error, info } from './../services/toast';
+import InlineMessage from 'primevue/inlinemessage';
 
 const global = useGlobalStore();
 const confirm = useConfirm();
@@ -87,7 +102,7 @@ const emptyProject = (): ProjectEntry => {
         id: 'new',
         name: '',
         targetDefined: false,
-        targetYear: 2050,
+        targetYear: null as any,
     }
 };
 
@@ -106,6 +121,7 @@ const projectForm: Ref<null | ProjectEntry> = ref(selectedProject.value);
 const projectSchema = object({
     id: string([minLength(1)]),
     name: string([minLength(4), maxLength(255)]),
+    // targetYear: number(),
 });
 
 const addProject = () => {
