@@ -9,6 +9,11 @@
         </template>
     </Toolbar>
 
+    <InlineMessage severity="info" v-if="global.showTooltips" class="mt-2 mb-2 w-full">
+        Hier können Kateogrien-spezifische Eingeaben angelegt werden. Diese werden dann in den Gesamt-Bericht übernommen.
+        Die Kategorien helfen zeigen Ihnen an, welche Eingaben für den Bereich relevant sind.
+    </InlineMessage>
+
     <Dialog id="edit-create-input" v-model:visible="showDialog" modal
         :header="selectedValue.id === 'new' ? 'Anlegen' : 'Bearbeiten'"
         :class="{ 'w-6': windowWidth > 990, 'w-full': windowWidth < 990, 'h-screen': windowWidth < 990 }">
@@ -16,9 +21,17 @@
         <div>
             <div class="field">
                 <label for="userinput-name">Vorauswahl</label>
-                <Listbox v-model="selectedPreset" :options="presets" filter optionLabel="name" class="w-full"
+                <Listbox v-model="selectedPreset" :options="presets" optionLabel="name" class="w-full"
                     @change="selectPreset" />
             </div>
+            <div class="field" v-if="selectedPreset != null">
+                <label for="userinput-equivalent">Äquivalent</label>
+                <div>
+                    <Listbox v-model="selectedValue.equivalent" :options="filteredEquivalents" option-label="name"
+                        option-value="id" class="w-full" />
+                </div>
+            </div>
+
             <div class="field">
                 <label for="userinput-name">Name</label>
                 <InputText class="w-full" v-model="selectedValue.name" id="userinput-name" />
@@ -27,16 +40,7 @@
                 <label for="userinput-comment">Kommentar</label>
                 <InputText class="w-full" v-model="selectedValue.comment" id="userinput-comment" />
             </div>
-            <div class="field">
-                <label for="userinput-equivalent">Äquivalent</label>
-                <div>
-                    <div v-if="selectedValue.equivalent != null && selectedValue.equivalent !== ''" @click="true"
-                        class="bg-teal-300 text-white border-round m-2 flex align-items-center justify-content-center cursor-pointer p-2">
-                        {{ global.equivalentDict[selectedValue.equivalent]?.name ?? 'Reference error' }}
-                    </div>
-                    <Button v-else label="Auswählen" @click="true" />
-                </div>
-            </div>
+
             <div class="field">
                 <label for="userinput-rawvalue">
                     Eingabewert {{ choosenEquivalent ? ' in ' + choosenEquivalent.in : '' }}
@@ -104,6 +108,7 @@ import InputNumber from 'primevue/inputnumber';
 import InputText from 'primevue/inputtext';
 import Dialog from 'primevue/dialog';
 import Listbox from 'primevue/listbox';
+import InlineMessage from 'primevue/inlinemessage';
 import { Equivalent, InputEntry, PresetEntry } from './../services/types';
 import dataprovider from "./../services/dataprovider";
 import { Ref, ref, computed, watch, ComputedRef } from 'vue';
@@ -150,8 +155,8 @@ const emptyInput: InputEntry = {
     comment: '',
     report: global.selectedReport?.id ?? '',
     scope: 1,
-    sumValue: 0.1,
-    rawValue: 0.1,
+    sumValue: 0,
+    rawValue: null as any,
     equivalent: null,
     category: global.categories.find((item) => item.name === category.value)?.id ?? null,
 }
@@ -164,9 +169,46 @@ const originalValue: Ref<InputEntry> = ref(emptyInput);
 // preset selection
 const selectedPreset = ref('');
 
+const filteredEquivalents: Ref<Equivalent[]> = ref([]);
 const selectPreset = (val: any) => {
-    console.log(val);
-    selectedValue.value.name = val.value.name;
+    const preset: PresetEntry = val.value;
+    // console.log(preset);
+    // set name
+    selectedValue.value.name = preset.name;
+    // get comma separated equivalents as array from preset if searchTextEquivalent is set and != ""
+    const equivalentsFromPreset: null | string[] = preset.searchTextEquivalent != null && preset.searchTextEquivalent !== '' ? preset.searchTextEquivalent.split(',') : null;
+    // console.log("filter by equivalents: ", equivalentsFromPreset);
+    // get comma separated units as array from preset if searchTextUnit is set and != ""
+    const unitsFromPreset = preset.searchTextUnit != null && preset.searchTextUnit !== '' ? preset.searchTextUnit.split(',') : null;
+
+    // console.log("filter by units: ", unitsFromPreset);
+    // get all relevant equivalents by search filter from preset
+    // the equivalts "in" must match exactly one of the units from the preset if unitsFromPreset != null
+    // the equivalents "name" must match(contains) one of the equivalents from the preset if equivalentsFromPreset != null
+    // one of the filters must be set. if not no equivalents will be returned
+    filteredEquivalents.value = global.equivalents.filter((item) => {
+        if (equivalentsFromPreset != null && unitsFromPreset != null) {
+            return equivalentsFromPreset.some((equivalent) => {
+                return item.name.toLowerCase().includes(equivalent.toLowerCase());
+            }) && unitsFromPreset.some((unit) => {
+                return item.in.toLowerCase() === unit.toLowerCase();
+            });
+        }
+
+        if (equivalentsFromPreset != null) {
+            return equivalentsFromPreset.some((equivalent) => {
+                return item.name.toLowerCase().includes(equivalent.toLowerCase());
+            });
+        }
+        if (unitsFromPreset != null) {
+            return unitsFromPreset.some((unit) => {
+                return item.in.toLowerCase() === unit.toLowerCase();
+            });
+        }
+        // else
+        return false;
+    });
+    // console.log(filteredEquivalents);
     selectedValue.value.equivalent = val.value.equivalent;
 }
 

@@ -93,5 +93,6 @@ export interface PresetEntry {
   id: string;
   category: string; // reference on table categories
   name: string;
-  equivalent: string; // single reference on table equivalents
+  searchTextEquivalent: string; // comma separated list of equivalents
+  searchTextUnit: string; // comma separated list of units
 }
