@@ -26,6 +26,13 @@
                     <span class="ml-2 text-600">Berichtsdaten</span>
                 </router-link>
             </li>
+            <li style="float: left;" class="ml-5">
+                <div class="flex align-content-start flex-wrap">
+                    <InputSwitch class="flex align-items-center justify-content-center mt-1"
+                        v-model="global.showTooltips" />
+                    <span class="ml-2 text-600">Zeige Hilfe</span>
+                </div>
+            </li>
         </ul>
 
         <!-- <div class="topbar-search" :class="{ 'topbar-search-active': searchActive }">
@@ -91,6 +98,7 @@ import { useLayout } from './composables/layout';
 import { useRouter } from 'vue-router';
 import { usePrimeVue } from 'primevue/config';
 import { useGlobalStore } from "./../stores/global";
+import InputSwitch from 'primevue/inputswitch';
 import DataProvider from "./../services/dataprovider";
 import Button from 'primevue/button';
 

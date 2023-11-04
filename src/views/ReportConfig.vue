@@ -81,7 +81,7 @@ const reportSchema = object({
     countEmployees: number([minValue(1)]),
     businessTurnover: number([minValue(0)]),
     baseYear: number([minValue(1900), maxValue(2100)]),
-    baseEquivalentSource: string([minLength(4), maxLength(255)]),
+    // baseEquivalentSource: string([minLength(4), maxLength(255)]),
 });
 
 const reportTranslations: any = {
@@ -100,7 +100,7 @@ const reportTranslations: any = {
     countEmployees: "Anzahl Mitarbeiter",
     businessTurnover: "Jahresumsatz",
     baseYear: "Referenzjahr",
-    baseEquivalentSource: "Quelle",
+    // baseEquivalentSource: "Quelle",
 };
 
 const confirmDelete = async (report: ReportEntry, event: any) => {

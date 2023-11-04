@@ -26,132 +26,168 @@
         :class="{ 'w-6': windowWidth > 990, 'w-full': windowWidth < 990, 'h-screen': windowWidth < 990 }">
         <div>
             <div class="field">
-                <label for="equivalent-name">Name</label>
+                <label for="equivalent-name">Name*</label>
                 <InputText class="w-full" v-model="selectedValue.name" id="equivalent-name" />
+                <InlineMessage v-if="global.showTooltips" class="w-full mt-1" severity="info">Name des Umrechnungsfaktors.
+                </InlineMessage>
             </div>
             <div class="field">
                 <label for="equivalent-comment">Kommentar</label>
                 <InputText class="w-full" v-model="selectedValue.comment" id="equivalent-comment" />
+                <InlineMessage v-if="global.showTooltips" class="w-full mt-1" severity="info">Eine optionale Bemerung zur
+                    Eingabe.</InlineMessage>
             </div>
             <div class="field">
-                <label for="equivalent-unit-in">Einheit Eingang</label>
+                <label for="equivalent-unit-in">Einheit Eingang*</label>
                 <InputText class="w-full" v-model="selectedValue.in" id="equivalent-unit-in" />
+                <InlineMessage v-if="global.showTooltips" class="w-full mt-1" severity="info">Der "Eingang" entspricht der
+                    Einheit in der die Werte eingegeben werden.</InlineMessage>
             </div>
             <div class="field">
-                <label for="equivalent-unit-out">Einheit Ausgang</label>
+                <label for="equivalent-unit-out">Einheit Ausgang*</label>
                 <InputText class="w-full" v-model="selectedValue.out" id="equivalent-unit-out" />
+                <InlineMessage v-if="global.showTooltips" class="w-full mt-1" severity="info">Der "Ausgang" entspricht der
+                    Einheit in die umgerechnet wird. Wenn keine übergeordnete Berechnung verknüpft wird muss(!) Die
+                    Ausgangseinheit kg-CO2 entsprechen.</InlineMessage>
             </div>
             <div class="field">
-                <label for="equivalent-source">Quelle</label>
-                <InputText class="w-full"
-                    :value="selectedValue.source != null ? global.sourcesDict[selectedValue.source].name : 'Benutzereingabe'"
-                    id="equivalent-source" disabled="true" />
+                <label for="equivalent-source">Quelle*</label>
+                <InputText class="w-full" :value="'Benutzereingabe'" id="equivalent-source" />
+                <InlineMessage v-if="global.showTooltips" class="w-full mt-1" severity="info">Angabe woher der Faktor stammt
+                    (Berechnungsgrundlage)</InlineMessage>
             </div>
             <div class="field">
-                <label for="equivalent-validity">Gültigkeit (Jahr)</label>
+                <label for="equivalent-validity">Gültigkeit (Jahr)*</label>
                 <InputNumber class="w-full" v-model="selectedValue.year" id="equivalent-validity" :use-grouping="false" />
+                <InlineMessage v-if="global.showTooltips" class="w-full mt-1" severity="info">In welchem Jahr is dieser Wert
+                    gültig</InlineMessage>
             </div>
             <div class="field">
                 <label for="equivalent-monthlyValues">Monatliche Eingaben?</label>
                 <div>
                     <Checkbox v-model="selectedValue.monthlyValues" id="equivalent-monthlyValues" :binary="true" />
                 </div>
+                <InlineMessage v-if="global.showTooltips" class="w-full mt-1" severity="info">Wenn dies aktiviert wird,
+                    können monatliche Eingaben erfolgen. Der Jahresmittelwert wird dann autoamtisch errechnet.
+                </InlineMessage>
             </div>
             <div v-show="selectedValue.monthlyValues">
-                <div class="grid">
+                <div class="grid mt-1">
                     <div
-                        class="col-1 align-items-center justify-content-center bg-teal-100 font-bold text-gray-900 border-round text-center">
+                        class="col-3 align-items-center justify-content-center bg-teal-100 font-bold text-gray-900 border-round text-center">
                         {{ "Jan" }}
                     </div>
                     <div
-                        class="col-1 align-items-center justify-content-center bg-teal-100 font-bold text-gray-900 border-round text-center">
+                        class="col-3 align-items-center justify-content-center bg-teal-100 font-bold text-gray-900 border-round text-center">
                         {{ "Feb" }}
                     </div>
                     <div
-                        class="col-1 align-items-center justify-content-center bg-teal-100 font-bold text-gray-900 border-round text-center">
+                        class="col-3 align-items-center justify-content-center bg-teal-100 font-bold text-gray-900 border-round text-center">
                         {{ "Mar" }}
                     </div>
                     <div
-                        class="col-1 align-items-center justify-content-center bg-teal-100 font-bold text-gray-900 border-round text-center">
+                        class="col-3 align-items-center justify-content-center bg-teal-100 font-bold text-gray-900 border-round text-center">
                         {{ "Apr" }}
                     </div>
+                </div>
+                <div class="grid mt-1">
+                    <div class="col-3 small-width-ctm">
+                        <InputNumber :use-grouping="false" v-model="selectedValue.jan" :min-fraction-digits="0"
+                            :max-fraction-digits="10" />
+                    </div>
+                    <div class="col-3 small-width-ctm">
+                        <InputNumber :use-grouping="false" v-model="selectedValue.feb" :min-fraction-digits="0"
+                            :max-fraction-digits="10" />
+                    </div>
+                    <div class="col-3 small-width-ctm">
+                        <InputNumber :use-grouping="false" v-model="selectedValue.mar" :min-fraction-digits="0"
+                            :max-fraction-digits="10" />
+                    </div>
+                    <div class="col-3 small-width-ctm">
+                        <InputNumber :use-grouping="false" v-model="selectedValue.apr" :min-fraction-digits="0"
+                            :max-fraction-digits="10" />
+                    </div>
+                </div>
+                <div class="grid mt-1">
                     <div
-                        class="col-1 align-items-center justify-content-center bg-teal-100 font-bold text-gray-900 border-round text-center">
+                        class="col-3 align-items-center justify-content-center bg-teal-100 font-bold text-gray-900 border-round text-center">
                         {{ "Mai" }}
                     </div>
                     <div
-                        class="col-1 align-items-center justify-content-center bg-teal-100 font-bold text-gray-900 border-round text-center">
+                        class="col-3 align-items-center justify-content-center bg-teal-100 font-bold text-gray-900 border-round text-center">
                         {{ "Jun" }}
                     </div>
                     <div
-                        class="col-1 align-items-center justify-content-center bg-teal-100 font-bold text-gray-900 border-round text-center">
+                        class="col-3 align-items-center justify-content-center bg-teal-100 font-bold text-gray-900 border-round text-center">
                         {{ "Jul" }}
                     </div>
                     <div
-                        class="col-1 align-items-center justify-content-center bg-teal-100 font-bold text-gray-900 border-round text-center">
+                        class="col-3 align-items-center justify-content-center bg-teal-100 font-bold text-gray-900 border-round text-center">
                         {{ "Aug" }}
                     </div>
+                </div>
+                <div class="grid mt-1">
+                    <div class="col-3 small-width-ctm">
+                        <InputNumber :use-grouping="false" v-model="selectedValue.may" :min-fraction-digits="0"
+                            :max-fraction-digits="10" />
+                    </div>
+                    <div class="col-3 small-width-ctm">
+                        <InputNumber :use-grouping="false" v-model="selectedValue.jun" :min-fraction-digits="0"
+                            :max-fraction-digits="10" />
+                    </div>
+                    <div class="col-3 small-width-ctm">
+                        <InputNumber :use-grouping="false" v-model="selectedValue.jul" :min-fraction-digits="0"
+                            :max-fraction-digits="10" />
+                    </div>
+                    <div class="col-3 small-width-ctm">
+                        <InputNumber :use-grouping="false" v-model="selectedValue.aug" :min-fraction-digits="0"
+                            :max-fraction-digits="10" />
+                    </div>
+                </div>
+                <div class="grid mt-1">
                     <div
-                        class="col-1 align-items-center justify-content-center bg-teal-100 font-bold text-gray-900 border-round text-center">
+                        class="col-3 align-items-center justify-content-center bg-teal-100 font-bold text-gray-900 border-round text-center">
                         {{ "Sep" }}
                     </div>
                     <div
-                        class="col-1 align-items-center justify-content-center bg-teal-100 font-bold text-gray-900 border-round text-center">
+                        class="col-3 align-items-center justify-content-center bg-teal-100 font-bold text-gray-900 border-round text-center">
                         {{ "Okt" }}
                     </div>
                     <div
-                        class="col-1 align-items-center justify-content-center bg-teal-100 font-bold text-gray-900 border-round text-center">
+                        class="col-3 align-items-center justify-content-center bg-teal-100 font-bold text-gray-900 border-round text-center">
                         {{ "Nov" }}
                     </div>
                     <div
-                        class="col-1 align-items-center justify-content-center bg-teal-100 font-bold text-gray-900 border-round text-center">
+                        class="col-3 align-items-center justify-content-center bg-teal-100 font-bold text-gray-900 border-round text-center">
                         {{ "Dez" }}
                     </div>
                 </div>
-                <div class="grid">
-                    <div class="col-1 small-width-ctm">
-                        <InputNumber :use-grouping="false" v-model="selectedValue.jan" />
+                <div class="grid mt-1">
+                    <div class="col-3 small-width-ctm">
+                        <InputNumber :use-grouping="false" v-model="selectedValue.sep" :min-fraction-digits="0"
+                            :max-fraction-digits="10" />
                     </div>
-                    <div class="col-1 small-width-ctm">
-                        <InputNumber :use-grouping="false" v-model="selectedValue.feb" />
+                    <div class="col-3 small-width-ctm">
+                        <InputNumber :use-grouping="false" v-model="selectedValue.oct" :min-fraction-digits="0"
+                            :max-fraction-digits="10" />
                     </div>
-                    <div class="col-1  small-width-ctm">
-                        <InputNumber :use-grouping="false" v-model="selectedValue.mar" />
+                    <div class="col-3 small-width-ctm">
+                        <InputNumber :use-grouping="false" v-model="selectedValue.nov" :min-fraction-digits="0"
+                            :max-fraction-digits="10" />
                     </div>
-                    <div class="col-1  small-width-ctm">
-                        <InputNumber :use-grouping="false" v-model="selectedValue.apr" />
-                    </div>
-                    <div class="col-1  small-width-ctm">
-                        <InputNumber :use-grouping="false" v-model="selectedValue.may" />
-                    </div>
-                    <div class="col-1  small-width-ctm">
-                        <InputNumber :use-grouping="false" v-model="selectedValue.jun" />
-                    </div>
-                    <div class="col-1  small-width-ctm">
-                        <InputNumber :use-grouping="false" v-model="selectedValue.jul" />
-                    </div>
-                    <div class="col-1  small-width-ctm">
-                        <InputNumber :use-grouping="false" v-model="selectedValue.aug" />
-                    </div>
-                    <div class="col-1  small-width-ctm">
-                        <InputNumber :use-grouping="false" v-model="selectedValue.sep" />
-                    </div>
-                    <div class="col-1  small-width-ctm">
-                        <InputNumber :use-grouping="false" v-model="selectedValue.oct" />
-                    </div>
-                    <div class="col-1  small-width-ctm">
-                        <InputNumber :use-grouping="false" v-model="selectedValue.nov" />
-                    </div>
-                    <div class="col-1  small-width-ctm">
-                        <InputNumber :use-grouping="false" v-model="selectedValue.dec" />
+                    <div class="col-3 small-width-ctm">
+                        <InputNumber :use-grouping="false" v-model="selectedValue.dec" :min-fraction-digits="0"
+                            :max-fraction-digits="10" />
                     </div>
                 </div>
             </div>
             <div class="field">
-                <label for="equivalent-value-year">Wert (Jahresdurschnitt)</label>
+                <label for="equivalent-value-year">Faktor (Jahresdurschnitt)*</label>
                 <InputNumber v-if="!selectedValue.monthlyValues" class="w-full" v-model="selectedValue.avgValue"
-                    id="equivalent-value-year" :use-grouping="false" />
+                    id="equivalent-value-year" :use-grouping="false" :min-fraction-digits="0" :max-fraction-digits="10" />
                 <div v-else>{{ roundString(selectedValue.avgValue) }} (automatisch berechnet)</div>
+                <InlineMessage v-if="global.showTooltips" class="w-full mt-1" severity="info">Der Jahresdurchschnittswert
+                    als Faktor [Ausgangseinheit-pro-Eingangseinheit]</InlineMessage>
             </div>
             <div class="field">
                 <label for="equivalent-parent-selector">Überliegende Berechnung (optional)</label>
@@ -162,6 +198,12 @@
                     <Button v-if="selectedValue.parent" icon="fa-solid fa-trash" @click="selectedValue.parent = null"
                         class="ml-1" />
                 </div>
+                <InlineMessage v-if="global.showTooltips" class="w-full mt-1" severity="info">
+                    Wenn eine überliegende Berechnung gewählt wird, muss die Ausgangseinheit der überliegenden Berechnung
+                    mit der Eingangseinheit dieses Faktors übereinstimmen.
+                    In dem Fall wird beim Berechnen der CO2-Äquivalete der überliegende Faktor in Kette mit diesem Faktors
+                    berechnet.
+                </InlineMessage>
             </div>
         </div>
         <div>
@@ -224,8 +266,9 @@ import { Ref, ref, watchEffect, computed } from 'vue';
 import { Equivalent } from './../services/types';
 import { error, info } from './../services/toast';
 import { useConfirm } from "primevue/useconfirm";
-import { parse, string, object, number, boolean } from "valibot";
+import { parse, string, object, number, boolean, minLength, maxLength } from "valibot";
 import { roundString } from './../pipes';
+import InlineMessage from 'primevue/inlinemessage';
 
 const windowWidth = ref(window.innerWidth);
 
@@ -252,36 +295,36 @@ const emptyEquivalent = (): Equivalent => {
         in: '',
         out: '',
         source: null,
-        avgValue: 0.1,
+        avgValue: null as any,
         monthlyValues: false,
         project: global.selectedProject?.id ?? '',
-        jan: 0.1,
-        feb: 0.1,
-        mar: 0.1,
-        apr: 0.1,
-        may: 0.1,
-        jun: 0.1,
-        jul: 0.1,
-        aug: 0.1,
-        sep: 0.1,
-        oct: 0.1,
-        nov: 0.1,
-        dec: 0.1,
+        jan: null,
+        feb: null,
+        mar: null,
+        apr: null,
+        may: null,
+        jun: null,
+        jul: null,
+        aug: null,
+        sep: null,
+        oct: null,
+        nov: null,
+        dec: null,
         parent: null,
         year: global.selectedReport?.year ?? ((new Date()).getFullYear() - 1),
     }
 }
 
 const equivalentSchema = object({
-    id: string(),
-    name: string(),
+    id: string([minLength(1), maxLength(255)]),
+    name: string([minLength(4), maxLength(255)]),
     comment: string(),
-    in: string(),
-    out: string(),
+    in: string([minLength(1), maxLength(10)]),
+    out: string([minLength(1), maxLength(10)]),
     // source: string(),
     avgValue: number(),
     monthlyValues: boolean(),
-    project: string(),
+    // project: string(),
     jan: number(),
     feb: number(),
     mar: number(),
@@ -311,7 +354,37 @@ watchEffect(() => {
 const save = async () => {
     // validate inputs
     try {
+        console.log(JSON.parse(JSON.stringify(selectedValue.value)));
+
+        // set all monthly values to null if monthlyValues is false
+        if (!selectedValue.value.monthlyValues) {
+            selectedValue.value.jan = 0;
+            selectedValue.value.feb = 0;
+            selectedValue.value.mar = 0;
+            selectedValue.value.apr = 0;
+            selectedValue.value.may = 0;
+            selectedValue.value.jun = 0;
+            selectedValue.value.jul = 0;
+            selectedValue.value.aug = 0;
+            selectedValue.value.sep = 0;
+            selectedValue.value.oct = 0;
+            selectedValue.value.nov = 0;
+            selectedValue.value.dec = 0;
+        }
+
         parse(equivalentSchema, selectedValue.value);
+
+        // check if parent is set. If not the output unit must be kg-CO2
+        if (selectedValue.value.parent == null && selectedValue.value.out !== 'kg') {
+            throw new Error("Wenn kein überliegender Faktor gewählt wird, muss die Ausgangseinheit [kg] (CO2-Äquivalente) sein.");
+        }
+        // if a parent is set. check if the output unit is the same as the input unit of the parent
+        if (selectedValue.value.parent != null
+            && selectedValue.value.parent !== ""
+            && selectedValue.value.out !== global.equivalentDict[selectedValue.value.parent]?.in) {
+            throw new Error("Die Ausgangseinheit muss der Eingangseinheit des überliegenden Faktors entsprechen.");
+        }
+
         if (selectedValue.value.id === 'new') {
             // make a copy and drop the id
             const insert: any = { ...selectedValue.value };
@@ -337,7 +410,7 @@ const save = async () => {
 const deleteEquivalent = async (equivalent: Equivalent, event: any) => {
     confirm.require({
         target: event.currentTarget,
-        message: 'Soll der Wert wirklich gelöscht werden?',
+        message: 'Soll der Faktor wirklich gelöscht werden?',
         icon: 'fa-solid fa-question',
         accept: async () => {
             try {

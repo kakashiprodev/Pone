@@ -58,7 +58,8 @@
                     Eingabewert {{ choosenEquivalent ? ' in ' + choosenEquivalent.in : '' }}
                 </label>
                 <InputNumber class="w-full" v-model="selectedValue.rawValue" id="userinput-rawvalue" :use-grouping="false"
-                    :suffix="choosenEquivalent ? ' ' + choosenEquivalent.in : ''" />
+                    :suffix="choosenEquivalent ? ' ' + choosenEquivalent.in : ''" :min-fraction-digits="0"
+                    :max-fraction-digits="10" />
             </div>
             <!-- helping information -->
             <div class="field">
@@ -70,7 +71,7 @@
             <div class="field">
                 <label for="userinput-sum">Menge (berechnet)</label>
                 <InputNumber :disabled="true" class="w-full" v-model="computedSumValue" id="userinput-sum"
-                    :use-grouping="false" />
+                    :use-grouping="false" :min-fraction-digits="0" :max-fraction-digits="10" />
             </div>
         </div>
         <div>

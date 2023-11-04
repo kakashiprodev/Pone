@@ -28,11 +28,22 @@
                 <InputText class="w-full" v-model="selectedValue.comment" id="userinput-comment" />
             </div>
             <div class="field">
+                <label for="userinput-equivalent">Äquivalent</label>
+                <div>
+                    <div v-if="selectedValue.equivalent != null && selectedValue.equivalent !== ''" @click="true"
+                        class="bg-teal-300 text-white border-round m-2 flex align-items-center justify-content-center cursor-pointer p-2">
+                        {{ global.equivalentDict[selectedValue.equivalent]?.name ?? 'Reference error' }}
+                    </div>
+                    <Button v-else label="Auswählen" @click="true" />
+                </div>
+            </div>
+            <div class="field">
                 <label for="userinput-rawvalue">
                     Eingabewert {{ choosenEquivalent ? ' in ' + choosenEquivalent.in : '' }}
                 </label>
                 <InputNumber class="w-full" v-model="selectedValue.rawValue" id="userinput-rawvalue" :use-grouping="false"
-                    :suffix="choosenEquivalent ? ' ' + choosenEquivalent.in : ''" />
+                    :suffix="choosenEquivalent ? ' ' + choosenEquivalent.in : ''" :min-fraction-digits="0"
+                    :max-fraction-digits="10" />
             </div>
             <!-- helping information -->
             <div class="field">
@@ -44,7 +55,7 @@
             <div class="field">
                 <label for="userinput-sum">Menge (berechnet)</label>
                 <InputNumber :disabled="true" class="w-full" v-model="computedSumValue" id="userinput-sum"
-                    :use-grouping="false" suffix=" to" />
+                    :use-grouping="false" suffix=" to" :min-fraction-digits="0" :max-fraction-digits="10" />
             </div>
         </div>
         <div>

@@ -17,6 +17,7 @@ export interface GlobalState {
   requestPending: boolean;
   // layout and theme
   theme: "light" | "dark";
+  showTooltips: boolean;
   // user information
   username: string;
   // equivalent sources, e.g. GEMIS
@@ -44,6 +45,7 @@ export const useGlobalStore = defineStore("global", {
     //
     username: "",
     theme: "light" as "light" | "dark",
+    showTooltips: true,
     //
     sources: [],
     sourcesDict: {},
