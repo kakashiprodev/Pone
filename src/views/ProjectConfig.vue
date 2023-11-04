@@ -110,11 +110,14 @@ const selectedProject: ComputedRef<null | ProjectEntry> = computed(() => {
     return global.selectedProject;
 });
 
-watch(selectedProject, (newValue) => {
+watch(selectedProject, async (newValue) => {
     if (!newValue) {
         return;
     }
     projectForm.value = newValue;
+    // reload projekt specific data
+    console.log('reload project specific data');
+    await global.refreshEquivalents(true);
 });
 
 const projectForm: Ref<null | ProjectEntry> = ref(selectedProject.value);

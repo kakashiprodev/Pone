@@ -60,7 +60,7 @@ export default class DataProvider {
       1,
       500,
       {
-        // filter: `report = ${globalStore.selectedReport?.year}`,
+        filter: `project="${globalStore.selectedProject?.id}" || project=""`,
       },
     );
     return res.items;

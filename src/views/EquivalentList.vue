@@ -5,6 +5,13 @@
         </template>
     </Toolbar>
 
+    <InlineMessage v-if="global.showTooltips" class="w-full mt-3 mb-3" severity="info">
+        Hier werden alle Äquivalente angezeigt, die für die Berechnung der CO2-Äquivalente verwendet werden können.
+        Die System Einträge können nicht editiert oder gelöscht werden.
+        Überliegende Berechnungen bedeuten, dass der Faktor in Kette mit dem überliegenden Faktor berechnet wird.
+        Hierbei entspricht die Ausgangseinheit des Eingabewertes der Eingangseinheit des überliegenden Faktors.
+    </InlineMessage>
+
     <Dialog v-model:visible="showChooseEquivalent" modal header="Wählen Sie einen Faktor"
         :class="{ 'w-6': windowWidth > 990, 'w-full': windowWidth < 990, 'h-screen': windowWidth < 990 }">
         <DataTable class="cst-no-hover mt-3" :value="filteredEquivalents">
