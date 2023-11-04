@@ -1,6 +1,6 @@
 <template>
     <Toolbar>
-        <template #start>
+        <template #end>
             <Button icon="fa-solid fa-plus" @click="selectedValue = emptyEquivalent(); showDialog = true" />
         </template>
     </Toolbar>
