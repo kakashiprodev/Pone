@@ -16,7 +16,9 @@ const router = useRouter();
 const route = useRoute();
 
 const init = async () => {
+  console.log('init');
   const loggedIn = await DataProvider.checkLogin();
+  console.log('loggedIn', loggedIn);
   if (loggedIn) {
     await global.initializeStore();
     if (route.name === 'login') {
@@ -25,6 +27,7 @@ const init = async () => {
       console.log('logged in');
     }
   } else {
+    global.isLoading = false;
     router.push({ name: 'login' });
   }
 }
