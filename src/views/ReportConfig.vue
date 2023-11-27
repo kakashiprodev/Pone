@@ -10,10 +10,11 @@
         <span>Ausgewählter Bericht</span>
         <Dropdown v-model="global.selectedReport" :options="global.reports" optionLabel="year"
           placeholder="Select a Report" :disabled="reportForm?.id === 'new'" class="ml-3" />
-        <Button icon="fa-solid fa-plus" @click="reportForm = global.getNewReport()" label="Add"
+        <Button icon="fa-solid fa-plus" @click="reportForm = global.getNewReport()" label="Hinzufügen"
           :disabled="reportForm?.id === 'new'" class="ml-1" />
+        <ConfirmDialog />
         <Button v-if="global.selectedReport" icon="fa-solid fa-trash"
-          @click="confirmDelete(global.selectedReport, $event)" label="Delete" :disabled="reportForm?.id === 'new'"
+          @click="confirmDelete(global.selectedReport, $event)" label="Löschen" :disabled="reportForm?.id === 'new'"
           class="ml-1" />
       </template>
     </Toolbar>
@@ -69,6 +70,7 @@ import Button from 'primevue/button';
 import Dropdown from 'primevue/dropdown';
 import InputNumber from 'primevue/inputnumber';
 import InputText from 'primevue/inputtext';
+import ConfirmDialog from 'primevue/confirmdialog';
 import Toolbar from 'primevue/toolbar';
 import {
   minLength,

@@ -17,7 +17,7 @@
                 <Button icon="fa-solid fa-plus" @click="addProject()" label="Neues Projekt hinzufügen" class="ml-1" />
                 <ConfirmDialog />
                 <Button v-if="selectedProject" icon="fa-solid fa-trash" @click="confirmDelete(selectedProject, $event)"
-                    label="Delete" class="ml-1" :disabled="projectForm?.id === 'new'" />
+                    label="Löschen" class="ml-1" :disabled="projectForm?.id === 'new'" />
             </template>
         </Toolbar>
 
