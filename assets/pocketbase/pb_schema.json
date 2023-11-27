@@ -894,5 +894,119 @@
     "updateRule": "@request.auth.id != \"\"",
     "deleteRule": "@request.auth.id != \"\"",
     "options": {}
+  },
+  {
+    "id": "rnskc22j76iywo3",
+    "name": "actions",
+    "type": "base",
+    "system": false,
+    "schema": [
+      {
+        "id": "cxuod5oy",
+        "name": "project",
+        "type": "relation",
+        "system": false,
+        "required": false,
+        "options": {
+          "collectionId": "61iwwi03fob8tyg",
+          "cascadeDelete": false,
+          "minSelect": null,
+          "maxSelect": 1,
+          "displayFields": []
+        }
+      },
+      {
+        "id": "zwpvoph3",
+        "name": "name",
+        "type": "text",
+        "system": false,
+        "required": false,
+        "options": {
+          "min": null,
+          "max": null,
+          "pattern": ""
+        }
+      },
+      {
+        "id": "bslzqyj8",
+        "name": "shortDescription",
+        "type": "editor",
+        "system": false,
+        "required": false,
+        "options": {}
+      },
+      {
+        "id": "aznictow",
+        "name": "longDescription",
+        "type": "editor",
+        "system": false,
+        "required": false,
+        "options": {}
+      },
+      {
+        "id": "lhrjg22u",
+        "name": "responsible",
+        "type": "text",
+        "system": false,
+        "required": false,
+        "options": {
+          "min": null,
+          "max": null,
+          "pattern": ""
+        }
+      },
+      {
+        "id": "y4lusegw",
+        "name": "finishedUntil",
+        "type": "date",
+        "system": false,
+        "required": false,
+        "options": {
+          "min": "",
+          "max": ""
+        }
+      },
+      {
+        "id": "zfaicgxe",
+        "name": "status",
+        "type": "text",
+        "system": false,
+        "required": false,
+        "options": {
+          "min": null,
+          "max": null,
+          "pattern": ""
+        }
+      },
+      {
+        "id": "9emgzp4w",
+        "name": "progress",
+        "type": "number",
+        "system": false,
+        "required": false,
+        "options": {
+          "min": null,
+          "max": null
+        }
+      },
+      {
+        "id": "uls9wjvo",
+        "name": "targetInTons",
+        "type": "number",
+        "system": false,
+        "required": false,
+        "options": {
+          "min": null,
+          "max": null
+        }
+      }
+    ],
+    "indexes": [],
+    "listRule": "@collection.inputs.report.project.id ~ @request.auth.projects.id",
+    "viewRule": "@collection.inputs.report.project.id ~ @request.auth.projects.id",
+    "createRule": "@collection.inputs.report.project.id ~ @request.auth.projects.id",
+    "updateRule": "@collection.inputs.report.project.id ~ @request.auth.projects.id",
+    "deleteRule": "@collection.inputs.report.project.id ~ @request.auth.projects.id",
+    "options": {}
   }
 ]
