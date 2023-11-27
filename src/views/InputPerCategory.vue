@@ -124,7 +124,7 @@ const global = useGlobalStore();
 const router = useRouter();
 
 // ensure that a report is selected
-if (!global.selectedReport) {
+if (!global.selectedReport && global.isLoggedIn) {
     error('Bitte legen Sie einen zunächst einen Bericht an.');
     router.push({ name: 'reportConfig' })
 }

@@ -13,7 +13,7 @@ import { info } from "../services/toast";
 
 export interface GlobalState {
   isLoading: boolean;
-  isLoggenIn: boolean;
+  isLoggedIn: boolean;
   requestPending: boolean;
   // layout and theme
   theme: "light" | "dark";
@@ -40,7 +40,7 @@ export interface GlobalState {
 export const useGlobalStore = defineStore("global", {
   state: (): GlobalState => ({
     isLoading: true,
-    isLoggenIn: false,
+    isLoggedIn: false,
     requestPending: false,
     //
     username: "",

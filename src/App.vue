@@ -28,6 +28,7 @@ const init = async () => {
     }
   } else {
     global.isLoading = false;
+    console.log('not logged in. forwarding to login');
     router.push({ name: 'login' });
   }
 }

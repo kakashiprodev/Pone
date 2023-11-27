@@ -1,5 +1,5 @@
 <template>
-    <ul class="layout-menu mt-5">
+    <ul class="layout-menu mt-5" v-if="global.isLoggedIn">
         <template v-for="(item, i) in model" :key="item">
             <AppMenuItem :item="item" root :index="i" />
 
@@ -11,6 +11,8 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import AppMenuItem from './AppMenuItem.vue';
+import { useGlobalStore } from './../stores/global';
+const global = useGlobalStore();
 
 const model = ref([
     {

@@ -43,9 +43,11 @@ export default class DataProvider {
       if (res.items.length < 1) return false;
       // set globalStore username and company
       globalStore.username = res.items[0].username;
+      globalStore.isLoggedIn = true;
       return true;
     } catch (error) {
       console.log("error: ", error);
+      globalStore.isLoggedIn = false;
       return false;
     }
   }

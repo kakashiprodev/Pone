@@ -213,9 +213,11 @@ const global = useGlobalStore();
 global.refreshEquivalents();
 
 // ensure that a report is selected
-if (!global.selectedReport) {
+if (!global.selectedReport && global.isLoggedIn) {
     error('Bitte legen Sie einen zunächst einen Bericht an.');
     router.push({ name: 'reportConfig' })
+} else if (!global.isLoggedIn) {
+    console.log('not logged in. skip report check');
 }
 
 const showDialog = ref(false);
