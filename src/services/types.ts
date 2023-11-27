@@ -96,3 +96,17 @@ export interface PresetEntry {
   searchTextEquivalent: string; // comma separated list of equivalents
   searchTextUnit: string; // comma separated list of units
 }
+
+// table "actions"
+export interface ActionEntry {
+  id: string;
+  project: string; // reference on table projects
+  name: string; // normal text
+  shortDescription: string; // rich text
+  longDescription: string; // rich text
+  targetInTons: number; // tons CO2 that should be saved. 0 if unknown
+  responsible: string;
+  finishedUntil: string; // date
+  status: 'open' | 'inProgress' | 'finished' | 'canceled';
+  progress: number; // 0-100
+}

@@ -1,5 +1,6 @@
 import PocketBase from "pocketbase";
 import {
+  ActionEntry,
   CategoryEntry,
   Equivalent,
   InputEntry,
@@ -114,15 +115,13 @@ export default class DataProvider {
   async readUserInputs(query?: UserInputQuery) {
     const res = await this.pb
       .collection("inputs").getList<InputEntry>(1, 500, {
-        filter: `report = '${globalStore.selectedReport?.id}'${
-          query?.scope
+        filter: `report = '${globalStore.selectedReport?.id}'${query?.scope
             ? " && " + query.scope.map((s) => `scope="${s}"`).join(" || ")
             : ""
-        }${
-          query?.category
+          }${query?.category
             ? " && " + query.category.map((c) => `category="${c}"`).join(" || ")
             : ""
-        }`,
+          }`,
         // expand: "equivalent",
       });
     return res.items;
@@ -265,5 +264,38 @@ export default class DataProvider {
       500,
     );
     return res.items;
+  }
+
+  // CRUD for "actions"
+  // CRUD for "actions"
+  async createAction(data: ActionEntry) {
+    return await this.pb.collection("actions").create<ActionEntry>(data);
+  }
+
+  async readAction(id: string) {
+    return await this.pb.collection("actions").getOne<ActionEntry>(id);
+  }
+
+  async readActions() {
+    const res = await this.pb.collection("actions").getList<ActionEntry>(
+      1,
+      500,
+      {
+        filter: `project="${globalStore.selectedProject?.id}"`,
+      },
+    );
+    return res.items;
+  }
+
+  async updateAction(data: ActionEntry) {
+    if (!data.id) throw new Error("Action ID is missing");
+    return await this.pb.collection("actions").update<ActionEntry>(
+      data.id,
+      data,
+    );
+  }
+
+  async deleteAction(id: string) {
+    return await this.pb.collection("actions").delete(id);
   }
 }
