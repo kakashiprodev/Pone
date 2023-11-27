@@ -666,61 +666,6 @@
     "options": {}
   },
   {
-    "id": "pypwyu3aaq0z2vv",
-    "name": "categories_tmp",
-    "type": "base",
-    "system": false,
-    "schema": [
-      {
-        "id": "tblcyxkt",
-        "name": "name",
-        "type": "text",
-        "system": false,
-        "required": true,
-        "options": {
-          "min": null,
-          "max": null,
-          "pattern": ""
-        }
-      },
-      {
-        "id": "fp9faosn",
-        "name": "parent",
-        "type": "relation",
-        "system": false,
-        "required": false,
-        "options": {
-          "collectionId": "pypwyu3aaq0z2vv",
-          "cascadeDelete": false,
-          "minSelect": null,
-          "maxSelect": 1,
-          "displayFields": []
-        }
-      },
-      {
-        "id": "z5llnoa6",
-        "name": "equivalent",
-        "type": "relation",
-        "system": false,
-        "required": false,
-        "options": {
-          "collectionId": "r26fui0286m4xaq",
-          "cascadeDelete": false,
-          "minSelect": null,
-          "maxSelect": 1,
-          "displayFields": []
-        }
-      }
-    ],
-    "indexes": [],
-    "listRule": "@request.auth.id != \"\"",
-    "viewRule": "@request.auth.id != \"\"",
-    "createRule": "@request.auth.id != \"\"",
-    "updateRule": "@request.auth.id != \"\"",
-    "deleteRule": "@request.auth.id != \"\"",
-    "options": {}
-  },
-  {
     "id": "y2m4qsbrjekwui0",
     "name": "categories",
     "type": "base",
@@ -850,52 +795,6 @@
     "options": {}
   },
   {
-    "id": "61iwwi03fob8tyg",
-    "name": "projects",
-    "type": "base",
-    "system": false,
-    "schema": [
-      {
-        "id": "gl2awepk",
-        "name": "name",
-        "type": "text",
-        "system": false,
-        "required": true,
-        "options": {
-          "min": null,
-          "max": null,
-          "pattern": ""
-        }
-      },
-      {
-        "id": "diquejl9",
-        "name": "targetDefined",
-        "type": "bool",
-        "system": false,
-        "required": false,
-        "options": {}
-      },
-      {
-        "id": "ae0b08rv",
-        "name": "targetYear",
-        "type": "number",
-        "system": false,
-        "required": false,
-        "options": {
-          "min": null,
-          "max": null
-        }
-      }
-    ],
-    "indexes": [],
-    "listRule": "@request.auth.id != \"\"",
-    "viewRule": "@request.auth.id != \"\"",
-    "createRule": "@request.auth.id != \"\"",
-    "updateRule": "@request.auth.id != \"\"",
-    "deleteRule": "@request.auth.id != \"\"",
-    "options": {}
-  },
-  {
     "id": "rnskc22j76iywo3",
     "name": "actions",
     "type": "base",
@@ -1007,6 +906,84 @@
     "createRule": "@collection.inputs.report.project.id ~ @request.auth.projects.id",
     "updateRule": "@collection.inputs.report.project.id ~ @request.auth.projects.id",
     "deleteRule": "@collection.inputs.report.project.id ~ @request.auth.projects.id",
+    "options": {}
+  },
+  {
+    "id": "r0aqkg6sh5uczzd",
+    "name": "targets",
+    "type": "base",
+    "system": false,
+    "schema": [
+      {
+        "id": "fdzd2wge",
+        "name": "project",
+        "type": "relation",
+        "system": false,
+        "required": false,
+        "options": {
+          "collectionId": "61iwwi03fob8tyg",
+          "cascadeDelete": false,
+          "minSelect": null,
+          "maxSelect": 1,
+          "displayFields": []
+        }
+      },
+      {
+        "id": "owmign0e",
+        "name": "year",
+        "type": "number",
+        "system": false,
+        "required": false,
+        "options": {
+          "min": null,
+          "max": null
+        }
+      },
+      {
+        "id": "mcqgjgl0",
+        "name": "percentage",
+        "type": "number",
+        "system": false,
+        "required": false,
+        "options": {
+          "min": null,
+          "max": null
+        }
+      }
+    ],
+    "indexes": [],
+    "listRule": "@request.auth.id != ''",
+    "viewRule": "@request.auth.id != ''",
+    "createRule": "@request.auth.id != ''",
+    "updateRule": "@request.auth.id != ''",
+    "deleteRule": "@request.auth.id != ''",
+    "options": {}
+  },
+  {
+    "id": "61iwwi03fob8tyg",
+    "name": "projects",
+    "type": "base",
+    "system": false,
+    "schema": [
+      {
+        "id": "gl2awepk",
+        "name": "name",
+        "type": "text",
+        "system": false,
+        "required": true,
+        "options": {
+          "min": null,
+          "max": null,
+          "pattern": ""
+        }
+      }
+    ],
+    "indexes": [],
+    "listRule": "@request.auth.id != \"\"",
+    "viewRule": "@request.auth.id != \"\"",
+    "createRule": "@request.auth.id != \"\"",
+    "updateRule": "@request.auth.id != \"\"",
+    "deleteRule": "@request.auth.id != \"\"",
     "options": {}
   }
 ]

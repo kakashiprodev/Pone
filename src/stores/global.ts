@@ -7,6 +7,7 @@ import {
   ProjectEntry,
   ReportEntry,
   SourceEntry,
+  TargetEntry,
 } from "./../services/types";
 import dataprovider from "./../services/dataprovider";
 import { info } from "../services/toast";
@@ -29,6 +30,7 @@ export interface GlobalState {
   // projects
   projects: ProjectEntry[];
   selectedProject: null | ProjectEntry;
+  targetsInProject: TargetEntry[];
   // reports
   reports: ReportEntry[];
   selectedReport: null | ReportEntry;
@@ -55,6 +57,7 @@ export const useGlobalStore = defineStore("global", {
     //
     projects: [],
     selectedProject: null,
+    targetsInProject: [],
     //
     reports: [],
     selectedReport: null,
@@ -184,13 +187,68 @@ export const useGlobalStore = defineStore("global", {
         await this.addProject({
           id: "new",
           name: "Mein erstes Projekt",
-          targetDefined: false,
-          targetYear: 0,
         });
         this.selectedProject = this.projects[0];
+        this.targetsInProject = [];
       } else {
+        // select the first project
         this.selectedProject = this.projects[0];
+        // load targets for the selected project
+        await this.refreshTargets();
       }
+    },
+
+    /**
+     * reload the cache for "targets" from backend for selected project.
+     */
+    async refreshTargets() {
+      this.targetsInProject = await dataprovider.readTargets();
+      this.sortTargets();
+    },
+
+    /**
+     * sort all targets by year in ascending order.
+     */
+    sortTargets() {
+      this.targetsInProject.sort((a, b) => a.year - b.year);
+    },
+
+    /**
+     * Add a new target to the cache and backend.
+     */
+    async addTarget(target: TargetEntry) {
+      const entryToAdd: any = target;
+      delete entryToAdd.id;
+      // ensure the selected project is set
+      target.project = this.selectedProject?.id ?? "";
+      const created = await dataprovider.createTarget(target);
+      this.targetsInProject.push(created);
+      this.sortTargets();
+      return created;
+    },
+
+    /**
+     * Update a target in the cache and backend.
+     */
+    async updateTarget(target: TargetEntry) {
+      const updated = await dataprovider.updateTarget(target);
+      const index = this.targetsInProject.findIndex((t) => t.id === target.id);
+      if (index > -1) {
+        this.targetsInProject[index] = updated;
+      }
+      this.sortTargets();
+      return updated;
+    },
+
+    /**
+     * Drop a target from the cache and backend.
+     */
+    async dropTarget(target: TargetEntry) {
+      await dataprovider.deleteTarget(target.id);
+      this.targetsInProject = this.targetsInProject.filter(
+        (t) => t.id !== target.id,
+      );
+      this.sortTargets();
     },
 
     /**
@@ -256,6 +314,8 @@ export const useGlobalStore = defineStore("global", {
       this.equivalents = this.equivalents.filter(
         (equivalent) => equivalent.project === project.id,
       );
+      // reload also targets
+      await this.refreshTargets();
     },
 
     /**

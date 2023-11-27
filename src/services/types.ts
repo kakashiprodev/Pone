@@ -75,8 +75,6 @@ export interface SourceEntry {
 export interface ProjectEntry {
   id: string;
   name: string;
-  targetDefined: boolean;
-  targetYear: number;
 }
 
 // table "categories"
@@ -109,4 +107,12 @@ export interface ActionEntry {
   finishedUntil: string; // date
   status: 'open' | 'inProgress' | 'finished' | 'canceled';
   progress: number; // 0-100
+}
+
+// table "targets"
+export interface TargetEntry {
+  id: string;
+  project: string; // reference on table projects
+  year: number;
+  percentage: number; // 0-100
 }

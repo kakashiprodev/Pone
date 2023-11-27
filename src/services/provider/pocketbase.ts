@@ -8,6 +8,7 @@ import {
   ProjectEntry,
   ReportEntry,
   SourceEntry,
+  TargetEntry,
   UserInputQuery,
 } from "../types";
 import { error } from "../toast";
@@ -116,8 +117,8 @@ export default class DataProvider {
     const res = await this.pb
       .collection("inputs").getList<InputEntry>(1, 500, {
         filter: `report = '${globalStore.selectedReport?.id}'${query?.scope
-            ? " && " + query.scope.map((s) => `scope="${s}"`).join(" || ")
-            : ""
+          ? " && " + query.scope.map((s) => `scope="${s}"`).join(" || ")
+          : ""
           }${query?.category
             ? " && " + query.category.map((c) => `category="${c}"`).join(" || ")
             : ""
@@ -298,4 +299,37 @@ export default class DataProvider {
   async deleteAction(id: string) {
     return await this.pb.collection("actions").delete(id);
   }
+
+  // CRUD for "targets"
+  async createTarget(data: TargetEntry) {
+    return await this.pb.collection("targets").create<TargetEntry>(data);
+  }
+
+  async readTarget(id: string) {
+    return await this.pb.collection("targets").getOne<TargetEntry>(id);
+  }
+
+  async readTargets() {
+    const res = await this.pb.collection("targets").getList<TargetEntry>(
+      1,
+      500,
+      {
+        filter: `project="${globalStore.selectedProject?.id}"`,
+      },
+    );
+    return res.items;
+  }
+
+  async updateTarget(data: TargetEntry) {
+    if (!data.id) throw new Error("Target ID is missing");
+    return await this.pb.collection("targets").update<TargetEntry>(
+      data.id,
+      data,
+    );
+  }
+
+  async deleteTarget(id: string) {
+    return await this.pb.collection("targets").delete(id);
+  }
+
 }
