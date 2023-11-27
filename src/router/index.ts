@@ -23,6 +23,11 @@ const routes = [
         name: "dashboard",
       },
       {
+        path: "/actions",
+        component: () => import("../views/Actions.vue"),
+        name: "actions",
+      },
+      {
         path: "/inputs/:scope?",
         component: () => import("../views/Inputs.vue"),
         name: "inputs",

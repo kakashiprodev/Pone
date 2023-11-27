@@ -21,6 +21,12 @@
 
         <ul class="topbar-menu-custom text-xl list-none" v-if="global.isLoggedIn">
             <li style="float: left;" class="ml-5">
+                <router-link to="/actions">
+                    <i class="fa-solid fa-list-check text-800"></i>
+                    <span class="ml-2 text-500">Maßnahmen</span>
+                </router-link>
+            </li>
+            <li style="float: left;" class="ml-5">
                 <router-link to="/report-config">
                     <i class="fa-solid fa-building text-800"></i>
                     <span class="ml-2 text-500">Berichtsdaten {{ global.selectedReport?.year }}</span>
