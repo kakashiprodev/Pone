@@ -23,7 +23,7 @@
             <li style="float: left;" class="ml-5">
                 <router-link to="/report-config">
                     <i class="fa-solid fa-building text-800"></i>
-                    <span class="ml-2 text-600">Berichtsdaten</span>
+                    <span class="ml-2 text-500">Berichtsdaten {{ global.selectedReport?.year }}</span>
                 </router-link>
             </li>
             <li style="float: left;" class="ml-5">
