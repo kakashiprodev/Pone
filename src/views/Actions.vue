@@ -159,7 +159,7 @@ const originalAction = ref(emptyAction);
 /** 
  * status translations dict
 */
-const statusTranslations = {
+const statusTranslations: any = {
     open: 'Geplant',
     inProgress: 'In Bearbeitung',
     finished: 'Abgeschlossen',
