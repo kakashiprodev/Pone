@@ -16,15 +16,23 @@
 
     <Dialog id="edit-create-input" v-model:visible="showDialog" modal
         :header="selectedValue.id === 'new' ? 'Anlegen' : 'Bearbeiten'"
-        :class="{ 'w-6': windowWidth > 990, 'w-full': windowWidth < 990, 'h-screen': windowWidth < 990 }">
+        :class="{ 'w-7': windowWidth > 990, 'w-full': windowWidth < 990, 'h-screen': windowWidth < 990 }">
 
         <div>
-            <div class="field">
+            <div class="mb-4">
+                <label for="userinput-name">Komforteingabe?</label>
+                <Checkbox v-model="comfortInputActive" :binary="true" class="ml-2" />
+            </div>
+
+            <Steps v-if="comfortInputActive" :model="items" v-model:activeStep="actStep" :readonly="true" class="mb-3" />
+
+            <!-- step 0 -->
+            <div class="field" v-if="comfortInputActive && actStep === 0">
                 <label for="userinput-name">Vorauswahl</label>
                 <Listbox v-model="selectedPreset" :options="presets" optionLabel="name" class="w-full"
                     @change="selectPreset" />
             </div>
-            <div class="field" v-if="selectedPreset != null">
+            <div class="field" v-if="comfortInputActive && actStep === 0 && selectedPreset != null">
                 <label for="userinput-equivalent">Äquivalent</label>
                 <div>
                     <Listbox v-model="selectedValue.equivalent" :options="filteredEquivalents" option-label="name"
@@ -32,16 +40,18 @@
                 </div>
             </div>
 
-            <div class="field">
+            <!-- step 1 -->
+            <div class="field" v-show="!comfortInputActive || actStep === 1">
                 <label for="userinput-name">Name</label>
                 <InputText class="w-full" v-model="selectedValue.name" id="userinput-name" />
             </div>
-            <div class="field">
+            <div class="field" v-show="!comfortInputActive || actStep === 1">
                 <label for="userinput-comment">Kommentar</label>
                 <InputText class="w-full" v-model="selectedValue.comment" id="userinput-comment" />
             </div>
 
-            <div class="field">
+            <!-- step 2 -->
+            <div class="field" v-show="!comfortInputActive || actStep === 2">
                 <label for="userinput-rawvalue">
                     Eingabewert {{ choosenEquivalent ? ' in ' + choosenEquivalent.in : '' }}
                 </label>
@@ -50,19 +60,25 @@
                     :max-fraction-digits="10" />
             </div>
             <!-- helping information -->
-            <div class="field">
-                <label for="userinput-sum">Berechnung</label>
+            <div class="field mt-3" v-show="!comfortInputActive || actStep === 2">
+                <h6>Berechnung</h6>
                 <p style="white-space: pre-wrap;">
                     {{ computedSumCalculation }}
                 </p>
             </div>
-            <div class="field">
+            <div class="field" v-show="!comfortInputActive || actStep === 2">
                 <label for="userinput-sum">Menge (berechnet)</label>
                 <InputNumber :disabled="true" class="w-full" v-model="computedSumValue" id="userinput-sum"
                     :use-grouping="false" suffix=" to" :min-fraction-digits="0" :max-fraction-digits="10" />
             </div>
         </div>
-        <div>
+
+        <div v-show="comfortInputActive" class="flex align-items-center justify-content-center">
+            <Button :label="'Zurück'" @click="decStep" class="flex-grow-1 mr-1" :disabled="actStep === 0" />
+            <Button :label="'Weiter'" @click="incStep" class="flex-grow-1 ml-1" :disabled="actStep === 2" />
+        </div>
+
+        <div v-show="!comfortInputActive || actStep === 2" class="mt-3">
             <Button :label="selectedValue.id === 'new' ? 'Anlegen' : 'Speichern'" @click="save" />
         </div>
     </Dialog>
@@ -109,6 +125,8 @@ import InputText from 'primevue/inputtext';
 import Dialog from 'primevue/dialog';
 import Listbox from 'primevue/listbox';
 import InlineMessage from 'primevue/inlinemessage';
+import Checkbox from 'primevue/checkbox';
+import Steps from 'primevue/steps';
 import { Equivalent, InputEntry, PresetEntry } from './../services/types';
 import dataprovider from "./../services/dataprovider";
 import { Ref, ref, computed, watch, ComputedRef } from 'vue';
@@ -123,11 +141,34 @@ const windowWidth = ref(window.innerWidth);
 const global = useGlobalStore();
 const router = useRouter();
 
+// wizard steps
+const items = [
+    {
+        label: 'Faktor'
+    },
+    {
+        label: 'Name'
+    },
+    {
+        label: 'Werteingabe'
+    }
+];
+const actStep = ref(0);
+const incStep = () => {
+    actStep.value++;
+}
+const decStep = () => {
+    actStep.value--;
+}
+
 // ensure that a report is selected
 if (!global.selectedReport && global.isLoggedIn) {
     error('Bitte legen Sie einen zunächst einen Bericht an.');
     router.push({ name: 'reportConfig' })
 }
+
+// input dialog input type
+const comfortInputActive = ref(true);
 
 // get "category" from route
 const route = useRoute();
@@ -167,7 +208,7 @@ const selectedValue: Ref<InputEntry> = ref(emptyInput);
 const originalValue: Ref<InputEntry> = ref(emptyInput);
 
 // preset selection
-const selectedPreset = ref('');
+const selectedPreset: Ref<string | null> = ref(null);
 
 const filteredEquivalents: Ref<Equivalent[]> = ref([]);
 const selectPreset = (val: any) => {
