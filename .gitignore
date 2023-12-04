@@ -44,3 +44,4 @@ viewer/assets/
 .dev/pb_public/**/*
 viewer/[path].paths.ts.*.mjs
 assets/pocketbase/import/__pycache__/**/*
+assets/Faktoren/*.json
