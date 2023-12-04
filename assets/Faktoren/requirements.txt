@@ -1,0 +1,4 @@
+pandas
+pocketbase
+python-dotenv
+openpyxl

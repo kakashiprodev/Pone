@@ -14,4 +14,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
 # Run the command to start your application
-CMD ["python", "./convert_xls.py"]
+CMD ["python", "./convert_xls.py", "/app/import/231192_CO2-Faktoren 2023.xlsx", "false"]
