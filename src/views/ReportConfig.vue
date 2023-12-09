@@ -45,14 +45,6 @@
           </div>
         </template>
       </div>
-      <h5>Bevorzugte Datenquelle für Äquivalente</h5>
-      <div class="field grid">
-        <label for="datasource" class="col-12 mb-2 md:col-4 md:mb-0">Quelle</label>
-        <div class="col-12 md:col-8">
-          <Dropdown v-model="reportForm.baseEquivalentSource" :options="global.sources" optionLabel="name"
-            optionValue="id" placeholder="Wählen Sie eine Quelle" class="w-full" />
-        </div>
-      </div>
 
       <Button class="mt-3" v-if="reportForm" @click="saveReport()"
         :label="reportForm.id === 'new' ? 'Hinzufügen' : 'Speichern'" />
@@ -95,21 +87,21 @@ watch(() => global.selectedReport, () => {
 });
 const reportSchema = object({
   id: string(),
-  project: string(),
-  year: number([minValue(1900), maxValue(2100)]),
-  companyName: string([minLength(1), maxLength(255)]),
-  companyStreet: string([minLength(2), maxLength(255)]),
-  companyPostal: string([minLength(4), maxLength(6)]),
-  companyCity: string([minLength(2), maxLength(255)]),
-  companyCountry: string([minLength(4), maxLength(255)]),
-  contactName: string([minLength(8), maxLength(255)]),
-  contactTelephone: string([minLength(2), maxLength(255)]),
+  project: string('Es ist kein Projekt angegeben.', [minLength(4, 'Die Angabe Projekt ist fehlerhaft.'), maxLength(15, 'Die Angabe Projekt ist fehlerhaft.')]),
+  year: number([minValue(1900, 'Es muss ein gültiges Jahr angegeben werden.'), maxValue(2100, 'Es muss ein gültiges Jahr angegeben werden.')]),
+  companyName: string([minLength(1, 'Der Firmenname muss zwischen 1 und 255 Zeichen liegen.'), maxLength(255, 'Der Firmenname muss zwischen 1 und 255 Zeichen liegen.')]),
+  companyStreet: string([minLength(2, 'Der Straßenname muss zwischen 2 und 255 Zeichen liegen'), maxLength(255, 'Der Straßenname muss zwischen 2 und 255 Zeichen liegen')]),
+  companyPostal: string([minLength(4, 'Die Postleitzahl muss min. 4 Zeichen beinhalten'), maxLength(6, 'Die Postleitzahl kann max 5 Zeichen beinhalten')]),
+  companyCity: string([minLength(2, 'Die Stadt muss zwischen 2 und 255 Zeichen lang sein'), maxLength(255, 'Die Stadt muss zwischen 2 und 255 Zeichen lang sein')]),
+  companyCountry: string([minLength(2, 'Das Land muss zwischen 2 und 255 Zeichen lang sein'), maxLength(255, 'Das Land muss zwischen 2 und 255 Zeichen lang sein')]),
+  contactName: string([minLength(2, 'Der Kontaktname muss zwischen 2 und 255 Zeichen lang sein'), maxLength(255, 'Der Kontaktname muss zwischen 2 und 255 Zeichen lang sein')]),
+  contactTelephone: string([minLength(2, 'Die Telefonnummer muss min. 2 Zeichen lang sein'), maxLength(255, 'Die Telefonnummer kann max 255 Zeichen lang sein')]),
   contactEmail: string([email()]),
-  contactDomain: string([minLength(2), maxLength(255)]),
-  countEmployees: number([minValue(1)]),
-  businessTurnover: number([minValue(0)]),
-  baseYear: number([minValue(1900), maxValue(2100)]),
-  baseEquivalentSource: string([minLength(4), maxLength(255)]),
+  contactDomain: string([minLength(2, 'Die Abteilung muss zwischen 2 und 255 Zeichen lang sein'), maxLength(255, 'Die Abteilung muss zwischen 2 und 255 Zeichen lang sein')]),
+  countEmployees: number([minValue(1, 'Die Anzahl Mitarbeiter muss min. 1 betragen')]),
+  businessTurnover: number([minValue(0, 'Der Umsatz muss min. 0 betragen')]),
+  baseYear: number([minValue(1900, 'Bitte ein gültiges Basisjahr angeben'), maxValue(2100, 'Bitte ein gültiges Basisjahr angeben')]),
+  // baseEquivalentSource: string([minLength(4), maxLength(255)]),
 });
 
 const reportTranslations: any = {
@@ -165,7 +157,7 @@ const saveReport = async () => {
     }
     info('Bericht gespeichert');
   } catch (e) {
-    error(e + '');
+    error((e + "").replace("ValiError: ", ""));
   }
 };
 
