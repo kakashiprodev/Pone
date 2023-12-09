@@ -15,6 +15,8 @@
             <label class="ml-1" for="scope3Active">3</label>
         </template>
         <template #end>
+            <Button icon="fa-solid fa-wand-magic-sparkles"
+                @click="selectedValue = clone(emptyInput); showComfortInput = true" class="mr-1" />
             <Button icon="fa-solid fa-plus" @click="selectedValue = clone(emptyInput); showDialog = true" class="mr-1" />
             <Button icon="fa-solid fa-download" @click="download()" />
         </template>
@@ -30,6 +32,61 @@
             <Button class="ml-1" label="Auswahl leeren"
                 @click="selectedValue.equivalent = null; showChooseEquivalent = false;" />
             <Button class="ml-1" label="Abbrechen" @click="selectedValue = originalValue; showChooseEquivalent = false;" />
+        </div>
+    </Dialog>
+
+    <!-- comfort input -->
+    <Dialog header="Konforteingabe" id="create-input-comfort" v-model:visible="showComfortInput" :class="{ 'w-9': true }"
+        maximizable>
+
+        <!-- step 1 -->
+        <div class="card" v-if="actualComfortStep === 0">
+            <SmartEquivalentList v-model="selectedValue.equivalent" :comfort-mode="true" />
+        </div>
+
+        <!-- step 2 -->
+        <div class="card" v-if="actualComfortStep === 1">
+            <div class="field">
+                <label for="userinput-name">Name</label>
+                <InputText class="w-full" v-model="selectedValue.name" id="userinput-name" />
+            </div>
+            <div class="field">
+                <label for="userinput-comment">Kommentar</label>
+                <InputText class="w-full" v-model="selectedValue.comment" id="userinput-comment" />
+            </div>
+        </div>
+
+        <!-- step 3 -->
+        <div class="card" v-if="actualComfortStep === 2">
+            <div class="field">
+                <label for="userinput-rawvalue">
+                    Eingabewert {{ choosenEquivalent ? ' in ' + choosenEquivalent.in : '' }}
+                </label>
+                <InputNumber class="w-full" v-model="selectedValue.rawValue" id="userinput-rawvalue" :use-grouping="false"
+                    :suffix="choosenEquivalent ? ' ' + choosenEquivalent.in : ''" :min-fraction-digits="0"
+                    :max-fraction-digits="10" />
+            </div>
+            <!-- helping information -->
+            <div class="field" v-if="computedSumCalculation !== ''">
+                <label for="userinput-sum">Berechnungsschritte</label>
+                <p style="white-space: pre-wrap;">
+                    {{ computedSumCalculation }}
+                </p>
+            </div>
+            <div class="field">
+                <label for="userinput-sum">Menge (berechnet)</label>
+                <InputNumber :disabled="true" class="w-full" v-model="computedSumValue" id="userinput-sum"
+                    :use-grouping="true" :min-fraction-digits="0" :max-fraction-digits="10" :suffix="' kg'" />
+            </div>
+        </div>
+
+        <!-- Step Buttons -->
+        <div class="flex align-items-center justify-content-center">
+            <Button :label="'Zurück'" @click="decStep" class="flex-grow-1 mr-1" :disabled="actualComfortStep === 0" />
+            <Button v-if="actualComfortStep < 2" :label="'Weiter'" @click="incStep" class="flex-grow-1 ml-1"
+                :disabled="(actualComfortStep === 0 && selectedValue.equivalent == null)" />
+            <Button v-else :label="'Anlegen'" @click="save" class="flex-grow-1 ml-1"
+                :disabled="selectedValue.rawValue == null" />
         </div>
     </Dialog>
 
@@ -166,7 +223,21 @@ import { error } from './../services/toast';
 import { useConfirm } from 'primevue/useconfirm';
 import { getSumForInput, getCalculationSteps } from "./../services/reporting";
 import { useRouter } from 'vue-router';
+import { parse, string, object, number, minLength, maxLength, minValue, maxValue, nullable } from "valibot";
 const router = useRouter();
+
+// input validation
+const inputEntrySchema = object({
+    id: string('Die ID scheint korrupt zu sein.'),
+    name: string([minLength(1, 'Name zu kurz'), maxLength(255, 'Name zu lang')]),
+    scope: number([minValue(1, 'Scope muss zwischen 1 und 3 liegen'), maxValue(3, 'Scope muss zwischen 1 und 3 liegen')]),
+    comment: string([maxLength(255, 'Kommentar zu lang')]),
+    rawValue: number('Ein Wert muss angegeben werden.'),
+    sumValue: number('Ein valider Summenwert muss errechnet sein.'),
+    equivalent: nullable(string([maxLength(255, 'Referenz auf equivalents zu lang')])),
+    report: string([minLength(1, 'Referenz auf Report ist inkorrekt'), maxLength(255, 'Referenz auf Report ist inkorrekt')]),
+    category: nullable(string([maxLength(255, 'Kategorie zu lang')]))
+});
 
 // toolbar
 const scope1Active = ref(true);
@@ -174,6 +245,24 @@ const scope2Active = ref(true);
 const scope3Active = ref(true);
 
 const windowWidth = ref(window.innerWidth);
+
+// comfort input
+const showComfortInput = ref(false);
+const actualComfortStep = ref(0);
+const incStep = () => {
+    actualComfortStep.value++;
+}
+const decStep = () => {
+    actualComfortStep.value--;
+}
+
+watch(() => showComfortInput.value, () => {
+    if (!showComfortInput.value) {
+        // reset all on close
+        console.log('reset comfort input');
+        actualComfortStep.value = 0;
+    }
+})
 
 // get "scope" from route
 const route = useRoute();
@@ -245,6 +334,16 @@ const clone = (input: InputEntry) => {
 const selectedValue: Ref<InputEntry> = ref(emptyInput);
 const originalValue: Ref<InputEntry> = ref(emptyInput);
 
+// watch selectedValue.equivalent in comfort mode to change the name and comment
+watch(() => selectedValue.value.equivalent, () => {
+    if (selectedValue.value.equivalent != null && selectedValue.value.equivalent !== '') {
+        const equivalent = global.equivalentDict[selectedValue.value.equivalent];
+        selectedValue.value.name = equivalent.specification1;
+        selectedValue.value.comment = equivalent.comment ?? "";
+        // selectedValue.category = equivalent.category;
+    }
+});
+
 const computedSumValue = computed(() => {
     return getSumForInput(selectedValue.value, global.equivalentDict);
 });
@@ -257,21 +356,29 @@ const computedSumCalculation: ComputedRef<string> = computed(() => {
 });
 const save = async () => {
     try {
+        // validate
+        parse(inputEntrySchema, selectedValue.value);
+
         if (selectedValue.value.id === 'new') {
             const toCreate = clone(selectedValue.value);
             delete toCreate.id;
             const created = await dataprovider.createUserInput(toCreate);
             data.value.push(created);
+
             showDialog.value = false;
+            showComfortInput.value = false;
+
             selectedValue.value = clone(emptyInput);
         } else {
             const updated = await dataprovider.updateUserInput(selectedValue.value);
             const index = data.value.findIndex((item) => item.id === updated.id);
             data.value[index] = updated;
+
             showDialog.value = false;
+            showComfortInput.value = false;
         }
     } catch (e) {
-        error(e + "");
+        error((e + "").replace("ValiError: ", ""));
     }
 }
 

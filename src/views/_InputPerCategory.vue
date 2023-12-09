@@ -90,7 +90,7 @@
         <Column field="equivalent" header="Äquivalent">
             <template #body="{ data }">
                 <div v-if="data.equivalent != null && data.equivalent !== ''">
-                    {{ global.equivalentDict[data.equivalent]?.name ?? 'Reference error' }}
+                    {{ global.equivalentDict[data.equivalent]?.specification1 ?? 'Reference error' }}
                 </div>
                 <div v-else>
                 </div>
@@ -127,7 +127,7 @@ import Listbox from 'primevue/listbox';
 import InlineMessage from 'primevue/inlinemessage';
 import Checkbox from 'primevue/checkbox';
 import Steps from 'primevue/steps';
-import { Equivalent, InputEntry, PresetEntry } from './../services/types';
+import { EquivalentEntry, InputEntry, PresetEntry } from './../services/types';
 import dataprovider from "./../services/dataprovider";
 import { Ref, ref, computed, watch, ComputedRef } from 'vue';
 import { useRoute } from 'vue-router';
@@ -181,7 +181,7 @@ watch(category, async () => {
 });
 
 // actual choosen equivalent. to show the name and unit in the input field
-const choosenEquivalent: ComputedRef<null | Equivalent> = computed(() => {
+const choosenEquivalent: ComputedRef<null | EquivalentEntry> = computed(() => {
     try {
         return global.equivalentDict[selectedValue.value.equivalent ?? ""];
     } catch (e) {
@@ -210,7 +210,7 @@ const originalValue: Ref<InputEntry> = ref(emptyInput);
 // preset selection
 const selectedPreset: Ref<string | null> = ref(null);
 
-const filteredEquivalents: Ref<Equivalent[]> = ref([]);
+const filteredEquivalents: Ref<EquivalentEntry[]> = ref([]);
 const selectPreset = (val: any) => {
     const preset: PresetEntry = val.value;
     // console.log(preset);
@@ -230,7 +230,7 @@ const selectPreset = (val: any) => {
     filteredEquivalents.value = global.equivalents.filter((item) => {
         if (equivalentsFromPreset != null && unitsFromPreset != null) {
             return equivalentsFromPreset.some((equivalent) => {
-                return item.name.toLowerCase().includes(equivalent.toLowerCase());
+                return item.specification1.toLowerCase().includes(equivalent.toLowerCase());
             }) && unitsFromPreset.some((unit) => {
                 return item.in.toLowerCase() === unit.toLowerCase();
             });
@@ -238,7 +238,7 @@ const selectPreset = (val: any) => {
 
         if (equivalentsFromPreset != null) {
             return equivalentsFromPreset.some((equivalent) => {
-                return item.name.toLowerCase().includes(equivalent.toLowerCase());
+                return item.specification1.toLowerCase().includes(equivalent.toLowerCase());
             });
         }
         if (unitsFromPreset != null) {
