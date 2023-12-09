@@ -1,11 +1,15 @@
 <template>
     <div v-if="true">
-        <FormLine label="Filter auf Scope" v-if="!categoriesFilteredByScope">
+        <FormLine v-if="!comfortMode && !categoriesFilteredByScope" label="Filter auf Scope">
             <MultiSelect v-model="filter.scope" :options="[1, 2, 3]" class="w-full" />
         </FormLine>
-        <FormLine label="Filter auf Kategorie">
+        <HorizontalScopeSwitch v-else v-model="filter.scope" />
+
+        <FormLine v-if="!comfortMode" label="Filter auf Kategorie">
             <MultiSelect v-model="filter.category" :options="filteredCategories" class="w-full" />
         </FormLine>
+        <Listbox v-else v-model="filter.category" :options="filteredCategories" class="w-full mb-2" />
+
         <FormLine label="Name">
             <InputText v-model="filter.text" placeholder="Allgemeiner Textfiler auf alle Namen und Spezifikationen"
                 class="w-full" />
@@ -80,6 +84,8 @@ import { useGlobalStore } from "./../stores/global";
 import { PropType, Ref, ref, watch } from 'vue';
 import { EquivalentEntry } from './../services/types';
 import FormLine from './FormLine.vue';
+import HorizontalScopeSwitch from './HorizontalScopeSwitch.vue';
+import Listbox from 'primevue/listbox';
 // import { Equivalent } from './../services/types';
 
 const global = useGlobalStore();
@@ -236,6 +242,11 @@ const props = defineProps({
         required: false,
         default: false,
     },
+    comfortMode: {
+        type: Boolean,
+        required: false,
+        default: false,
+    },
 });
 if (props.visibleColumns) {
     _visibleColumns.value = props.visibleColumns;
@@ -257,25 +268,29 @@ if (props.filterBy) {
         scope: [1, 2, 3],
     };
 }
+if (props.categoriesFilteredByScope) {
+    console.log('set categoriesFilteredByScope', props.categoriesFilteredByScope);
+    filter.value.scope = [parseInt(props.categoriesFilteredByScope)];
+}
 
 const filteredCategories = ref<string[]>([]);
-if (props.categoriesFilteredByScope) {
-    const scope = props.categoriesFilteredByScope;
-    if (scope === '1' || scope === '2' || scope === '3') {
-        const all: any = global.equivalentFilters.category;
-        filteredCategories.value = all['scope' + props.categoriesFilteredByScope];
-        filter.value.scope = [parseInt(props.categoriesFilteredByScope)];
-        // remove "scope" from visible columns
+const updateFilteredCategories = () => {
+    const all: any = global.equivalentFilters.category;
+    console.log('updateFilteredCategories');
+    if (props.categoriesFilteredByScope || props.comfortMode) {
+        const scope = 'scope' + (filter.value.scope && filter.value.scope[0] ? filter.value.scope[0].toString() : '1');
+        filteredCategories.value = all[scope];
+        // remove "scope" from visible columns since it is already filtered
         const index = _visibleColumns.value.indexOf('scope');
         if (index > -1) {
             _visibleColumns.value.splice(index, 1);
         }
     } else {
-        console.error('categoriesFilteredByScope must be 1, 2 or 3');
+        filteredCategories.value = global.equivalentFilters.category.all;
     }
-} else {
-    filteredCategories.value = global.equivalentFilters.category.all;
 }
+updateFilteredCategories();
+watch(() => filter.value.scope, () => updateFilteredCategories());
 
 // selection
 const selection: Ref<null | EquivalentEntry> = ref(null);

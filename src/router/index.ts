@@ -32,11 +32,11 @@ const routes = [
         component: () => import("../views/Inputs.vue"),
         name: "inputs",
       },
-      {
-        path: "/inputPerCategory/:category?",
-        component: () => import("../views/InputPerCategory.vue"),
-        name: "inputPerCategory",
-      },
+      // {
+      //   path: "/inputPerCategory/:category?",
+      //   component: () => import("../views/InputPerCategory.vue"),
+      //   name: "inputPerCategory",
+      // },
       {
         path: "/equivalents/",
         component: () => import("../views/EquivalentList.vue"),
