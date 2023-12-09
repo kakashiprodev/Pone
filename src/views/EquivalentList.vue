@@ -1,5 +1,5 @@
 <template>
-    <Toolbar>
+    <Toolbar :class="{ 'mb-3': !global.showTooltips }">
         <template #end>
             <Button icon="fa-solid fa-plus" @click="selectedValue = emptyEquivalent(); showDialog = true" />
         </template>
@@ -12,6 +12,7 @@
         Hierbei entspricht die Ausgangseinheit des Eingabewertes der Eingangseinheit des überliegenden Faktors.
     </InlineMessage>
 
+    <!-- Dialog to choose the parent equivalent if needed -->
     <Dialog v-model:visible="showChooseEquivalent" modal header="Wählen Sie einen Faktor"
         :class="{ 'w-6': windowWidth > 990, 'w-full': windowWidth < 990, 'h-screen': windowWidth < 990 }">
         <DataTable class="cst-no-hover mt-3" :value="filteredEquivalents">
@@ -29,45 +30,74 @@
         <Button label="Abbrechen" @click="showChooseEquivalent = false;" />
     </Dialog>
 
+    <!-- Dialog to add a new equivalent -->
     <Dialog v-model:visible="showDialog" modal :header="selectedValue.id === 'new' ? 'Anlegen' : 'Bearbeiten'"
         :class="{ 'w-6': windowWidth > 990, 'w-full': windowWidth < 990, 'h-screen': windowWidth < 990 }">
         <div>
+            <!-- Naming -->
             <div class="field">
-                <label for="equivalent-name">Name*</label>
-                <InputText class="w-full" v-model="selectedValue.name" id="equivalent-name" />
-                <InlineMessage v-if="global.showTooltips" class="w-full mt-1" severity="info">Name des Umrechnungsfaktors.
+                <label for="equivalent-name">Scope*</label>
+                <InputNumber class="w-full" v-model="selectedValue.scope" id="equivalent-scope" />
+                <InlineMessage v-if="global.showTooltips" class="w-full mt-1" severity="info">
+                    Zu welchem Scope gehört der Umrechnungsfaktor.
+                </InlineMessage>
+            </div>
+            <div class="field">
+                <label for="equivalent-spec1">Spezifikation 1 (Hauptname)*</label>
+                <InputText class="w-full" v-model="selectedValue.specification1" id="equivalent-spec1" />
+                <InlineMessage v-if="global.showTooltips" class="w-full mt-1" severity="info">
+                    Dies ist der Hauptname. Es können bis zu drei Spezifikationen angegeben werden, falls
+                    Unterscheidungsmerkmale benötigt werden.
+                </InlineMessage>
+            </div>
+            <div class="field">
+                <label for="equivalent-spec2">Spezifikation 2</label>
+                <InputText class="w-full" v-model="selectedValue.specification2" id="equivalent-spec2" />
+            </div>
+            <div class="field">
+                <label for="equivalent-spec3">Spezifikation 3</label>
+                <InputText class="w-full" v-model="selectedValue.specification3" id="equivalent-spec3" />
+            </div>
+            <div class="field">
+                <label for="equivalent-alt-name">Zusätzlicher Name</label>
+                <InputText class="w-full" v-model="selectedValue.addName1" id="equivalent-alt-name" />
+                <InlineMessage v-if="global.showTooltips" class="w-full mt-1" severity="info">
+                    Dies kann z.B. ein chemisches Formelzeichen sein oder eine alternative technische Bezeichnung
+                    zur besseren Suchbarkeit.
                 </InlineMessage>
             </div>
             <div class="field">
                 <label for="equivalent-comment">Kommentar</label>
                 <InputText class="w-full" v-model="selectedValue.comment" id="equivalent-comment" />
-                <InlineMessage v-if="global.showTooltips" class="w-full mt-1" severity="info">Eine optionale Bemerung zur
-                    Eingabe.</InlineMessage>
+                <InlineMessage v-if="global.showTooltips" class="w-full mt-1" severity="info">
+                    Eine optionale Bemerkung zur Eingabe.
+                </InlineMessage>
             </div>
+
+            <!-- Technical -->
             <div class="field">
                 <label for="equivalent-unit-in">Einheit Eingang*</label>
                 <InputText class="w-full" v-model="selectedValue.in" id="equivalent-unit-in" />
-                <InlineMessage v-if="global.showTooltips" class="w-full mt-1" severity="info">Der "Eingang" entspricht der
-                    Einheit in der die Werte eingegeben werden.</InlineMessage>
+                <InlineMessage v-if="global.showTooltips" class="w-full mt-1" severity="info">
+                    Der "Eingang" entspricht der
+                    Einheit in der die Werte eingegeben werden.
+                </InlineMessage>
             </div>
             <div class="field">
                 <label for="equivalent-unit-out">Einheit Ausgang*</label>
                 <InputText class="w-full" v-model="selectedValue.out" id="equivalent-unit-out" />
-                <InlineMessage v-if="global.showTooltips" class="w-full mt-1" severity="info">Der "Ausgang" entspricht der
+                <InlineMessage v-if="global.showTooltips" class="w-full mt-1" severity="info">
+                    Der "Ausgang" entspricht der
                     Einheit in die umgerechnet wird. Wenn keine übergeordnete Berechnung verknüpft wird muss(!) Die
-                    Ausgangseinheit kg-CO2 entsprechen.</InlineMessage>
+                    Ausgangseinheit kg-CO2 entsprechen.
+                </InlineMessage>
             </div>
             <div class="field">
                 <label for="equivalent-source">Quelle*</label>
                 <InputText class="w-full" :value="'Benutzereingabe'" id="equivalent-source" />
-                <InlineMessage v-if="global.showTooltips" class="w-full mt-1" severity="info">Angabe woher der Faktor stammt
-                    (Berechnungsgrundlage)</InlineMessage>
-            </div>
-            <div class="field">
-                <label for="equivalent-validity">Gültigkeit (Jahr)*</label>
-                <InputNumber class="w-full" v-model="selectedValue.year" id="equivalent-validity" :use-grouping="false" />
-                <InlineMessage v-if="global.showTooltips" class="w-full mt-1" severity="info">In welchem Jahr is dieser Wert
-                    gültig</InlineMessage>
+                <InlineMessage v-if="global.showTooltips" class="w-full mt-1" severity="info">
+                    Angabe woher der Faktor stammt (Berechnungsgrundlage)
+                </InlineMessage>
             </div>
             <div class="field">
                 <label for="equivalent-monthlyValues">Monatliche Eingaben?</label>
@@ -200,7 +230,7 @@
                 <label for="equivalent-parent-selector">Überliegende Berechnung (optional)</label>
                 <div>
                     <Button
-                        :label="selectedValue.parent ? global.equivalentDict[selectedValue.parent].name : 'Wählen Sie einen Faktor'"
+                        :label="selectedValue.parent ? global.equivalentDict[selectedValue.parent].specification1 : 'Wählen Sie einen Faktor'"
                         @click="showChooseEquivalent = true" />
                     <Button v-if="selectedValue.parent" icon="fa-solid fa-trash" @click="selectedValue.parent = null"
                         class="ml-1" />
@@ -219,42 +249,9 @@
     </Dialog>
 
     <ConfirmPopup></ConfirmPopup>
-    <DataTable class="cst-no-hover mt-3" v-if="global.equivalents.length > 0" :value="global.equivalents">
-        <!-- <Column field="id" header="Id"></Column> -->
-        <Column field="name" header="Name"></Column>
-        <Column field="comment" header="Kommentar"></Column>
-        <Column field="source" header="Quelle">
-            <template #body="{ data }">
-                <span>{{ global.sourcesDict[data.source]?.name ?? "Benutzereingabe" }}</span>
-            </template>
-        </Column>
-        <Column header="Jahres Durschnittswert">
-            <template #body="{ data }">
-                <span>{{ roundString(data.avgValue) }}</span>
-            </template>
-        </Column>
-        <Column header="Einheit">
-            <template #body="{ data }">
-                <span>{{ data.in }}/{{ data.out }}</span>
-            </template>
-        </Column>
-        <Column header="Überliegend">
-            <template #body="{ data }">
-                <span v-if="data.parent">{{ global.equivalentDict[data.parent]?.name }}</span>
-            </template>
-        </Column>
-        <Column header="">
-            <template #body="{ data }">
-                <div v-if="data.source.length < 1" class="flex">
-                    <Button icon="fa-solid fa-edit" @click="selectedValue = data; showDialog = true" />
-                    <Button icon="fa-solid fa-trash" @click="deleteEquivalent(data, $event)" class="ml-1" />
-                </div>
-                <div v-else>
-                    -
-                </div>
-            </template>
-        </Column>
-    </DataTable>
+
+    <SmartEquivalentList :showEditColumns="true" @edit="selectedValue = $event.data; showDialog = true;"
+        @delete="deleteEquivalent($event.data, $event.event)" :refresh="refreshTrigger" />
 </template>
 
 <script setup lang="ts">
@@ -270,12 +267,13 @@ import ConfirmPopup from 'primevue/confirmpopup';
 import { getAverageEquivalent } from "./../services/reporting";
 import { useGlobalStore } from "./../stores/global";
 import { Ref, ref, watchEffect, computed } from 'vue';
-import { Equivalent } from './../services/types';
+import { EquivalentEntry } from './../services/types';
 import { error, info } from './../services/toast';
 import { useConfirm } from "primevue/useconfirm";
-import { parse, string, object, number, boolean, minLength, maxLength } from "valibot";
+import { parse, string, object, number, boolean, minLength, maxLength, minValue, maxValue, nullable } from "valibot";
 import { roundString } from './../pipes';
 import InlineMessage from 'primevue/inlinemessage';
+import SmartEquivalentList from './../components/SmartEquivalentList.vue';
 
 const windowWidth = ref(window.innerWidth);
 
@@ -294,14 +292,19 @@ const filteredEquivalents = computed(() => {
     }
 });
 
-const emptyEquivalent = (): Equivalent => {
+const emptyEquivalent = (): EquivalentEntry => {
     return {
         id: 'new',
-        name: '',
+        scope: 3,
+        addName1: '',
+        category: 'Benutereingaben',
+        specification1: '',
+        specification2: '',
+        specification3: '',
         comment: '',
         in: '',
         out: '',
-        source: null,
+        source: 'Benutzereingabe',
         avgValue: null as any,
         monthlyValues: false,
         project: global.selectedProject?.id ?? '',
@@ -318,37 +321,40 @@ const emptyEquivalent = (): Equivalent => {
         nov: null,
         dec: null,
         parent: null,
-        year: global.selectedReport?.year ?? ((new Date()).getFullYear() - 1),
     }
 }
 
 const equivalentSchema = object({
-    id: string([minLength(1), maxLength(255)]),
-    name: string([minLength(4), maxLength(255)]),
-    comment: string(),
-    in: string([minLength(1), maxLength(10)]),
-    out: string([minLength(1), maxLength(10)]),
-    // source: string(),
-    avgValue: number(),
+    id: string([minLength(3, 'ID zu kurz'), maxLength(255, 'ID zu lang')]),
+    category: string([minLength(3, 'Kategorie zu kurz'), maxLength(255, 'Kategorie zu lang')]),
+    scope: number([minValue(1, 'Scope muss zwischen 1 und 3 liegen'), maxValue(3, 'Scope muss zwischen 1 und 3 liegen')]),
+    specification1: string([minLength(1, 'Spezifikation 1 zu kurz'), maxLength(255, 'Spezifikation 1 zu lang')]),
+    specification2: nullable(string([maxLength(255, 'Spezifikation 2 zu lang')])),
+    specification3: nullable(string([maxLength(255, 'Spezifikation 3 zu lang')])),
+    addName1: nullable(string([maxLength(255, 'Zusatzname zu lang')])),
+    comment: nullable(string([maxLength(255, 'Kommentar zu lang')])),
+    in: string([minLength(1, 'Eingangseinheit zu kurz'), maxLength(10, 'Eingangseinheit zu lang')]),
+    out: string([minLength(1, 'Ausgangseinheit zu kurz'), maxLength(10, 'Ausgangseinheit zu lang')]),
+    source: string([minLength(1, 'Quelle zu kurz'), maxLength(255, 'Quelle zu lang')]),
+    avgValue: number('Es muss ein Faktor angegeben werden.', [minValue(0, 'Faktor muss größer als 0 sein')]),
     monthlyValues: boolean(),
-    // project: string(),
-    jan: number(),
-    feb: number(),
-    mar: number(),
-    apr: number(),
-    may: number(),
-    jun: number(),
-    jul: number(),
-    aug: number(),
-    sep: number(),
-    oct: number(),
-    nov: number(),
-    dec: number(),
-    // parent: string(),
-    year: number(),
+    jan: nullable(number([minValue(0, 'Faktor für Januar muss größer als 0 sein')])),
+    feb: nullable(number([minValue(0, 'Faktor für Februar muss größer als 0 sein')])),
+    mar: nullable(number([minValue(0, 'Faktor für März muss größer als 0 sein')])),
+    apr: nullable(number([minValue(0, 'Faktor für April muss größer als 0 sein')])),
+    may: nullable(number([minValue(0, 'Faktor für Mai muss größer als 0 sein')])),
+    jun: nullable(number([minValue(0, 'Faktor für Juni muss größer als 0 sein')])),
+    jul: nullable(number([minValue(0, 'Faktor für Juli muss größer als 0 sein')])),
+    aug: nullable(number([minValue(0, 'Faktor für August muss größer als 0 sein')])),
+    sep: nullable(number([minValue(0, 'Faktor für September muss größer als 0 sein')])),
+    oct: nullable(number([minValue(0, 'Faktor für Oktober muss größer als 0 sein')])),
+    nov: nullable(number([minValue(0, 'Faktor für November muss größer als 0 sein')])),
+    dec: nullable(number([minValue(0, 'Faktor für Dezember muss größer als 0 sein')])),
+    parent: nullable(string([maxLength(255, 'ID für überliegendes Äquivalent zu kurz')])),
+    project: nullable(string([minLength(3, 'ID für Projekt zu kurz'), maxLength(255, 'ID für Projekt zu kurz')])),
 });
 
-const selectedValue: Ref<Equivalent> = ref(emptyEquivalent());
+const selectedValue: Ref<EquivalentEntry> = ref(emptyEquivalent());
 
 // calculate avg value for the year
 watchEffect(() => {
@@ -409,12 +415,14 @@ const save = async () => {
             }
         }
         info('Erfolgreich gespeichert');
+        refreshTrigger.value++;
     } catch (e) {
-        error(e + "");
+        error((e + "").replace("ValiError: ", ""));
     }
 }
 
-const deleteEquivalent = async (equivalent: Equivalent, event: any) => {
+let refreshTrigger = ref(0);
+const deleteEquivalent = async (equivalent: EquivalentEntry, event: any) => {
     confirm.require({
         target: event.currentTarget,
         message: 'Soll der Faktor wirklich gelöscht werden?',
@@ -422,6 +430,8 @@ const deleteEquivalent = async (equivalent: Equivalent, event: any) => {
         accept: async () => {
             try {
                 await global.dropEquivalent(equivalent);
+                info('Erfolgreich gelöscht');
+                refreshTrigger.value++;
             } catch (e) {
                 error(e + "");
             }

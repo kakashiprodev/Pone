@@ -2,7 +2,7 @@ import { defineStore } from "pinia";
 import { router } from "./../router/index";
 import {
   CategoryEntry,
-  Equivalent,
+  EquivalentEntry,
   PresetEntry,
   ProjectEntry,
   ReportEntry,
@@ -25,8 +25,16 @@ export interface GlobalState {
   sources: SourceEntry[];
   sourcesDict: { [key: string]: SourceEntry };
   // equivalents
-  equivalents: Equivalent[];
-  equivalentDict: { [key: string]: Equivalent };
+  equivalents: EquivalentEntry[];
+  equivalentDict: { [key: string]: EquivalentEntry };
+  equivalentFilters: {
+    category: {
+      all: string[];
+      scope1: string[];
+      scope2: string[];
+      scope3: string[];
+    }
+  },
   // projects
   projects: ProjectEntry[];
   selectedProject: null | ProjectEntry;
@@ -54,6 +62,14 @@ export const useGlobalStore = defineStore("global", {
     //
     equivalents: [],
     equivalentDict: {},
+    equivalentFilters: {
+      category: {
+        all: [],
+        scope1: [],
+        scope2: [],
+        scope3: [],
+      },
+    },
     //
     projects: [],
     selectedProject: null,
@@ -83,7 +99,7 @@ export const useGlobalStore = defineStore("global", {
       this.isLoading = true;
       // load all data from backend
       await Promise.all([
-        this.refreshSources(),
+        // this.refreshSources(),
         this.refreshCategories(),
         this.refreshProjects(),
       ]);
@@ -117,12 +133,35 @@ export const useGlobalStore = defineStore("global", {
       if (force || this.equivalents.length === 0) {
         this.equivalents = await dataprovider.readEquivalents();
         // sort by "name"
-        this.equivalents.sort((a, b) => a.name.localeCompare(b.name));
+        this.equivalents.sort((a: EquivalentEntry, b: EquivalentEntry) => a.specification1.localeCompare(b.specification1));
         // create dict
         this.equivalentDict = this.equivalents.reduce(
           (acc, cur) => ({ ...acc, [cur.id]: cur }),
           {},
         );
+
+        // create a list of all unique entries for category        
+        this.equivalentFilters.category.all = [];
+        this.equivalents.forEach((equivalent: EquivalentEntry) => {
+          if (!this.equivalentFilters.category.all.includes(equivalent.category)) {
+            this.equivalentFilters.category.all.push(equivalent.category);
+          }
+        });
+        // create a list of all unique entries for category grouped by scope 1,2,3
+        this.equivalentFilters.category.scope1 = [];
+        this.equivalentFilters.category.scope2 = [];
+        this.equivalentFilters.category.scope3 = [];
+        this.equivalents.forEach((equivalent: EquivalentEntry) => {
+          if (equivalent.scope === 1 && !this.equivalentFilters.category.scope1.includes(equivalent.category)) {
+            this.equivalentFilters.category.scope1.push(equivalent.category);
+          }
+          if (equivalent.scope === 2 && !this.equivalentFilters.category.scope2.includes(equivalent.category)) {
+            this.equivalentFilters.category.scope2.push(equivalent.category);
+          }
+          if (equivalent.scope === 3 && !this.equivalentFilters.category.scope3.includes(equivalent.category)) {
+            this.equivalentFilters.category.scope3.push(equivalent.category);
+          }
+        });
       }
     },
     /**
@@ -130,14 +169,14 @@ export const useGlobalStore = defineStore("global", {
      * This euquvalent will always be a project specific equivalent!
      * HACK: this must be checked in the backend!
      */
-    async addEquivalent(equivalent: Equivalent) {
+    async addEquivalent(equivalent: EquivalentEntry) {
       const entryToAdd: any = equivalent;
       delete entryToAdd.id;
       const created = await dataprovider.createEquivalent(equivalent);
       // add equivalent to local store at position 0
       this.equivalents.push(created);
       // sort by "name"
-      this.equivalents.sort((a, b) => a.name.localeCompare(b.name));
+      this.equivalents.sort((a: EquivalentEntry, b: EquivalentEntry) => a.specification1.localeCompare(b.specification1));
       this.equivalentDict[equivalent.id] = created;
       return created;
     },
@@ -146,10 +185,10 @@ export const useGlobalStore = defineStore("global", {
      * Only project specific equivalents can be updated.
      * HACK: this must be checked in the backend!
      */
-    async updateEquivalent(equivalent: Equivalent) {
+    async updateEquivalent(equivalent: EquivalentEntry) {
       const updated = await dataprovider.updateEquivalents(equivalent);
       // get index of existing equivalent
-      const index = this.equivalents.findIndex((e) => e.id === equivalent.id);
+      const index = this.equivalents.findIndex((e: EquivalentEntry) => e.id === equivalent.id);
       // replace
       if (index > -1) {
         this.equivalents.splice(index, 1, updated);
@@ -163,10 +202,10 @@ export const useGlobalStore = defineStore("global", {
      * Only project specific equivalents can be dropped.
      * HACK: this must be checked in the backend!
      */
-    async dropEquivalent(equivalent: Equivalent) {
+    async dropEquivalent(equivalent: EquivalentEntry) {
       await dataprovider.deleteEquivalent(equivalent.id);
       // drop equivalent from local store
-      this.equivalents = this.equivalents.filter((e) => e.id !== equivalent.id);
+      this.equivalents = this.equivalents.filter((e: EquivalentEntry) => e.id !== equivalent.id);
       delete this.equivalentDict[equivalent.id];
     },
 
@@ -210,7 +249,7 @@ export const useGlobalStore = defineStore("global", {
      * sort all targets by year in ascending order.
      */
     sortTargets() {
-      this.targetsInProject.sort((a, b) => a.year - b.year);
+      this.targetsInProject.sort((a: TargetEntry, b: TargetEntry) => a.year - b.year);
     },
 
     /**
@@ -232,7 +271,7 @@ export const useGlobalStore = defineStore("global", {
      */
     async updateTarget(target: TargetEntry) {
       const updated = await dataprovider.updateTarget(target);
-      const index = this.targetsInProject.findIndex((t) => t.id === target.id);
+      const index = this.targetsInProject.findIndex((t: TargetEntry) => t.id === target.id);
       if (index > -1) {
         this.targetsInProject[index] = updated;
       }
@@ -246,7 +285,7 @@ export const useGlobalStore = defineStore("global", {
     async dropTarget(target: TargetEntry) {
       await dataprovider.deleteTarget(target.id);
       this.targetsInProject = this.targetsInProject.filter(
-        (t) => t.id !== target.id,
+        (t: TargetEntry) => t.id !== target.id,
       );
       this.sortTargets();
     },
@@ -281,7 +320,7 @@ export const useGlobalStore = defineStore("global", {
      */
     async updateProject(project: ProjectEntry) {
       const updated = await dataprovider.updateProject(project);
-      const index = this.projects.findIndex((p) => p.id === project.id);
+      const index = this.projects.findIndex((p: ProjectEntry) => p.id === project.id);
       if (index > -1) {
         this.projects[index] = updated;
       }
@@ -294,7 +333,7 @@ export const useGlobalStore = defineStore("global", {
      */
     async dropProject(project: ProjectEntry) {
       await dataprovider.deleteProject(project.id);
-      this.projects = this.projects.filter((p) => p.id !== project.id);
+      this.projects = this.projects.filter((p: ProjectEntry) => p.id !== project.id);
       this.ensureProjectSelected();
     },
 
@@ -307,12 +346,12 @@ export const useGlobalStore = defineStore("global", {
     async changeProject(project: ProjectEntry) {
       this.selectedProject = project;
       this.reports = await dataprovider.readReports();
-      this.reports = this.reports.filter((report) =>
+      this.reports = this.reports.filter((report: ReportEntry) =>
         report.project === project.id
       );
       this.equivalents = await dataprovider.readEquivalents();
       this.equivalents = this.equivalents.filter(
-        (equivalent) => equivalent.project === project.id,
+        (equivalent: EquivalentEntry) => equivalent.project === project.id,
       );
       // reload also targets
       await this.refreshTargets();
@@ -323,15 +362,15 @@ export const useGlobalStore = defineStore("global", {
      * this will only be done if the cache is empty. (use force = true to overwrite)
      * No CRUD is needed here since sources are system wide any only created by us.
      */
-    async refreshSources(force = false) {
-      if (this.sources.length === 0 || force) {
-        this.sources = await dataprovider.readSources();
-        this.sourcesDict = this.sources.reduce(
-          (acc, cur) => ({ ...acc, [cur.id]: cur }),
-          {},
-        );
-      }
-    },
+    // async refreshSources(force = false) {
+    //   if (this.sources.length === 0 || force) {
+    //     this.sources = await dataprovider.readSources();
+    //     this.sourcesDict = this.sources.reduce(
+    //       (acc, cur) => ({ ...acc, [cur.id]: cur }),
+    //       {},
+    //     );
+    //   }
+    // },
 
     /**
      * Fetch categories and construct the nested tree for the Scope1-3 ViewComponent.
@@ -353,7 +392,7 @@ export const useGlobalStore = defineStore("global", {
       // check if a older report is existing
       if (this.reports.length > 0) {
         // get the latest report. so sort by year and get the last one
-        const sorted = this.reports.sort((a, b) => a.year - b.year);
+        const sorted = this.reports.sort((a: ReportEntry, b: ReportEntry) => a.year - b.year);
         const latest = sorted[sorted.length - 1];
         const report: ReportEntry = {
           ...latest,
@@ -400,7 +439,7 @@ export const useGlobalStore = defineStore("global", {
      */
     loadLatestReport() {
       if (this.reports.length > 0) {
-        this.selectedReport = this.reports.reduce((a, b) =>
+        this.selectedReport = this.reports.reduce((a: ReportEntry, b: ReportEntry) =>
           a.year > b.year ? a : b
         );
       } else {
@@ -428,7 +467,7 @@ export const useGlobalStore = defineStore("global", {
      */
     async dropReport(report: ReportEntry) {
       await dataprovider.deleteReport(report.id);
-      this.reports = this.reports.filter((r) => r.id !== report.id);
+      this.reports = this.reports.filter((r: ReportEntry) => r.id !== report.id);
     },
 
     /**
@@ -438,7 +477,7 @@ export const useGlobalStore = defineStore("global", {
      */
     async updateReport(report: ReportEntry) {
       const updated = await dataprovider.updateReport(report);
-      const index = this.reports.findIndex((r) => r.id === report.id);
+      const index = this.reports.findIndex((r: ReportEntry) => r.id === report.id);
       if (index > -1) {
         this.reports[index] = updated;
       }

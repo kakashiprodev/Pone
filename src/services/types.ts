@@ -1,9 +1,14 @@
 // table "equivalents"
-export interface Equivalent {
+export interface EquivalentEntry {
   id: string;
-  name: string;
+  category: string;
+  scope: number; // 1-3
+  specification1: string;
+  specification2: string;
+  specification3: string;
+  addName1: string;
   comment: null | string;
-  year: number;
+  source: string;
   avgValue: number;
   monthlyValues: boolean;
   jan: null | number;
@@ -18,11 +23,10 @@ export interface Equivalent {
   oct: null | number;
   nov: null | number;
   dec: null | number;
-  parent: null | string; // reference on table equivalents. if set a calculation chain is used
-  source: null | string; // reference on table sources. user inputs can have NULL
-  project: null | string; // reference on table projects. system values will be NULL
+  parent: null | string; // reference on table equivalents. if set a calculation chain is used  
   in: string; // input unit
   out: string; // output unit
+  project: null | string; // reference on table projects. system values will be NULL
 }
 
 // table "inputs"

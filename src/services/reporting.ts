@@ -6,7 +6,7 @@
  */
 
 import dataprovider from "./dataprovider";
-import { Equivalent, InputEntry } from "./types";
+import { EquivalentEntry, InputEntry } from "./types";
 
 const months = [
   "jan",
@@ -30,10 +30,10 @@ export const getAverageFromArray = (arr: number[]) => {
   return sum / arr.length;
 };
 
-export const getAverageEquivalent = (equivalent: Partial<Equivalent>) => {
+export const getAverageEquivalent = (equivalent: Partial<EquivalentEntry>) => {
   let sum = 0;
   months.forEach((month) => {
-    const m = month as keyof Equivalent;
+    const m = month as keyof EquivalentEntry;
     if (equivalent[m] != null && typeof equivalent[m] === "number") {
       sum += equivalent[m] as number;
     }
@@ -46,7 +46,7 @@ export const getAverageEquivalent = (equivalent: Partial<Equivalent>) => {
  */
 export const getSumForInput = (
   input: InputEntry,
-  equivalents: { [key: string]: Equivalent },
+  equivalents: { [key: string]: EquivalentEntry },
 ): number => {
   return calculateEquivalentFactor(input.equivalent, equivalents) *
     input.rawValue;
@@ -54,7 +54,7 @@ export const getSumForInput = (
 
 const calculateEquivalentFactor = (
   equivalentId: null | string,
-  equivalents: { [key: string]: Equivalent },
+  equivalents: { [key: string]: EquivalentEntry },
 ): number => {
   if (!equivalentId || equivalentId === "") {
     return 1;
@@ -76,7 +76,7 @@ const calculateEquivalentFactor = (
 
 export const getSumForInputs = (
   inputs: InputEntry[],
-  equivalents: { [key: string]: Equivalent },
+  equivalents: { [key: string]: EquivalentEntry },
 ) => {
   let sum = 0;
   inputs.forEach((input) => {
@@ -87,7 +87,7 @@ export const getSumForInputs = (
 
 export const getListOfInputValues = (
   inputs: InputEntry[],
-  equivalents: { [key: string]: Equivalent },
+  equivalents: { [key: string]: EquivalentEntry },
 ) => {
   return inputs.map((input) => {
     return {
@@ -124,7 +124,7 @@ export const getScopeSums = async () => {
 // ausgabe als schrift:
 export const getCalculationSteps = (
   input: InputEntry,
-  equivalents: { [key: string]: Equivalent },
+  equivalents: { [key: string]: EquivalentEntry },
 ): string[] => {
   const steps: string[] = [];
   calculateEquivalentFactorWithSteps(
@@ -139,7 +139,7 @@ export const getCalculationSteps = (
 const calculateEquivalentFactorWithSteps = (
   value: number,
   equivalentId: null | string,
-  equivalents: { [key: string]: Equivalent },
+  equivalents: { [key: string]: EquivalentEntry },
   steps: string[],
 ): number => {
   if (!equivalentId) {

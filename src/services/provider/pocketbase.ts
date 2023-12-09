@@ -2,7 +2,7 @@ import PocketBase from "pocketbase";
 import {
   ActionEntry,
   CategoryEntry,
-  Equivalent,
+  EquivalentEntry,
   InputEntry,
   PresetEntry,
   ProjectEntry,
@@ -60,40 +60,54 @@ export default class DataProvider {
 
   // CRUD for Equivalent
   async readEquivalents() {
-    const res = await this.pb.collection("equivalents").getList<Equivalent>(
+    const items = [];
+    const res = await this.pb.collection("equivalents").getList<EquivalentEntry>(
       1,
       500,
       {
         filter: `project="${globalStore.selectedProject?.id}" || project=""`,
       },
     );
-    return res.items;
+    items.push(...res.items);
+    if (res.totalPages > 1) {
+      for (let i = 2; i <= res.totalPages; i++) {
+        const page = await this.pb.collection("equivalents").getList<EquivalentEntry>(
+          i,
+          500,
+          {
+            filter: `project="${globalStore.selectedProject?.id}" || project=""`,
+          },
+        );
+        items.push(...page.items);
+      }
+    }
+    return items;
   }
 
   async readEquivalentsAsDict() {
-    const res = await this.pb.collection("equivalents").getList<Equivalent>(
+    const res = await this.pb.collection("equivalents").getList<EquivalentEntry>(
       1,
       500,
       {
         // filter: `report = ${globalStore.selectedReport?.year}`,
       },
     );
-    const dict: { [key: string]: Equivalent } = {};
+    const dict: { [key: string]: EquivalentEntry } = {};
     res.items.forEach((item) => {
       dict[item.id] = item;
     });
     return dict;
   }
 
-  async createEquivalent(data: Equivalent) {
-    return await this.pb.collection("equivalents").create<Equivalent>(
+  async createEquivalent(data: EquivalentEntry) {
+    return await this.pb.collection("equivalents").create<EquivalentEntry>(
       data,
     );
   }
 
-  async updateEquivalents(data: Equivalent) {
+  async updateEquivalents(data: EquivalentEntry) {
     return await this.pb
-      .collection("equivalents").update<Equivalent>(data.id, data);
+      .collection("equivalents").update<EquivalentEntry>(data.id, data);
   }
 
   async deleteEquivalent(id: string) {

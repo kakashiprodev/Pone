@@ -13,7 +13,6 @@
             <label class="ml-1" for="scope2Active">2</label>
             <Checkbox id="scope3Active" v-model="scope3Active" value="1" class="ml-4" :binary="true" @change="getData" />
             <label class="ml-1" for="scope3Active">3</label>
-
         </template>
         <template #end>
             <Button icon="fa-solid fa-plus" @click="selectedValue = clone(emptyInput); showDialog = true" class="mr-1" />
@@ -23,7 +22,9 @@
 
     <Dialog id="choose-equivalent" v-model:visible="showChooseEquivalent" modal header="Äquivalent auswählen"
         :class="{ 'w-8': windowWidth > 990, 'w-full': windowWidth < 990, 'h-screen': windowWidth < 990 }">
-        <ChooseComponent v-model="selectedValue.equivalent" />
+        <SmartEquivalentList v-model="selectedValue.equivalent" :filter-by="{
+            scope: selectedValue.scope ? [selectedValue.scope] : [1, 2, 3],
+        }" />
         <div class="mt-4">
             <Button label="Ok" @click="showChooseEquivalent = false;" />
             <Button class="ml-1" label="Auswahl leeren"
@@ -63,7 +64,7 @@
                     <div v-if="selectedValue.equivalent != null && selectedValue.equivalent !== ''"
                         @click="showChooseEquivalent = true"
                         class="bg-teal-300 text-white border-round m-2 flex align-items-center justify-content-center cursor-pointer p-2">
-                        {{ global.equivalentDict[selectedValue.equivalent]?.name ?? 'Reference error' }}
+                        {{ global.equivalentDict[selectedValue.equivalent]?.specification1 ?? 'Reference error' }}
                     </div>
                     <Button v-else label="Auswählen" @click="showChooseEquivalent = true" />
                 </div>
@@ -113,21 +114,21 @@
     <ConfirmPopup></ConfirmPopup>
     <DataTable v-if="global.equivalents.length > 0" :value="data" class="cst-no-hover">
         <!-- <Column field="id" header="ID"></Column> -->
-        <Column field="scope" header="Scope"></Column>
-        <Column field="name" header="Name"></Column>
-        <Column field="rawValue" header="Eingabewert"></Column>
-        <Column field="equivalent" header="Äquivalent">
+        <Column field="scope" header="Scope" sortable></Column>
+        <Column field="name" header="Name" sortable></Column>
+        <Column field="rawValue" header="Eingabewert" sortable></Column>
+        <Column field="equivalent" header="Äquivalent" sortable>
             <template #body="{ data }">
                 <div v-if="data.equivalent != null && data.equivalent !== ''">
-                    {{ global.equivalentDict[data.equivalent]?.name ?? 'Reference error' }}
+                    {{ global.equivalentDict[data.equivalent]?.specification1 ?? 'Reference error' }}
                 </div>
                 <div v-else>
                 </div>
             </template>
         </Column>
-        <Column field="sumValue" header="Menge (Jahr)">
+        <Column field="sumValue" header="Menge (Jahr)" sortable>
             <template #body="{ data }">
-                {{ data.sumValue }} [to]
+                {{ data.sumValue }} [kg]
             </template>
         </Column>
         <Column field="comment" header="Kommentar"></Column>
@@ -155,8 +156,8 @@ import Dialog from 'primevue/dialog';
 import Checkbox from 'primevue/checkbox';
 import Dropdown from 'primevue/dropdown';
 import InlineMessage from 'primevue/inlinemessage';
-import ChooseComponent from './../components/ChooseComponent.vue';
-import { Equivalent, InputEntry } from './../services/types';
+import SmartEquivalentList from './../components/SmartEquivalentList.vue';
+import { EquivalentEntry, InputEntry } from './../services/types';
 import dataprovider from "./../services/dataprovider";
 import { Ref, ref, computed, watch, ComputedRef } from 'vue';
 import { useRoute } from 'vue-router';
@@ -200,7 +201,7 @@ watch(route, () => {
 
 // choose equivalent
 const showChooseEquivalent = ref(false);
-const choosenEquivalent: ComputedRef<null | Equivalent> = computed(() => {
+const choosenEquivalent: ComputedRef<null | EquivalentEntry> = computed(() => {
     try {
         return global.equivalentDict[selectedValue.value.equivalent ?? ""];
     } catch (e) {
