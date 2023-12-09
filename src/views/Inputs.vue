@@ -192,11 +192,17 @@ const setScopeFilter = () => {
         scope3Active.value = scope === '3';
     }
 }
+
+const data: Ref<InputEntry[]> = ref([]);
+
 // on fist loading
 setScopeFilter();
 // on change
 watch(route, () => {
+    console.log('route changed');
     setScopeFilter();
+    data.value = [];
+    getData();
 });
 
 // choose equivalent
@@ -288,7 +294,6 @@ const deleteEntry = async (entry: InputEntry, event: any) => {
 }
 
 // get data
-const data: Ref<InputEntry[]> = ref([]);
 const getData = async () => {
     const scope: number[] = [];
     if (scope1Active.value) {
