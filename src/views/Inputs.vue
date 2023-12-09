@@ -36,7 +36,7 @@
     </Dialog>
 
     <!-- comfort input -->
-    <Dialog header="Konforteingabe" id="create-input-comfort" v-model:visible="showComfortInput" :class="{ 'w-9': true }"
+    <Dialog modal header="Konforteingabe" id="create-input-comfort" v-model:visible="showComfortInput" :class="{ 'w-9': true }"
         maximizable>
 
         <!-- step 1 -->
