@@ -318,12 +318,13 @@ if (props.modelValue) {
 }
 
 // component output is the selected equivalent
-const emits = defineEmits(['update:modelValue', 'update:selected', 'edit', 'delete']);
+const emits = defineEmits(['update:modelValue', 'update:selected', 'edit', 'delete', 'change']);
 watch(selection, (value) => {
     if (value) {
         console.log('selection changed', value);
         emits('update:modelValue', value.id);
         emits('update:selected', value);
+        emits('change', true);
     }
 });
 

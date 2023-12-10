@@ -22,13 +22,14 @@
         </template>
     </Toolbar>
 
+    <!-- choose equivalent modal for non-comfort input -->
     <Dialog id="choose-equivalent" v-model:visible="showChooseEquivalent" modal header="Äquivalent auswählen"
         :class="{ 'w-8': windowWidth > 990, 'w-full': windowWidth < 990, 'h-screen': windowWidth < 990 }">
         <SmartEquivalentList v-model="selectedValue.equivalent" :filter-by="{
             scope: selectedValue.scope ? [selectedValue.scope] : [1, 2, 3],
         }" />
         <div class="mt-4">
-            <Button label="Ok" @click="showChooseEquivalent = false;" />
+            <Button label="Ok" @click="showChooseEquivalent = false; updateNameAndCategory();" />
             <Button class="ml-1" label="Auswahl leeren"
                 @click="selectedValue.equivalent = null; showChooseEquivalent = false;" />
             <Button class="ml-1" label="Abbrechen" @click="selectedValue = originalValue; showChooseEquivalent = false;" />
@@ -42,7 +43,8 @@
         <!-- step 1 -->
         <div class="card" v-if="actualComfortStep === 0">
             <SmartEquivalentList v-model="selectedValue.equivalent" :comfort-mode="true" :rowsPerPage="5"
-                :visible-columns="['source', 'in', 'fullName',]" :showColumnChooser="false" />
+                :visible-columns="['source', 'in', 'fullName',]" :showColumnChooser="false"
+                @change="updateNameAndCategory" />
         </div>
 
         <!-- step 2 -->
@@ -247,7 +249,6 @@ const inputEntrySchema = object({
     scope: number([minValue(1, 'Scope muss zwischen 1 und 3 liegen'), maxValue(3, 'Scope muss zwischen 1 und 3 liegen')]),
     comment: string([maxLength(255, 'Kommentar zu lang')]),
     rawValue: number('Ein Wert muss angegeben werden.'),
-    sumValue: number('Ein valider Summenwert muss errechnet sein.'),
     equivalent: nullable(string([maxLength(255, 'Referenz auf equivalents zu lang')])),
     report: string([minLength(1, 'Referenz auf Report ist inkorrekt'), maxLength(255, 'Referenz auf Report ist inkorrekt')]),
     category: nullable(string([maxLength(255, 'Kategorie zu lang')]))
@@ -349,14 +350,14 @@ const selectedValue: Ref<InputEntry> = ref(emptyInput);
 const originalValue: Ref<InputEntry> = ref(emptyInput);
 
 // watch selectedValue.equivalent in comfort mode to change the name and comment
-watch(() => selectedValue.value.equivalent, () => {
+const updateNameAndCategory = () => {
     if (selectedValue.value.equivalent != null && selectedValue.value.equivalent !== '') {
         const equivalent = global.equivalentDict[selectedValue.value.equivalent];
         selectedValue.value.name = equivalent.specification1;
         selectedValue.value.comment = equivalent.comment ?? "";
         selectedValue.value.category = equivalent.category;
     }
-});
+}
 
 const computedSumValue = computed(() => {
     return getSumForInput(selectedValue.value, global.equivalentDict);
