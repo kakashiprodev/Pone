@@ -28,6 +28,11 @@ const routes = [
         name: "actions",
       },
       {
+        path: "/facilities",
+        component: () => import("../views/Facilities.vue"),
+        name: "facilities",
+      },
+      {
         path: "/inputs/:scope?",
         component: () => import("../views/Inputs.vue"),
         name: "inputs",

@@ -1,18 +1,27 @@
 <template>
     <h4>Übersicht aller Eingaben</h4>
+
+    <ScopeInfoBox class="mt-1 mb-1" v-if="preSelectedScope != 'all'" :scope="preSelectedScope" />
+
     <InlineMessage severity="info" v-if="global.showTooltips" class="w-full mb-2">
         Hier können Sie alle Eingaben für den aktuellen Bericht einsehen und bearbeiten.
         Die Eingaben können außerdem als CSV-Datei exportiert werden.
     </InlineMessage>
+
     <Toolbar class="mb-2">
         <template #start>
-            <label class="ml-2">Zeige Scopes:</label>
-            <Checkbox id="scope1Active" v-model="scope1Active" value="1" class="ml-3" :binary="true" @change="getData" />
-            <label class="ml-1" for="scope1Active">1</label>
-            <Checkbox id="scope2Active" v-model="scope2Active" value="1" class="ml-4" :binary="true" @change="getData" />
-            <label class="ml-1" for="scope2Active">2</label>
-            <Checkbox id="scope3Active" v-model="scope3Active" value="1" class="ml-4" :binary="true" @change="getData" />
-            <label class="ml-1" for="scope3Active">3</label>
+            <template v-if="preSelectedScope === 'all'">
+                <label class="ml-2">Zeige Scopes:</label>
+                <Checkbox id="scope1Active" v-model="scope1Active" value="1" class="ml-3" :binary="true"
+                    @change="getData" />
+                <label class="ml-1" for="scope1Active">1</label>
+                <Checkbox id="scope2Active" v-model="scope2Active" value="1" class="ml-4" :binary="true"
+                    @change="getData" />
+                <label class="ml-1" for="scope2Active">2</label>
+                <Checkbox id="scope3Active" v-model="scope3Active" value="1" class="ml-4" :binary="true"
+                    @change="getData" />
+                <label class="ml-1" for="scope3Active">3</label>
+            </template>
         </template>
         <template #end>
             <Button icon="fa-solid fa-wand-magic-sparkles"
@@ -22,13 +31,14 @@
         </template>
     </Toolbar>
 
+    <!-- choose equivalent modal for non-comfort input -->
     <Dialog id="choose-equivalent" v-model:visible="showChooseEquivalent" modal header="Äquivalent auswählen"
         :class="{ 'w-8': windowWidth > 990, 'w-full': windowWidth < 990, 'h-screen': windowWidth < 990 }">
         <SmartEquivalentList v-model="selectedValue.equivalent" :filter-by="{
             scope: selectedValue.scope ? [selectedValue.scope] : [1, 2, 3],
-        }" />
+        }" :hide-scope-input="preSelectedScope != 'all'" />
         <div class="mt-4">
-            <Button label="Ok" @click="showChooseEquivalent = false;" />
+            <Button label="Ok" @click="showChooseEquivalent = false; updateNameAndCategory();" />
             <Button class="ml-1" label="Auswahl leeren"
                 @click="selectedValue.equivalent = null; showChooseEquivalent = false;" />
             <Button class="ml-1" label="Abbrechen" @click="selectedValue = originalValue; showChooseEquivalent = false;" />
@@ -42,7 +52,9 @@
         <!-- step 1 -->
         <div class="card" v-if="actualComfortStep === 0">
             <SmartEquivalentList v-model="selectedValue.equivalent" :comfort-mode="true" :rowsPerPage="5"
-                :visible-columns="['source', 'in', 'fullName',]" :showColumnChooser="false" />
+                :visible-columns="['source', 'in', 'fullName',]" :showColumnChooser="false" @change="updateNameAndCategory"
+                :hide-scope-input="preSelectedScope != 'all'"
+                :filter-by="{ scope: preSelectedScope === 'all' ? [1] : [parseInt(preSelectedScope)] }" />
         </div>
 
         <!-- step 2 -->
@@ -228,6 +240,7 @@ import Checkbox from 'primevue/checkbox';
 import Dropdown from 'primevue/dropdown';
 import InlineMessage from 'primevue/inlinemessage';
 import SmartEquivalentList from './../components/SmartEquivalentList.vue';
+import ScopeInfoBox from './../components/ScopeInfoBox.vue';
 import { EquivalentEntry, InputEntry } from './../services/types';
 import dataprovider from "./../services/dataprovider";
 import { Ref, ref, computed, watch, ComputedRef } from 'vue';
@@ -247,7 +260,6 @@ const inputEntrySchema = object({
     scope: number([minValue(1, 'Scope muss zwischen 1 und 3 liegen'), maxValue(3, 'Scope muss zwischen 1 und 3 liegen')]),
     comment: string([maxLength(255, 'Kommentar zu lang')]),
     rawValue: number('Ein Wert muss angegeben werden.'),
-    sumValue: number('Ein valider Summenwert muss errechnet sein.'),
     equivalent: nullable(string([maxLength(255, 'Referenz auf equivalents zu lang')])),
     report: string([minLength(1, 'Referenz auf Report ist inkorrekt'), maxLength(255, 'Referenz auf Report ist inkorrekt')]),
     category: nullable(string([maxLength(255, 'Kategorie zu lang')]))
@@ -280,19 +292,20 @@ watch(() => showComfortInput.value, () => {
 
 // get "scope" from route
 const route = useRoute();
+const preSelectedScope = ref('all');
 const setScopeFilter = () => {
     const param = route.params.scope; // "scope1", "scope2", "scope3", "all"
     // is param is not an Array and is one of the valid strings then return only the number
     // else return 1
-    const scope = !Array.isArray(param) && ['scope1', 'scope2', 'scope3', 'all'].indexOf(param) > -1 ? param.replace('scope', '') : 'all';
-    if (scope === 'all') {
+    preSelectedScope.value = !Array.isArray(param) && ['scope1', 'scope2', 'scope3', 'all'].indexOf(param) > -1 ? param.replace('scope', '') : 'all';
+    if (preSelectedScope.value === 'all') {
         scope1Active.value = true;
         scope2Active.value = true;
         scope3Active.value = true;
     } else {
-        scope1Active.value = scope === '1';
-        scope2Active.value = scope === '2';
-        scope3Active.value = scope === '3';
+        scope1Active.value = preSelectedScope.value === '1';
+        scope2Active.value = preSelectedScope.value === '2';
+        scope3Active.value = preSelectedScope.value === '3';
     }
 }
 
@@ -343,20 +356,24 @@ const emptyInput: InputEntry = {
     category: null,
 }
 const clone = (input: InputEntry) => {
-    return JSON.parse(JSON.stringify(input));
+    const c = JSON.parse(JSON.stringify(input));
+    if (preSelectedScope.value === '1') c.scope = 1;
+    else if (preSelectedScope.value === '2') c.scope = 2;
+    else if (preSelectedScope.value === '3') c.scope = 3;
+    return c;
 }
 const selectedValue: Ref<InputEntry> = ref(emptyInput);
 const originalValue: Ref<InputEntry> = ref(emptyInput);
 
 // watch selectedValue.equivalent in comfort mode to change the name and comment
-watch(() => selectedValue.value.equivalent, () => {
+const updateNameAndCategory = () => {
     if (selectedValue.value.equivalent != null && selectedValue.value.equivalent !== '') {
         const equivalent = global.equivalentDict[selectedValue.value.equivalent];
         selectedValue.value.name = equivalent.specification1;
         selectedValue.value.comment = equivalent.comment ?? "";
         selectedValue.value.category = equivalent.category;
     }
-});
+}
 
 const computedSumValue = computed(() => {
     return getSumForInput(selectedValue.value, global.equivalentDict);

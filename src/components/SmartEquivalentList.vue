@@ -1,9 +1,9 @@
 <template>
     <div v-if="true">
-        <FormLine v-if="!comfortMode && !categoriesFilteredByScope" label="Filter auf Scope">
+        <FormLine v-if="!comfortMode && !categoriesFilteredByScope && !hideScopeInput" label="Filter auf Scope">
             <MultiSelect v-model="filter.scope" :options="[1, 2, 3]" class="w-full" />
         </FormLine>
-        <HorizontalScopeSwitch v-else v-model="filter.scope" />
+        <HorizontalScopeSwitch v-else-if="!hideScopeInput" v-model="filter.scope" />
 
         <FormLine v-if="!comfortMode" label="Filter auf Kategorie">
             <MultiSelect v-model="filter.category" :options="filteredCategories" class="w-full" />
@@ -259,6 +259,11 @@ const props = defineProps({
         required: false,
         default: true,
     },
+    hideScopeInput: {
+        type: Boolean,
+        required: false,
+        default: false,
+    },
 });
 if (props.visibleColumns) {
     _visibleColumns.value = props.visibleColumns;
@@ -318,12 +323,13 @@ if (props.modelValue) {
 }
 
 // component output is the selected equivalent
-const emits = defineEmits(['update:modelValue', 'update:selected', 'edit', 'delete']);
+const emits = defineEmits(['update:modelValue', 'update:selected', 'edit', 'delete', 'change']);
 watch(selection, (value) => {
     if (value) {
         console.log('selection changed', value);
         emits('update:modelValue', value.id);
         emits('update:selected', value);
+        emits('change', true);
     }
 });
 
