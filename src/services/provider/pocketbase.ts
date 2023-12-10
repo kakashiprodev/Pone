@@ -1,13 +1,10 @@
 import PocketBase from "pocketbase";
 import {
   ActionEntry,
-  CategoryEntry,
   EquivalentEntry,
   InputEntry,
-  PresetEntry,
   ProjectEntry,
   ReportEntry,
-  SourceEntry,
   TargetEntry,
   UserInputQuery,
 } from "../types";
@@ -185,35 +182,6 @@ export default class DataProvider {
     return await this.pb.collection("reports").delete(id);
   }
 
-  // CRUD for "sources"
-  async createSource(data: SourceEntry) {
-    return await this.pb.collection("sources").create<SourceEntry>(data);
-  }
-
-  async readSource(id: string) {
-    return await this.pb.collection("sources").getOne<SourceEntry>(id);
-  }
-
-  async readSources() {
-    const res = await this.pb.collection("sources").getList<SourceEntry>(
-      1,
-      500,
-    );
-    return res.items;
-  }
-
-  async updateSource(data: SourceEntry) {
-    if (!data.id) throw new Error("Source ID is missing");
-    return await this.pb.collection("sources").update<SourceEntry>(
-      data.id,
-      data,
-    );
-  }
-
-  async deleteSource(id: string) {
-    return await this.pb.collection("sources").delete(id);
-  }
-
   // CRUD for "projects"
   async createProject(data: ProjectEntry) {
     return await this.pb.collection("projects").create<ProjectEntry>(data);
@@ -241,44 +209,6 @@ export default class DataProvider {
 
   async deleteProject(id: string) {
     return await this.pb.collection("projects").delete(id);
-  }
-
-  // CRUD for "categories"
-  async createCategory(data: CategoryEntry) {
-    return await this.pb.collection("categories").create<CategoryEntry>(data);
-  }
-
-  async readCategory(id: string) {
-    return await this.pb.collection("categories").getOne<CategoryEntry>(id);
-  }
-
-  async readCategories() {
-    const res = await this.pb.collection("categories").getList<CategoryEntry>(
-      1,
-      500,
-    );
-    return res.items;
-  }
-
-  async updateCategory(data: CategoryEntry) {
-    if (!data.id) throw new Error("Category ID is missing");
-    return await this.pb.collection("categories").update<CategoryEntry>(
-      data.id,
-      data,
-    );
-  }
-
-  async deleteCategory(id: string) {
-    return await this.pb.collection("categories").delete(id);
-  }
-
-  // R for "presets"
-  async readPresets() {
-    const res = await this.pb.collection("presets").getList<PresetEntry>(
-      1,
-      500,
-    );
-    return res.items;
   }
 
   // CRUD for "actions"

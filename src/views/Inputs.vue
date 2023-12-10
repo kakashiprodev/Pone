@@ -36,16 +36,21 @@
     </Dialog>
 
     <!-- comfort input -->
-    <Dialog modal header="Konforteingabe" id="create-input-comfort" v-model:visible="showComfortInput" :class="{ 'w-9': true }"
-        maximizable>
+    <Dialog modal header="Konforteingabe" id="create-input-comfort" v-model:visible="showComfortInput"
+        :class="{ 'w-9': true }" maximizable>
 
         <!-- step 1 -->
         <div class="card" v-if="actualComfortStep === 0">
-            <SmartEquivalentList v-model="selectedValue.equivalent" :comfort-mode="true" />
+            <SmartEquivalentList v-model="selectedValue.equivalent" :comfort-mode="true" :rowsPerPage="5"
+                :visible-columns="['source', 'in', 'fullName',]" :showColumnChooser="false" />
         </div>
 
         <!-- step 2 -->
         <div class="card" v-if="actualComfortStep === 1">
+            <div class="field">
+                <label for="userinput-category">Kategorie</label>
+                <InputText class="w-full" v-model="selectedValue.category" id="userinput-category" />
+            </div>
             <div class="field">
                 <label for="userinput-name">Name</label>
                 <InputText class="w-full" v-model="selectedValue.name" id="userinput-name" />
@@ -102,20 +107,6 @@
                 </InlineMessage>
             </div>
             <div class="field">
-                <label for="userinput-name">Name</label>
-                <InputText class="w-full" v-model="selectedValue.name" id="userinput-name" />
-                <InlineMessage v-if="global.showTooltips" class="w-full mt-1" severity="info">
-                    Bezeichnung der Eingabe. Diese wird in der Liste und im Bericht als Name angezeigt.
-                </InlineMessage>
-            </div>
-            <div class="field">
-                <label for="userinput-comment">Kommentar</label>
-                <InputText class="w-full" v-model="selectedValue.comment" id="userinput-comment" />
-                <InlineMessage v-if="global.showTooltips" class="w-full mt-1" severity="info">
-                    Eine optionale Beschreibung der Eingabe.
-                </InlineMessage>
-            </div>
-            <div class="field">
                 <label for="userinput-equivalent">Äquivalent</label>
                 <div>
                     <div v-if="selectedValue.equivalent != null && selectedValue.equivalent !== ''"
@@ -130,6 +121,28 @@
                     "Äquivalente verwalten" hinzugefügt werden.
                     Gelistet werden außerdem alle ausgelieferten Äquivalente. Ist kein Äquivalent ausgewählt, ist die
                     Eingabe in [kg] CO2-Äquivalenten ohne weiteren Faktor.
+                </InlineMessage>
+            </div>
+            <div class="field">
+                <label for="userinput-category">Kategorie</label>
+                <InputText class="w-full" v-model="selectedValue.category" id="userinput-category" />
+                <InlineMessage v-if="global.showTooltips" class="w-full mt-1" severity="info">
+                    Die Angabe einer Kategorie dient der späteren Auswertung und besseren Sortierbarkeit.
+                    Es können beliebige Kategorien angelegt werden.
+                </InlineMessage>
+            </div>
+            <div class="field">
+                <label for="userinput-name">Name</label>
+                <InputText class="w-full" v-model="selectedValue.name" id="userinput-name" />
+                <InlineMessage v-if="global.showTooltips" class="w-full mt-1" severity="info">
+                    Bezeichnung der Eingabe. Diese wird in der Liste und im Bericht als Name angezeigt.
+                </InlineMessage>
+            </div>
+            <div class="field">
+                <label for="userinput-comment">Kommentar</label>
+                <InputText class="w-full" v-model="selectedValue.comment" id="userinput-comment" />
+                <InlineMessage v-if="global.showTooltips" class="w-full mt-1" severity="info">
+                    Eine optionale Beschreibung der Eingabe.
                 </InlineMessage>
             </div>
             <div class="field">
@@ -172,6 +185,7 @@
     <DataTable v-if="global.equivalents.length > 0" :value="data" class="cst-no-hover">
         <!-- <Column field="id" header="ID"></Column> -->
         <Column field="scope" header="Scope" sortable></Column>
+        <Column field="category" header="Kategorie" sortable></Column>
         <Column field="name" header="Name" sortable></Column>
         <Column field="rawValue" header="Eingabewert" sortable></Column>
         <Column field="equivalent" header="Äquivalent" sortable>
@@ -340,7 +354,7 @@ watch(() => selectedValue.value.equivalent, () => {
         const equivalent = global.equivalentDict[selectedValue.value.equivalent];
         selectedValue.value.name = equivalent.specification1;
         selectedValue.value.comment = equivalent.comment ?? "";
-        // selectedValue.category = equivalent.category;
+        selectedValue.value.category = equivalent.category;
     }
 });
 
@@ -348,7 +362,7 @@ const computedSumValue = computed(() => {
     return getSumForInput(selectedValue.value, global.equivalentDict);
 });
 const computedSumCalculation: ComputedRef<string> = computed(() => {
-    if (selectedValue.value.equivalent != null && selectedValue.value.equivalent !== '') {
+    if (selectedValue.value.equivalent != null && selectedValue.value.equivalent !== '' && selectedValue.value.rawValue != null && selectedValue.value.rawValue > 0) {
         return getCalculationSteps(selectedValue.value, global.equivalentDict).join('\n');
     } else {
         return '';

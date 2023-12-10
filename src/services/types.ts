@@ -39,7 +39,7 @@ export interface InputEntry {
   sumValue: number;
   equivalent: null | string; // reference on table equivalents
   report: string; // reference on table reports
-  category: null | string; // reference on table categories
+  category: null | string;
 }
 
 // query object for table "inputs"
@@ -66,37 +66,12 @@ export interface ReportEntry {
   countEmployees: number;
   businessTurnover: number;
   baseYear: number;
-  baseEquivalentSource: null | string; // reference on table sources
-}
-
-// table "sources"
-export interface SourceEntry {
-  id: string;
-  name: string;
 }
 
 // table "projects"
 export interface ProjectEntry {
   id: string;
   name: string;
-}
-
-// table "categories"
-export interface CategoryEntry {
-  id: string;
-  name: string;
-  label: string;
-  scope: number; // 1-3
-  langCode: string; // "de"
-}
-
-// table "presets"
-export interface PresetEntry {
-  id: string;
-  category: string; // reference on table categories
-  name: string;
-  searchTextEquivalent: string; // comma separated list of equivalents
-  searchTextUnit: string; // comma separated list of units
 }
 
 // table "actions"

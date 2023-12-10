@@ -8,7 +8,8 @@
         <FormLine v-if="!comfortMode" label="Filter auf Kategorie">
             <MultiSelect v-model="filter.category" :options="filteredCategories" class="w-full" />
         </FormLine>
-        <Listbox v-else v-model="filter.category" :options="filteredCategories" class="w-full mb-2" />
+        <Listbox v-else v-model="filter.category" :options="filteredCategories" class="w-full mb-2"
+            listStyle="max-height:250px" />
 
         <FormLine label="Name">
             <InputText v-model="filter.text" placeholder="Allgemeiner Textfiler auf alle Namen und Spezifikationen"
@@ -17,7 +18,7 @@
     </div>
 
     <!-- Column Chooser -->
-    <div class="grid">
+    <div class="grid" v-if="showColumnChooser">
         <div class="col-8">
         </div>
         <div class="col-4">
@@ -26,7 +27,7 @@
         </div>
     </div>
     <DataTable class="cst-no-hover" :value="filteredEquivalents" selection-mode="single" v-model:selection="selection"
-        dataKey="id" paginator :rows="10" v-if="true">
+        dataKey="id" paginator :rows="rowsPerPage" v-if="true">
         <!-- <Column field="id" header="Id"></Column> -->
         <Column field="scope" header="Scope" v-if="_visibleColumns.includes('scope')" sortable></Column>
         <Column field="category" header="Kategorie" v-if="_visibleColumns.includes('category')" sortable></Column>
@@ -50,14 +51,15 @@
                 </span>
             </template>
         </Column>
+        <Column field="in" header="Eingabe Einheit" v-if="_visibleColumns.includes('in')" sortable></Column>
+        <Column field="out" header="Ausgabe Einheit" v-if="_visibleColumns.includes('out')" sortable></Column>
+
         <Column field="source" header="Quelle" v-if="_visibleColumns.includes('source')" sortable></Column>
         <Column field="parent" header="Verkettet?" v-if="_visibleColumns.includes('parent')" sortable>
             <template #body="{ data }">
                 <span>{{ data.parent != null && data.parent !== '' ? 'Ja' : 'Nein' }}</span>
             </template>
         </Column>
-        <Column field="in" header="Eingabe Einheit" v-if="_visibleColumns.includes('in')" sortable></Column>
-        <Column field="out" header="Ausgabe Einheit" v-if="_visibleColumns.includes('out')" sortable></Column>
 
         <!-- Action Columns -->
         <Column header="" v-if="showEditColumns">
@@ -246,6 +248,16 @@ const props = defineProps({
         type: Boolean,
         required: false,
         default: false,
+    },
+    rowsPerPage: {
+        type: Number,
+        required: false,
+        default: 10,
+    },
+    showColumnChooser: {
+        type: Boolean,
+        required: false,
+        default: true,
     },
 });
 if (props.visibleColumns) {

@@ -1,12 +1,9 @@
 import { defineStore } from "pinia";
 import { router } from "./../router/index";
 import {
-  CategoryEntry,
   EquivalentEntry,
-  PresetEntry,
   ProjectEntry,
   ReportEntry,
-  SourceEntry,
   TargetEntry,
 } from "./../services/types";
 import dataprovider from "./../services/dataprovider";
@@ -21,9 +18,6 @@ export interface GlobalState {
   showTooltips: boolean;
   // user information
   username: string;
-  // equivalent sources, e.g. GEMIS
-  sources: SourceEntry[];
-  sourcesDict: { [key: string]: SourceEntry };
   // equivalents
   equivalents: EquivalentEntry[];
   equivalentDict: { [key: string]: EquivalentEntry };
@@ -42,9 +36,6 @@ export interface GlobalState {
   // reports
   reports: ReportEntry[];
   selectedReport: null | ReportEntry;
-  // categories
-  categories: CategoryEntry[];
-  presets: PresetEntry[];
 }
 
 export const useGlobalStore = defineStore("global", {
@@ -56,9 +47,6 @@ export const useGlobalStore = defineStore("global", {
     username: "",
     theme: "light" as "light" | "dark",
     showTooltips: true,
-    //
-    sources: [],
-    sourcesDict: {},
     //
     equivalents: [],
     equivalentDict: {},
@@ -77,9 +65,6 @@ export const useGlobalStore = defineStore("global", {
     //
     reports: [],
     selectedReport: null,
-    //
-    categories: [],
-    presets: [],
   }),
 
   actions: {
@@ -99,8 +84,6 @@ export const useGlobalStore = defineStore("global", {
       this.isLoading = true;
       // load all data from backend
       await Promise.all([
-        // this.refreshSources(),
-        this.refreshCategories(),
         this.refreshProjects(),
       ]);
       // select the first project
@@ -355,30 +338,6 @@ export const useGlobalStore = defineStore("global", {
       );
       // reload also targets
       await this.refreshTargets();
-    },
-
-    /**
-     * reload the cache for "sources" from backend.
-     * this will only be done if the cache is empty. (use force = true to overwrite)
-     * No CRUD is needed here since sources are system wide any only created by us.
-     */
-    // async refreshSources(force = false) {
-    //   if (this.sources.length === 0 || force) {
-    //     this.sources = await dataprovider.readSources();
-    //     this.sourcesDict = this.sources.reduce(
-    //       (acc, cur) => ({ ...acc, [cur.id]: cur }),
-    //       {},
-    //     );
-    //   }
-    // },
-
-    /**
-     * Fetch categories and construct the nested tree for the Scope1-3 ViewComponent.
-     * HACK: This can be done in a service or in the backend.
-     */
-    async refreshCategories() {
-      this.categories = await dataprovider.readCategories();
-      this.presets = await dataprovider.readPresets();
     },
 
     // *************************************************************
