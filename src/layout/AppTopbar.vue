@@ -2,7 +2,6 @@
     <div class="layout-topbar">
         <router-link to="/dashboard" class="app-logo">
             <img src="./../assets/logo-transparent.webp" />
-            <span class="app-name">Pone Sustainability Manager</span>
         </router-link>
 
         <button ref="menubutton" class="topbar-menubutton p-link" type="button" @click="onMenuButtonClick()">
@@ -16,7 +15,6 @@
                 </router-link>
                 <i class="pi pi-times" @click="onCloseTab(i)"></i>
             </li>
-            <!-- <li v-if="!tabs || tabs.length === 0" class="topbar-menu-empty">Use (cmd + click) to open a tab</li> -->
         </ul>
 
         <ul class="topbar-menu-custom text-xl list-none" v-if="global.isLoggedIn">
@@ -41,27 +39,8 @@
             </li>
         </ul>
 
-        <!-- <div class="topbar-search" :class="{ 'topbar-search-active': searchActive }">
-            <Button class="topbar-searchbutton p-link" type="button" @click="activateSearch()">
-                <i class="pi pi-search"></i>
-            </Button>
-
-            <div class="search-input-wrapper">
-                <span class="p-input-icon-right">
-                    <InputText class="searchInput" type="text" placeholder="Search" @blur="deactivateSearch()"
-                        @keydown.escape="deactivateSearch()" />
-                    <i class="pi pi-search"></i>
-                </span>
-            </div>
-        </div> -->
-
-        <!-- <div class="flex align-content-center">
-            <ToggleButton onIcon="fa-solid fa-sun" off-icon="fa-solid fa-moon" v-model="darkMode" on-label=""
-                off-label="" />
-        </div> -->
-
         <div class="topbar-profile" v-if="global.username !== ''">
-            <button class="topbar-profile-button p-link" type="button" @click="showUsersMenu = !showUsersMenu">
+            <button class="topbar-profile-button p-link" type="button" @click="toggleUserMenu">
                 <i class="fa-solid fa-user mr-3"></i>
                 <span class="profile-details">
                     <span class="profile-name">{{ global.username }}</span>
@@ -69,31 +48,35 @@
                 </span>
                 <i class="fa-solid fa-angle-down"></i>
             </button>
-            <ul v-if="showUsersMenu"
-                class="list-none p-3 m-0 border-round shadow-2 absolute surface-overlay origin-top w-full sm:w-12rem mt-2 right-0 top-auto">
-                <li>
-                    <a href="/#/project-config" @click="showUsersMenu = false"
-                        class="text-800 flex fadein p-2 border-round align-items-center hover:surface-hover transition-colors transition-duration-150 cursor-pointer">
-                        <i class="fa-solid fa-people-group mr-3"></i>
-                        <span>Projekte verwalten</span>
-                    </a>
-                    <a href="/#/equivalents" @click="showUsersMenu = false"
-                        class="text-800 flex fadein p-2 border-round align-items-center hover:surface-hover transition-colors transition-duration-150 cursor-pointer">
-                        <i class="fa-solid fa-list mr-3"></i>
-                        <span>Äquivalente verwalten</span>
-                    </a>
-                    <a href="/#/user" @click="showUsersMenu = false"
-                        class="text-800 flex fadein p-2 border-round align-items-center hover:surface-hover transition-colors transition-duration-150 cursor-pointer">
-                        <i class="fa-solid fa-user mr-3"></i>
-                        <span>Benutzerprofil</span>
-                    </a>
-                    <a @click="logout"
-                        class="text-800 flex fadein p-2 border-round align-items-center hover:surface-hover transition-colors transition-duration-150 cursor-pointer">
-                        <i class="fa-solid fa-right-from-bracket mr-3"></i>
-                        <span>Ausloggen</span>
-                    </a>
-                </li>
-            </ul>
+
+            <OverlayPanel ref="userMenuPanel">
+                <ul class="list-none m-0 p-0">
+                    <li>
+                        <a href="/#/project-config" @click="toggleUserMenu"
+                            class="text-800 flex p-2 border-round align-items-center hover:surface-hover transition-colors transition-duration-150 cursor-pointer">
+                            <i class="fa-solid fa-people-group mr-3"></i>
+                            <span>Projekte verwalten</span>
+                        </a>
+                        <a href="/#/equivalents" @click="toggleUserMenu"
+                            class="text-800 flex p-2 border-round align-items-center hover:surface-hover transition-colors transition-duration-150 cursor-pointer">
+                            <i class="fa-solid fa-list mr-3"></i>
+                            <span>Äquivalente verwalten</span>
+                        </a>
+                        <a href="/#/user" @click="toggleUserMenu"
+                            class="text-800 flex p-2 border-round align-items-center hover:surface-hover transition-colors transition-duration-150 cursor-pointer">
+                            <i class="fa-solid fa-user mr-3"></i>
+                            <span>Benutzerprofil</span>
+                        </a>
+                        <a @click="logout()"
+                            class="text-800 flex p-2 border-round align-items-center hover:surface-hover transition-colors transition-duration-150 cursor-pointer">
+                            <i class="fa-solid fa-right-from-bracket mr-3"></i>
+                            <span>Ausloggen</span>
+                        </a>
+                    </li>
+                </ul>
+            </OverlayPanel>
+
+
         </div>
     </div>
 </template>
@@ -107,11 +90,15 @@ import { useGlobalStore } from "./../stores/global";
 import InputSwitch from 'primevue/inputswitch';
 import DataProvider from "./../services/dataprovider";
 import Button from 'primevue/button';
+import OverlayPanel from 'primevue/overlaypanel';
 
 const $primevue = usePrimeVue();
 const global = useGlobalStore();
 
-const showUsersMenu = ref(false);
+const userMenuPanel = ref();
+const toggleUserMenu = (event: Event) => {
+    userMenuPanel.value.toggle(event);
+}
 
 const darkMode = ref(false);
 watch(darkMode, (newVal) => {
@@ -123,7 +110,7 @@ watch(darkMode, (newVal) => {
 });
 
 const logout = async () => {
-    showUsersMenu.value = false;
+    userMenuPanel.value.hide();
     await DataProvider.logout();
     router.push('/login');
 };
@@ -136,21 +123,8 @@ const { onMenuToggle, /*layoutConfig,*/ tabs, closeTab } = useLayout();
 
 const outsideClickListener: Ref<any> = ref(null);
 const topbarMenuActive = ref(false);
-// const searchActive = ref(false);
 
 const router = useRouter();
-
-// const activateSearch = () => {
-//     searchActive.value = true;
-//     setTimeout(() => {
-//         const input = document.querySelector('.searchInput');
-//         input.focus();
-//     }, 100);
-// };
-
-// const deactivateSearch = () => {
-//     searchActive.value = false;
-// };
 const onCloseTab = (index: any) => {
     if (tabs.value.length > 1) {
         if (index === tabs.value.length - 1) router.push(tabs.value[tabs.value.length - 2].to);
@@ -160,17 +134,6 @@ const onCloseTab = (index: any) => {
     }
     closeTab(index);
 };
-
-// const logo = computed(() => {
-//     const path = '/layout/images/logo-';
-//     let logo;
-//     if (layoutConfig.layoutTheme.value === 'primaryColor' && layoutConfig.theme.value !== 'yellow') {
-//         logo = 'light.png';
-//     } else {
-//         logo = layoutConfig.colorScheme.value === 'light' ? 'dark.png' : 'light.png';
-//     }
-//     return path + logo;
-// });
 
 onMounted(() => {
     bindOutsideClickListener();
