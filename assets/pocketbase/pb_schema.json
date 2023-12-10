@@ -912,5 +912,93 @@
     "updateRule": "@request.auth.id != \"\"",
     "deleteRule": "@request.auth.id != \"\"",
     "options": {}
+  },
+  {
+    "id": "inw88l0jngvmnt8",
+    "name": "facilities",
+    "type": "base",
+    "system": false,
+    "schema": [
+      {
+        "id": "ogsr91b4",
+        "name": "name",
+        "type": "text",
+        "system": false,
+        "required": true,
+        "options": {
+          "min": null,
+          "max": null,
+          "pattern": ""
+        }
+      },
+      {
+        "id": "wm1xhyol",
+        "name": "manufacturer",
+        "type": "text",
+        "system": false,
+        "required": true,
+        "options": {
+          "min": null,
+          "max": null,
+          "pattern": ""
+        }
+      },
+      {
+        "id": "ditm6po3",
+        "name": "model",
+        "type": "text",
+        "system": false,
+        "required": false,
+        "options": {
+          "min": null,
+          "max": null,
+          "pattern": ""
+        }
+      },
+      {
+        "id": "myxewrns",
+        "name": "comment",
+        "type": "text",
+        "system": false,
+        "required": false,
+        "options": {
+          "min": null,
+          "max": null,
+          "pattern": ""
+        }
+      },
+      {
+        "id": "pgktf4kb",
+        "name": "equivalent",
+        "type": "relation",
+        "system": false,
+        "required": true,
+        "options": {
+          "collectionId": "r26fui0286m4xaq",
+          "cascadeDelete": false,
+          "minSelect": null,
+          "maxSelect": 1,
+          "displayFields": []
+        }
+      },
+      {
+        "id": "0psti9ct",
+        "name": "amountValue",
+        "type": "number",
+        "system": false,
+        "required": true,
+        "options": {
+          "min": null,
+          "max": null
+        }
+      }
+    ],
+    "indexes": [],
+    "listRule": "@request.auth.id != \"\"",
+    "viewRule": "@request.auth.id != \"\"",
+    "createRule": "@request.auth.id != \"\"",
+    "updateRule": "@request.auth.id != \"\"",
+    "deleteRule": "@request.auth.id != \"\"",
+    "options": {}
   }
 ]
