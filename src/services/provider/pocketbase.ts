@@ -2,6 +2,7 @@ import PocketBase from "pocketbase";
 import {
   ActionEntry,
   EquivalentEntry,
+  FacilityEntry,
   InputEntry,
   ProjectEntry,
   ReportEntry,
@@ -274,6 +275,29 @@ export default class DataProvider {
 
   async deleteTarget(id: string) {
     return await this.pb.collection("targets").delete(id);
+  }
+
+  // CRUD for "facilities"
+  async createFacility(data: FacilityEntry) {
+    return await this.pb.collection("facilities").create<FacilityEntry>(data);
+  }
+
+  async readFacility(id: string) {
+    return await this.pb.collection("facilities").getOne<FacilityEntry>(id);
+  }
+
+  async readFacilities() {
+    const res = await this.pb.collection("facilities").getList<FacilityEntry>(1, 500);
+    return res.items;
+  }
+
+  async updateFacility(data: FacilityEntry) {
+    if (!data.id) throw new Error("Facility ID is missing");
+    return await this.pb.collection("facilities").update<FacilityEntry>(data.id, data);
+  }
+
+  async deleteFacility(id: string) {
+    return await this.pb.collection("facilities").delete(id);
   }
 
 }

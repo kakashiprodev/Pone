@@ -45,6 +45,12 @@ const model = ref([
         to: '/inputs',
         visible: true,
     },
+    {
+        label: 'Kälteanlagen',
+        icon: 'fa-solid fa-snowflake',
+        to: '/facilities',
+        visible: true,
+    },
     // {
     //     label: 'Flottenverbrauch',
     //     icon: 'fa-solid fa-gas-pump',

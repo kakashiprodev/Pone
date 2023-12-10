@@ -95,3 +95,14 @@ export interface TargetEntry {
   year: number;
   percentage: number; // 0-100
 }
+
+// table facilities
+export interface FacilityEntry {
+  id: string;
+  name: string;
+  manufacturer: string;
+  model: null | string;
+  comment: null | string;
+  equivalent: null | string; // reference on table equivalents
+  amountValue: number;
+}
