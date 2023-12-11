@@ -1,27 +1,38 @@
 <template>
     <!-- <SmartInput :data="demo" /> -->
     <div class="report" v-if="!loading && global.selectedReport">
-        <div v-if="chartData.datasets.length > 0">
-            <h1 class="text-center">Auswertung {{ global.selectedReport.year }}</h1>
-            <Chart style="margin: 0 auto;" type="pie" :data="chartData" :options="chartOptions" class="w-full md:w-30rem" />
-        </div>
-        <div v-else>
-            <h1 class="text-center mt-5">Noch keine Daten für das Jahr {{ global.selectedReport.year }} vorhanden</h1>
-        </div>
 
-        <div v-if="chartDataScope1.datasets.length > 0" class="mt-5">
-            <h2 class="text-center">Scope 1</h2>
-            <Chart v-if="chartDataScope1.datasets.length > 0" type="bar" :data="chartDataScope1"
-                :options="scopeChartOptions" class="h-30rem" />
-        </div>
-        <div v-if="chartDataScope2.datasets.length > 0" class="mt-5">
-            <h2 class="text-center">Scope 2</h2>
-            <Chart type="bar" :data="chartDataScope2" :options="scopeChartOptions" class="h-30rem" />
-        </div>
-        <div v-if="chartDataScope3.datasets.length > 0" class="mt-5">
-            <h2 class="text-center">Scope 3</h2>
-            <Chart type="bar" :data="chartDataScope3" :options="scopeChartOptions" class="h-30rem" />
-        </div>
+        <TabView>
+            <TabPanel header="Gesamtauswertung">
+                <div v-if="chartData.datasets.length > 0">
+                    <h1 class="text-center">Auswertung {{ global.selectedReport.year }}</h1>
+                    <Chart style="margin: 0 auto;" type="pie" :data="chartData" :options="chartOptions"
+                        class="w-full md:w-30rem" />
+                </div>
+                <div v-else>
+                    <h1 class="text-center mt-5">Noch keine Daten für das Jahr {{ global.selectedReport.year }} vorhanden
+                    </h1>
+                </div>
+
+                <div v-if="chartDataScope1.datasets.length > 0" class="mt-5">
+                    <h2 class="text-center">Scope 1</h2>
+                    <Chart v-if="chartDataScope1.datasets.length > 0" type="bar" :data="chartDataScope1"
+                        :options="scopeChartOptions" class="h-30rem" />
+                </div>
+                <div v-if="chartDataScope2.datasets.length > 0" class="mt-5">
+                    <h2 class="text-center">Scope 2</h2>
+                    <Chart type="bar" :data="chartDataScope2" :options="scopeChartOptions" class="h-30rem" />
+                </div>
+                <div v-if="chartDataScope3.datasets.length > 0" class="mt-5">
+                    <h2 class="text-center">Scope 3</h2>
+                    <Chart type="bar" :data="chartDataScope3" :options="scopeChartOptions" class="h-30rem" />
+                </div>
+            </TabPanel>
+
+            <TabPanel header="Soll/Ist-Vergleich">
+                <ForecastChart />
+            </TabPanel>
+        </TabView>
     </div>
     <div v-else class="m-auto mt-5 w-1">
         <ProgressSpinner />
@@ -30,6 +41,9 @@
 
 <script setup lang="ts">
 import Chart from 'primevue/chart';
+import TabView from 'primevue/tabview';
+import TabPanel from 'primevue/tabpanel';
+import ForecastChart from './../components/ForecastChart.vue';
 import { getScopeSums } from "./../services/reporting";
 import { ref, Ref } from 'vue';
 import ProgressSpinner from 'primevue/progressspinner';
