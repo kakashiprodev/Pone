@@ -33,16 +33,21 @@ const routes = [
         name: "facilities",
       },
       {
-        path: "/inputs/scope/:scope?",
+        path: "/inputs",
         component: () => import("../views/Inputs.vue"),
-        name: "inputs-scope",
-        params: { scope: null },
+        name: "inputs",
       },
       {
-        path: "/inputs/facility/:facility?",
+        path: "/inputs/scope/:scope",
+        component: () => import("../views/Inputs.vue"),
+        name: "inputs-scope",
+        // params: { scope: null },
+      },
+      {
+        path: "/inputs/facility/:facility",
         component: () => import("../views/Inputs.vue"),
         name: "inputs-facility",
-        params: { facility: null },
+        // params: { facility: null },
       },
       {
         path: "/equivalents/",

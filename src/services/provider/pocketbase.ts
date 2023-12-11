@@ -127,13 +127,17 @@ export default class DataProvider {
   }
 
   async readUserInputs(query?: UserInputQuery) {
+    console.log("input query: ", query);
     const res = await this.pb
       .collection("inputs").getList<InputEntry>(1, 500, {
         filter: `report = '${globalStore.selectedReport?.id}'${query?.scope
-          ? " && " + query.scope.map((s) => `scope="${s}"`).join(" || ")
+          ? " && (" + query.scope.map((s) => `scope="${s}"`).join(" || ") + ")"
           : ""
           }${query?.category
-            ? " && " + query.category.map((c) => `category="${c}"`).join(" || ")
+            ? " && (" + query.category.map((c) => `category="${c}"`).join(" || ") + ")"
+            : ""
+          }${query?.facility
+            ? " && (" + query.facility.map((f) => `facility="${f}"`).join(" || ") + ")"
             : ""
           }`,
         // expand: "equivalent",

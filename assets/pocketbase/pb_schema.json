@@ -453,207 +453,6 @@
         "options": {}
     },
     {
-        "id": "inw88l0jngvmnt8",
-        "name": "facilities",
-        "type": "base",
-        "system": false,
-        "schema": [
-            {
-                "id": "ogsr91b4",
-                "name": "name",
-                "type": "text",
-                "system": false,
-                "required": true,
-                "options": {
-                    "min": null,
-                    "max": null,
-                    "pattern": ""
-                }
-            },
-            {
-                "id": "wm1xhyol",
-                "name": "manufacturer",
-                "type": "text",
-                "system": false,
-                "required": true,
-                "options": {
-                    "min": null,
-                    "max": null,
-                    "pattern": ""
-                }
-            },
-            {
-                "id": "ditm6po3",
-                "name": "model",
-                "type": "text",
-                "system": false,
-                "required": false,
-                "options": {
-                    "min": null,
-                    "max": null,
-                    "pattern": ""
-                }
-            },
-            {
-                "id": "myxewrns",
-                "name": "comment",
-                "type": "text",
-                "system": false,
-                "required": false,
-                "options": {
-                    "min": null,
-                    "max": null,
-                    "pattern": ""
-                }
-            },
-            {
-                "id": "pgktf4kb",
-                "name": "equivalent",
-                "type": "relation",
-                "system": false,
-                "required": true,
-                "options": {
-                    "collectionId": "r26fui0286m4xaq",
-                    "cascadeDelete": false,
-                    "minSelect": null,
-                    "maxSelect": 1,
-                    "displayFields": []
-                }
-            },
-            {
-                "id": "0psti9ct",
-                "name": "amountValue",
-                "type": "number",
-                "system": false,
-                "required": true,
-                "options": {
-                    "min": null,
-                    "max": null
-                }
-            }
-        ],
-        "indexes": [],
-        "listRule": "@request.auth.id != \"\"",
-        "viewRule": "@request.auth.id != \"\"",
-        "createRule": "@request.auth.id != \"\"",
-        "updateRule": "@request.auth.id != \"\"",
-        "deleteRule": "@request.auth.id != \"\"",
-        "options": {}
-    },
-    {
-        "id": "b7xjrlfqhm5ml0q",
-        "name": "inputs",
-        "type": "base",
-        "system": false,
-        "schema": [
-            {
-                "id": "cyj7ynav",
-                "name": "name",
-                "type": "text",
-                "system": false,
-                "required": true,
-                "options": {
-                    "min": null,
-                    "max": null,
-                    "pattern": ""
-                }
-            },
-            {
-                "id": "mx2n0uta",
-                "name": "scope",
-                "type": "number",
-                "system": false,
-                "required": true,
-                "options": {
-                    "min": 1,
-                    "max": 3
-                }
-            },
-            {
-                "id": "ca6vlwzp",
-                "name": "comment",
-                "type": "text",
-                "system": false,
-                "required": false,
-                "options": {
-                    "min": null,
-                    "max": null,
-                    "pattern": ""
-                }
-            },
-            {
-                "id": "a0tnw1kp",
-                "name": "rawValue",
-                "type": "number",
-                "system": false,
-                "required": false,
-                "options": {
-                    "min": null,
-                    "max": null
-                }
-            },
-            {
-                "id": "fjncojhc",
-                "name": "sumValue",
-                "type": "text",
-                "system": false,
-                "required": true,
-                "options": {
-                    "min": null,
-                    "max": null,
-                    "pattern": ""
-                }
-            },
-            {
-                "id": "ph2cdv4j",
-                "name": "equivalent",
-                "type": "relation",
-                "system": false,
-                "required": false,
-                "options": {
-                    "collectionId": "r26fui0286m4xaq",
-                    "cascadeDelete": false,
-                    "minSelect": null,
-                    "maxSelect": 1,
-                    "displayFields": null
-                }
-            },
-            {
-                "id": "il1c5rof",
-                "name": "report",
-                "type": "relation",
-                "system": false,
-                "required": false,
-                "options": {
-                    "collectionId": "lppp5lvzbwt7lwu",
-                    "cascadeDelete": false,
-                    "minSelect": null,
-                    "maxSelect": 1,
-                    "displayFields": []
-                }
-            },
-            {
-                "id": "uc85v869",
-                "name": "category",
-                "type": "text",
-                "system": false,
-                "required": false,
-                "options": {
-                    "min": null,
-                    "max": null,
-                    "pattern": ""
-                }
-            }
-        ],
-        "indexes": [],
-        "listRule": "@request.auth.id != \"\"",
-        "viewRule": "@request.auth.id != \"\"",
-        "createRule": "@request.auth.id != \"\"",
-        "updateRule": "@request.auth.id != \"\"",
-        "deleteRule": "@request.auth.id != \"\"",
-        "options": {}
-    },
-    {
         "id": "rnskc22j76iywo3",
         "name": "actions",
         "type": "base",
@@ -968,6 +767,196 @@
                 "options": {
                     "min": null,
                     "max": null
+                }
+            }
+        ],
+        "indexes": [],
+        "listRule": "@request.auth.id != \"\"",
+        "viewRule": "@request.auth.id != \"\"",
+        "createRule": "@request.auth.id != \"\"",
+        "updateRule": "@request.auth.id != \"\"",
+        "deleteRule": "@request.auth.id != \"\"",
+        "options": {}
+    },
+    {
+        "id": "inw88l0jngvmnt8",
+        "name": "facilities",
+        "type": "base",
+        "system": false,
+        "schema": [
+            {
+                "id": "ogsr91b4",
+                "name": "name",
+                "type": "text",
+                "system": false,
+                "required": true,
+                "options": {
+                    "min": null,
+                    "max": null,
+                    "pattern": ""
+                }
+            },
+            {
+                "id": "wm1xhyol",
+                "name": "manufacturer",
+                "type": "text",
+                "system": false,
+                "required": true,
+                "options": {
+                    "min": null,
+                    "max": null,
+                    "pattern": ""
+                }
+            },
+            {
+                "id": "ditm6po3",
+                "name": "model",
+                "type": "text",
+                "system": false,
+                "required": false,
+                "options": {
+                    "min": null,
+                    "max": null,
+                    "pattern": ""
+                }
+            },
+            {
+                "id": "myxewrns",
+                "name": "description",
+                "type": "text",
+                "system": false,
+                "required": false,
+                "options": {
+                    "min": null,
+                    "max": null,
+                    "pattern": ""
+                }
+            }
+        ],
+        "indexes": [],
+        "listRule": "@request.auth.id != \"\"",
+        "viewRule": "@request.auth.id != \"\"",
+        "createRule": "@request.auth.id != \"\"",
+        "updateRule": "@request.auth.id != \"\"",
+        "deleteRule": "@request.auth.id != \"\"",
+        "options": {}
+    },
+    {
+        "id": "b7xjrlfqhm5ml0q",
+        "name": "inputs",
+        "type": "base",
+        "system": false,
+        "schema": [
+            {
+                "id": "cyj7ynav",
+                "name": "name",
+                "type": "text",
+                "system": false,
+                "required": true,
+                "options": {
+                    "min": null,
+                    "max": null,
+                    "pattern": ""
+                }
+            },
+            {
+                "id": "mx2n0uta",
+                "name": "scope",
+                "type": "number",
+                "system": false,
+                "required": true,
+                "options": {
+                    "min": 1,
+                    "max": 3
+                }
+            },
+            {
+                "id": "ca6vlwzp",
+                "name": "comment",
+                "type": "text",
+                "system": false,
+                "required": false,
+                "options": {
+                    "min": null,
+                    "max": null,
+                    "pattern": ""
+                }
+            },
+            {
+                "id": "a0tnw1kp",
+                "name": "rawValue",
+                "type": "number",
+                "system": false,
+                "required": false,
+                "options": {
+                    "min": null,
+                    "max": null
+                }
+            },
+            {
+                "id": "fjncojhc",
+                "name": "sumValue",
+                "type": "text",
+                "system": false,
+                "required": true,
+                "options": {
+                    "min": null,
+                    "max": null,
+                    "pattern": ""
+                }
+            },
+            {
+                "id": "ph2cdv4j",
+                "name": "equivalent",
+                "type": "relation",
+                "system": false,
+                "required": false,
+                "options": {
+                    "collectionId": "r26fui0286m4xaq",
+                    "cascadeDelete": false,
+                    "minSelect": null,
+                    "maxSelect": 1,
+                    "displayFields": null
+                }
+            },
+            {
+                "id": "il1c5rof",
+                "name": "report",
+                "type": "relation",
+                "system": false,
+                "required": false,
+                "options": {
+                    "collectionId": "lppp5lvzbwt7lwu",
+                    "cascadeDelete": false,
+                    "minSelect": null,
+                    "maxSelect": 1,
+                    "displayFields": []
+                }
+            },
+            {
+                "id": "uc85v869",
+                "name": "category",
+                "type": "text",
+                "system": false,
+                "required": false,
+                "options": {
+                    "min": null,
+                    "max": null,
+                    "pattern": ""
+                }
+            },
+            {
+                "id": "hr7dqe4x",
+                "name": "facility",
+                "type": "relation",
+                "system": false,
+                "required": false,
+                "options": {
+                    "collectionId": "inw88l0jngvmnt8",
+                    "cascadeDelete": false,
+                    "minSelect": null,
+                    "maxSelect": 1,
+                    "displayFields": []
                 }
             }
         ],

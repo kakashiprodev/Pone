@@ -45,6 +45,18 @@
         </div>
     </Dialog>
 
+    <!-- choose facility modal -->
+    <Dialog id="choose-facility" v-model:visible="showChooseFacility" modal header="Anlage auswählen"
+        :class="{ 'w-8': windowWidth > 990, 'w-full': windowWidth < 990, 'h-screen': windowWidth < 990 }">
+        <FacilityChooser v-model="selectedValue.facility" />
+        <div class="mt-4">
+            <Button label="Ok" @click="showChooseFacility = false;" />
+            <Button class="ml-1" label="Auswahl leeren"
+                @click="selectedValue.facility = null; showChooseFacility = false;" />
+            <Button class="ml-1" label="Abbrechen" @click="selectedValue = originalValue; showChooseFacility = false;" />
+        </div>
+    </Dialog>
+
     <!-- comfort input -->
     <Dialog modal header="Konforteingabe" id="create-input-comfort" v-model:visible="showComfortInput"
         :class="{ 'w-9': true }" maximizable>
@@ -75,6 +87,22 @@
 
         <!-- step 3 -->
         <div class="card" v-if="actualComfortStep === 2">
+            <p>Soll der Eingabe eine Anlage zugeordnet werden?</p>
+            <div class="field">
+                <label for="userinput-equivalent">Anlage</label>
+                <div>
+                    <div v-if="selectedValue.facility != null && selectedValue.facility !== ''"
+                        @click="showChooseFacility = true"
+                        class="bg-teal-300 text-white border-round m-2 flex align-items-center justify-content-center cursor-pointer p-2">
+                        {{ global.facilitiesDict[selectedValue.facility]?.name ?? 'Reference error' }}
+                    </div>
+                    <Button v-else label="Auswählen" @click="showChooseFacility = true" />
+                </div>
+            </div>
+        </div>
+
+        <!-- step 4 -->
+        <div class="card" v-if="actualComfortStep === 3">
             <div class="field">
                 <label for="userinput-rawvalue">
                     Eingabewert {{ choosenEquivalent ? ' in ' + choosenEquivalent.in : '' }}
@@ -100,7 +128,7 @@
         <!-- Step Buttons -->
         <div class="flex align-items-center justify-content-center">
             <Button :label="'Zurück'" @click="decStep" class="flex-grow-1 mr-1" :disabled="actualComfortStep === 0" />
-            <Button v-if="actualComfortStep < 2" :label="'Weiter'" @click="incStep" class="flex-grow-1 ml-1"
+            <Button v-if="actualComfortStep < 3" :label="'Weiter'" @click="incStep" class="flex-grow-1 ml-1"
                 :disabled="(actualComfortStep === 0 && selectedValue.equivalent == null)" />
             <Button v-else :label="'Anlegen'" @click="save" class="flex-grow-1 ml-1"
                 :disabled="selectedValue.rawValue == null" />
@@ -141,6 +169,23 @@
                 <InlineMessage v-if="global.showTooltips" class="w-full mt-1" severity="info">
                     Die Angabe einer Kategorie dient der späteren Auswertung und besseren Sortierbarkeit.
                     Es können beliebige Kategorien angelegt werden.
+                </InlineMessage>
+            </div>
+            <div class="field">
+                <label for="userinput-equivalent">Anlage (optional)</label>
+                <div>
+                    <div v-if="selectedValue.facility != null && selectedValue.facility !== ''"
+                        @click="showChooseFacility = true"
+                        class="bg-teal-300 text-white border-round m-2 flex align-items-center justify-content-center cursor-pointer p-2">
+                        {{ global.facilitiesDict[selectedValue.facility]?.name ?? 'Reference error' }}
+                    </div>
+                    <Button v-else label="Auswählen" @click="showChooseFacility = true" />
+                </div>
+                <InlineMessage v-if="global.showTooltips" class="w-full mt-1" severity="info">
+                    Hier kann ein Äquivalent zugeordnet werden. Neue Äquivalente können unter dem Benutzermenü >
+                    "Äquivalente verwalten" hinzugefügt werden.
+                    Gelistet werden außerdem alle ausgelieferten Äquivalente. Ist kein Äquivalent ausgewählt, ist die
+                    Eingabe in [kg] CO2-Äquivalenten ohne weiteren Faktor.
                 </InlineMessage>
             </div>
             <div class="field">
@@ -209,6 +254,11 @@
                 </div>
             </template>
         </Column>
+        <Column field="facility" header="Anlage" sortable>
+            <template #body="{ data }">
+                {{ global.facilitiesDict[data.facility]?.name ?? '' }}
+            </template>
+        </Column>
         <Column field="sumValue" header="Menge (Jahr)" sortable>
             <template #body="{ data }">
                 {{ round(data.sumValue, 2) }} [kg]
@@ -240,6 +290,7 @@ import Checkbox from 'primevue/checkbox';
 import Dropdown from 'primevue/dropdown';
 import InlineMessage from 'primevue/inlinemessage';
 import SmartEquivalentList from './../components/SmartEquivalentList.vue';
+import FacilityChooser from './../components/FacilityChooser.vue';
 import ScopeInfoBox from './../components/ScopeInfoBox.vue';
 import { EquivalentEntry, InputEntry } from './../services/types';
 import dataprovider from "./../services/dataprovider";
@@ -295,12 +346,15 @@ watch(() => showComfortInput.value, () => {
 // get "scope" from route
 const route = useRoute();
 const preSelectedScope = ref('all');
-const setScopeFilter = () => {
-    console.log(route.params);
-    const param = route.params.scope; // "1", "2", "3", "all"
+const preSelectedFacility = ref(null as null | string);
+
+const setRouteFilter = () => {
+    // filter by scope if set
+    const scopeParam = route.params.scope; // "1", "2", "3", "all"
+    const facilityParam = route.params.facility; // "some-id-string"
     // is param is not an Array and is one of the valid strings then return only the number
     // else return 1
-    preSelectedScope.value = !Array.isArray(param) && ['1', '2', '3', 'all'].indexOf(param) > -1 ? param : 'all';
+    preSelectedScope.value = !Array.isArray(scopeParam) && ['1', '2', '3', 'all'].indexOf(scopeParam) > -1 ? scopeParam : 'all';
     if (preSelectedScope.value === 'all') {
         scope1Active.value = true;
         scope2Active.value = true;
@@ -310,16 +364,18 @@ const setScopeFilter = () => {
         scope2Active.value = preSelectedScope.value === '2';
         scope3Active.value = preSelectedScope.value === '3';
     }
+
+    preSelectedFacility.value = !Array.isArray(facilityParam) && facilityParam != null ? facilityParam : null;
 }
 
 const data: Ref<InputEntry[]> = ref([]);
 
 // on fist loading
-setScopeFilter();
+setRouteFilter();
 // on change
 watch(route, () => {
     console.log('route changed');
-    setScopeFilter();
+    setRouteFilter();
     data.value = [];
     getData();
 });
@@ -333,6 +389,9 @@ const choosenEquivalent: ComputedRef<null | EquivalentEntry> = computed(() => {
         return null;
     }
 });
+
+// choose facility
+const showChooseFacility = ref(false);
 
 // edit/new
 const global = useGlobalStore();
@@ -364,6 +423,7 @@ const clone = (input: InputEntry) => {
     if (preSelectedScope.value === '1') c.scope = 1;
     else if (preSelectedScope.value === '2') c.scope = 2;
     else if (preSelectedScope.value === '3') c.scope = 3;
+    if (preSelectedFacility.value != null) c.facility = preSelectedFacility.value;
     return c;
 }
 const selectedValue: Ref<InputEntry> = ref(emptyInput);
@@ -449,6 +509,7 @@ const getData = async () => {
     };
     data.value = await dataprovider.readUserInputs({
         scope,
+        [preSelectedFacility.value != null ? 'facility' : '']: [preSelectedFacility.value] ?? undefined,
     });
 }
 

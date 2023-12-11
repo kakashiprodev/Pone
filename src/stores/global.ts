@@ -2,6 +2,7 @@ import { defineStore } from "pinia";
 import { router } from "./../router/index";
 import {
   EquivalentEntry,
+  FacilityEntry,
   ProjectEntry,
   ReportEntry,
   TargetEntry,
@@ -29,6 +30,9 @@ export interface GlobalState {
       scope3: string[];
     }
   },
+  //
+  facilities: FacilityEntry[];
+  facilitiesDict: { [id: string]: FacilityEntry };
   // projects
   projects: ProjectEntry[];
   selectedProject: null | ProjectEntry;
@@ -58,6 +62,9 @@ export const useGlobalStore = defineStore("global", {
         scope3: [],
       },
     },
+    //
+    facilities: [],
+    facilitiesDict: {},
     //
     projects: [],
     selectedProject: null,
@@ -453,6 +460,16 @@ export const useGlobalStore = defineStore("global", {
       }
       this.selectedReport = updated;
       return updated;
+    },
+
+    // READ cache for "facilities"
+    async refreshFacilities() {
+      this.facilities = await dataprovider.readFacilities();
+      // create dict
+      this.facilitiesDict = this.facilities.reduce(
+        (acc, cur) => ({ ...acc, [cur.id]: cur }),
+        {},
+      );
     },
 
     /**

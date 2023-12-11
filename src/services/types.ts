@@ -40,12 +40,14 @@ export interface InputEntry {
   equivalent: null | string; // reference on table equivalents
   report: string; // reference on table reports
   category: null | string;
+  facility: null | string; // references on table facilities 1:n
 }
 
 // query object for table "inputs"
 export interface UserInputQuery {
   scope?: number[];
   category?: string[];
+  facility?: string[];
 }
 
 // table "reports"
@@ -105,7 +107,5 @@ export interface FacilityEntry {
   name: string;
   manufacturer: string;
   model: null | string;
-  comment: null | string;
-  equivalent: null | string; // reference on table equivalents
-  amountValue: number;
+  description: null | string;
 }

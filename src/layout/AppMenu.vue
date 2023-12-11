@@ -47,7 +47,7 @@ const model = ref([
     },
     {
         label: 'Kälteanlagen',
-        icon: 'fa-solid fa-snowflake',
+        icon: 'fa-solid fa-industry',
         to: '/facilities',
         visible: true,
     },
