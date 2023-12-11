@@ -59,6 +59,12 @@ const routes = [
       },
     ],
   },
+  // other main routes
+  {
+    path: "/report-preview",
+    component: () => import("../views/ReportPrintPreview.vue"),
+    name: "report-preview",
+  },
 ];
 
 export const router = VueRouter.createRouter({

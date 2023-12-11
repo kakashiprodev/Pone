@@ -18,6 +18,7 @@ export default class DataProvider {
 
   constructor() {
     this.pb = new PocketBase(import.meta.env.VITE_POCKETBASE_URL);
+    this.pb.autoCancellation(false);
   }
 
   async login(username: string, password: string): Promise<boolean> {
