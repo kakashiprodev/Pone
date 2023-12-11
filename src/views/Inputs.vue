@@ -211,7 +211,7 @@
         </Column>
         <Column field="sumValue" header="Menge (Jahr)" sortable>
             <template #body="{ data }">
-                {{ data.sumValue }} [kg]
+                {{ round(data.sumValue, 2) }} [kg]
             </template>
         </Column>
         <Column field="comment" header="Kommentar"></Column>
@@ -251,6 +251,8 @@ import { useConfirm } from 'primevue/useconfirm';
 import { getSumForInput, getCalculationSteps } from "./../services/reporting";
 import { useRouter } from 'vue-router';
 import { parse, string, object, number, minLength, maxLength, minValue, maxValue, nullable } from "valibot";
+import { round } from "./../pipes";
+
 const router = useRouter();
 
 // input validation

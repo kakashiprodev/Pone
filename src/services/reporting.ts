@@ -7,6 +7,7 @@
 
 import dataprovider from "./dataprovider";
 import { EquivalentEntry, InputEntry } from "./types";
+import { round } from "../pipes/index";
 
 const months = [
   "jan",
@@ -161,7 +162,7 @@ const calculateEquivalentFactorWithSteps = (
 
   const intermediateResult = parentValue * equivalent.avgValue;
   steps.push(
-    `${parentValue}[${equivalent.in}] * ${equivalent.avgValue}[${equivalent.in}/${equivalent.out}] = ${intermediateResult}[${equivalent.out}]`,
+    `${parentValue}[${equivalent.in}] * ${equivalent.avgValue}[${equivalent.in}/${equivalent.out}] = ${round(intermediateResult, 3)}[${equivalent.out}]`,
   );
 
   return intermediateResult;
