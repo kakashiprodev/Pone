@@ -67,6 +67,7 @@ export interface ReportEntry {
   countEmployees: number;
   businessTurnover: number;
   baseYear: number;
+  sumEmissions: number;
 }
 
 // table "projects"

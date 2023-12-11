@@ -50,6 +50,7 @@ import ProgressSpinner from 'primevue/progressspinner';
 import { useRouter } from 'vue-router';
 import { useGlobalStore } from './../stores/global';
 import { error } from './../services/toast';
+import dataprovider from './../services/dataprovider';
 
 const global = useGlobalStore();
 const router = useRouter();
@@ -115,6 +116,14 @@ const chartOptions = ref({
 const loadDasboard = async () => {
     const data = await getScopeSums();
     console.log(data);
+
+    // save last result to database
+    // get report
+    const report = global.selectedReport;
+    if (report) {
+        report.sumEmissions = data.scope1.sum + data.scope2.sum + data.scope3.sum;
+        await dataprovider.updateReport(report);
+    }
 
     chartData.value = {
         labels: ['Scope 1', 'Scope 2', 'Scope 3'],

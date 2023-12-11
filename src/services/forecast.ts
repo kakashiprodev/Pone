@@ -1,10 +1,5 @@
 import { ActionEntry, TargetEntry } from "./types";
 
-interface OldReportValues {
-    year: number;
-    value: number;
-}
-
 // interface Target {
 //     year: number;
 //     percentage: number;
@@ -15,6 +10,11 @@ interface OldReportValues {
 //     targetInTons: number;
 //     relevant: boolean;
 // }
+
+export interface OldReportValues {
+    year: number;
+    value: number;
+}
 
 export interface EmissionValues {
     refValue: number; // reference value for the month

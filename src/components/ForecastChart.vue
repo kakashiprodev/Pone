@@ -16,7 +16,7 @@
 
 <script setup lang="ts">
 import Chart from 'primevue/chart';
-import { calculateEmissions, EmissionResult, EmissionValues } from './../services/forecast';
+import { calculateEmissions, EmissionResult, EmissionValues, OldReportValues } from './../services/forecast';
 import dataprovider from './../services/dataprovider';
 import { ref, Ref } from 'vue';
 import { error, warn } from './../services/toast';
@@ -54,13 +54,6 @@ function prepareChartData(emissionValues: EmissionValues[]) {
     return { labels, datasets };
 }
 
-
-// Get data
-const oldValues = [
-    { year: 2020, value: 5000 },
-    { year: 2021, value: 4500 }
-];
-
 const reportData: Ref<null | EmissionResult> = ref(null);
 const barChartYear: Ref<null | any> = ref(null);
 
@@ -68,18 +61,32 @@ const barChartYear: Ref<null | any> = ref(null);
  * Load report data initially
  */
 const getData = async () => {
+    // get report data
     const targets = await dataprovider.readTargets();
     const actions = await dataprovider.readActions();
-
+    const reports = await dataprovider.readReports();
+    const oldValues: OldReportValues[] = []
+    for (const report of reports) {
+        if (report.sumEmissions && report.sumEmissions > 0) {
+            oldValues.push({
+                year: report.year,
+                value: report.sumEmissions
+            });
+        }
+    }
+    if (oldValues.length === 0) {
+        error('Es gibt noch keine nutzbaren Daten in den Berichten. Die Summe aus mind. einem Bericht muss > 0 sein.');
+        return;
+    }
     if (targets.length === 0) {
         error('Es wurden noch keine Ziele im Projekt definiert. Bitte legen Sie zuerst Ziele an.');
-    } else {
-        if (actions.length === 0) {
-            warn('Es wurden noch keine Maßnahmen im Projekt definiert. Das Ergebnis resultiert nur aus den gesetzen Zielen.');
-        }
-        reportData.value = calculateEmissions(oldValues, targets, actions, oldValues[0].year);
-        barChartYear.value = prepareChartData(reportData.value.yearlyResults);
+        return;
     }
+    if (actions.length === 0) {
+        warn('Es wurden noch keine Maßnahmen im Projekt definiert. Das Ergebnis resultiert nur aus den gesetzen Zielen.');
+    }
+    reportData.value = calculateEmissions(oldValues, targets, actions, oldValues[0].year);
+    barChartYear.value = prepareChartData(reportData.value.yearlyResults);
 }
 getData();
 

@@ -72,6 +72,7 @@ import {
   maxValue,
   email,
   parse,
+  nullable,
 } from 'valibot';
 import { error, info } from './../services/toast';
 
@@ -100,6 +101,7 @@ const reportSchema = object({
   countEmployees: number([minValue(1, 'Die Anzahl Mitarbeiter muss min. 1 betragen')]),
   businessTurnover: number([minValue(0, 'Der Umsatz muss min. 0 betragen')]),
   baseYear: number([minValue(1900, 'Bitte ein gültiges Basisjahr angeben'), maxValue(2100, 'Bitte ein gültiges Basisjahr angeben')]),
+  sumEmissions: nullable(number()),
 });
 
 const reportTranslations: any = {

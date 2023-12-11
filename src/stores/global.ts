@@ -387,6 +387,7 @@ export const useGlobalStore = defineStore("global", {
         countEmployees: 0,
         businessTurnover: 0,
         baseYear: new Date().getFullYear(),
+        sumEmissions: 0,
       };
       return report;
     },
