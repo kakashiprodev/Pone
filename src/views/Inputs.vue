@@ -296,10 +296,11 @@ watch(() => showComfortInput.value, () => {
 const route = useRoute();
 const preSelectedScope = ref('all');
 const setScopeFilter = () => {
-    const param = route.params.scope; // "scope1", "scope2", "scope3", "all"
+    console.log(route.params);
+    const param = route.params.scope; // "1", "2", "3", "all"
     // is param is not an Array and is one of the valid strings then return only the number
     // else return 1
-    preSelectedScope.value = !Array.isArray(param) && ['scope1', 'scope2', 'scope3', 'all'].indexOf(param) > -1 ? param.replace('scope', '') : 'all';
+    preSelectedScope.value = !Array.isArray(param) && ['1', '2', '3', 'all'].indexOf(param) > -1 ? param : 'all';
     if (preSelectedScope.value === 'all') {
         scope1Active.value = true;
         scope2Active.value = true;
@@ -356,6 +357,7 @@ const emptyInput: InputEntry = {
     rawValue: null as any,
     equivalent: null,
     category: null,
+    facility: null,
 }
 const clone = (input: InputEntry) => {
     const c = JSON.parse(JSON.stringify(input));
