@@ -4,6 +4,7 @@
             DAS IST NUR EINE VORSCHAU UND NICHT DRUCKBAR!
         </h3>
 
+        <ReportHeader />
         <SumCharts />
         <ActionOverview />
         <ForecastChart />
@@ -14,6 +15,7 @@
 import SumCharts from './../components/SumCharts.vue';
 import ForecastChart from './../components/ForecastChart.vue';
 import ActionOverview from './../components/ActionOverview.vue';
+import ReportHeader from './../components/ReportHeader.vue';
 
 </script>
   
