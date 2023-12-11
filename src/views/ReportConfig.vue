@@ -33,17 +33,15 @@
     <div class="card mt-5" v-if="reportForm">
       <h5>Basisdaten des CO2-Berichts</h5>
       <div class="field grid" v-for="entry in Object.entries(reportSchema.object)" :key="entry[0]">
-        <template>
-          <label :for="entry[0]" class="col-12 mb-2 md:col-4 md:mb-0">{{
-            reportTranslations[entry[0]]
-          }}</label>
-          <div class="col-12 md:col-8">
-            <InputText v-if="entry[1].schema === 'string'" :id="entry[0]" v-model="reportForm[entry[0]]" class="w-full"
-              :disabled="entry[0] === 'id' || entry[0] === 'project'" />
-            <InputNumber v-if="entry[1].schema === 'number'" :id="entry[0]" v-model="reportForm[entry[0]]"
-              :useGrouping="false" class="w-full" />
-          </div>
-        </template>
+        <label :for="entry[0]" class="col-12 mb-2 md:col-4 md:mb-0">{{
+          reportTranslations[entry[0]]
+        }}</label>
+        <div class="col-12 md:col-8">
+          <InputText v-if="entry[1].schema === 'string'" :id="entry[0]" v-model="reportForm[entry[0]]" class="w-full"
+            :disabled="entry[0] === 'id' || entry[0] === 'project'" />
+          <InputNumber v-if="entry[1].schema === 'number'" :id="entry[0]" v-model="reportForm[entry[0]]"
+            :useGrouping="false" class="w-full" />
+        </div>
       </div>
 
       <Button class="mt-3" v-if="reportForm" @click="saveReport()"
