@@ -59,6 +59,7 @@ export interface ReportEntry {
   companyPostal: string;
   companyCity: string;
   companyCountry: string;
+  companyDomain: string;
   contactName: string;
   contactTelephone: string;
   contactEmail: string;
@@ -77,6 +78,7 @@ export interface ProjectEntry {
 // table "actions"
 export interface ActionEntry {
   id: string;
+  relevant: boolean; // if false the action is not used in the calculation
   project: string; // reference on table projects
   name: string; // normal text
   shortDescription: string; // rich text

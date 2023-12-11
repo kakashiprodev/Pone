@@ -53,30 +53,32 @@
                     </InlineMessage>
                 </div>
 
-                <h5 class="mt-5">
-                    Klimaziel für das Projekt definieren. (optional)
-                </h5>
-                <InlineMessage v-if="global.showTooltips" severity="info" class="w-full mt-2 mb-4">
-                    Die Definition ist optional. Es kann die schrittweise Reduktion der Treibhausgasemissionen in
-                    Schritten eingegeben werden.
-                </InlineMessage>
+                <template v-if="projectForm.id !== 'new'">
+                    <h5 class="mt-5">
+                        Klimaziel für das Projekt definieren. (optional)
+                    </h5>
+                    <InlineMessage v-if="global.showTooltips" severity="info" class="w-full mt-2 mb-4">
+                        Die Definition ist optional. Es kann die schrittweise Reduktion der Treibhausgasemissionen in
+                        Schritten eingegeben werden.
+                    </InlineMessage>
 
-                <!-- Button to add a new entry as target -->
-                <div class="field grid" v-for="target in global.targetsInProject" :key="target.id">
-                    <label :for="target.id" class="col-4 mb-2 md:col-4 md:mb-0">Jahr / Prozent</label>
-                    <div class="col-12 md:col-8 flex">
-                        <InputNumber :useGrouping="false" :min="1960" :max="2100" :id="target.id" class="flex-grow-1 mr-2"
-                            v-model="target.year" />
-                        <InputNumber :useGrouping="false" :min="0" :max="100" :id="target.id" class="flex-grow-1"
-                            v-model="target.percentage" suffix=" %" />
-                        <!-- icon as delete button -->
-                        <Button icon="fa-solid fa-save" @click="global.updateTarget(target)" class="ml-1" />
-                        <Button icon="fa-solid fa-trash" @click="global.dropTarget(target)" class="ml-1" />
+                    <!-- Button to add a new entry as target -->
+                    <div class="field grid" v-for="target in global.targetsInProject" :key="target.id">
+                        <label :for="target.id" class="col-4 mb-2 md:col-4 md:mb-0">Jahr / Prozent</label>
+                        <div class="col-12 md:col-8 flex">
+                            <InputNumber :useGrouping="false" :min="1960" :max="2100" :id="target.id"
+                                class="flex-grow-1 mr-2" v-model="target.year" />
+                            <InputNumber :useGrouping="false" :min="0" :max="100" :id="target.id" class="flex-grow-1"
+                                v-model="target.percentage" suffix=" %" />
+                            <!-- icon as delete button -->
+                            <Button icon="fa-solid fa-save" @click="global.updateTarget(target)" class="ml-1" />
+                            <Button icon="fa-solid fa-trash" @click="global.dropTarget(target)" class="ml-1" />
+                        </div>
                     </div>
-                </div>
-                <Button icon="fa-solid fa-plus"
-                    @click="global.addTarget({ id: 'new', year: 2050, percentage: 0, project: '' })"
-                    label="Neuen Jahresschritt hinzufügen" />
+                    <Button icon="fa-solid fa-plus"
+                        @click="global.addTarget({ id: 'new', year: 2050, percentage: 0, project: '' })"
+                        label="Neuen Jahresschritt hinzufügen" />
+                </template>
             </div>
 
             <Button class="mt-3" @click="saveProject()" :label="projectForm.id === 'new' ? 'Hinzufügen' : 'Speichern'" />

@@ -73,7 +73,9 @@
                 <InlineMessage severity="info" v-if="global.showTooltips" class="w-full mb-2">
                     Der Fortschritt der Maßnahme in Prozent.
                 </InlineMessage>
-                <Slider id="action-progress" v-model="selectedAction.progress" class="w-full" />
+                <InputNumber v-model.number="selectedAction.progress" :use-grouping="false" suffix=" %"
+                    class="w-full mt-2 mb-5" />
+                <Slider id="action-progress" v-model="selectedAction.progress" class="w-full mb-3" :step="5" />
             </div>
         </div>
         <div>
@@ -102,6 +104,11 @@
         <Column field="progress" header="Fortschritt">
             <template #body="{ data }">
                 {{ data.progress }} %
+            </template>
+        </Column>
+        <Column field="relevant" header="Relevant">
+            <template #body="{ data }">
+                {{ data.relevant ? 'Ja' : 'Nein' }}
             </template>
         </Column>
         <Column header="">
@@ -136,13 +143,14 @@ import Slider from 'primevue/slider';
 import Dialog from 'primevue/dialog';
 import Dropdown from 'primevue/dropdown';
 import { useConfirm } from 'primevue/useconfirm';
+import { parse, string, object, number, minLength, maxLength, minValue, nullable, boolean, date, maxValue } from "valibot";
 
 const global = useGlobalStore();
 const windowWidth = ref(window.innerWidth);
 const showDialog = ref(false);
 const emptyAction: ActionEntry = {
     id: 'new',
-    project: '',
+    project: global.selectedProject?.id ?? '',
     name: '',
     shortDescription: '',
     longDescription: '',
@@ -150,11 +158,27 @@ const emptyAction: ActionEntry = {
     responsible: '',
     finishedUntil: '',
     status: 'open',
-    progress: 0
+    progress: 0,
+    relevant: true,
 };
 const clone = (input: ActionEntry) => JSON.parse(JSON.stringify(input));
 const selectedAction = ref(emptyAction);
 const originalAction = ref(emptyAction);
+
+// validation form
+const actionEntrySchema = object({
+    id: string('Die ID scheint korrupt zu sein.'),
+    project: string('Keine gültige Projekt-ID', [minLength(1, 'Projekt-ID zu kurz'), maxLength(255, 'Projekt-ID zu lang')]),
+    name: string('Kein Name angegeben', [minLength(1, 'Name zu kurz'), maxLength(255, 'Name zu lang')]),
+    shortDescription: string('Keine Kurzbeschreibung angegeben', [minLength(1, 'Kurzbeschreibung zu kurz'), maxLength(255, 'Kurzbeschreibung zu lang')]),
+    longDescription: nullable(string([minLength(1, 'Langbeschreibung zu kurz'), maxLength(255, 'Langbeschreibung zu lang')])),
+    targetInTons: number('Kein Ziel angegeben', [minValue(0, 'Ziel muss größer als 0 sein')]),
+    responsible: string('Kein Verantwortlicher angegeben', [minLength(1, 'Verantwortlicher zu kurz'), maxLength(255, 'Verantwortlicher zu lang')]),
+    finishedUntil: date('Kein Fertigstellungsdatum angegeben'),
+    status: string('Kein Status angegeben', [minLength(1, 'Status zu kurz'), maxLength(255, 'Status zu lang')]),
+    progress: number('Kein Fortschritt angegeben', [minValue(0, 'Fortschritt muss größer als 0 sein'), maxValue(100, 'Fortschritt muss kleiner als 100 sein')]),
+    relevant: boolean('Keine Relevanz angegeben'),
+})
 
 /** 
  * status translations dict
@@ -176,6 +200,7 @@ const actions = ref<ActionEntry[]>([]);
  */
 const save = async () => {
     try {
+        parse(actionEntrySchema, selectedAction.value);
         if (selectedAction.value.id === 'new') {
             const toCreate = clone(selectedAction.value);
             delete toCreate.id;
@@ -190,7 +215,7 @@ const save = async () => {
             showDialog.value = false;
         }
     } catch (e) {
-        error(e + "");
+        error((e + "").replace('ValiError: ', ''));
     }
 };
 

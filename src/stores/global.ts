@@ -97,8 +97,18 @@ export const useGlobalStore = defineStore("global", {
 
     async refreshProjectAndReport() {
       // load equivalents and reports for the selected project
-      await this.refreshEquivalents(true);
-      await this.refreshReports(true);
+
+      // first reset all
+      this.targetsInProject = [];
+      this.reports = [];
+      this.equivalents = [];
+      this.equivalentDict = {};
+      // load all data for new project from backend
+      await Promise.all([
+        this.refreshEquivalents(true),
+        this.refreshReports(true),
+        this.refreshTargets(),
+      ]);
       // select report with the highest year
       this.loadLatestReport();
     },
@@ -369,6 +379,7 @@ export const useGlobalStore = defineStore("global", {
         companyPostal: "",
         companyCity: "",
         companyCountry: "",
+        companyDomain: "",
         contactName: "",
         contactTelephone: "",
         contactEmail: "",
@@ -376,7 +387,6 @@ export const useGlobalStore = defineStore("global", {
         countEmployees: 0,
         businessTurnover: 0,
         baseYear: new Date().getFullYear(),
-        baseEquivalentSource: null,
       };
       return report;
     },

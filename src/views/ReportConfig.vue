@@ -33,7 +33,7 @@
     <div class="card mt-5" v-if="reportForm">
       <h5>Basisdaten des CO2-Berichts</h5>
       <div class="field grid" v-for="entry in Object.entries(reportSchema.object)" :key="entry[0]">
-        <template v-if="entry[0] !== 'baseEquivalentSource'">
+        <template>
           <label :for="entry[0]" class="col-12 mb-2 md:col-4 md:mb-0">{{
             reportTranslations[entry[0]]
           }}</label>
@@ -94,6 +94,7 @@ const reportSchema = object({
   companyPostal: string([minLength(4, 'Die Postleitzahl muss min. 4 Zeichen beinhalten'), maxLength(6, 'Die Postleitzahl kann max 5 Zeichen beinhalten')]),
   companyCity: string([minLength(2, 'Die Stadt muss zwischen 2 und 255 Zeichen lang sein'), maxLength(255, 'Die Stadt muss zwischen 2 und 255 Zeichen lang sein')]),
   companyCountry: string([minLength(2, 'Das Land muss zwischen 2 und 255 Zeichen lang sein'), maxLength(255, 'Das Land muss zwischen 2 und 255 Zeichen lang sein')]),
+  companyDomain: string([minLength(2, 'Die Branche muss zwischen 2 und 255 Zeichen lang sein'), maxLength(255, 'Die Branche muss zwischen 2 und 255 Zeichen lang sein')]),
   contactName: string([minLength(2, 'Der Kontaktname muss zwischen 2 und 255 Zeichen lang sein'), maxLength(255, 'Der Kontaktname muss zwischen 2 und 255 Zeichen lang sein')]),
   contactTelephone: string([minLength(2, 'Die Telefonnummer muss min. 2 Zeichen lang sein'), maxLength(255, 'Die Telefonnummer kann max 255 Zeichen lang sein')]),
   contactEmail: string([email()]),
@@ -101,11 +102,10 @@ const reportSchema = object({
   countEmployees: number([minValue(1, 'Die Anzahl Mitarbeiter muss min. 1 betragen')]),
   businessTurnover: number([minValue(0, 'Der Umsatz muss min. 0 betragen')]),
   baseYear: number([minValue(1900, 'Bitte ein gültiges Basisjahr angeben'), maxValue(2100, 'Bitte ein gültiges Basisjahr angeben')]),
-  // baseEquivalentSource: string([minLength(4), maxLength(255)]),
 });
 
 const reportTranslations: any = {
-  id: 'ID',
+  id: 'Report-ID',
   project: 'Projekt-ID',
   year: 'Jahr',
   companyName: 'Firmenname',
@@ -113,6 +113,7 @@ const reportTranslations: any = {
   companyPostal: 'PLZ',
   companyCity: 'Stadt',
   companyCountry: 'Land',
+  companyDomain: 'Branche',
   contactName: 'Ansprechpartner',
   contactTelephone: 'Telefon',
   contactEmail: 'E-Mail',
@@ -120,7 +121,6 @@ const reportTranslations: any = {
   countEmployees: 'Anzahl Mitarbeiter',
   businessTurnover: 'Jahresumsatz',
   baseYear: 'Referenzjahr',
-  // baseEquivalentSource: "Quelle",
 };
 
 const confirmDelete = async (report: ReportEntry, event: any) => {
