@@ -1,9 +1,9 @@
 <template>
-    <h4>Übersicht aller Kälteanlagen</h4>
+    <h4>Übersicht aller Anlagen</h4>
 
     <InlineMessage severity="info" v-if="global.showTooltips" class="w-full mb-2">
-        Hier können Sie alle Ihre Kälteanlagen anlegen, einsehen und bearbeiten.
-        Jede Kälteanlage resuliert in eine Eingabe für den Bericht.
+        Hier können Sie alle Ihre Anlagen anlegen, einsehen und bearbeiten. Jede Eingabe kann später einer Anlage zugewiesen
+        werden.
     </InlineMessage>
 
     <Toolbar class="mb-2">

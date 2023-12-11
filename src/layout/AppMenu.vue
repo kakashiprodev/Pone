@@ -46,7 +46,7 @@ const model = ref([
         visible: true,
     },
     {
-        label: 'Kälteanlagen',
+        label: 'Anlagen',
         icon: 'fa-solid fa-industry',
         to: '/facilities',
         visible: true,
