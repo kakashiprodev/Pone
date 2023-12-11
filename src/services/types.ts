@@ -40,12 +40,14 @@ export interface InputEntry {
   equivalent: null | string; // reference on table equivalents
   report: string; // reference on table reports
   category: null | string;
+  facility: null | string; // references on table facilities 1:n
 }
 
 // query object for table "inputs"
 export interface UserInputQuery {
   scope?: number[];
   category?: string[];
+  facility?: string[];
 }
 
 // table "reports"
@@ -59,6 +61,7 @@ export interface ReportEntry {
   companyPostal: string;
   companyCity: string;
   companyCountry: string;
+  companyDomain: string;
   contactName: string;
   contactTelephone: string;
   contactEmail: string;
@@ -66,6 +69,7 @@ export interface ReportEntry {
   countEmployees: number;
   businessTurnover: number;
   baseYear: number;
+  sumEmissions: number;
 }
 
 // table "projects"
@@ -77,6 +81,7 @@ export interface ProjectEntry {
 // table "actions"
 export interface ActionEntry {
   id: string;
+  relevant: boolean; // if false the action is not used in the calculation
   project: string; // reference on table projects
   name: string; // normal text
   shortDescription: string; // rich text
@@ -102,7 +107,5 @@ export interface FacilityEntry {
   name: string;
   manufacturer: string;
   model: null | string;
-  comment: null | string;
-  equivalent: null | string; // reference on table equivalents
-  amountValue: number;
+  description: null | string;
 }

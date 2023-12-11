@@ -32,3 +32,16 @@ export function error(
     life: duration,
   });
 }
+
+export function warn(
+  body: string,
+  title: string = "Warning",
+  duration: number = STD_LIFETIME,
+): void {
+  app.config.globalProperties.$toast.add({
+    severity: "warn",
+    summary: title,
+    detail: body,
+    life: duration,
+  });
+}

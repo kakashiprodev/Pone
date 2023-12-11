@@ -18,6 +18,7 @@ export default class DataProvider {
 
   constructor() {
     this.pb = new PocketBase(import.meta.env.VITE_POCKETBASE_URL);
+    this.pb.autoCancellation(false);
   }
 
   async login(username: string, password: string): Promise<boolean> {
@@ -126,13 +127,17 @@ export default class DataProvider {
   }
 
   async readUserInputs(query?: UserInputQuery) {
+    console.log("input query: ", query);
     const res = await this.pb
       .collection("inputs").getList<InputEntry>(1, 500, {
         filter: `report = '${globalStore.selectedReport?.id}'${query?.scope
-          ? " && " + query.scope.map((s) => `scope="${s}"`).join(" || ")
+          ? " && (" + query.scope.map((s) => `scope="${s}"`).join(" || ") + ")"
           : ""
           }${query?.category
-            ? " && " + query.category.map((c) => `category="${c}"`).join(" || ")
+            ? " && (" + query.category.map((c) => `category="${c}"`).join(" || ") + ")"
+            : ""
+          }${query?.facility
+            ? " && (" + query.facility.map((f) => `facility="${f}"`).join(" || ") + ")"
             : ""
           }`,
         // expand: "equivalent",

@@ -24,19 +24,19 @@ const model = ref([
     {
         label: 'Scope 1',
         icon: 'fa-solid fa-1',
-        to: '/inputs/scope1',
+        to: '/inputs/scope/1',
         visible: true,
     },
     {
         label: 'Scope 2',
         icon: 'fa-solid fa-2',
-        to: '/inputs/scope2',
+        to: '/inputs/scope/2',
         visible: true,
     },
     {
         label: 'Scope 3',
         icon: 'fa-solid fa-3',
-        to: '/inputs/scope3',
+        to: '/inputs/scope/3',
         visible: true,
     },
     {
@@ -47,7 +47,7 @@ const model = ref([
     },
     {
         label: 'Kälteanlagen',
-        icon: 'fa-solid fa-snowflake',
+        icon: 'fa-solid fa-industry',
         to: '/facilities',
         visible: true,
     },

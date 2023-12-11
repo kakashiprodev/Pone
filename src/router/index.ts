@@ -33,15 +33,22 @@ const routes = [
         name: "facilities",
       },
       {
-        path: "/inputs/:scope?",
+        path: "/inputs",
         component: () => import("../views/Inputs.vue"),
         name: "inputs",
       },
-      // {
-      //   path: "/inputPerCategory/:category?",
-      //   component: () => import("../views/InputPerCategory.vue"),
-      //   name: "inputPerCategory",
-      // },
+      {
+        path: "/inputs/scope/:scope",
+        component: () => import("../views/Inputs.vue"),
+        name: "inputs-scope",
+        // params: { scope: null },
+      },
+      {
+        path: "/inputs/facility/:facility",
+        component: () => import("../views/Inputs.vue"),
+        name: "inputs-facility",
+        // params: { facility: null },
+      },
       {
         path: "/equivalents/",
         component: () => import("../views/EquivalentList.vue"),
@@ -58,6 +65,12 @@ const routes = [
         name: "projectConfig",
       },
     ],
+  },
+  // other main routes
+  {
+    path: "/report-preview",
+    component: () => import("../views/ReportPrintPreview.vue"),
+    name: "report-preview",
   },
 ];
 

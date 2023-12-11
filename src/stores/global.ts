@@ -2,6 +2,7 @@ import { defineStore } from "pinia";
 import { router } from "./../router/index";
 import {
   EquivalentEntry,
+  FacilityEntry,
   ProjectEntry,
   ReportEntry,
   TargetEntry,
@@ -29,6 +30,9 @@ export interface GlobalState {
       scope3: string[];
     }
   },
+  //
+  facilities: FacilityEntry[];
+  facilitiesDict: { [id: string]: FacilityEntry };
   // projects
   projects: ProjectEntry[];
   selectedProject: null | ProjectEntry;
@@ -58,6 +62,9 @@ export const useGlobalStore = defineStore("global", {
         scope3: [],
       },
     },
+    //
+    facilities: [],
+    facilitiesDict: {},
     //
     projects: [],
     selectedProject: null,
@@ -97,8 +104,18 @@ export const useGlobalStore = defineStore("global", {
 
     async refreshProjectAndReport() {
       // load equivalents and reports for the selected project
-      await this.refreshEquivalents(true);
-      await this.refreshReports(true);
+
+      // first reset all
+      this.targetsInProject = [];
+      this.reports = [];
+      this.equivalents = [];
+      this.equivalentDict = {};
+      // load all data for new project from backend
+      await Promise.all([
+        this.refreshEquivalents(true),
+        this.refreshReports(true),
+        this.refreshTargets(),
+      ]);
       // select report with the highest year
       this.loadLatestReport();
     },
@@ -369,6 +386,7 @@ export const useGlobalStore = defineStore("global", {
         companyPostal: "",
         companyCity: "",
         companyCountry: "",
+        companyDomain: "",
         contactName: "",
         contactTelephone: "",
         contactEmail: "",
@@ -376,7 +394,7 @@ export const useGlobalStore = defineStore("global", {
         countEmployees: 0,
         businessTurnover: 0,
         baseYear: new Date().getFullYear(),
-        baseEquivalentSource: null,
+        sumEmissions: 0,
       };
       return report;
     },
@@ -442,6 +460,16 @@ export const useGlobalStore = defineStore("global", {
       }
       this.selectedReport = updated;
       return updated;
+    },
+
+    // READ cache for "facilities"
+    async refreshFacilities() {
+      this.facilities = await dataprovider.readFacilities();
+      // create dict
+      this.facilitiesDict = this.facilities.reduce(
+        (acc, cur) => ({ ...acc, [cur.id]: cur }),
+        {},
+      );
     },
 
     /**
