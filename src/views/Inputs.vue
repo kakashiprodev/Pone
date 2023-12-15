@@ -433,6 +433,10 @@ const originalValue: Ref<InputEntry> = ref(emptyInput);
 const updateNameAndCategory = () => {
     if (selectedValue.value.equivalent != null && selectedValue.value.equivalent !== '') {
         const equivalent = global.equivalentDict[selectedValue.value.equivalent];
+        if (equivalent == null) {
+            error('Äquivalent wurde im Cache nicht gefunden. Bitte laden Sie die Seite neu.');
+            return;
+        }
         selectedValue.value.name = equivalent.specification1;
         selectedValue.value.comment = equivalent.comment ?? "";
         selectedValue.value.category = equivalent.category;

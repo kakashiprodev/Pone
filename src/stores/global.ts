@@ -177,7 +177,7 @@ export const useGlobalStore = defineStore("global", {
       this.equivalents.push(created);
       // sort by "name"
       this.equivalents.sort((a: EquivalentEntry, b: EquivalentEntry) => a.specification1.localeCompare(b.specification1));
-      this.equivalentDict[equivalent.id] = created;
+      this.equivalentDict[created.id] = created;
       return created;
     },
     /**
