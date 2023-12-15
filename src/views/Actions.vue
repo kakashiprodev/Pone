@@ -16,14 +16,14 @@
         :class="{ 'w-8': windowWidth > 990, 'w-full': windowWidth < 990, 'h-screen': windowWidth < 990 }">
         <div>
             <div class="field">
-                <label for="action-name">Name</label>
+                <label for="action-name">Name*</label>
                 <InlineMessage severity="info" v-if="global.showTooltips" class="w-full mb-2">
                     Der Name der Maßnahme für die Übersicht und Diagramme.
                 </InlineMessage>
                 <InputText class="w-full" v-model="selectedAction.name" id="action-name" />
             </div>
             <div class="field">
-                <label for="action-shortDescription">Kurzbeschreibung</label>
+                <label for="action-shortDescription">Kurzbeschreibung*</label>
                 <InlineMessage severity="info" v-if="global.showTooltips" class="w-full mb-2">
                     Eine Kurzbeschreibung für das Berichtswesen.
                 </InlineMessage>
@@ -31,7 +31,7 @@
                     class="w-full" />
             </div>
             <div class="field">
-                <label for="action-longDescription">Langbeschreibung</label>
+                <label for="action-longDescription">Beschreibung (ausführlich)</label>
                 <InlineMessage severity="info" v-if="global.showTooltips" class="w-full mb-2">
                     Eine ausführlichere Beschreibung der Maßnahme.
                 </InlineMessage>
@@ -43,7 +43,8 @@
                 <InlineMessage severity="info" v-if="global.showTooltips" class="w-full mb-2">
                     Die angestrebte Einsparung der Maßnahe in Tonnen CO2 Äquivalenten.
                 </InlineMessage>
-                <InputNumber class="w-full" v-model="selectedAction.targetValueAbsolut" id="action-targetValueAbsolut" :min-fraction-digits="0" :max-fraction-digits="10" />
+                <InputNumber class="w-full" v-model="selectedAction.targetValueAbsolut" id="action-targetValueAbsolut"
+                    :min-fraction-digits="0" :max-fraction-digits="10" />
             </div>
             <div class="field">
                 <label for="action-responsible">Verantwortlich</label>
@@ -171,8 +172,8 @@ const actionEntrySchema = object({
     id: string('Die ID scheint korrupt zu sein.'),
     project: string('Keine gültige Projekt-ID', [minLength(1, 'Projekt-ID zu kurz'), maxLength(255, 'Projekt-ID zu lang')]),
     name: string('Kein Name angegeben', [minLength(1, 'Name zu kurz'), maxLength(255, 'Name zu lang')]),
-    shortDescription: string('Keine Kurzbeschreibung angegeben', [minLength(1, 'Kurzbeschreibung zu kurz'), maxLength(255, 'Kurzbeschreibung zu lang')]),
-    longDescription: nullable(string([minLength(1, 'Langbeschreibung zu kurz'), maxLength(255, 'Langbeschreibung zu lang')])),
+    shortDescription: string('Keine Kurzbeschreibung angegeben', [minLength(1, 'Kurzbeschreibung zu kurz'), maxLength(500, 'Kurzbeschreibung zu lang')]),
+    longDescription: nullable(string([maxLength(4000, 'Langbeschreibung zu lang')])),
     targetValueAbsolut: number('Kein Ziel angegeben', [minValue(0, 'Ziel muss größer als 0 sein')]),
     responsible: string('Kein Verantwortlicher angegeben', [minLength(1, 'Verantwortlicher zu kurz'), maxLength(255, 'Verantwortlicher zu lang')]),
     finishedUntil: date('Kein Fertigstellungsdatum angegeben'),
