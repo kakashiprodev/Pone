@@ -16,6 +16,13 @@
         :class="{ 'w-8': windowWidth > 990, 'w-full': windowWidth < 990, 'h-screen': windowWidth < 990 }">
         <div>
             <div class="field">
+                <label for="action-relevant" class="w-full">Aktiv?</label>
+                <InlineMessage severity="info" v-if="global.showTooltips" class="w-full mb-2">
+                    Ist die Maßnahme aktiv und soll in den Berichten angezeigt werden?
+                </InlineMessage>
+                <Checkbox class="mt-2" v-model="selectedAction.relevant" id="action-relevant" :binary="true" />
+            </div>
+            <div class="field">
                 <label for="action-name">Name*</label>
                 <InlineMessage severity="info" v-if="global.showTooltips" class="w-full mb-2">
                     Der Name der Maßnahme für die Übersicht und Diagramme.
@@ -144,6 +151,7 @@ import Editor from 'primevue/editor';
 import Slider from 'primevue/slider';
 import Dialog from 'primevue/dialog';
 import Dropdown from 'primevue/dropdown';
+import Checkbox from 'primevue/checkbox';
 import { useConfirm } from 'primevue/useconfirm';
 import { parse, string, object, number, minLength, maxLength, minValue, nullable, boolean, date, maxValue } from "valibot";
 
