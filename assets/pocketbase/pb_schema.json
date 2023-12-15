@@ -779,69 +779,6 @@
         "options": {}
     },
     {
-        "id": "inw88l0jngvmnt8",
-        "name": "facilities",
-        "type": "base",
-        "system": false,
-        "schema": [
-            {
-                "id": "ogsr91b4",
-                "name": "name",
-                "type": "text",
-                "system": false,
-                "required": true,
-                "options": {
-                    "min": null,
-                    "max": null,
-                    "pattern": ""
-                }
-            },
-            {
-                "id": "wm1xhyol",
-                "name": "manufacturer",
-                "type": "text",
-                "system": false,
-                "required": true,
-                "options": {
-                    "min": null,
-                    "max": null,
-                    "pattern": ""
-                }
-            },
-            {
-                "id": "ditm6po3",
-                "name": "model",
-                "type": "text",
-                "system": false,
-                "required": false,
-                "options": {
-                    "min": null,
-                    "max": null,
-                    "pattern": ""
-                }
-            },
-            {
-                "id": "myxewrns",
-                "name": "description",
-                "type": "text",
-                "system": false,
-                "required": false,
-                "options": {
-                    "min": null,
-                    "max": null,
-                    "pattern": ""
-                }
-            }
-        ],
-        "indexes": [],
-        "listRule": "@request.auth.id != \"\"",
-        "viewRule": "@request.auth.id != \"\"",
-        "createRule": "@request.auth.id != \"\"",
-        "updateRule": "@request.auth.id != \"\"",
-        "deleteRule": "@request.auth.id != \"\"",
-        "options": {}
-    },
-    {
         "id": "b7xjrlfqhm5ml0q",
         "name": "inputs",
         "type": "base",
@@ -953,6 +890,83 @@
                 "required": false,
                 "options": {
                     "collectionId": "inw88l0jngvmnt8",
+                    "cascadeDelete": false,
+                    "minSelect": null,
+                    "maxSelect": 1,
+                    "displayFields": []
+                }
+            }
+        ],
+        "indexes": [],
+        "listRule": "@request.auth.id != \"\"",
+        "viewRule": "@request.auth.id != \"\"",
+        "createRule": "@request.auth.id != \"\"",
+        "updateRule": "@request.auth.id != \"\"",
+        "deleteRule": "@request.auth.id != \"\"",
+        "options": {}
+    },
+    {
+        "id": "inw88l0jngvmnt8",
+        "name": "facilities",
+        "type": "base",
+        "system": false,
+        "schema": [
+            {
+                "id": "ogsr91b4",
+                "name": "name",
+                "type": "text",
+                "system": false,
+                "required": true,
+                "options": {
+                    "min": null,
+                    "max": null,
+                    "pattern": ""
+                }
+            },
+            {
+                "id": "wm1xhyol",
+                "name": "manufacturer",
+                "type": "text",
+                "system": false,
+                "required": true,
+                "options": {
+                    "min": null,
+                    "max": null,
+                    "pattern": ""
+                }
+            },
+            {
+                "id": "ditm6po3",
+                "name": "model",
+                "type": "text",
+                "system": false,
+                "required": false,
+                "options": {
+                    "min": null,
+                    "max": null,
+                    "pattern": ""
+                }
+            },
+            {
+                "id": "myxewrns",
+                "name": "description",
+                "type": "text",
+                "system": false,
+                "required": false,
+                "options": {
+                    "min": null,
+                    "max": null,
+                    "pattern": ""
+                }
+            },
+            {
+                "id": "vmscomkm",
+                "name": "project",
+                "type": "relation",
+                "system": false,
+                "required": true,
+                "options": {
+                    "collectionId": "61iwwi03fob8tyg",
                     "cascadeDelete": false,
                     "minSelect": null,
                     "maxSelect": 1,

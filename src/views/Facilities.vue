@@ -127,6 +127,7 @@ const emptyFacility: FacilityEntry = {
     manufacturer: '',
     model: '',
     description: '',
+    project: global.selectedProject?.id ?? '',
 };
 
 const selectedValue: Ref<FacilityEntry> = ref(emptyFacility);

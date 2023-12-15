@@ -292,7 +292,8 @@ export default class DataProvider {
   }
 
   async readFacilities() {
-    const res = await this.pb.collection("facilities").getList<FacilityEntry>(1, 500);
+    const res = await this.pb.collection("facilities").getList<FacilityEntry>(1, 500,
+      { filter: `project="${globalStore.selectedProject?.id}"` });
     return res.items;
   }
 

@@ -108,4 +108,5 @@ export interface FacilityEntry {
   manufacturer: string;
   model: null | string;
   description: null | string;
+  project: string; // reference on table projects
 }
