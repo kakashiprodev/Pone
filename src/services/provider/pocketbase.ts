@@ -235,6 +235,12 @@ export default class DataProvider {
         filter: `project="${globalStore.selectedProject?.id}"`,
       },
     );
+    // ensure that the date is ISO8601 for each action finishedUntil entry
+    res.items.forEach((action: ActionEntry) => {
+      if (action.finishedUntil && action.finishedUntil !== "") {
+        action.finishedUntil = new Date(action.finishedUntil);
+      }
+    });
     return res.items;
   }
 

@@ -39,11 +39,11 @@
                     class="w-full" />
             </div>
             <div class="field">
-                <label for="action-targetValueAbsolute">Zieleinsparung in kg CO2</label>
+                <label for="action-targetValueAbsolut">Zieleinsparung in kg CO2</label>
                 <InlineMessage severity="info" v-if="global.showTooltips" class="w-full mb-2">
                     Die angestrebte Einsparung der Maßnahe in Tonnen CO2 Äquivalenten.
                 </InlineMessage>
-                <InputNumber class="w-full" v-model="selectedAction.targetValueAbsolute" id="action-targetValueAbsolute" />
+                <InputNumber class="w-full" v-model="selectedAction.targetValueAbsolut" id="action-targetValueAbsolut" />
             </div>
             <div class="field">
                 <label for="action-responsible">Verantwortlich</label>
@@ -57,7 +57,8 @@
                 <InlineMessage severity="info" v-if="global.showTooltips" class="w-full mb-2">
                     Die geplante Fertigstellung der Maßnahme. Kann im Berichtswesen als Gantt Diagramm dargestellt werden.
                 </InlineMessage>
-                <Calendar id="action-finishedUntil" v-model="selectedAction.finishedUntil" class="w-full" />
+                <Calendar id="action-finishedUntil" v-model="selectedAction.finishedUntil" class="w-full" view="month"
+                    dateFormat="mm/yy" />
             </div>
             <div class="field">
                 <label for="action-status">Status</label>
@@ -99,7 +100,7 @@
         </Column>
         <!-- <Column field="shortDescription" header="Kurzbeschreibung"></Column>
         <Column field="longDescription" header="Langbeschreibung"></Column> -->
-        <Column field="targetValueAbsolute" header="Zieleinsparung in kg"></Column>
+        <Column field="targetValueAbsolut" header="Zieleinsparung in kg"></Column>
         <Column field="responsible" header="Verantwortlich"></Column>
         <Column field="progress" header="Fortschritt">
             <template #body="{ data }">
@@ -154,7 +155,7 @@ const emptyAction: ActionEntry = {
     name: '',
     shortDescription: '',
     longDescription: '',
-    targetValueAbsolute: 0,
+    targetValueAbsolut: 0,
     responsible: '',
     finishedUntil: '',
     status: 'open',
@@ -172,7 +173,7 @@ const actionEntrySchema = object({
     name: string('Kein Name angegeben', [minLength(1, 'Name zu kurz'), maxLength(255, 'Name zu lang')]),
     shortDescription: string('Keine Kurzbeschreibung angegeben', [minLength(1, 'Kurzbeschreibung zu kurz'), maxLength(255, 'Kurzbeschreibung zu lang')]),
     longDescription: nullable(string([minLength(1, 'Langbeschreibung zu kurz'), maxLength(255, 'Langbeschreibung zu lang')])),
-    targetValueAbsolute: number('Kein Ziel angegeben', [minValue(0, 'Ziel muss größer als 0 sein')]),
+    targetValueAbsolut: number('Kein Ziel angegeben', [minValue(0, 'Ziel muss größer als 0 sein')]),
     responsible: string('Kein Verantwortlicher angegeben', [minLength(1, 'Verantwortlicher zu kurz'), maxLength(255, 'Verantwortlicher zu lang')]),
     finishedUntil: date('Kein Fertigstellungsdatum angegeben'),
     status: string('Kein Status angegeben', [minLength(1, 'Status zu kurz'), maxLength(255, 'Status zu lang')]),
@@ -205,11 +206,13 @@ const save = async () => {
             const toCreate = clone(selectedAction.value);
             delete toCreate.id;
             const created = await dataprovider.createAction(toCreate);
+            created.finishedUntil = created.finishedUntil && created.finishedUntil !== '' ? new Date(created.finishedUntil) : null;
             actions.value.push(created);
             showDialog.value = false;
             selectedAction.value = clone(emptyAction);
         } else {
             const updated = await dataprovider.updateAction(selectedAction.value);
+            updated.finishedUntil = updated.finishedUntil && updated.finishedUntil !== '' ? new Date(updated.finishedUntil) : null;
             const index = actions.value.findIndex((item) => item.id === updated.id);
             actions.value[index] = updated;
             showDialog.value = false;
@@ -264,7 +267,7 @@ const download = async () => {
             item.name,
             item.shortDescription,
             item.longDescription,
-            item.targetValueAbsolute,
+            item.targetValueAbsolut,
             item.responsible,
             item.finishedUntil,
             item.status,
