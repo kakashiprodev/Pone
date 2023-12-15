@@ -244,7 +244,11 @@
         <Column field="scope" header="Scope" sortable></Column>
         <Column field="category" header="Kategorie" sortable></Column>
         <Column field="name" header="Name" sortable></Column>
-        <Column field="rawValue" header="Eingabewert" sortable></Column>
+        <Column field="rawValue" header="Eingabewert" sortable>
+            <template #body="{ data }">
+                {{ round(data.rawValue, 2) }} [{{ global.equivalentDict[data.equivalent]?.in ?? 'Reference error' }}]
+            </template>
+        </Column>
         <Column field="equivalent" header="Äquivalent" sortable>
             <template #body="{ data }">
                 <div v-if="data.equivalent != null && data.equivalent !== ''">
