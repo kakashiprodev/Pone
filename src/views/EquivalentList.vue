@@ -43,6 +43,13 @@
                 </InlineMessage>
             </div>
             <div class="field">
+                <label for="equivalent-category">Kategorie*</label>
+                <InputText class="w-full" v-model="selectedValue.category" id="equivalent-category" />
+                <InlineMessage v-if="global.showTooltips" class="w-full mt-1" severity="info">
+                    Die Kategorie wird für die Filterung verwendet.
+                </InlineMessage>
+            </div>
+            <div class="field">
                 <label for="equivalent-spec1">Spezifikation 1 (Hauptname)*</label>
                 <InputText class="w-full" v-model="selectedValue.specification1" id="equivalent-spec1" />
                 <InlineMessage v-if="global.showTooltips" class="w-full mt-1" severity="info">
@@ -223,7 +230,8 @@
                 <InputNumber v-if="!selectedValue.monthlyValues" class="w-full" v-model="selectedValue.avgValue"
                     id="equivalent-value-year" :use-grouping="false" :min-fraction-digits="0" :max-fraction-digits="10" />
                 <div v-else>{{ roundString(selectedValue.avgValue) }} (automatisch berechnet)</div>
-                <InlineMessage v-if="global.showTooltips" class="w-full mt-1" severity="info">Der Jahresdurchschnittswert
+                <InlineMessage v-if="global.showTooltips" class="w-full mt-1" severity="info">Der
+                    Jahresdurchschnittswert
                     als Faktor [Ausgangseinheit-pro-Eingangseinheit]</InlineMessage>
             </div>
             <div class="field">
@@ -236,9 +244,11 @@
                         class="ml-1" />
                 </div>
                 <InlineMessage v-if="global.showTooltips" class="w-full mt-1" severity="info">
-                    Wenn eine überliegende Berechnung gewählt wird, muss die Ausgangseinheit der überliegenden Berechnung
+                    Wenn eine überliegende Berechnung gewählt wird, muss die Ausgangseinheit der überliegenden
+                    Berechnung
                     mit der Eingangseinheit dieses Faktors übereinstimmen.
-                    In dem Fall wird beim Berechnen der CO2-Äquivalete der überliegende Faktor in Kette mit diesem Faktors
+                    In dem Fall wird beim Berechnen der CO2-Äquivalete der überliegende Faktor in Kette mit diesem
+                    Faktors
                     berechnet.
                 </InlineMessage>
             </div>
@@ -297,7 +307,7 @@ const emptyEquivalent = (): EquivalentEntry => {
         id: 'new',
         scope: 3,
         addName1: '',
-        category: 'Benutereingaben',
+        category: 'Benutzereingaben',
         specification1: '',
         specification2: '',
         specification3: '',
