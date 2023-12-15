@@ -43,7 +43,7 @@
                 <InlineMessage severity="info" v-if="global.showTooltips" class="w-full mb-2">
                     Die angestrebte Einsparung der Maßnahe in Tonnen CO2 Äquivalenten.
                 </InlineMessage>
-                <InputNumber class="w-full" v-model="selectedAction.targetValueAbsolut" id="action-targetValueAbsolut" />
+                <InputNumber class="w-full" v-model="selectedAction.targetValueAbsolut" id="action-targetValueAbsolut" :min-fraction-digits="0" :max-fraction-digits="10" />
             </div>
             <div class="field">
                 <label for="action-responsible">Verantwortlich</label>
