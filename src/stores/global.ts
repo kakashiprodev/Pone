@@ -464,12 +464,14 @@ export const useGlobalStore = defineStore("global", {
 
     // READ cache for "facilities"
     async refreshFacilities() {
-      this.facilities = await dataprovider.readFacilities();
-      // create dict
-      this.facilitiesDict = this.facilities.reduce(
-        (acc, cur) => ({ ...acc, [cur.id]: cur }),
-        {},
-      );
+      if (this.facilities.length === 0) {
+        this.facilities = await dataprovider.readFacilities();
+        // create dict
+        this.facilitiesDict = this.facilities.reduce(
+          (acc, cur) => ({ ...acc, [cur.id]: cur }),
+          {},
+        );
+      }
     },
 
     /**

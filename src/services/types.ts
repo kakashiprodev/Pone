@@ -86,7 +86,7 @@ export interface ActionEntry {
   name: string; // normal text
   shortDescription: string; // rich text
   longDescription: string; // rich text
-  targetInTons: number; // tons CO2 that should be saved. 0 if unknown
+  targetValueAbsolute: number; // absolute value that should be saved. can be 0 if unknown
   responsible: string;
   finishedUntil: string; // date
   status: 'open' | 'inProgress' | 'finished' | 'canceled';
@@ -109,4 +109,5 @@ export interface FacilityEntry {
   model: null | string;
   description: null | string;
   project: string; // reference on table projects
+  shutdownDate: null | string | Date; // if null or empty the facility is in use
 }
