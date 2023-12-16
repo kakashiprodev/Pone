@@ -22,6 +22,7 @@
                     @change="getData" />
                 <label class="ml-1" for="scope3Active">3</label>
             </template>
+            <span class="ml-4">Menge: {{ round(sumValue, 2) }}[kg]</span>
         </template>
         <template #end>
             <Button icon="fa-solid fa-wand-magic-sparkles"
@@ -523,6 +524,13 @@ const getData = async () => {
 
 // initial get data
 getData();
+
+// watch data to caclulate the sum of all sumValues
+const sumValue = computed(() => {
+    return data.value.reduce((acc, item) => {
+        return acc + item.sumValue;
+    }, 0);
+});
 
 // export
 const download = async () => {

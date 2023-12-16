@@ -102,22 +102,30 @@ export const getListOfInputValues = (
 export const getScopeSums = async () => {
   const equivalents = await dataprovider.readEquivalentsAsDict();
 
-  const scope1 = await dataprovider.readUserInputs({ scope: [1] });
-  const scope2 = await dataprovider.readUserInputs({ scope: [2] });
-  const scope3 = await dataprovider.readUserInputs({ scope: [3] });
+  const [scope1, scope2, scope3] = await Promise.all([
+    dataprovider.readUserInputs({ scope: [1] }),
+    dataprovider.readUserInputs({ scope: [2] }),
+    dataprovider.readUserInputs({ scope: [3] }),
+  ]);
 
   return {
     scope1: {
       list: getListOfInputValues(scope1, equivalents),
-      sum: getSumForInputs(scope1, equivalents),
+      sum: scope1.reduce((sum, input) => {
+        return sum + input.sumValue;
+      }, 0),
     },
     scope2: {
       list: getListOfInputValues(scope2, equivalents),
-      sum: getSumForInputs(scope2, equivalents),
+      sum: scope2.reduce((sum, input) => {
+        return sum + input.sumValue;
+      }, 0),
     },
     scope3: {
       list: getListOfInputValues(scope3, equivalents),
-      sum: getSumForInputs(scope3, equivalents),
+      sum: scope3.reduce((sum, input) => {
+        return sum + input.sumValue;
+      }, 0),
     },
   };
 };
