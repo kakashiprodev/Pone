@@ -168,7 +168,7 @@ export const getCalculationSteps = (
 
   const steps: string[] = [];
   calculateEquivalentFactorWithSteps(
-    input.rawValue,
+    input,
     input.equivalent,
     equivalents,
     steps,
@@ -180,13 +180,13 @@ export const getCalculationSteps = (
  * helper function for getCalculationSteps
  */
 const calculateEquivalentFactorWithSteps = (
-  value: number,
+  input: InputEntry,
   equivalentId: null | string,
   equivalents: { [key: string]: EquivalentEntry },
   steps: string[],
-): number => {
-  if (!equivalentId) {
-    return value;
+): void => {
+  if (!equivalentId || equivalentId === "") {
+    return;
   }
 
   // search for the equivalent
@@ -194,23 +194,36 @@ const calculateEquivalentFactorWithSteps = (
   if (!equivalent) {
     throw new Error("Equivalent is undefined for ID " + equivalentId);
   }
+  // create a clone that is needed for nested calculations
+  const fakeInput: InputEntry = JSON.parse(JSON.stringify(input));
+  fakeInput.rawValue = 0;
 
-  const calculatedValue = value * equivalent.avgValue;
-
-  steps.push(
-    `${value}[${equivalent.in}] * ${equivalent.avgValue}[${equivalent.in}/${equivalent.out}] = ${round(calculatedValue, 3)}[${equivalent.out}]`,
-  );
+  // Monthly detailed calculation
+  steps.push("Schritt 1:");
+  for (const month of months) {
+    const key = 'raw' + month.charAt(0).toUpperCase() + month.slice(1); // e.g. rawJan, rawFeb, ...
+    // @ts-ignore
+    const monthlyEquivalentFactor = equivalent[month] != null && equivalent[month] != '' ? equivalent[month] : equivalent.avgValue;
+    // @ts-ignore
+    const monthlyRawValue = input.monthlyValues ? input[key] : (input.rawValue / 12);
+    const montlySum = monthlyRawValue * monthlyEquivalentFactor;
+    // @ts-ignore
+    fakeInput[key] = montlySum;
+    fakeInput.rawValue += montlySum;
+    steps.push(
+      `${month !== 'jan' ? '+ ' : ''} ${monthlyRawValue}[${equivalent.in}] * ${monthlyEquivalentFactor}[${equivalent.in}/${equivalent.out}] = ${round(montlySum, 3)}[${equivalent.out}] (for ${month})`,
+    );
+  }
+  steps.push(""); // empty line
 
   // if parent is null, we are at the root
   // otherwise we need to calculate the parent the output value with the parent
   if (equivalent.parent) {
     return calculateEquivalentFactorWithSteps(
-      calculatedValue,
+      fakeInput,
       equivalent.parent,
       equivalents,
       steps,
     );
-  } else {
-    return calculatedValue;
   }
 };
