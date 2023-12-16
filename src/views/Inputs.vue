@@ -65,7 +65,7 @@
         <!-- step 1 -->
         <div class="card" v-if="actualComfortStep === 0">
             <SmartEquivalentList v-model="selectedValue.equivalent" :comfort-mode="true" :rowsPerPage="5"
-                :visible-columns="['source', 'in', 'fullName',]" :showColumnChooser="false" @change="updateNameAndCategory"
+                :visible-columns="['source', 'in', 'fullName', 'avgValue']" :showColumnChooser="false" @change="updateNameAndCategory"
                 :hide-scope-input="preSelectedScope != 'all'"
                 :filter-by="{ scope: preSelectedScope === 'all' ? [1] : [parseInt(preSelectedScope)] }" />
         </div>

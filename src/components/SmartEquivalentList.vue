@@ -15,6 +15,14 @@
             <InputText v-model="filter.text" placeholder="Allgemeiner Textfiler auf alle Namen und Spezifikationen"
                 class="w-full" />
         </FormLine>
+
+        <FormLine label="Quelle" v-if="comfortMode">
+            <MultiSelect v-model="filter.source" :options="global.equivalentFilters.source.all" class="w-full" />
+        </FormLine>
+
+        <FormLine label="Einheit" v-if="comfortMode">
+            <MultiSelect v-model="filter.in" :options="global.equivalentFilters.unit.all" class="w-full" />
+        </FormLine>
     </div>
 
     <!-- Column Chooser -->
@@ -53,6 +61,8 @@
         </Column>
         <Column field="in" header="Eingabe Einheit" v-if="_visibleColumns.includes('in')" sortable></Column>
         <Column field="out" header="Ausgabe Einheit" v-if="_visibleColumns.includes('out')" sortable></Column>
+
+        <Column field="avgValue" header="Faktor" v-if="_visibleColumns.includes('avgValue')"></Column>
 
         <Column field="source" header="Quelle" v-if="_visibleColumns.includes('source')" sortable></Column>
         <Column field="parent" header="Verkettet?" v-if="_visibleColumns.includes('parent')" sortable>
@@ -218,6 +228,7 @@ const columnsInTable = [
     { value: 'parent', label: 'Verkettete Berechnung' },
     { value: 'in', label: 'Einheit Eingabe' },
     { value: 'out', label: 'Einheit Ausgabe' },
+    { value: 'avgValue', label: 'Faktor (Jahresdurchschnitt)' },
 ];
 // set the filter if it is passed as prop
 const props = defineProps({
