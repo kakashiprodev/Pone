@@ -908,17 +908,6 @@
                 }
             },
             {
-                "id": "a0tnw1kp",
-                "name": "rawValue",
-                "type": "number",
-                "system": false,
-                "required": false,
-                "options": {
-                    "min": null,
-                    "max": null
-                }
-            },
-            {
                 "id": "ph2cdv4j",
                 "name": "equivalent",
                 "type": "relation",
@@ -982,6 +971,171 @@
                     "min": null,
                     "max": null
                 }
+            },
+            {
+                "id": "a0tnw1kp",
+                "name": "rawValue",
+                "type": "number",
+                "system": false,
+                "required": false,
+                "options": {
+                    "min": null,
+                    "max": null
+                }
+            },
+            {
+                "id": "5zdheava",
+                "name": "rawValueJan",
+                "type": "number",
+                "system": false,
+                "required": false,
+                "options": {
+                    "min": null,
+                    "max": null
+                }
+            },
+            {
+                "id": "ua54qhgu",
+                "name": "rawValueFeb",
+                "type": "number",
+                "system": false,
+                "required": false,
+                "options": {
+                    "min": null,
+                    "max": null
+                }
+            },
+            {
+                "id": "mg9qml1k",
+                "name": "rawValueMar",
+                "type": "number",
+                "system": false,
+                "required": false,
+                "options": {
+                    "min": null,
+                    "max": null
+                }
+            },
+            {
+                "id": "9ecxr566",
+                "name": "rawValueApr",
+                "type": "number",
+                "system": false,
+                "required": false,
+                "options": {
+                    "min": null,
+                    "max": null
+                }
+            },
+            {
+                "id": "yk1gmcjq",
+                "name": "rawValueMay",
+                "type": "number",
+                "system": false,
+                "required": false,
+                "options": {
+                    "min": null,
+                    "max": null
+                }
+            },
+            {
+                "id": "96rqzykp",
+                "name": "rawValueJun",
+                "type": "number",
+                "system": false,
+                "required": false,
+                "options": {
+                    "min": null,
+                    "max": null
+                }
+            },
+            {
+                "id": "tefesyp4",
+                "name": "rawValueJul",
+                "type": "number",
+                "system": false,
+                "required": false,
+                "options": {
+                    "min": null,
+                    "max": null
+                }
+            },
+            {
+                "id": "ju87jxnz",
+                "name": "rawValueAug",
+                "type": "number",
+                "system": false,
+                "required": false,
+                "options": {
+                    "min": null,
+                    "max": null
+                }
+            },
+            {
+                "id": "znzbzdyn",
+                "name": "rawValueSep",
+                "type": "number",
+                "system": false,
+                "required": false,
+                "options": {
+                    "min": null,
+                    "max": null
+                }
+            },
+            {
+                "id": "ycjewfp1",
+                "name": "rawValueOct",
+                "type": "number",
+                "system": false,
+                "required": false,
+                "options": {
+                    "min": null,
+                    "max": null
+                }
+            },
+            {
+                "id": "lmie90bh",
+                "name": "rawValueNov",
+                "type": "number",
+                "system": false,
+                "required": false,
+                "options": {
+                    "min": null,
+                    "max": null
+                }
+            },
+            {
+                "id": "i5vb2wbg",
+                "name": "rawValueDec",
+                "type": "number",
+                "system": false,
+                "required": false,
+                "options": {
+                    "min": null,
+                    "max": null
+                }
+            },
+            {
+                "id": "y0e99n0l",
+                "name": "parent",
+                "type": "relation",
+                "system": false,
+                "required": false,
+                "options": {
+                    "collectionId": "b7xjrlfqhm5ml0q",
+                    "cascadeDelete": false,
+                    "minSelect": null,
+                    "maxSelect": 1,
+                    "displayFields": []
+                }
+            },
+            {
+                "id": "1q3xpp3h",
+                "name": "monthlyValues",
+                "type": "bool",
+                "system": false,
+                "required": false,
+                "options": {}
             }
         ],
         "indexes": [],
