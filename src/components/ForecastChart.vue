@@ -8,47 +8,61 @@
         Die angegebenen Maßnahmen im Projekt werden dabei ab Ihrem Inbetriebnahmedatum berücksichtigt.
         Der Refernzwert ist der älteste Berichtswert des Projekts.
     </p>
-    <!-- Chart as Bar-Chart -->
-    <Chart type="bar" :data="barChartYear" class="h-30rem mt-5" />
-    <!-- Chart as Line-Chart -->
-    <Chart type="line" :data="barChartYear" class="h-30rem mt-5" />
+    <!-- Chart as Mixed-Chart -->
+    <Chart :data="barChartYear" class="h-30rem mt-5" />
 </template>
 
 <script setup lang="ts">
 import Chart from 'primevue/chart';
-import { calculateEmissions, EmissionResult, EmissionValues, OldReportValues } from './../services/forecast';
+import { calculateEmissions, EmissionResult, EmissionValue, OldReportValues } from './../services/forecast';
 import dataprovider from './../services/dataprovider';
 import { ref, Ref } from 'vue';
 import { error, warn } from './../services/toast';
 
 // Chart preparation
-function prepareChartData(emissionValues: EmissionValues[]) {
+function prepareChartData(emissionValues: EmissionValue[]) {
     const labels = emissionValues.map(result => new Date(result.date).getFullYear());
-    const refValues = emissionValues.map(result => result.refValue);
-    const targetValues = emissionValues.map(result => result.targetValue);
+    // const refValues = emissionValues.map(result => result.refValue);
+    // const targetValues = emissionValues.map(result => result.targetValue);
     const realValuesWithActions = emissionValues.map(result => result.realValueWithActions);
+    const realValueWithActionsInterpolated = emissionValues.map(result => result.realValueWithActionsInterpolated);
+    const targetValueInterpolated = emissionValues.map(result => result.targetValueInterpolated);
+    const realReportValues = emissionValues.map(result => result.realReportValue);
 
     const datasets = [
         {
-            label: 'Referenzwert',
-            data: refValues,
+            type: 'bar',
+            label: 'Berichtsdaten',
+            data: realReportValues,
             backgroundColor: 'rgba(255, 99, 132, 0.8)',
             borderColor: 'rgba(255, 99, 132, 1)',
             borderWidth: 1
         },
         {
-            label: 'Zielwert',
-            data: targetValues,
-            backgroundColor: 'rgba(54, 162, 235, 0.8)',
-            borderColor: 'rgba(54, 162, 235, 1)',
-            borderWidth: 1
-        },
-        {
-            label: 'Tatsächlicher Wert mit Maßnahmen',
+            type: 'bar',
+            label: 'Erreichbarer Wert mit Maßnahmen',
             data: realValuesWithActions,
             backgroundColor: 'rgba(75, 192, 192, 0.8)',
             borderColor: 'rgba(75, 192, 192, 1)',
             borderWidth: 1
+        },
+        {
+            type: 'line',
+            label: 'Erreichbarer Wert mit Maßnahmen (linear interpoliert)',
+            data: realValueWithActionsInterpolated,
+            backgroundColor: 'rgba(153, 102, 255, 0.8)',
+            borderColor: 'rgba(153, 102, 255, 1)',
+            borderWidth: 1,
+            spanGaps: true,
+        },
+        {
+            type: 'line',
+            label: 'Zielwert nach Projektvorgaben (linear interpoliert)',
+            data: targetValueInterpolated,
+            backgroundColor: 'rgba(255, 159, 64, 0.8)',
+            borderColor: 'rgba(255, 159, 64, 1)',
+            borderWidth: 1,
+            spanGaps: true,
         }
     ];
     return { labels, datasets };

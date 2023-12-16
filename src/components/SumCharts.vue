@@ -109,13 +109,13 @@ const loadDasboard = async () => {
             {
                 data: [data.scope1.sum, data.scope2.sum, data.scope3.sum],
                 backgroundColor: ['#6bc5b7', '#009ca6', '#00494e'],
-                label: 'Mengen in [to]',
+                label: 'Mengen in [kg]',
             }
         ]
     }
 
     chartDataScope1.value = {
-        labels: ["Mengen in [to]"],
+        labels: ["Mengen in [kg]"],
         datasets: data.scope1.list.map((item: any) => {
             return {
                 data: [item.value],
