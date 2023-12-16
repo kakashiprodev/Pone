@@ -199,7 +199,7 @@ const calculateEquivalentFactorWithSteps = (
   fakeInput.rawValue = 0;
 
   // Monthly detailed calculation
-  steps.push("Schritt 1:");
+  steps.push("Berechnungsschritt:");
   for (const month of months) {
     const key = 'raw' + month.charAt(0).toUpperCase() + month.slice(1); // e.g. rawJan, rawFeb, ...
     // @ts-ignore
@@ -211,7 +211,7 @@ const calculateEquivalentFactorWithSteps = (
     fakeInput[key] = montlySum;
     fakeInput.rawValue += montlySum;
     steps.push(
-      `${month !== 'jan' ? '+ ' : ''} ${monthlyRawValue}[${equivalent.in}] * ${monthlyEquivalentFactor}[${equivalent.in}/${equivalent.out}] = ${round(montlySum, 3)}[${equivalent.out}] (for ${month})`,
+      `${month !== 'jan' ? '+ ' : ''} ${monthlyRawValue}[${equivalent.in}] * ${monthlyEquivalentFactor}[${equivalent.in}/${equivalent.out}] = ${round(montlySum, 3)}[${equivalent.out}] (für ${month})`,
     );
   }
   steps.push(""); // empty line
