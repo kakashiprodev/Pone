@@ -7,6 +7,13 @@
     </InlineMessage>
 
     <Toolbar class="mb-2">
+        <template #start>
+            <InputText v-model="filter" placeholder="Filter" class="mr-1" />
+            <span class="flex align-content-center ml-2">
+                <Checkbox v-model="onlyActive" class="ml-1" :binary="true" />
+                <span class="ml-2">Nur aktive Einträge anzeigen</span>
+            </span>
+        </template>
         <template #end>
             <Button icon="fa-solid fa-plus" @click="selectedValue = clone(emptyFacility); showDialog = true" class="mr-1" />
         </template>
@@ -63,7 +70,7 @@
     </Dialog>
 
     <ConfirmPopup></ConfirmPopup>
-    <DataTable v-if="global.facilities.length > 0" :value="data" class="cst-no-hover">
+    <DataTable v-if="global.facilities.length > 0" :value="filteredData" class="cst-no-hover">
         <!-- <Column field="id" header="ID"></Column> -->
         <Column field="name" header="Name"></Column>
         <Column field="manufacturer" header="Hersteller"></Column>
@@ -93,9 +100,10 @@ import InputText from 'primevue/inputtext';
 import Dialog from 'primevue/dialog';
 import InlineMessage from 'primevue/inlinemessage';
 import Calendar from 'primevue/calendar';
+import Checkbox from 'primevue/checkbox';
 import { FacilityEntry, InputEntry } from './../services/types';
 import dataprovider from "./../services/dataprovider";
-import { Ref, ref } from 'vue';
+import { Ref, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { useGlobalStore } from './../stores/global';
 import { error } from './../services/toast';
@@ -127,6 +135,38 @@ const facilityEntrySchema = object({
 
 // main data for table
 const data: Ref<FacilityEntry[]> = ref([]);
+const filteredData: Ref<FacilityEntry[]> = ref([]);
+
+// filter data
+const filter = ref('');
+const onlyActive = ref(true);
+
+const filterData = () => {
+    let filtered = data.value;
+    console.log('filter data');
+    if (filter.value !== '') {
+        filtered = data.value.filter((item) => {
+            return item.name.toLowerCase().includes(filter.value.toLowerCase()) ||
+                item.manufacturer.toLowerCase().includes(filter.value.toLowerCase()) ||
+                item.model?.toLowerCase().includes(filter.value.toLowerCase()) ||
+                item.description?.toLowerCase().includes(filter.value.toLowerCase());
+        });
+    }
+    // filter for active
+    filtered = filtered.filter((item) => {
+        if (onlyActive.value === false) {
+            return true;
+        }
+        return item.shutdownDate === null || item.shutdownDate === '';
+    });
+    filteredData.value = filtered;
+}
+watch(() => filter.value, () => {
+    filterData();
+});
+watch(() => onlyActive.value, () => {
+    filterData();
+});
 
 // new and edit dialog
 const showDialog = ref(false);
@@ -215,6 +255,7 @@ const deleteEntry = async (entry: InputEntry, event: any) => {
 const getData = async () => {
     await global.refreshFacilities();
     data.value = global.facilities;
+    filterData();
 }
 
 /**
