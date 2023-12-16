@@ -16,14 +16,21 @@
         :class="{ 'w-8': windowWidth > 990, 'w-full': windowWidth < 990, 'h-screen': windowWidth < 990 }">
         <div>
             <div class="field">
-                <label for="action-name">Name</label>
+                <label for="action-relevant" class="w-full">Aktiv?</label>
+                <InlineMessage severity="info" v-if="global.showTooltips" class="w-full mb-2">
+                    Ist die Maßnahme aktiv und soll in den Berichten angezeigt werden?
+                </InlineMessage>
+                <Checkbox class="mt-2" v-model="selectedAction.relevant" id="action-relevant" :binary="true" />
+            </div>
+            <div class="field">
+                <label for="action-name">Name*</label>
                 <InlineMessage severity="info" v-if="global.showTooltips" class="w-full mb-2">
                     Der Name der Maßnahme für die Übersicht und Diagramme.
                 </InlineMessage>
                 <InputText class="w-full" v-model="selectedAction.name" id="action-name" />
             </div>
             <div class="field">
-                <label for="action-shortDescription">Kurzbeschreibung</label>
+                <label for="action-shortDescription">Kurzbeschreibung*</label>
                 <InlineMessage severity="info" v-if="global.showTooltips" class="w-full mb-2">
                     Eine Kurzbeschreibung für das Berichtswesen.
                 </InlineMessage>
@@ -31,7 +38,7 @@
                     class="w-full" />
             </div>
             <div class="field">
-                <label for="action-longDescription">Langbeschreibung</label>
+                <label for="action-longDescription">Beschreibung (ausführlich)</label>
                 <InlineMessage severity="info" v-if="global.showTooltips" class="w-full mb-2">
                     Eine ausführlichere Beschreibung der Maßnahme.
                 </InlineMessage>
@@ -39,11 +46,12 @@
                     class="w-full" />
             </div>
             <div class="field">
-                <label for="action-targetInTons">Ziel in Tonnen</label>
+                <label for="action-targetValueAbsolut">Zieleinsparung in kg CO2</label>
                 <InlineMessage severity="info" v-if="global.showTooltips" class="w-full mb-2">
                     Die angestrebte Einsparung der Maßnahe in Tonnen CO2 Äquivalenten.
                 </InlineMessage>
-                <InputNumber class="w-full" v-model="selectedAction.targetInTons" id="action-targetInTons" />
+                <InputNumber class="w-full" v-model="selectedAction.targetValueAbsolut" id="action-targetValueAbsolut"
+                    :min-fraction-digits="0" :max-fraction-digits="10" />
             </div>
             <div class="field">
                 <label for="action-responsible">Verantwortlich</label>
@@ -57,7 +65,8 @@
                 <InlineMessage severity="info" v-if="global.showTooltips" class="w-full mb-2">
                     Die geplante Fertigstellung der Maßnahme. Kann im Berichtswesen als Gantt Diagramm dargestellt werden.
                 </InlineMessage>
-                <Calendar id="action-finishedUntil" v-model="selectedAction.finishedUntil" class="w-full" />
+                <Calendar id="action-finishedUntil" v-model="selectedAction.finishedUntil" class="w-full" view="month"
+                    dateFormat="mm/yy" />
             </div>
             <div class="field">
                 <label for="action-status">Status</label>
@@ -99,7 +108,7 @@
         </Column>
         <!-- <Column field="shortDescription" header="Kurzbeschreibung"></Column>
         <Column field="longDescription" header="Langbeschreibung"></Column> -->
-        <Column field="targetInTons" header="Ziel in Tonnen"></Column>
+        <Column field="targetValueAbsolut" header="Zieleinsparung in kg"></Column>
         <Column field="responsible" header="Verantwortlich"></Column>
         <Column field="progress" header="Fortschritt">
             <template #body="{ data }">
@@ -142,6 +151,7 @@ import Editor from 'primevue/editor';
 import Slider from 'primevue/slider';
 import Dialog from 'primevue/dialog';
 import Dropdown from 'primevue/dropdown';
+import Checkbox from 'primevue/checkbox';
 import { useConfirm } from 'primevue/useconfirm';
 import { parse, string, object, number, minLength, maxLength, minValue, nullable, boolean, date, maxValue } from "valibot";
 
@@ -154,7 +164,7 @@ const emptyAction: ActionEntry = {
     name: '',
     shortDescription: '',
     longDescription: '',
-    targetInTons: 0,
+    targetValueAbsolut: 0,
     responsible: '',
     finishedUntil: '',
     status: 'open',
@@ -170,9 +180,9 @@ const actionEntrySchema = object({
     id: string('Die ID scheint korrupt zu sein.'),
     project: string('Keine gültige Projekt-ID', [minLength(1, 'Projekt-ID zu kurz'), maxLength(255, 'Projekt-ID zu lang')]),
     name: string('Kein Name angegeben', [minLength(1, 'Name zu kurz'), maxLength(255, 'Name zu lang')]),
-    shortDescription: string('Keine Kurzbeschreibung angegeben', [minLength(1, 'Kurzbeschreibung zu kurz'), maxLength(255, 'Kurzbeschreibung zu lang')]),
-    longDescription: nullable(string([minLength(1, 'Langbeschreibung zu kurz'), maxLength(255, 'Langbeschreibung zu lang')])),
-    targetInTons: number('Kein Ziel angegeben', [minValue(0, 'Ziel muss größer als 0 sein')]),
+    shortDescription: string('Keine Kurzbeschreibung angegeben', [minLength(1, 'Kurzbeschreibung zu kurz'), maxLength(500, 'Kurzbeschreibung zu lang')]),
+    longDescription: nullable(string([maxLength(4000, 'Langbeschreibung zu lang')])),
+    targetValueAbsolut: number('Kein Ziel angegeben', [minValue(0, 'Ziel muss größer als 0 sein')]),
     responsible: string('Kein Verantwortlicher angegeben', [minLength(1, 'Verantwortlicher zu kurz'), maxLength(255, 'Verantwortlicher zu lang')]),
     finishedUntil: date('Kein Fertigstellungsdatum angegeben'),
     status: string('Kein Status angegeben', [minLength(1, 'Status zu kurz'), maxLength(255, 'Status zu lang')]),
@@ -205,11 +215,13 @@ const save = async () => {
             const toCreate = clone(selectedAction.value);
             delete toCreate.id;
             const created = await dataprovider.createAction(toCreate);
+            created.finishedUntil = created.finishedUntil && created.finishedUntil !== '' ? new Date(created.finishedUntil) : null;
             actions.value.push(created);
             showDialog.value = false;
             selectedAction.value = clone(emptyAction);
         } else {
             const updated = await dataprovider.updateAction(selectedAction.value);
+            updated.finishedUntil = updated.finishedUntil && updated.finishedUntil !== '' ? new Date(updated.finishedUntil) : null;
             const index = actions.value.findIndex((item) => item.id === updated.id);
             actions.value[index] = updated;
             showDialog.value = false;
@@ -264,7 +276,7 @@ const download = async () => {
             item.name,
             item.shortDescription,
             item.longDescription,
-            item.targetInTons,
+            item.targetValueAbsolut,
             item.responsible,
             item.finishedUntil,
             item.status,

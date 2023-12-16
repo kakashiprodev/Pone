@@ -1,7 +1,8 @@
 <template>
     <Toolbar :class="{ 'mb-3': !global.showTooltips }">
         <template #end>
-            <Button icon="fa-solid fa-plus" @click="selectedValue = emptyEquivalent(); showDialog = true" />
+            <Button icon="fa-solid fa-download" @click="csvDownload" />
+            <Button icon="fa-solid fa-plus" @click="selectedValue = emptyEquivalent(); showDialog = true" class="ml-2" />
         </template>
     </Toolbar>
 
@@ -40,6 +41,13 @@
                 <InputNumber class="w-full" v-model="selectedValue.scope" id="equivalent-scope" />
                 <InlineMessage v-if="global.showTooltips" class="w-full mt-1" severity="info">
                     Zu welchem Scope gehört der Umrechnungsfaktor.
+                </InlineMessage>
+            </div>
+            <div class="field">
+                <label for="equivalent-category">Kategorie*</label>
+                <InputText class="w-full" v-model="selectedValue.category" id="equivalent-category" />
+                <InlineMessage v-if="global.showTooltips" class="w-full mt-1" severity="info">
+                    Die Kategorie wird für die Filterung verwendet.
                 </InlineMessage>
             </div>
             <div class="field">
@@ -223,7 +231,8 @@
                 <InputNumber v-if="!selectedValue.monthlyValues" class="w-full" v-model="selectedValue.avgValue"
                     id="equivalent-value-year" :use-grouping="false" :min-fraction-digits="0" :max-fraction-digits="10" />
                 <div v-else>{{ roundString(selectedValue.avgValue) }} (automatisch berechnet)</div>
-                <InlineMessage v-if="global.showTooltips" class="w-full mt-1" severity="info">Der Jahresdurchschnittswert
+                <InlineMessage v-if="global.showTooltips" class="w-full mt-1" severity="info">Der
+                    Jahresdurchschnittswert
                     als Faktor [Ausgangseinheit-pro-Eingangseinheit]</InlineMessage>
             </div>
             <div class="field">
@@ -236,9 +245,11 @@
                         class="ml-1" />
                 </div>
                 <InlineMessage v-if="global.showTooltips" class="w-full mt-1" severity="info">
-                    Wenn eine überliegende Berechnung gewählt wird, muss die Ausgangseinheit der überliegenden Berechnung
+                    Wenn eine überliegende Berechnung gewählt wird, muss die Ausgangseinheit der überliegenden
+                    Berechnung
                     mit der Eingangseinheit dieses Faktors übereinstimmen.
-                    In dem Fall wird beim Berechnen der CO2-Äquivalete der überliegende Faktor in Kette mit diesem Faktors
+                    In dem Fall wird beim Berechnen der CO2-Äquivalete der überliegende Faktor in Kette mit diesem
+                    Faktors
                     berechnet.
                 </InlineMessage>
             </div>
@@ -297,7 +308,7 @@ const emptyEquivalent = (): EquivalentEntry => {
         id: 'new',
         scope: 3,
         addName1: '',
-        category: 'Benutereingaben',
+        category: 'Benutzereingaben',
         specification1: '',
         specification2: '',
         specification3: '',
@@ -437,6 +448,67 @@ const deleteEquivalent = async (equivalent: EquivalentEntry, event: any) => {
             }
         },
     });
+}
+
+const csvDownload = async () => {
+    const delimiter = ';';
+    const eol = '\r\n';
+    const toLocalStr = (v: any | null) => {
+        if (v == null) {
+            return '';
+        } else if (typeof v === 'string') {
+            return v;
+        } else if (typeof v === 'number') {
+            return v.toLocaleString();
+        } else if (typeof v === 'boolean') {
+            return v ? '1' : '0';
+        } else {
+            return v;
+        }
+    }
+    const header = [
+        { val: 'id', name: 'ID' },
+        { val: 'scope', name: 'Scope' },
+        { val: 'category', name: 'Kategorie' },
+        { val: 'specification1', name: 'Spezifikation 1' },
+        { val: 'specification2', name: 'Spezifikation 2' },
+        { val: 'specification3', name: 'Spezifikation 3' },
+        { val: 'addName1', name: 'Zusatzname' },
+        { val: 'comment', name: 'Kommentar' },
+        { val: 'in', name: 'Eingang' },
+        { val: 'out', name: 'Ausgang' },
+        { val: 'source', name: 'Quelle' },
+        { val: 'avgValue', name: 'Faktor' },
+        { val: 'monthlyValues', name: 'Monatliche Eingaben' },
+        { val: 'jan', name: 'Wert-Jan (monatlich)' },
+        { val: 'feb', name: 'Wert Feb (monatlich)' },
+        { val: 'mar', name: 'Wert Mar (monatlich)' },
+        { val: 'apr', name: 'Wert Apr (monatlich)' },
+        { val: 'may', name: 'Wert May (monatlich)' },
+        { val: 'jun', name: 'Wert Jun (monatlich)' },
+        { val: 'jul', name: 'Wert Jul (monatlich)' },
+        { val: 'aug', name: 'Wert Aug (monatlich)' },
+        { val: 'sep', name: 'Wert Sep (monatlich)' },
+        { val: 'oct', name: 'Wert Oct (monatlich)' },
+        { val: 'nov', name: 'Wert Nov (monatlich)' },
+        { val: 'dec', name: 'Wert Dec (monatlich)' },
+        { val: 'parent', name: 'Überliegende Berechnung (ID)' },
+        { val: 'project', name: 'Projekt' },
+    ]
+
+    const lines = global.equivalents.map((e: any) => {
+        return header.map(h => toLocalStr(e[h.val])).join(delimiter);
+    }).join(eol);
+    const csv = header.map(h => h.name).join(delimiter) + eol + lines;
+    const blob = new Blob([csv], { type: 'text/csv;charset=windows-1252;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.setAttribute("href", url);
+    link.setAttribute("download", "equivalents.csv");
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
 }
 </script>
 

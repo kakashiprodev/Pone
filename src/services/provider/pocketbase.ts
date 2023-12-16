@@ -235,6 +235,12 @@ export default class DataProvider {
         filter: `project="${globalStore.selectedProject?.id}"`,
       },
     );
+    // ensure that the date is ISO8601 for each action finishedUntil entry
+    res.items.forEach((action: ActionEntry) => {
+      if (action.finishedUntil && action.finishedUntil !== "") {
+        action.finishedUntil = new Date(action.finishedUntil);
+      }
+    });
     return res.items;
   }
 
@@ -292,7 +298,14 @@ export default class DataProvider {
   }
 
   async readFacilities() {
-    const res = await this.pb.collection("facilities").getList<FacilityEntry>(1, 500);
+    const res = await this.pb.collection("facilities").getList<FacilityEntry>(1, 500,
+      { filter: `project="${globalStore.selectedProject?.id}"` });
+    // ensure that the date is ISO8601 for each facility shutdownDate entry
+    res.items.forEach((facility: FacilityEntry) => {
+      if (facility.shutdownDate && facility.shutdownDate !== "") {
+        facility.shutdownDate = new Date(facility.shutdownDate);
+      }
+    });
     return res.items;
   }
 

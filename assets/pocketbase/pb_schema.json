@@ -453,128 +453,6 @@
         "options": {}
     },
     {
-        "id": "rnskc22j76iywo3",
-        "name": "actions",
-        "type": "base",
-        "system": false,
-        "schema": [
-            {
-                "id": "cxuod5oy",
-                "name": "project",
-                "type": "relation",
-                "system": false,
-                "required": false,
-                "options": {
-                    "collectionId": "61iwwi03fob8tyg",
-                    "cascadeDelete": false,
-                    "minSelect": null,
-                    "maxSelect": 1,
-                    "displayFields": []
-                }
-            },
-            {
-                "id": "zwpvoph3",
-                "name": "name",
-                "type": "text",
-                "system": false,
-                "required": false,
-                "options": {
-                    "min": null,
-                    "max": null,
-                    "pattern": ""
-                }
-            },
-            {
-                "id": "bslzqyj8",
-                "name": "shortDescription",
-                "type": "editor",
-                "system": false,
-                "required": false,
-                "options": {}
-            },
-            {
-                "id": "aznictow",
-                "name": "longDescription",
-                "type": "editor",
-                "system": false,
-                "required": false,
-                "options": {}
-            },
-            {
-                "id": "lhrjg22u",
-                "name": "responsible",
-                "type": "text",
-                "system": false,
-                "required": false,
-                "options": {
-                    "min": null,
-                    "max": null,
-                    "pattern": ""
-                }
-            },
-            {
-                "id": "y4lusegw",
-                "name": "finishedUntil",
-                "type": "date",
-                "system": false,
-                "required": false,
-                "options": {
-                    "min": "",
-                    "max": ""
-                }
-            },
-            {
-                "id": "zfaicgxe",
-                "name": "status",
-                "type": "text",
-                "system": false,
-                "required": false,
-                "options": {
-                    "min": null,
-                    "max": null,
-                    "pattern": ""
-                }
-            },
-            {
-                "id": "9emgzp4w",
-                "name": "progress",
-                "type": "number",
-                "system": false,
-                "required": false,
-                "options": {
-                    "min": null,
-                    "max": null
-                }
-            },
-            {
-                "id": "uls9wjvo",
-                "name": "targetInTons",
-                "type": "number",
-                "system": false,
-                "required": false,
-                "options": {
-                    "min": null,
-                    "max": null
-                }
-            },
-            {
-                "id": "yep0qot9",
-                "name": "relevant",
-                "type": "bool",
-                "system": false,
-                "required": false,
-                "options": {}
-            }
-        ],
-        "indexes": [],
-        "listRule": "@request.auth.id != \"\"",
-        "viewRule": "@request.auth.id != \"\"",
-        "createRule": "@request.auth.id != \"\"",
-        "updateRule": "@request.auth.id != \"\"",
-        "deleteRule": "@request.auth.id != \"\"",
-        "options": {}
-    },
-    {
         "id": "lppp5lvzbwt7lwu",
         "name": "reports",
         "type": "base",
@@ -831,6 +709,153 @@
                     "max": null,
                     "pattern": ""
                 }
+            },
+            {
+                "id": "vmscomkm",
+                "name": "project",
+                "type": "relation",
+                "system": false,
+                "required": true,
+                "options": {
+                    "collectionId": "61iwwi03fob8tyg",
+                    "cascadeDelete": false,
+                    "minSelect": null,
+                    "maxSelect": 1,
+                    "displayFields": []
+                }
+            },
+            {
+                "id": "pxm0rt1f",
+                "name": "shutdownDate",
+                "type": "date",
+                "system": false,
+                "required": false,
+                "options": {
+                    "min": "",
+                    "max": ""
+                }
+            }
+        ],
+        "indexes": [],
+        "listRule": "@request.auth.id != \"\"",
+        "viewRule": "@request.auth.id != \"\"",
+        "createRule": "@request.auth.id != \"\"",
+        "updateRule": "@request.auth.id != \"\"",
+        "deleteRule": "@request.auth.id != \"\"",
+        "options": {}
+    },
+    {
+        "id": "rnskc22j76iywo3",
+        "name": "actions",
+        "type": "base",
+        "system": false,
+        "schema": [
+            {
+                "id": "cxuod5oy",
+                "name": "project",
+                "type": "relation",
+                "system": false,
+                "required": false,
+                "options": {
+                    "collectionId": "61iwwi03fob8tyg",
+                    "cascadeDelete": false,
+                    "minSelect": null,
+                    "maxSelect": 1,
+                    "displayFields": []
+                }
+            },
+            {
+                "id": "zwpvoph3",
+                "name": "name",
+                "type": "text",
+                "system": false,
+                "required": false,
+                "options": {
+                    "min": null,
+                    "max": null,
+                    "pattern": ""
+                }
+            },
+            {
+                "id": "bslzqyj8",
+                "name": "shortDescription",
+                "type": "editor",
+                "system": false,
+                "required": false,
+                "options": {}
+            },
+            {
+                "id": "aznictow",
+                "name": "longDescription",
+                "type": "editor",
+                "system": false,
+                "required": false,
+                "options": {}
+            },
+            {
+                "id": "lhrjg22u",
+                "name": "responsible",
+                "type": "text",
+                "system": false,
+                "required": false,
+                "options": {
+                    "min": null,
+                    "max": null,
+                    "pattern": ""
+                }
+            },
+            {
+                "id": "y4lusegw",
+                "name": "finishedUntil",
+                "type": "date",
+                "system": false,
+                "required": false,
+                "options": {
+                    "min": "",
+                    "max": ""
+                }
+            },
+            {
+                "id": "zfaicgxe",
+                "name": "status",
+                "type": "text",
+                "system": false,
+                "required": false,
+                "options": {
+                    "min": null,
+                    "max": null,
+                    "pattern": ""
+                }
+            },
+            {
+                "id": "9emgzp4w",
+                "name": "progress",
+                "type": "number",
+                "system": false,
+                "required": false,
+                "options": {
+                    "min": null,
+                    "max": null
+                }
+            },
+            {
+                "id": "uls9wjvo",
+                "name": "targetValueAbsolut",
+                "type": "number",
+                "system": false,
+                "required": false,
+                "options": {
+                    "min": null,
+                    "max": null
+                }
+            },
+            {
+                "id": "yep0qot9",
+                "name": "relevant",
+                "type": "bool",
+                "system": false,
+                "required": false,
+                "options": {}
             }
         ],
         "indexes": [],
@@ -894,18 +919,6 @@
                 }
             },
             {
-                "id": "fjncojhc",
-                "name": "sumValue",
-                "type": "text",
-                "system": false,
-                "required": true,
-                "options": {
-                    "min": null,
-                    "max": null,
-                    "pattern": ""
-                }
-            },
-            {
                 "id": "ph2cdv4j",
                 "name": "equivalent",
                 "type": "relation",
@@ -957,6 +970,17 @@
                     "minSelect": null,
                     "maxSelect": 1,
                     "displayFields": []
+                }
+            },
+            {
+                "id": "qbssdszi",
+                "name": "sumValue",
+                "type": "number",
+                "system": false,
+                "required": false,
+                "options": {
+                    "min": null,
+                    "max": null
                 }
             }
         ],

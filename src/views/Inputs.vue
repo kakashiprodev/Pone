@@ -22,6 +22,7 @@
                     @change="getData" />
                 <label class="ml-1" for="scope3Active">3</label>
             </template>
+            <span class="ml-4">Menge: {{ round(sumValue, 2) }}[kg]</span>
         </template>
         <template #end>
             <Button icon="fa-solid fa-wand-magic-sparkles"
@@ -64,7 +65,7 @@
         <!-- step 1 -->
         <div class="card" v-if="actualComfortStep === 0">
             <SmartEquivalentList v-model="selectedValue.equivalent" :comfort-mode="true" :rowsPerPage="5"
-                :visible-columns="['source', 'in', 'fullName',]" :showColumnChooser="false" @change="updateNameAndCategory"
+                :visible-columns="['source', 'in', 'fullName', 'avgValue']" :showColumnChooser="false" @change="updateNameAndCategory"
                 :hide-scope-input="preSelectedScope != 'all'"
                 :filter-by="{ scope: preSelectedScope === 'all' ? [1] : [parseInt(preSelectedScope)] }" />
         </div>
@@ -244,7 +245,11 @@
         <Column field="scope" header="Scope" sortable></Column>
         <Column field="category" header="Kategorie" sortable></Column>
         <Column field="name" header="Name" sortable></Column>
-        <Column field="rawValue" header="Eingabewert" sortable></Column>
+        <Column field="rawValue" header="Eingabewert" sortable>
+            <template #body="{ data }">
+                {{ round(data.rawValue, 2) }} [{{ global.equivalentDict[data.equivalent]?.in ?? 'Reference error' }}]
+            </template>
+        </Column>
         <Column field="equivalent" header="Äquivalent" sortable>
             <template #body="{ data }">
                 <div v-if="data.equivalent != null && data.equivalent !== ''">
@@ -433,6 +438,10 @@ const originalValue: Ref<InputEntry> = ref(emptyInput);
 const updateNameAndCategory = () => {
     if (selectedValue.value.equivalent != null && selectedValue.value.equivalent !== '') {
         const equivalent = global.equivalentDict[selectedValue.value.equivalent];
+        if (equivalent == null) {
+            error('Äquivalent wurde im Cache nicht gefunden. Bitte laden Sie die Seite neu.');
+            return;
+        }
         selectedValue.value.name = equivalent.specification1;
         selectedValue.value.comment = equivalent.comment ?? "";
         selectedValue.value.category = equivalent.category;
@@ -515,6 +524,13 @@ const getData = async () => {
 
 // initial get data
 getData();
+
+// watch data to caclulate the sum of all sumValues
+const sumValue = computed(() => {
+    return data.value.reduce((acc, item) => {
+        return acc + item.sumValue;
+    }, 0);
+});
 
 // export
 const download = async () => {

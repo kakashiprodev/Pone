@@ -28,6 +28,12 @@ export interface GlobalState {
       scope1: string[];
       scope2: string[];
       scope3: string[];
+    },
+    unit: {
+      all: string[];
+    }
+    source: {
+      all: string[];
     }
   },
   //
@@ -61,6 +67,12 @@ export const useGlobalStore = defineStore("global", {
         scope2: [],
         scope3: [],
       },
+      unit: {
+        all: [],
+      },
+      source: {
+        all: [],
+      }
     },
     //
     facilities: [],
@@ -151,6 +163,13 @@ export const useGlobalStore = defineStore("global", {
         this.equivalentFilters.category.scope1 = [];
         this.equivalentFilters.category.scope2 = [];
         this.equivalentFilters.category.scope3 = [];
+
+        // create a list of all unique entries for unit
+        this.equivalentFilters.unit.all = [];
+
+        // create a list of all unique entries for source
+        this.equivalentFilters.source.all = [];
+
         this.equivalents.forEach((equivalent: EquivalentEntry) => {
           if (equivalent.scope === 1 && !this.equivalentFilters.category.scope1.includes(equivalent.category)) {
             this.equivalentFilters.category.scope1.push(equivalent.category);
@@ -160,6 +179,14 @@ export const useGlobalStore = defineStore("global", {
           }
           if (equivalent.scope === 3 && !this.equivalentFilters.category.scope3.includes(equivalent.category)) {
             this.equivalentFilters.category.scope3.push(equivalent.category);
+          }
+
+          if (!this.equivalentFilters.unit.all.includes(equivalent.in)) {
+            this.equivalentFilters.unit.all.push(equivalent.in);
+          }
+
+          if (!this.equivalentFilters.source.all.includes(equivalent.source)) {
+            this.equivalentFilters.source.all.push(equivalent.source);
           }
         });
       }
@@ -177,7 +204,7 @@ export const useGlobalStore = defineStore("global", {
       this.equivalents.push(created);
       // sort by "name"
       this.equivalents.sort((a: EquivalentEntry, b: EquivalentEntry) => a.specification1.localeCompare(b.specification1));
-      this.equivalentDict[equivalent.id] = created;
+      this.equivalentDict[created.id] = created;
       return created;
     },
     /**
@@ -464,12 +491,14 @@ export const useGlobalStore = defineStore("global", {
 
     // READ cache for "facilities"
     async refreshFacilities() {
-      this.facilities = await dataprovider.readFacilities();
-      // create dict
-      this.facilitiesDict = this.facilities.reduce(
-        (acc, cur) => ({ ...acc, [cur.id]: cur }),
-        {},
-      );
+      if (this.facilities.length === 0) {
+        this.facilities = await dataprovider.readFacilities();
+        // create dict
+        this.facilitiesDict = this.facilities.reduce(
+          (acc, cur) => ({ ...acc, [cur.id]: cur }),
+          {},
+        );
+      }
     },
 
     /**

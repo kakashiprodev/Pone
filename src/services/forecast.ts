@@ -16,18 +16,21 @@ export interface OldReportValues {
     value: number;
 }
 
-export interface EmissionValues {
-    refValue: number; // reference value for the month
+export interface EmissionValue {
+    realReportValue: null | number; // real value for this time period. null if no value exists
+    refValue: number; // reference value for this time period
     targetValue: number; // target value for the month. theoretically
     realValueWithActions: number; // real possible value for the month if all actions are done
     savedAbsolut: number; // saved absolut value in this year
     percentageToRef: number; // in this year active target percentage
-    date: string; // Format: YYYY-MM-DD   
+    date: string; // Format: YYYY-MM-DD
+    realValueWithActionsInterpolated?: null | number; // is null and only set in years with new finished actions
+    targetValueInterpolated?: null | number; // is null and set only in years with new targets
 }
 
 export interface EmissionResult {
-    monthlyResults: EmissionValues[];
-    yearlyResults: EmissionValues[];
+    monthlyResults: EmissionValue[];
+    yearlyResults: EmissionValue[];
 }
 
 export function calculateEmissions(
@@ -97,10 +100,13 @@ export function calculateEmissions(
             // check if an action exists for the year and the actual pointer month. if not use 0.
             const actionsEffect = actions
                 .filter(action => {
+                    if (!action.finishedUntil || !action.relevant) {
+                        return false;
+                    }
                     const date = new Date(action.finishedUntil);
                     return date.getFullYear() === year && date.getMonth() === month - 1;
                 })
-                .reduce((acc, action) => acc + action.targetInTons, 0);
+                .reduce((acc, action) => acc + action.targetValueAbsolut, 0);
 
             // add this value (part for one month) to the floating subtraction value
             actualSustractionValue += (actionsEffect / 12);
@@ -115,6 +121,7 @@ export function calculateEmissions(
             amount += withActions;
 
             monthlyResults.push({
+                realReportValue: year === referenceYear && month === 1 ? referenceValue : null,
                 date: (new Date(year, month - 1)).toISOString(),
                 refValue: referenceValuePerMonth,
                 targetValue: absoluteValuePerMonth,
@@ -124,14 +131,44 @@ export function calculateEmissions(
             });
         }
 
+        // search again for all actions that are in this year
+        const yearlyActionEffect = actions
+            .filter(action => {
+                if (!action.finishedUntil || !action.relevant) {
+                    return false;
+                }
+                const date = new Date(action.finishedUntil);
+                return date.getFullYear() === year;
+            })
+            .reduce((acc, action) => acc + action.targetValueAbsolut, 0);
+
+        // actionbases only will be only set if new actions are done in this year
+        // but also the first and the last year are needed to draw the graph
+        let realValueWithActionsInterpolated = null;
+        if (yearlyActionEffect > 0 || year === endYear) {
+            realValueWithActionsInterpolated = amount;
+        } else if (year === startYear) {
+            realValueWithActionsInterpolated = referenceValue;
+        }
+
+        let targetValueInterpolated = null;
+        if (target) {
+            targetValueInterpolated = referenceValue * (1 - target.percentage / 100);
+        } else if (year === startYear) {
+            targetValueInterpolated = referenceValue;
+        }
+
         // add values for the year
-        const yearResult = {
+        const yearResult: EmissionValue = {
+            realReportValue: year === referenceYear ? referenceValue : null,
             date: (new Date(year, 0)).toISOString(),
             refValue: referenceValue,
             targetValue: referenceValue * (1 - actualTargetPercentage / 100),
             realValueWithActions: amount,
             percentageToRef: actualTargetPercentage,
-            savedAbsolut: absoluteValueForYear - amount
+            savedAbsolut: absoluteValueForYear - amount,
+            realValueWithActionsInterpolated,
+            targetValueInterpolated,
         };
         // console.log(yearResult);
         yearlyResults.push(yearResult);

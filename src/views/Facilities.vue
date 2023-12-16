@@ -7,6 +7,13 @@
     </InlineMessage>
 
     <Toolbar class="mb-2">
+        <template #start>
+            <InputText v-model="filter" placeholder="Filter" class="mr-1" />
+            <span class="flex align-content-center ml-2">
+                <Checkbox v-model="onlyActive" class="ml-1" :binary="true" />
+                <span class="ml-2">Nur aktive Einträge anzeigen</span>
+            </span>
+        </template>
         <template #end>
             <Button icon="fa-solid fa-plus" @click="selectedValue = clone(emptyFacility); showDialog = true" class="mr-1" />
         </template>
@@ -47,6 +54,15 @@
                 </InlineMessage>
             </div>
 
+            <div class="field">
+                <label for="facility-shutdownDate">Stilllegedatum (wenn Anlage außer Betrieb gesetzt wird)</label>
+                <Calendar v-model="selectedValue.shutdownDate" view="month" dateFormat="mm/yy" class="w-full" />
+                <InlineMessage v-if="global.showTooltips" class="w-full mt-1" severity="info">
+                    Wenn dieses Datum gesetzt wird, wird die Anlage in der Auswertung nicht mehr berücksichtigt und in der
+                    Liste
+                    der Anlagen ausgeblendet.
+                </InlineMessage>
+            </div>
         </div>
         <div>
             <Button :label="selectedValue.id === 'new' ? 'Anlegen' : 'Speichern'" @click="save" />
@@ -54,7 +70,7 @@
     </Dialog>
 
     <ConfirmPopup></ConfirmPopup>
-    <DataTable v-if="global.equivalents.length > 0" :value="data" class="cst-no-hover">
+    <DataTable v-if="global.facilities.length > 0" :value="filteredData" class="cst-no-hover">
         <!-- <Column field="id" header="ID"></Column> -->
         <Column field="name" header="Name"></Column>
         <Column field="manufacturer" header="Hersteller"></Column>
@@ -83,9 +99,11 @@ import ConfirmPopup from 'primevue/confirmpopup';
 import InputText from 'primevue/inputtext';
 import Dialog from 'primevue/dialog';
 import InlineMessage from 'primevue/inlinemessage';
+import Calendar from 'primevue/calendar';
+import Checkbox from 'primevue/checkbox';
 import { FacilityEntry, InputEntry } from './../services/types';
 import dataprovider from "./../services/dataprovider";
-import { Ref, ref } from 'vue';
+import { Ref, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { useGlobalStore } from './../stores/global';
 import { error } from './../services/toast';
@@ -117,6 +135,38 @@ const facilityEntrySchema = object({
 
 // main data for table
 const data: Ref<FacilityEntry[]> = ref([]);
+const filteredData: Ref<FacilityEntry[]> = ref([]);
+
+// filter data
+const filter = ref('');
+const onlyActive = ref(true);
+
+const filterData = () => {
+    let filtered = data.value;
+    console.log('filter data');
+    if (filter.value !== '') {
+        filtered = data.value.filter((item) => {
+            return item.name.toLowerCase().includes(filter.value.toLowerCase()) ||
+                item.manufacturer.toLowerCase().includes(filter.value.toLowerCase()) ||
+                item.model?.toLowerCase().includes(filter.value.toLowerCase()) ||
+                item.description?.toLowerCase().includes(filter.value.toLowerCase());
+        });
+    }
+    // filter for active
+    filtered = filtered.filter((item) => {
+        if (onlyActive.value === false) {
+            return true;
+        }
+        return item.shutdownDate === null || item.shutdownDate === '';
+    });
+    filteredData.value = filtered;
+}
+watch(() => filter.value, () => {
+    filterData();
+});
+watch(() => onlyActive.value, () => {
+    filterData();
+});
 
 // new and edit dialog
 const showDialog = ref(false);
@@ -127,6 +177,8 @@ const emptyFacility: FacilityEntry = {
     manufacturer: '',
     model: '',
     description: '',
+    project: global.selectedProject?.id ?? '',
+    shutdownDate: null,
 };
 
 const selectedValue: Ref<FacilityEntry> = ref(emptyFacility);
@@ -147,6 +199,7 @@ const clone = (objToClone: FacilityEntry) => {
     const c = JSON.parse(JSON.stringify(objToClone));
     return c;
 }
+
 const save = async () => {
     try {
         // validate
@@ -157,12 +210,14 @@ const save = async () => {
             const toCreate = clone(selectedValue.value);
             delete toCreate.id;
             const created = await dataprovider.createFacility(toCreate);
+            created.shutdownDate = created.shutdownDate && created.shutdownDate !== '' ? new Date(created.shutdownDate) : null;
             data.value.push(created);
 
             showDialog.value = false;
             selectedValue.value = clone(emptyFacility);
         } else {
             const updated = await dataprovider.updateFacility(selectedValue.value);
+            updated.shutdownDate = updated.shutdownDate && updated.shutdownDate !== '' ? new Date(updated.shutdownDate) : null;
             const index = data.value.findIndex((item) => item.id === updated.id);
             data.value[index] = updated;
 
@@ -198,7 +253,9 @@ const deleteEntry = async (entry: InputEntry, event: any) => {
  * Get all data
  */
 const getData = async () => {
-    data.value = await dataprovider.readFacilities();
+    await global.refreshFacilities();
+    data.value = global.facilities;
+    filterData();
 }
 
 /**
