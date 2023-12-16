@@ -65,8 +65,8 @@
         <!-- step 1 -->
         <div class="card" v-if="actualComfortStep === 0">
             <SmartEquivalentList v-model="selectedValue.equivalent" :comfort-mode="true" :rowsPerPage="5"
-                :visible-columns="['source', 'in', 'fullName', 'avgValue']" :showColumnChooser="false" @change="updateNameAndCategory"
-                :hide-scope-input="preSelectedScope != 'all'"
+                :visible-columns="['source', 'in', 'fullName', 'avgValue']" :showColumnChooser="false"
+                @change="updateNameAndCategory" :hide-scope-input="preSelectedScope != 'all'"
                 :filter-by="{ scope: preSelectedScope === 'all' ? [1] : [parseInt(preSelectedScope)] }" />
         </div>
 
@@ -104,13 +104,9 @@
 
         <!-- step 4 -->
         <div class="card" v-if="actualComfortStep === 3">
-            <div class="field">
-                <label for="userinput-rawvalue">
-                    Eingabewert {{ choosenEquivalent ? ' in ' + choosenEquivalent.in : '' }}
-                </label>
-                <InputNumber class="w-full" v-model="selectedValue.rawValue" id="userinput-rawvalue" :use-grouping="false"
-                    :suffix="choosenEquivalent ? ' ' + choosenEquivalent.in : ''" :min-fraction-digits="0"
-                    :max-fraction-digits="10" />
+            <div>
+                <MonthlyOrYearlyInput v-model="selectedValue"
+                    :input-unit="choosenEquivalent ? ' ' + choosenEquivalent.in : ''" />
             </div>
             <!-- helping information -->
             <div class="field" v-if="computedSumCalculation !== ''">
@@ -203,13 +199,9 @@
                     Eine optionale Beschreibung der Eingabe.
                 </InlineMessage>
             </div>
-            <div class="field">
-                <label for="userinput-rawvalue">
-                    Eingabewert {{ choosenEquivalent ? ' in ' + choosenEquivalent.in : '' }}
-                </label>
-                <InputNumber class="w-full" v-model="selectedValue.rawValue" id="userinput-rawvalue" :use-grouping="false"
-                    :suffix="choosenEquivalent ? ' ' + choosenEquivalent.in : ''" :min-fraction-digits="0"
-                    :max-fraction-digits="10" />
+            <div>
+                <MonthlyOrYearlyInput v-model="selectedValue"
+                    :input-unit="choosenEquivalent ? ' ' + choosenEquivalent.in : ''" />
                 <InlineMessage v-if="global.showTooltips" class="w-full mt-1" severity="info">
                     Der Eingabewert vor dem Umrechnen in CO2-Äquivalente. Wird mit dem Äquivalent verrechnet.
                 </InlineMessage>
@@ -297,6 +289,7 @@ import InlineMessage from 'primevue/inlinemessage';
 import SmartEquivalentList from './../components/SmartEquivalentList.vue';
 import FacilityChooser from './../components/FacilityChooser.vue';
 import ScopeInfoBox from './../components/ScopeInfoBox.vue';
+import MonthlyOrYearlyInput from './../components/MonthlyOrYearlyInput.vue';
 import { EquivalentEntry, InputEntry } from './../services/types';
 import dataprovider from "./../services/dataprovider";
 import { Ref, ref, computed, watch, ComputedRef } from 'vue';
@@ -306,7 +299,7 @@ import { error } from './../services/toast';
 import { useConfirm } from 'primevue/useconfirm';
 import { getSumForInput, getCalculationSteps } from "./../services/reporting";
 import { useRouter } from 'vue-router';
-import { parse, string, object, number, minLength, maxLength, minValue, maxValue, nullable } from "valibot";
+import { parse, string, object, number, minLength, maxLength, minValue, maxValue, nullable, boolean } from "valibot";
 import { round } from "./../pipes";
 
 const router = useRouter();
@@ -318,6 +311,20 @@ const inputEntrySchema = object({
     scope: number([minValue(1, 'Scope muss zwischen 1 und 3 liegen'), maxValue(3, 'Scope muss zwischen 1 und 3 liegen')]),
     comment: string([maxLength(255, 'Kommentar zu lang')]),
     rawValue: number('Ein Wert muss angegeben werden.'),
+    parent: nullable(string([maxLength(255, 'Referenz auf parent zu lang')])),
+    monthlyValues: boolean('monthlyValues muss ein boolean sein.'),
+    rawJan: number('rawJan muss ein number sein.'),
+    rawFeb: number('rawFeb muss ein number sein.'),
+    rawMar: number('rawMar muss ein number sein.'),
+    rawApr: number('rawApr muss ein number sein.'),
+    rawMay: number('rawMay muss ein number sein.'),
+    rawJun: number('rawJun muss ein number sein.'),
+    rawJul: number('rawJul muss ein number sein.'),
+    rawAug: number('rawAug muss ein number sein.'),
+    rawSep: number('rawSep muss ein number sein.'),
+    rawOct: number('rawOct muss ein number sein.'),
+    rawNov: number('rawNov muss ein number sein.'),
+    rawDec: number('rawDec muss ein number sein.'),
     equivalent: nullable(string([maxLength(255, 'Referenz auf equivalents zu lang')])),
     report: string([minLength(1, 'Referenz auf Report ist inkorrekt'), maxLength(255, 'Referenz auf Report ist inkorrekt')]),
     category: nullable(string([maxLength(255, 'Kategorie zu lang')]))
@@ -418,10 +425,24 @@ const emptyInput: InputEntry = {
     report: global.selectedReport?.id ?? '',
     scope: 1,
     sumValue: 0,
-    rawValue: null as any,
     equivalent: null,
     category: null,
     facility: null,
+    parent: null,
+    rawValue: null as any,
+    monthlyValues: false,
+    rawJan: null as any,
+    rawFeb: null as any,
+    rawMar: null as any,
+    rawApr: null as any,
+    rawMay: null as any,
+    rawJun: null as any,
+    rawJul: null as any,
+    rawAug: null as any,
+    rawSep: null as any,
+    rawOct: null as any,
+    rawNov: null as any,
+    rawDec: null as any,
 }
 const clone = (input: InputEntry) => {
     const c = JSON.parse(JSON.stringify(input));
@@ -433,6 +454,17 @@ const clone = (input: InputEntry) => {
 }
 const selectedValue: Ref<InputEntry> = ref(emptyInput);
 const originalValue: Ref<InputEntry> = ref(emptyInput);
+
+// check selectedValue.rawValue for changes
+watch(() => selectedValue.value.rawValue, () => {
+    if (!selectedValue.value.monthlyValues) {
+        const keys: (keyof InputEntry)[] = ['rawJan', 'rawFeb', 'rawMar', 'rawApr', 'rawMay', 'rawJun', 'rawJul', 'rawAug', 'rawSep', 'rawOct', 'rawNov', 'rawDec'];
+        keys.forEach((key) => {
+            // @ts-ignore
+            selectedValue.value[key] = selectedValue.value.rawValue;
+        });
+    }
+});
 
 // watch selectedValue.equivalent in comfort mode to change the name and comment
 const updateNameAndCategory = () => {

@@ -23,14 +23,9 @@ const months = [
   "dec",
 ];
 
-export const getAverageFromArray = (arr: number[]) => {
-  let sum = 0;
-  arr.forEach((val) => {
-    sum += val;
-  });
-  return sum / arr.length;
-};
-
+/**
+ * returns the yearly average equivalent factor
+ */
 export const getAverageEquivalent = (equivalent: Partial<EquivalentEntry>) => {
   let sum = 0;
   months.forEach((month) => {
@@ -43,38 +38,31 @@ export const getAverageEquivalent = (equivalent: Partial<EquivalentEntry>) => {
 };
 
 /**
- * Returns the sum of the input value multiplied with the equivalent factor
+ * Returns the sum of the input value multiplied its given equivalent factor
+ * multiplication will be done for the monthly values if available
  */
 export const getSumForInput = (
   input: InputEntry,
   equivalents: { [key: string]: EquivalentEntry },
 ): number => {
-  return calculateEquivalentFactor(input.equivalent, equivalents) *
-    input.rawValue;
+
+  // Monthly detailed calculation
+  let sum = 0;
+  months.forEach(month => {
+    // get the equivalent factor for the given month
+    const key = 'raw' + month.charAt(0).toUpperCase() + month.slice(1); // e.g. rawJan, rawFeb, ...
+    const monthlyEquivalentFactor = getFullFactorChain(input.equivalent, equivalents, month);
+    // @ts-ignore
+    const monthlyRawValue = input.monthlyValues ? input[key] : (input.rawValue / 12);
+    sum += (monthlyRawValue ?? 0) * monthlyEquivalentFactor;
+  });
+  return sum;
 };
 
-const calculateEquivalentFactor = (
-  equivalentId: null | string,
-  equivalents: { [key: string]: EquivalentEntry },
-): number => {
-  if (!equivalentId || equivalentId === "") {
-    return 1;
-  }
-
-  const equivalent = equivalents[equivalentId];
-  if (!equivalent) {
-    console.error("Equivalent not found for id " + equivalentId);
-    return 1;
-    // throw new Error("Factor is undefined for users input " + equivalentId);
-  }
-
-  const parentFactor = calculateEquivalentFactor(
-    equivalent.parent,
-    equivalents,
-  );
-  return equivalent.avgValue * parentFactor;
-};
-
+/**
+ * Returns the sum of all inputs multiplied with their equivalent factors
+ * can handle a list of inputs
+ */
 export const getSumForInputs = (
   inputs: InputEntry[],
   equivalents: { [key: string]: EquivalentEntry },
@@ -86,19 +74,42 @@ export const getSumForInputs = (
   return sum;
 };
 
-export const getListOfInputValues = (
-  inputs: InputEntry[],
+/**
+ * helper funktion for getSumForInput
+ * Calculates the equivalent factor for the given equivalent id and month
+ * will also calculate the parent equivalent factors
+ * returns the factor with all parent factors multiplied
+ */
+const getFullFactorChain = (
+  equivalentId: null | string,
   equivalents: { [key: string]: EquivalentEntry },
-) => {
-  return inputs.map((input) => {
-    return {
-      name: input.name,
-      Comment: input.comment,
-      value: getSumForInput(input, equivalents),
-    };
-  });
+  month: string,
+): number => {
+  if (!equivalentId || equivalentId === "") {
+    return 1;
+  }
+
+  const equivalent: any = equivalents[equivalentId];
+  if (!equivalent) {
+    console.error("Equivalent not found for id " + equivalentId);
+    return 1;
+  }
+
+  const parentFactor = getFullFactorChain(
+    equivalent.parent,
+    equivalents,
+    month,
+  );
+
+  // use monthly value if available, otherwise use yearly average value
+  const monthlyValue: number = equivalent[month] != null && equivalent[month] != '' ? equivalent[month] : equivalent.avgValue;
+  return monthlyValue * parentFactor;
 };
 
+/**
+ * Returns the sum of all inputs grouped by their scope
+ * This is needed for the report
+ */
 export const getScopeSums = async () => {
   const equivalents = await dataprovider.readEquivalentsAsDict();
 
@@ -130,7 +141,26 @@ export const getScopeSums = async () => {
   };
 };
 
-// ausgabe als schrift:
+/**
+ * helper function for getScopeSums
+ * Creates a list of caluclations in a simple format
+ */
+export const getListOfInputValues = (
+  inputs: InputEntry[],
+  equivalents: { [key: string]: EquivalentEntry },
+) => {
+  return inputs.map((input) => {
+    return {
+      name: input.name,
+      Comment: input.comment,
+      value: getSumForInput(input, equivalents),
+    };
+  });
+};
+
+/**
+ * Returns a list of strings with the calculation steps as a human readable format
+ */
 export const getCalculationSteps = (
   input: InputEntry,
   equivalents: { [key: string]: EquivalentEntry },
@@ -138,7 +168,7 @@ export const getCalculationSteps = (
 
   const steps: string[] = [];
   calculateEquivalentFactorWithSteps(
-    input.rawValue,
+    input,
     input.equivalent,
     equivalents,
     steps,
@@ -146,14 +176,17 @@ export const getCalculationSteps = (
   return steps;
 };
 
+/**
+ * helper function for getCalculationSteps
+ */
 const calculateEquivalentFactorWithSteps = (
-  value: number,
+  input: InputEntry,
   equivalentId: null | string,
   equivalents: { [key: string]: EquivalentEntry },
   steps: string[],
-): number => {
-  if (!equivalentId) {
-    return value;
+): void => {
+  if (!equivalentId || equivalentId === "") {
+    return;
   }
 
   // search for the equivalent
@@ -161,23 +194,36 @@ const calculateEquivalentFactorWithSteps = (
   if (!equivalent) {
     throw new Error("Equivalent is undefined for ID " + equivalentId);
   }
+  // create a clone that is needed for nested calculations
+  const fakeInput: InputEntry = JSON.parse(JSON.stringify(input));
+  fakeInput.rawValue = 0;
 
-  const calculatedValue = value * equivalent.avgValue;
-
-  steps.push(
-    `${value}[${equivalent.in}] * ${equivalent.avgValue}[${equivalent.in}/${equivalent.out}] = ${round(calculatedValue, 3)}[${equivalent.out}]`,
-  );
+  // Monthly detailed calculation
+  steps.push("Schritt 1:");
+  for (const month of months) {
+    const key = 'raw' + month.charAt(0).toUpperCase() + month.slice(1); // e.g. rawJan, rawFeb, ...
+    // @ts-ignore
+    const monthlyEquivalentFactor = equivalent[month] != null && equivalent[month] != '' ? equivalent[month] : equivalent.avgValue;
+    // @ts-ignore
+    const monthlyRawValue = input.monthlyValues ? input[key] : (input.rawValue / 12);
+    const montlySum = monthlyRawValue * monthlyEquivalentFactor;
+    // @ts-ignore
+    fakeInput[key] = montlySum;
+    fakeInput.rawValue += montlySum;
+    steps.push(
+      `${month !== 'jan' ? '+ ' : ''} ${monthlyRawValue}[${equivalent.in}] * ${monthlyEquivalentFactor}[${equivalent.in}/${equivalent.out}] = ${round(montlySum, 3)}[${equivalent.out}] (for ${month})`,
+    );
+  }
+  steps.push(""); // empty line
 
   // if parent is null, we are at the root
   // otherwise we need to calculate the parent the output value with the parent
   if (equivalent.parent) {
     return calculateEquivalentFactorWithSteps(
-      calculatedValue,
+      fakeInput,
       equivalent.parent,
       equivalents,
       steps,
     );
-  } else {
-    return calculatedValue;
   }
 };

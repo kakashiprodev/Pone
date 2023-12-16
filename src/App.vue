@@ -34,3 +34,12 @@ const init = async () => {
 }
 init();
 </script>
+
+<style>
+/*
+Fix for PrimeVue InputNumber problem with width
+*/
+.w-full .p-inputnumber-input {
+  width: 100%;
+}
+</style>
