@@ -35,12 +35,26 @@ export interface InputEntry {
   name: string;
   scope: number; // 1-3
   comment: string;
-  rawValue: number;
   sumValue: number;
   equivalent: null | string; // reference on table equivalents
   report: string; // reference on table reports
   category: null | string;
-  facility: null | string; // references on table facilities 1:n
+  facility: null | string; // references on table facilities 1:n  
+  parent: null | string; // reference on table inputs. set if the input belongs to a group
+  rawValue: number;
+  monthlyValues: boolean;
+  rawJan: number;
+  rawFeb: number;
+  rawMar: number;
+  rawApr: number;
+  rawMay: number;
+  rawJun: number;
+  rawJul: number;
+  rawAug: number;
+  rawSep: number;
+  rawOct: number;
+  rawNov: number;
+  rawDec: number;
 }
 
 // query object for table "inputs"
