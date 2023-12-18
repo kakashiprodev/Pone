@@ -19,7 +19,7 @@
     "@fortawesome/free-solid-svg-icons": "^6.4.2",
     "@fortawesome/vue-fontawesome": "^3.0.3",
     "chart.js": "^4.4.0",
-    "openai": "^4.11.1",
+    "openai": "^4.23.0",
     "pinia": "^2.1.6",
     "pocketbase": "^0.18.2",
     "primeflex": "^3.3.1",
