@@ -14,6 +14,8 @@ export interface GlobalState {
   isLoading: boolean;
   isLoggedIn: boolean;
   requestPending: boolean;
+  // mode
+  mode: "light" | "dark";
   // layout and theme
   theme: "light" | "dark";
   showTooltips: boolean;
@@ -53,6 +55,7 @@ export const useGlobalStore = defineStore("global", {
     isLoading: true,
     isLoggedIn: false,
     requestPending: false,
+    mode: 'light',
     //
     username: "",
     theme: "light" as "light" | "dark",
@@ -87,6 +90,19 @@ export const useGlobalStore = defineStore("global", {
   }),
 
   actions: {
+    //
+    saveUserSettings() {
+      // store user settings in local storage
+      localStorage.setItem("ece_mode", this.mode);
+    },
+    getUserSettings() {
+      // get user settings from local storage
+      const mode = localStorage.getItem("ece_mode");
+      if (mode && (mode === "light" || mode === "dark")) {
+        this.mode = mode;
+      }
+    },
+
     //login actions
     async redirectToMain() {
       await router.push({ name: "dashboard" });

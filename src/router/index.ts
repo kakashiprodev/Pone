@@ -3,7 +3,7 @@ import * as VueRouter from "vue-router";
 const routes = [
   {
     path: "/",
-    component: () => import("../layout/AppLayout.vue"),
+    component: () => import("../components/AppLayoutWrapper.vue"),
     name: "home",
     redirect: { name: "dashboard" },
     children: [
