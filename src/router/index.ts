@@ -64,6 +64,11 @@ const routes = [
         component: () => import("../views/ProjectConfig.vue"),
         name: "projectConfig",
       },
+      {
+        path: "/assistant/",
+        component: () => import("../views/AiAssistentInput.vue"),
+        name: "assistant",
+      }
     ],
   },
   // other main routes
