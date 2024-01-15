@@ -1,55 +1,5 @@
 [
     {
-        "id": "_pb_users_auth_",
-        "name": "users",
-        "type": "auth",
-        "system": false,
-        "schema": [
-            {
-                "id": "users_name",
-                "name": "name",
-                "type": "text",
-                "system": false,
-                "required": false,
-                "options": {
-                    "min": null,
-                    "max": null,
-                    "pattern": ""
-                }
-            },
-            {
-                "id": "nqciflad",
-                "name": "projects",
-                "type": "relation",
-                "system": false,
-                "required": true,
-                "options": {
-                    "collectionId": "61iwwi03fob8tyg",
-                    "cascadeDelete": false,
-                    "minSelect": null,
-                    "maxSelect": null,
-                    "displayFields": null
-                }
-            }
-        ],
-        "indexes": [],
-        "listRule": "id = @request.auth.id",
-        "viewRule": "id = @request.auth.id",
-        "createRule": "",
-        "updateRule": "id = @request.auth.id",
-        "deleteRule": "id = @request.auth.id",
-        "options": {
-            "allowEmailAuth": true,
-            "allowOAuth2Auth": true,
-            "allowUsernameAuth": true,
-            "exceptEmailDomains": null,
-            "manageRule": null,
-            "minPasswordLength": 8,
-            "onlyEmailDomains": null,
-            "requireEmail": false
-        }
-    },
-    {
         "id": "r0aqkg6sh5uczzd",
         "name": "targets",
         "type": "base",
@@ -1145,5 +1095,63 @@
         "updateRule": "@request.auth.id != \"\"",
         "deleteRule": "@request.auth.id != \"\"",
         "options": {}
+    },
+    {
+        "id": "_pb_users_auth_",
+        "name": "users",
+        "type": "auth",
+        "system": false,
+        "schema": [
+            {
+                "id": "users_name",
+                "name": "name",
+                "type": "text",
+                "system": false,
+                "required": false,
+                "options": {
+                    "min": null,
+                    "max": null,
+                    "pattern": ""
+                }
+            },
+            {
+                "id": "nqciflad",
+                "name": "projects",
+                "type": "relation",
+                "system": false,
+                "required": true,
+                "options": {
+                    "collectionId": "61iwwi03fob8tyg",
+                    "cascadeDelete": false,
+                    "minSelect": null,
+                    "maxSelect": null,
+                    "displayFields": null
+                }
+            },
+            {
+                "id": "s184bqt4",
+                "name": "isGlobalAdmin",
+                "type": "bool",
+                "system": false,
+                "required": false,
+                "options": {}
+            }
+        ],
+        "indexes": [],
+        "listRule": "id = @request.auth.id",
+        "viewRule": "id = @request.auth.id",
+        "createRule": "",
+        "updateRule": "id = @request.auth.id",
+        "deleteRule": "id = @request.auth.id",
+        "options": {
+            "allowEmailAuth": true,
+            "allowOAuth2Auth": true,
+            "allowUsernameAuth": true,
+            "exceptEmailDomains": null,
+            "manageRule": null,
+            "minPasswordLength": 8,
+            "onlyEmailDomains": null,
+            "requireEmail": false
+        }
     }
 ]
