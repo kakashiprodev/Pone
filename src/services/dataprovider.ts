@@ -3,7 +3,7 @@
  * will be used to provide data from different sources
  */
 
-import PocketBaseDataProvider from "./provider/pocketbase";
+import PocketBaseDataProvider from './provider/pocketbase';
 
 const provider = {
   pocketbase: PocketBaseDataProvider,
@@ -11,4 +11,4 @@ const provider = {
 };
 
 // to be extended in the future
-export default new provider["pocketbase"]();
+export default new provider['pocketbase']();

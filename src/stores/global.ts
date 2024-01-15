@@ -1,24 +1,25 @@
-import { defineStore } from "pinia";
-import { router } from "./../router/index";
+import { defineStore } from 'pinia';
+import { router } from './../router/index';
 import {
   EquivalentEntry,
   FacilityEntry,
   ProjectEntry,
   ReportEntry,
   TargetEntry,
-} from "./../services/types";
-import dataprovider from "./../services/dataprovider";
-import { info } from "../services/toast";
+} from './../services/types';
+import dataprovider from './../services/dataprovider';
+import { info } from '../services/toast';
 
 export interface GlobalState {
   isLoading: boolean;
   isLoggedIn: boolean;
   requestPending: boolean;
   // layout and theme
-  theme: "light" | "dark";
+  theme: 'light' | 'dark';
   showTooltips: boolean;
   // user information
   username: string;
+  isGlobalAdmin: boolean;
   // equivalents
   equivalents: EquivalentEntry[];
   equivalentDict: { [key: string]: EquivalentEntry };
@@ -28,14 +29,14 @@ export interface GlobalState {
       scope1: string[];
       scope2: string[];
       scope3: string[];
-    },
+    };
     unit: {
       all: string[];
-    }
+    };
     source: {
       all: string[];
-    }
-  },
+    };
+  };
   //
   facilities: FacilityEntry[];
   facilitiesDict: { [id: string]: FacilityEntry };
@@ -48,14 +49,15 @@ export interface GlobalState {
   selectedReport: null | ReportEntry;
 }
 
-export const useGlobalStore = defineStore("global", {
+export const useGlobalStore = defineStore('global', {
   state: (): GlobalState => ({
     isLoading: true,
     isLoggedIn: false,
     requestPending: false,
     //
-    username: "",
-    theme: "light" as "light" | "dark",
+    username: '',
+    isGlobalAdmin: false,
+    theme: 'light' as 'light' | 'dark',
     showTooltips: false,
     //
     equivalents: [],
@@ -72,7 +74,7 @@ export const useGlobalStore = defineStore("global", {
       },
       source: {
         all: [],
-      }
+      },
     },
     //
     facilities: [],
@@ -89,22 +91,20 @@ export const useGlobalStore = defineStore("global", {
   actions: {
     //login actions
     async redirectToMain() {
-      await router.push({ name: "dashboard" });
+      await router.push({ name: 'dashboard' });
     },
     async redirectToLogin() {
-      await router.push({ name: "login" });
+      await router.push({ name: 'login' });
     },
 
     /**
      * MAIN FUNCTION when App is loaded.
      */
     async initializeStore() {
-      console.log("initializeStore");
+      console.log('initializeStore');
       this.isLoading = true;
       // load all data from backend
-      await Promise.all([
-        this.refreshProjects(),
-      ]);
+      await Promise.all([this.refreshProjects()]);
       // select the first project
       // HACK: in the future the last selected project could be loaded from the local storage
       await this.ensureProjectSelected();
@@ -145,17 +145,21 @@ export const useGlobalStore = defineStore("global", {
       if (force || this.equivalents.length === 0) {
         this.equivalents = await dataprovider.readEquivalents();
         // sort by "name"
-        this.equivalents.sort((a: EquivalentEntry, b: EquivalentEntry) => a.specification1.localeCompare(b.specification1));
+        this.equivalents.sort((a: EquivalentEntry, b: EquivalentEntry) =>
+          a.specification1.localeCompare(b.specification1),
+        );
         // create dict
         this.equivalentDict = this.equivalents.reduce(
           (acc, cur) => ({ ...acc, [cur.id]: cur }),
           {},
         );
 
-        // create a list of all unique entries for category        
+        // create a list of all unique entries for category
         this.equivalentFilters.category.all = [];
         this.equivalents.forEach((equivalent: EquivalentEntry) => {
-          if (!this.equivalentFilters.category.all.includes(equivalent.category)) {
+          if (
+            !this.equivalentFilters.category.all.includes(equivalent.category)
+          ) {
             this.equivalentFilters.category.all.push(equivalent.category);
           }
         });
@@ -171,13 +175,28 @@ export const useGlobalStore = defineStore("global", {
         this.equivalentFilters.source.all = [];
 
         this.equivalents.forEach((equivalent: EquivalentEntry) => {
-          if (equivalent.scope === 1 && !this.equivalentFilters.category.scope1.includes(equivalent.category)) {
+          if (
+            equivalent.scope === 1 &&
+            !this.equivalentFilters.category.scope1.includes(
+              equivalent.category,
+            )
+          ) {
             this.equivalentFilters.category.scope1.push(equivalent.category);
           }
-          if (equivalent.scope === 2 && !this.equivalentFilters.category.scope2.includes(equivalent.category)) {
+          if (
+            equivalent.scope === 2 &&
+            !this.equivalentFilters.category.scope2.includes(
+              equivalent.category,
+            )
+          ) {
             this.equivalentFilters.category.scope2.push(equivalent.category);
           }
-          if (equivalent.scope === 3 && !this.equivalentFilters.category.scope3.includes(equivalent.category)) {
+          if (
+            equivalent.scope === 3 &&
+            !this.equivalentFilters.category.scope3.includes(
+              equivalent.category,
+            )
+          ) {
             this.equivalentFilters.category.scope3.push(equivalent.category);
           }
 
@@ -203,7 +222,9 @@ export const useGlobalStore = defineStore("global", {
       // add equivalent to local store at position 0
       this.equivalents.push(created);
       // sort by "name"
-      this.equivalents.sort((a: EquivalentEntry, b: EquivalentEntry) => a.specification1.localeCompare(b.specification1));
+      this.equivalents.sort((a: EquivalentEntry, b: EquivalentEntry) =>
+        a.specification1.localeCompare(b.specification1),
+      );
       this.equivalentDict[created.id] = created;
       return created;
     },
@@ -215,7 +236,9 @@ export const useGlobalStore = defineStore("global", {
     async updateEquivalent(equivalent: EquivalentEntry) {
       const updated = await dataprovider.updateEquivalents(equivalent);
       // get index of existing equivalent
-      const index = this.equivalents.findIndex((e: EquivalentEntry) => e.id === equivalent.id);
+      const index = this.equivalents.findIndex(
+        (e: EquivalentEntry) => e.id === equivalent.id,
+      );
       // replace
       if (index > -1) {
         this.equivalents.splice(index, 1, updated);
@@ -232,7 +255,9 @@ export const useGlobalStore = defineStore("global", {
     async dropEquivalent(equivalent: EquivalentEntry) {
       await dataprovider.deleteEquivalent(equivalent.id);
       // drop equivalent from local store
-      this.equivalents = this.equivalents.filter((e: EquivalentEntry) => e.id !== equivalent.id);
+      this.equivalents = this.equivalents.filter(
+        (e: EquivalentEntry) => e.id !== equivalent.id,
+      );
       delete this.equivalentDict[equivalent.id];
     },
 
@@ -248,11 +273,11 @@ export const useGlobalStore = defineStore("global", {
       // so we need to create one here
       if (this.projects.length === 0) {
         info(
-          "Es wurde kein Projekt gefunden. Ein neues Projekt wird automatisch angelegt.",
+          'Es wurde kein Projekt gefunden. Ein neues Projekt wird automatisch angelegt.',
         );
         await this.addProject({
-          id: "new",
-          name: "Mein erstes Projekt",
+          id: 'new',
+          name: 'Mein erstes Projekt',
         });
         this.selectedProject = this.projects[0];
         this.targetsInProject = [];
@@ -276,7 +301,9 @@ export const useGlobalStore = defineStore("global", {
      * sort all targets by year in ascending order.
      */
     sortTargets() {
-      this.targetsInProject.sort((a: TargetEntry, b: TargetEntry) => a.year - b.year);
+      this.targetsInProject.sort(
+        (a: TargetEntry, b: TargetEntry) => a.year - b.year,
+      );
     },
 
     /**
@@ -286,7 +313,7 @@ export const useGlobalStore = defineStore("global", {
       const entryToAdd: any = target;
       delete entryToAdd.id;
       // ensure the selected project is set
-      target.project = this.selectedProject?.id ?? "";
+      target.project = this.selectedProject?.id ?? '';
       const created = await dataprovider.createTarget(target);
       this.targetsInProject.push(created);
       this.sortTargets();
@@ -298,7 +325,9 @@ export const useGlobalStore = defineStore("global", {
      */
     async updateTarget(target: TargetEntry) {
       const updated = await dataprovider.updateTarget(target);
-      const index = this.targetsInProject.findIndex((t: TargetEntry) => t.id === target.id);
+      const index = this.targetsInProject.findIndex(
+        (t: TargetEntry) => t.id === target.id,
+      );
       if (index > -1) {
         this.targetsInProject[index] = updated;
       }
@@ -347,7 +376,9 @@ export const useGlobalStore = defineStore("global", {
      */
     async updateProject(project: ProjectEntry) {
       const updated = await dataprovider.updateProject(project);
-      const index = this.projects.findIndex((p: ProjectEntry) => p.id === project.id);
+      const index = this.projects.findIndex(
+        (p: ProjectEntry) => p.id === project.id,
+      );
       if (index > -1) {
         this.projects[index] = updated;
       }
@@ -360,7 +391,9 @@ export const useGlobalStore = defineStore("global", {
      */
     async dropProject(project: ProjectEntry) {
       await dataprovider.deleteProject(project.id);
-      this.projects = this.projects.filter((p: ProjectEntry) => p.id !== project.id);
+      this.projects = this.projects.filter(
+        (p: ProjectEntry) => p.id !== project.id,
+      );
       this.ensureProjectSelected();
     },
 
@@ -373,8 +406,8 @@ export const useGlobalStore = defineStore("global", {
     async changeProject(project: ProjectEntry) {
       this.selectedProject = project;
       this.reports = await dataprovider.readReports();
-      this.reports = this.reports.filter((report: ReportEntry) =>
-        report.project === project.id
+      this.reports = this.reports.filter(
+        (report: ReportEntry) => report.project === project.id,
       );
       this.equivalents = await dataprovider.readEquivalents();
       this.equivalents = this.equivalents.filter(
@@ -395,29 +428,31 @@ export const useGlobalStore = defineStore("global", {
       // check if a older report is existing
       if (this.reports.length > 0) {
         // get the latest report. so sort by year and get the last one
-        const sorted = this.reports.sort((a: ReportEntry, b: ReportEntry) => a.year - b.year);
+        const sorted = this.reports.sort(
+          (a: ReportEntry, b: ReportEntry) => a.year - b.year,
+        );
         const latest = sorted[sorted.length - 1];
         const report: ReportEntry = {
           ...latest,
-          id: "new",
+          id: 'new',
           year: latest.year + 1,
         };
         return report;
       }
       const report: ReportEntry = {
-        id: "new",
-        project: this.selectedProject?.id ?? "",
+        id: 'new',
+        project: this.selectedProject?.id ?? '',
         year: new Date().getFullYear(),
-        companyName: "",
-        companyStreet: "",
-        companyPostal: "",
-        companyCity: "",
-        companyCountry: "",
-        companyDomain: "",
-        contactName: "",
-        contactTelephone: "",
-        contactEmail: "",
-        contactDomain: "",
+        companyName: '',
+        companyStreet: '',
+        companyPostal: '',
+        companyCity: '',
+        companyCountry: '',
+        companyDomain: '',
+        contactName: '',
+        contactTelephone: '',
+        contactEmail: '',
+        contactDomain: '',
         countEmployees: 0,
         businessTurnover: 0,
         baseYear: new Date().getFullYear(),
@@ -443,8 +478,8 @@ export const useGlobalStore = defineStore("global", {
      */
     loadLatestReport() {
       if (this.reports.length > 0) {
-        this.selectedReport = this.reports.reduce((a: ReportEntry, b: ReportEntry) =>
-          a.year > b.year ? a : b
+        this.selectedReport = this.reports.reduce(
+          (a: ReportEntry, b: ReportEntry) => (a.year > b.year ? a : b),
         );
       } else {
         this.selectedReport = null;
@@ -471,7 +506,9 @@ export const useGlobalStore = defineStore("global", {
      */
     async dropReport(report: ReportEntry) {
       await dataprovider.deleteReport(report.id);
-      this.reports = this.reports.filter((r: ReportEntry) => r.id !== report.id);
+      this.reports = this.reports.filter(
+        (r: ReportEntry) => r.id !== report.id,
+      );
     },
 
     /**
@@ -481,7 +518,9 @@ export const useGlobalStore = defineStore("global", {
      */
     async updateReport(report: ReportEntry) {
       const updated = await dataprovider.updateReport(report);
-      const index = this.reports.findIndex((r: ReportEntry) => r.id === report.id);
+      const index = this.reports.findIndex(
+        (r: ReportEntry) => r.id === report.id,
+      );
       if (index > -1) {
         this.reports[index] = updated;
       }
@@ -504,7 +543,7 @@ export const useGlobalStore = defineStore("global", {
     /**
      * Update the theme in the store.
      */
-    changeTheme(theme: "light" | "dark") {
+    changeTheme(theme: 'light' | 'dark') {
       this.theme = theme;
     },
   },

@@ -23,7 +23,7 @@ export interface EquivalentEntry {
   oct: null | number;
   nov: null | number;
   dec: null | number;
-  parent: null | string; // reference on table equivalents. if set a calculation chain is used  
+  parent: null | string; // reference on table equivalents. if set a calculation chain is used
   in: string; // input unit
   out: string; // output unit
   project: null | string; // reference on table projects. system values will be NULL
@@ -39,7 +39,7 @@ export interface InputEntry {
   equivalent: null | string; // reference on table equivalents
   report: string; // reference on table reports
   category: null | string;
-  facility: null | string; // references on table facilities 1:n  
+  facility: null | string; // references on table facilities 1:n
   parent: null | string; // reference on table inputs. set if the input belongs to a group
   rawValue: number;
   monthlyValues: boolean;
