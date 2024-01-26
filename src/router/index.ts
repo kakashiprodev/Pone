@@ -3,7 +3,7 @@ import * as VueRouter from 'vue-router';
 const routes = [
   {
     path: '/',
-    component: () => import('../layout/AppLayout.vue'),
+    component: () => import('../components/AppLayoutWrapper.vue'),
     name: 'home',
     redirect: { name: 'dashboard' },
     children: [
@@ -68,6 +68,12 @@ const routes = [
         path: '/assistant/',
         component: () => import('../views/AiAssistentInput.vue'),
         name: 'assistant',
+      },
+
+      {
+        path: '/settings/',
+        component: () => import('../views/SettingsMain.vue'),
+        name: 'settings',
       },
     ],
   },

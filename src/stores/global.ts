@@ -546,5 +546,17 @@ export const useGlobalStore = defineStore('global', {
     changeTheme(theme: 'light' | 'dark') {
       this.theme = theme;
     },
+
+    saveUserSettings() {
+      // store user settings in local storage
+      localStorage.setItem('psm_mode', this.theme);
+    },
+    getUserSettings() {
+      // get user settings from local storage
+      const mode = localStorage.getItem('psm_mode');
+      if (mode && (mode === 'light' || mode === 'dark')) {
+        this.theme = mode;
+      }
+    },
   },
 });

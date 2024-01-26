@@ -9,8 +9,6 @@ import Tooltip from 'primevue/tooltip';
 import { useGlobalStore } from './stores/global';
 
 import '@fortawesome/fontawesome-free/css/all.min.css';
-// import "primevue/resources/themes/saga-blue/theme.css";
-import './styles/custom-theme.css';
 import 'primeflex/primeflex.css';
 
 const pinia = createPinia();
