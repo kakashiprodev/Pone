@@ -57,9 +57,9 @@ export const getSumForInput = (
     );
     // @ts-ignore
     const monthlyRawValue = input.monthlyValues
-      ? input[key]
+      ? input[key as keyof InputEntry]
       : input.rawValue / 12;
-    sum += (monthlyRawValue ?? 0) * monthlyEquivalentFactor;
+    sum += ((monthlyRawValue as any) ?? 0) * monthlyEquivalentFactor;
   });
   return sum;
 };
@@ -211,14 +211,16 @@ const calculateEquivalentFactorWithSteps = (
     const key = 'raw' + month.charAt(0).toUpperCase() + month.slice(1); // e.g. rawJan, rawFeb, ...
     // @ts-ignore
     const monthlyEquivalentFactor =
-      equivalent[month] != null && equivalent[month] != ''
-        ? equivalent[month]
+      equivalent[month as keyof EquivalentEntry] != null &&
+      equivalent[month as keyof EquivalentEntry] != ''
+        ? equivalent[month as keyof EquivalentEntry]
         : equivalent.avgValue;
     // @ts-ignore
     const monthlyRawValue = input.monthlyValues
-      ? input[key]
+      ? input[key as keyof InputEntry]
       : input.rawValue / 12;
-    const montlySum = monthlyRawValue * monthlyEquivalentFactor;
+    const montlySum =
+      (monthlyRawValue as any) * ((monthlyEquivalentFactor as any) ?? 0);
     // @ts-ignore
     fakeInput[key] = montlySum;
     fakeInput.rawValue += montlySum;
