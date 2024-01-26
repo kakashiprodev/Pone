@@ -12,16 +12,6 @@
     <template #center>
       <ul class="list-none no-underline text-color flex align-items-center">
         <li style="float: left">
-          <router-link to="/actions" :exact-active-class="'active-route'">
-            <Button
-              severity="secondary"
-              icon="fa-solid fa-list-check"
-              label="Maßnahmen "
-              class="button-custom"
-            />
-          </router-link>
-        </li>
-        <li style="float: left" class="ml-2">
           <router-link to="/report-config" :exact-active-class="'active-route'">
             <Button
               severity="secondary"
@@ -31,6 +21,18 @@
             />
           </router-link>
         </li>
+
+        <li style="float: left">
+          <router-link to="/actions" :exact-active-class="'active-route'">
+            <Button
+              severity="secondary"
+              icon="fa-solid fa-list-check"
+              label="Maßnahmen "
+              class="button-custom ml-2"
+            />
+          </router-link>
+        </li>
+
         <li style="float: left" class="ml-4">
           <div class="flex flex-wrap">
             <InputSwitch
