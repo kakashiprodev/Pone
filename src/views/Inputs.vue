@@ -45,8 +45,14 @@
         <label class="ml-1" for="scope3Active">3</label>
       </template>
       <span class="ml-4"
-        >Menge: {{ roundStringWithDecimals(sumValue, 3) }}kg</span
-      >
+        >Menge:
+        {{
+          roundStringWithDecimals(
+            displayInTons ? toTons(sumValue) : sumValue,
+            3,
+          )
+        }}{{ displayInTons ? 'to' : 'kg' }}
+      </span>
     </template>
     <template #end>
       <Button
@@ -251,7 +257,7 @@
           :use-grouping="true"
           :min-fraction-digits="0"
           :max-fraction-digits="3"
-          :suffix="' kg'"
+          :suffix="displayInTons ? ' to' : ' kg'"
         />
       </div>
     </div>
@@ -339,8 +345,9 @@
           Hier kann ein Äquivalent zugeordnet werden. Neue Äquivalente können
           unter dem Benutzermenü > "Äquivalente verwalten" hinzugefügt werden.
           Gelistet werden außerdem alle ausgelieferten Äquivalente. Ist kein
-          Äquivalent ausgewählt, ist die Eingabe in [kg] CO2-Äquivalenten ohne
-          weiteren Faktor.
+          Äquivalent ausgewählt, ist die Eingabe in [{{
+            displayInTons ? 'to' : 'kg'
+          }}] CO2-Äquivalenten ohne weiteren Faktor.
         </InlineMessage>
       </div>
       <div class="field">
@@ -384,8 +391,9 @@
           Hier kann ein Äquivalent zugeordnet werden. Neue Äquivalente können
           unter dem Benutzermenü > "Äquivalente verwalten" hinzugefügt werden.
           Gelistet werden außerdem alle ausgelieferten Äquivalente. Ist kein
-          Äquivalent ausgewählt, ist die Eingabe in [kg] CO2-Äquivalenten ohne
-          weiteren Faktor.
+          Äquivalent ausgewählt, ist die Eingabe in [{{
+            displayInTons ? 'to' : 'kg'
+          }}] CO2-Äquivalenten ohne weiteren Faktor.
         </InlineMessage>
       </div>
       <div class="field">
@@ -459,7 +467,7 @@
           :use-grouping="true"
           :min-fraction-digits="0"
           :max-fraction-digits="3"
-          :suffix="' kg'"
+          :suffix="displayInTons ? ' to' : ' kg'"
         />
         <InlineMessage
           v-if="global.showTooltips"
@@ -514,7 +522,13 @@
     </Column>
     <Column field="sumValue" header="Menge (Jahr)" sortable>
       <template #body="{ data }">
-        {{ roundStringWithDecimals(data.sumValue, 3) }} kg
+        {{
+          roundStringWithDecimals(
+            displayInTons ? toTons(data.sumValue) : data.sumValue,
+            3,
+          )
+        }}
+        {{ displayInTons ? 'to' : 'kg' }}
       </template>
     </Column>
     <Column field="comment" header="Kommentar"></Column>
@@ -577,7 +591,7 @@ import {
   nullable,
   boolean,
 } from 'valibot';
-import { roundStringWithDecimals } from './../pipes';
+import { roundStringWithDecimals, toTons } from './../pipes';
 
 const router = useRouter();
 
@@ -703,6 +717,10 @@ const showChooseFacility = ref(false);
 // edit/new
 const global = useGlobalStore();
 global.refreshEquivalents();
+
+const displayInTons = computed(() => {
+  return global.displayInTons;
+});
 
 // ensure that a report is selected
 if (!global.selectedReport && global.isLoggedIn) {

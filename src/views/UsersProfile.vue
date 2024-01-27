@@ -1,7 +1,18 @@
 <template>
   <div class="m-auto w-8">
     <h1>Benutzerprofil</h1>
-    <div class="p-fluid">
+
+    <div class="p-fluid mt-5">
+      <h2>Persönliche Einstellungen</h2>
+      <div class="p-fluid">
+        <div class="p-field mt-2 flex align-items-center">
+          <label for="password">Darstellung in Tonnen?</label>
+          <InputSwitch class="ml-2" v-model="global.displayInTons" />
+        </div>
+      </div>
+    </div>
+
+    <div class="p-fluid mt-5">
       <h2>Passwort ändern</h2>
       <div class="p-fluid">
         <div class="p-field">
@@ -57,6 +68,7 @@ import Button from 'primevue/button';
 import TextInput from 'primevue/inputtext';
 import { Ref, ref } from 'vue';
 import Divider from 'primevue/divider';
+import InputSwitch from 'primevue/inputswitch';
 import { error } from './../services/toast';
 import { useGlobalStore } from './../stores/global';
 

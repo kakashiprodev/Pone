@@ -17,6 +17,7 @@ export interface GlobalState {
   // layout and theme
   theme: 'light' | 'dark';
   showTooltips: boolean;
+  displayInTons: boolean;
   // user information
   username: string;
   isGlobalAdmin: boolean;
@@ -59,6 +60,7 @@ export const useGlobalStore = defineStore('global', {
     isGlobalAdmin: false,
     theme: 'light' as 'light' | 'dark',
     showTooltips: false,
+    displayInTons: true,
     //
     equivalents: [],
     equivalentDict: {},
