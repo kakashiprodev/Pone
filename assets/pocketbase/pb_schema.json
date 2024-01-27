@@ -1103,18 +1103,6 @@
         "system": false,
         "schema": [
             {
-                "id": "users_name",
-                "name": "name",
-                "type": "text",
-                "system": false,
-                "required": false,
-                "options": {
-                    "min": null,
-                    "max": null,
-                    "pattern": ""
-                }
-            },
-            {
                 "id": "nqciflad",
                 "name": "projects",
                 "type": "relation",
@@ -1131,6 +1119,74 @@
             {
                 "id": "s184bqt4",
                 "name": "isGlobalAdmin",
+                "type": "bool",
+                "system": false,
+                "required": false,
+                "options": {}
+            },
+            {
+                "id": "uc6oulcm",
+                "name": "firstname",
+                "type": "text",
+                "system": false,
+                "required": false,
+                "options": {
+                    "min": null,
+                    "max": null,
+                    "pattern": ""
+                }
+            },
+            {
+                "id": "mrszjo9w",
+                "name": "surname",
+                "type": "text",
+                "system": false,
+                "required": false,
+                "options": {
+                    "min": null,
+                    "max": null,
+                    "pattern": ""
+                }
+            },
+            {
+                "id": "7ad7pljw",
+                "name": "department",
+                "type": "text",
+                "system": false,
+                "required": false,
+                "options": {
+                    "min": null,
+                    "max": null,
+                    "pattern": ""
+                }
+            },
+            {
+                "id": "ccgjwkyj",
+                "name": "role",
+                "type": "text",
+                "system": false,
+                "required": false,
+                "options": {
+                    "min": null,
+                    "max": null,
+                    "pattern": ""
+                }
+            },
+            {
+                "id": "7nsvrn4l",
+                "name": "telephone",
+                "type": "text",
+                "system": false,
+                "required": false,
+                "options": {
+                    "min": null,
+                    "max": null,
+                    "pattern": ""
+                }
+            },
+            {
+                "id": "1r9wrsws",
+                "name": "displayInTons",
                 "type": "bool",
                 "system": false,
                 "required": false,
