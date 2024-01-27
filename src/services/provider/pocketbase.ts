@@ -7,6 +7,7 @@ import {
   ProjectEntry,
   ReportEntry,
   TargetEntry,
+  UserEntry,
   UserInputQuery,
 } from '../types';
 import { error } from '../toast';
@@ -35,14 +36,13 @@ export default class DataProvider {
     console.log('checking login');
     try {
       // console.log("token: ", this.pb.authStore.token);
-      const res = await this.pb.collection('users').getList(1, 1, {
-        expand: 'company',
-      });
+      const res = await this.pb.collection('users').getList(1, 1);
       if (res.items.length < 1) return false;
       // set globalStore username and company
       globalStore.username = res.items[0].username;
       globalStore.isLoggedIn = true;
       globalStore.isGlobalAdmin = res.items[0].isGlobalAdmin;
+      globalStore.displayInTons = res.items[0].displayInTons;
       return true;
     } catch (error) {
       console.log('error: ', error);
@@ -307,5 +307,14 @@ export default class DataProvider {
 
   async deleteFacility(id: string) {
     return await this.pb.collection('facilities').delete(id);
+  }
+
+  async getUser(): Promise<UserEntry> {
+    const res: any = await this.pb.collection('users').getList(1, 1);
+    return res.items[0];
+  }
+
+  async saveUser(data: UserEntry) {
+    return await this.pb.collection('users').update(data.id, data);
   }
 }

@@ -125,3 +125,18 @@ export interface FacilityEntry {
   project: string; // reference on table projects
   shutdownDate: null | string | Date; // if null or empty the facility is in use
 }
+
+// table "users"
+export interface UserEntry {
+  id: string;
+  username: string;
+  email: string;
+  projects: string[]; // reference on table projects
+  isGlobalAdmin: boolean;
+  firstname: string;
+  surname: string;
+  department: string;
+  role: string;
+  telephone: string;
+  displayInTons: boolean;
+}
