@@ -12,7 +12,7 @@
         </p>
       </template>
       <template #footer>
-        Geplante Einsparung: {{ action.targetValueAbsolut }} [kg CO2/Jahr]
+        Geplante Einsparung: {{ action.targetValueAbsolut }} kg-CO2/Jahr
       </template>
     </Card>
   </div>

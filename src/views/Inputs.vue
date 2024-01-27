@@ -44,7 +44,9 @@
         />
         <label class="ml-1" for="scope3Active">3</label>
       </template>
-      <span class="ml-4">Menge: {{ round(sumValue, 2) }}[kg]</span>
+      <span class="ml-4"
+        >Menge: {{ roundStringWithDecimals(sumValue, 3) }}kg</span
+      >
     </template>
     <template #end>
       <Button
@@ -248,7 +250,7 @@
           id="userinput-sum"
           :use-grouping="true"
           :min-fraction-digits="0"
-          :max-fraction-digits="10"
+          :max-fraction-digits="3"
           :suffix="' kg'"
         />
       </div>
@@ -456,7 +458,7 @@
           id="userinput-sum"
           :use-grouping="true"
           :min-fraction-digits="0"
-          :max-fraction-digits="10"
+          :max-fraction-digits="3"
           :suffix="' kg'"
         />
         <InlineMessage
@@ -489,7 +491,7 @@
     <Column field="name" header="Name" sortable></Column>
     <Column field="rawValue" header="Eingabewert" sortable>
       <template #body="{ data }">
-        {{ round(data.rawValue, 2) }} [{{
+        {{ roundStringWithDecimals(data.rawValue, 3) }} [{{
           global.equivalentDict[data.equivalent]?.in ?? 'Reference error'
         }}]
       </template>
@@ -511,7 +513,9 @@
       </template>
     </Column>
     <Column field="sumValue" header="Menge (Jahr)" sortable>
-      <template #body="{ data }"> {{ round(data.sumValue, 2) }} [kg] </template>
+      <template #body="{ data }">
+        {{ roundStringWithDecimals(data.sumValue, 3) }} kg
+      </template>
     </Column>
     <Column field="comment" header="Kommentar"></Column>
     <Column header="">
@@ -573,7 +577,7 @@ import {
   nullable,
   boolean,
 } from 'valibot';
-import { round } from './../pipes';
+import { roundStringWithDecimals } from './../pipes';
 
 const router = useRouter();
 

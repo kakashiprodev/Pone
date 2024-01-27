@@ -7,9 +7,21 @@
 
 import dataprovider from './dataprovider';
 import { EquivalentEntry, InputEntry } from './types';
-import { round } from '../pipes/index';
+import { roundStringWithDecimals } from '../pipes/index';
 
-const months = [
+type monthsShort =
+  | 'jan'
+  | 'feb'
+  | 'mar'
+  | 'apr'
+  | 'may'
+  | 'jun'
+  | 'jul'
+  | 'aug'
+  | 'sep'
+  | 'nov'
+  | 'dec';
+const months: monthsShort[] = [
   'jan',
   'feb',
   'mar',
@@ -22,6 +34,24 @@ const months = [
   'nov',
   'dec',
 ];
+
+type MonthsFullDict = {
+  [K in monthsShort]: string;
+};
+
+const monthsFullDict: MonthsFullDict = {
+  jan: 'Januar',
+  feb: 'Februar',
+  mar: 'März',
+  apr: 'April',
+  may: 'Mai',
+  jun: 'Juni',
+  jul: 'Juli',
+  aug: 'August',
+  sep: 'September',
+  nov: 'November',
+  dec: 'Dezember',
+};
 
 /**
  * returns the yearly average equivalent factor
@@ -210,26 +240,30 @@ const calculateEquivalentFactorWithSteps = (
   for (const month of months) {
     const key = 'raw' + month.charAt(0).toUpperCase() + month.slice(1); // e.g. rawJan, rawFeb, ...
     // @ts-ignore
-    const monthlyEquivalentFactor =
+    const monthlyEquivalentFactor: number =
       equivalent[month as keyof EquivalentEntry] != null &&
       equivalent[month as keyof EquivalentEntry] != ''
         ? equivalent[month as keyof EquivalentEntry]
         : equivalent.avgValue;
     // @ts-ignore
-    const monthlyRawValue = input.monthlyValues
+    const monthlyRawValue: number = input.monthlyValues
       ? input[key as keyof InputEntry]
       : input.rawValue / 12;
-    const montlySum =
-      (monthlyRawValue as any) * ((monthlyEquivalentFactor as any) ?? 0);
+    const montlySum = monthlyRawValue * ((monthlyEquivalentFactor as any) ?? 0);
     // @ts-ignore
     fakeInput[key] = montlySum;
     fakeInput.rawValue += montlySum;
     steps.push(
-      `${month !== 'jan' ? '+ ' : ''} ${monthlyRawValue}[${
-        equivalent.in
-      }] * ${monthlyEquivalentFactor}[${equivalent.in}/${
-        equivalent.out
-      }] = ${round(montlySum, 3)}[${equivalent.out}] (für ${month})`,
+      `${month !== 'jan' ? '+ ' : ''} ${roundStringWithDecimals(
+        monthlyRawValue,
+        3,
+      )}${equivalent.in} * ${roundStringWithDecimals(
+        monthlyEquivalentFactor,
+        3,
+      )}${equivalent.in}/${equivalent.out} = ${roundStringWithDecimals(
+        montlySum,
+        3,
+      )}${equivalent.out} (für ${monthsFullDict[month]})`,
     );
   }
   steps.push(''); // empty line
