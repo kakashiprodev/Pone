@@ -5,8 +5,9 @@
         </h5>
         <p v-if="global.showTooltips">
             <InlineMessage severity="info" class="w-full">
-                Hier können Sie Projekte anlegen und verwalten. Pro Kunde und Standort sollte ein Projekt angelegt werden.
-                Ein Projekt enthält beliebig viele Jahresberichte.
+                Hier können Sie Projekte anlegen und verwalten.
+                Ein Projekt kann mehrere Standorte enthalten.
+                Ein Standort wiederrum enthält beliebig viele Jahresberichte.
             </InlineMessage>
         </p>
         <Toolbar>
@@ -14,7 +15,7 @@
                 <span>Ausgewähltes Projekt</span>
                 <Dropdown v-model="global.selectedProject" :options="global.projects" optionLabel="name"
                     placeholder="Projekt wählen" class="ml-3" style="width: 300px;" :disabled="projectForm?.id === 'new'" />
-                <Button icon="fa-solid fa-plus" @click="addProject()" label="Neues Projekt hinzufügen" class="ml-1" />
+                <Button icon="fa-solid fa-plus" @click="addProject()" label="Hinzufügen" class="ml-1" />
                 <ConfirmDialog />
                 <Button v-if="selectedProject" icon="fa-solid fa-trash" @click="confirmDelete(selectedProject, $event)"
                     label="Löschen" class="ml-1" :disabled="projectForm?.id === 'new'" />
@@ -52,33 +53,6 @@
                         Standort im Namen enthalten. Die Mindestlänge ist 4 Zeichen.
                     </InlineMessage>
                 </div>
-
-                <template v-if="projectForm.id !== 'new'">
-                    <h5 class="mt-5">
-                        Klimaziel für das Projekt definieren. (optional)
-                    </h5>
-                    <InlineMessage v-if="global.showTooltips" severity="info" class="w-full mt-2 mb-4">
-                        Die Definition ist optional. Es kann die schrittweise Reduktion der Treibhausgasemissionen in
-                        Schritten eingegeben werden.
-                    </InlineMessage>
-
-                    <!-- Button to add a new entry as target -->
-                    <div class="field grid" v-for="target in global.targetsInProject" :key="target.id">
-                        <label :for="target.id" class="col-4 mb-2 md:col-4 md:mb-0">Jahr / Prozent</label>
-                        <div class="col-12 md:col-8 flex">
-                            <InputNumber :useGrouping="false" :min="1960" :max="2100" :id="target.id"
-                                class="flex-grow-1 mr-2" v-model="target.year" />
-                            <InputNumber :useGrouping="false" :min="0" :max="100" :id="target.id" class="flex-grow-1"
-                                v-model="target.percentage" suffix=" %" />
-                            <!-- icon as delete button -->
-                            <Button icon="fa-solid fa-save" @click="global.updateTarget(target)" class="ml-1" />
-                            <Button icon="fa-solid fa-trash" @click="global.dropTarget(target)" class="ml-1" />
-                        </div>
-                    </div>
-                    <Button icon="fa-solid fa-plus"
-                        @click="global.addTarget({ id: 'new', year: 2050, percentage: 0, project: '' })"
-                        label="Neuen Jahresschritt hinzufügen" />
-                </template>
             </div>
 
             <Button class="mt-3" @click="saveProject()" :label="projectForm.id === 'new' ? 'Hinzufügen' : 'Speichern'" />
@@ -96,7 +70,6 @@ import Dropdown from 'primevue/dropdown';
 import InputText from 'primevue/inputtext';
 import Toolbar from 'primevue/toolbar';
 import ConfirmDialog from 'primevue/confirmdialog';
-import InputNumber from 'primevue/inputnumber';
 import { minLength, maxLength, object, string, parse } from 'valibot';
 import { error, info } from './../services/toast';
 import InlineMessage from 'primevue/inlinemessage';
@@ -119,10 +92,10 @@ watch(selectedProject, async (newValue) => {
     if (!newValue) {
         return;
     }
+    // load project specific data in store
+    await global.changeProject(newValue);
+    // refresh settings ui here
     projectForm.value = newValue;
-    // reload projekt specific data
-    console.log('reload project specific data');
-    await global.refreshProjectAndReport();
 });
 
 const projectForm: Ref<null | ProjectEntry> = ref(selectedProject.value);
@@ -178,8 +151,6 @@ const init = async () => {
         await new Promise(resolve => setTimeout(resolve, 500));
     }
     console.log('global store loaded');
-    console.log(global.projects);
-    console.log(global.selectedProject);
     projectForm.value = selectedProject.value ?? emptyProject();
 }
 init();

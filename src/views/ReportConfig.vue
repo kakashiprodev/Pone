@@ -132,7 +132,7 @@ const confirmDelete = async (report: ReportEntry, event: any) => {
       try {
         await global.dropReport(report);
         // get the next report with the highest year
-        global.loadLatestReport();
+        await global.ensureLatestReport();
         if (global.selectedReport) {
           reportForm.value = global.selectedReport;
         }

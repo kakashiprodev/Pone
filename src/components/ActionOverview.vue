@@ -4,15 +4,15 @@
     <Card class="w-8 mt-3 m-auto" v-for="action in actions">
       <template #title>{{ action.name }}</template>
       <template #subtitle>
-        <span style="white-space: pre" v-html="action.shortDescription"></span>
+        <span style="white-space: pre" v-html="action.descriptionBefore"></span>
       </template>
       <template #content>
         <p class="m-0" style="white-space: pre">
-          <span v-html="action.longDescription"></span>
+          <span v-html="action.descriptionAfter"></span>
         </p>
       </template>
       <template #footer>
-        Geplante Einsparung: {{ action.targetValueAbsolut }} kg-CO2/Jahr
+        Geplante Einsparung: {{ action.targetValueAbsolutPlanned }} kg-CO2/Jahr
       </template>
     </Card>
   </div>

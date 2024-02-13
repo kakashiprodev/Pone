@@ -7,11 +7,7 @@
       <div class="p-fluid">
         <div class="p-field mt-2 flex align-items-center">
           <label for="displayInTons">Darstellung in Tonnen?</label>
-          <InputSwitch
-            id="displayInTons"
-            class="ml-2"
-            v-model="user.displayInTons"
-          />
+          <InputSwitch id="displayInTons" class="ml-2" v-model="user.displayInTons" />
         </div>
       </div>
     </div>
@@ -52,12 +48,7 @@
           <TextInput class="mt-2" id="telephone" v-model="user.telephone" />
         </div>
 
-        <Button
-          @click="saveUser"
-          :disabled="false"
-          class="mt-5"
-          label="Speichern"
-        />
+        <Button @click="saveUser" :disabled="false" class="mt-5" label="Speichern" />
       </div>
     </div>
 
@@ -65,39 +56,26 @@
       <h2>Passwort ändern</h2>
       <div class="p-fluid">
         <Divider />
-        <div class="p-field mt-2">
-          <label for="password">Altes Passwort</label>
-          <TextInput
-            class="mt-2"
-            id="old-password"
-            type="password"
-            v-model="passwordOld"
-          />
-        </div>
-        <div class="p-field mt-2">
-          <label for="password">Neues Passwort</label>
-          <TextInput
-            class="mt-2"
-            id="new-password"
-            type="password"
-            v-model="passwordNew"
-          />
-        </div>
-        <div class="p-field mt-2">
-          <label for="password">Passwort wiesderholen</label>
-          <TextInput
-            class="mt-2"
-            id="repeat-password"
-            type="password"
-            v-model="passwordRepeat"
-          />
-        </div>
-        <Button
-          @click="changePassword"
-          :disabled="false"
-          class="mt-5"
-          label="Passwort ändern"
-        />
+        <form @prevent="changePassword">
+          <div class="p-field" v-show="false">
+            <TextInput class="mt-2" id="username" v-model="global.username" autocomplete="username" :disabled="true" />
+          </div>
+          <div class="p-field mt-2">
+            <label for="password">Altes Passwort</label>
+            <TextInput class="mt-2" id="old-password" type="password" v-model="passwordOld"
+              autocomplete="current-password" />
+          </div>
+          <div class="p-field mt-2">
+            <label for="password">Neues Passwort</label>
+            <TextInput class="mt-2" id="new-password" type="password" v-model="passwordNew" autocomplete="new-password" />
+          </div>
+          <div class="p-field mt-2">
+            <label for="password">Passwort wiesderholen</label>
+            <TextInput class="mt-2" id="repeat-password" type="password" v-model="passwordRepeat"
+              autocomplete="new-password" />
+          </div>
+          <Button @click="changePassword" :disabled="false" class="mt-5" label="Passwort ändern" />
+        </form>
       </div>
     </div>
   </div>
@@ -141,7 +119,7 @@ const getData = async () => {
 const saveUser = async () => {
   try {
     if (user.value == null || user.value.id == null) return;
-    await dataprovider.saveUser(user.value);
+    await dataprovider.updateUser(user.value);
     global.displayInTons = user.value.displayInTons;
   } catch (e: any) {
     error(e + '');
