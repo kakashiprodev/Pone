@@ -1,86 +1,91 @@
 <template>
   <div class="flex">
     <!-- PanelMenu für das vertikale Menü auf der linken Seite -->
-
     <PanelMenu :model="items" class="w-1/5 pr-3" v-model:expandedKeys="expandedKeys">
       <template #item="{ item }">
-        <a
-          class="flex align-items-center px-3 py-2 cursor-pointer"
-          @click="
-            selectedKey = item.key;
-            item.action ? item.action() : null;
-          "
-        >
+        <router-link class="flex align-items-center px-3 py-2 cursor-pointer no-underline text-color" :to="item.to ?? ''"
+          :exact-active-class="'active-route'">
           <span :class="[item.icon, 'text-primary']" />
           <span :class="['ml-2', { 'font-semibold': item.items }]">
             {{ item.label }}
           </span>
-        </a>
+        </router-link>
       </template>
     </PanelMenu>
 
     <!-- Bereich für die Anzeige der Komponenten auf der rechten Seite -->
-    <div class="w-4/5 flex-grow-1">
-      <UsersProfile v-if="selectedKey === '1-1'" />
-      <ProjectConfig v-if="selectedKey === '1-2'" />
-      <EquivalentList v-if="selectedKey === '2-1'" />
+    <div class="w-4/5">
+      <router-view :key="route.path" />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, Ref } from 'vue';
+import { ref } from 'vue';
 import PanelMenu from 'primevue/panelmenu';
-import EquivalentList from './EquivalentList.vue';
-import UsersProfile from './UsersProfile.vue';
-import ProjectConfig from './ProjectConfig.vue';
-import DataProvider from './../services/dataprovider';
-import { router } from './../router';
+import { useRoute } from 'vue-router';
+const route = useRoute();
 
-const selectedKey: Ref<undefined | string> = ref('1-1');
 const expandedKeys = ref({
-  '1': true,
-  '2': true,
+  'user': true,
+  'project': true,
 });
 const items = ref([
   {
-    key: '1',
-    label: 'Persönliche Einstellungen',
+    key: 'user',
+    label: 'Benutzer',
     icon: 'fa-solid fa-user',
     items: [
       {
-        key: '1-1',
-        label: 'Benutzerprofil',
+        key: 'user-profile',
+        label: 'Profil',
         icon: 'fa-solid fa-user-gear',
+        to: '/settings/user-profile',
       },
       {
-        key: '1-2',
-        label: 'Projektverwaltung',
-        icon: 'fa-solid fa-project-diagram',
-      },
-      {
-        key: '1-3',
+        key: 'user-logout',
         label: 'Ausloggen',
         icon: 'fa-solid fa-right-from-bracket',
-        action: () => {
-          console.log('logout');
-          DataProvider.logout();
-          router.push({ name: 'login' });
-        },
+        to: '/settings/user-logout',
       },
     ],
   },
   {
-    key: '2',
+    key: 'project',
     label: 'Aktuelles Projekt',
     icon: 'fa-solid fa-briefcase',
     items: [
       {
-        key: '2-1',
-        label: 'Äquivalente bearbeiten',
+        key: 'project-general',
+        label: 'Projektverwaltung',
+        icon: 'fa-solid fa-building',
+        to: '/settings/project-general',
+      },
+      {
+        key: 'project-reports',
+        label: 'Berichtszeiträume',
+        icon: 'fa-solid fa-calendar',
+        to: '/settings/project-reports',
+      },
+      {
+        key: 'project-targets',
+        label: 'Zieldefinition',
+        icon: 'fa-solid fa-bullseye',
+        to: '/settings/project-targets',
+      },
+      {
+        key: 'project-equivalents',
+        label: 'Äquivalente',
         icon: 'fa-solid fa-list',
+        to: '/settings/project-equivalents',
       },
     ],
   },
 ]);
 </script>
+
+<style scoped>
+.active-route {
+  font-weight: bold;
+}
+</style>

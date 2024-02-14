@@ -45,11 +45,11 @@ const login = async () => {
   width: 100%;
   padding-left: 20%;
   padding-right: 20%;
-  background-image: url(../assets/green-industry-2.webp);
+  /* background-image: url(../assets/green-industry-2.webp);
   opacity: 0.6;
   background-repeat: no-repeat;
   background-size: 100%;
-  background-position: bottom;
+  background-position: bottom; */
   height: 100%;
 }
 

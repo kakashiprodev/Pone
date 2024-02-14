@@ -2,16 +2,16 @@ import * as VueRouter from 'vue-router';
 
 const routes = [
   {
+    path: '/login',
+    component: () => import('../views/Login.vue'),
+    name: 'login',
+  },
+  {
     path: '/',
     component: () => import('../components/AppLayoutWrapper.vue'),
     name: 'home',
     redirect: { name: 'dashboard' },
     children: [
-      {
-        path: '/login',
-        component: () => import('../views/Login.vue'),
-        name: 'login',
-      },
       {
         path: '/user',
         component: () => import('../views/UsersProfile.vue'),
@@ -54,26 +54,53 @@ const routes = [
         component: () => import('../views/EquivalentList.vue'),
         name: 'equivalents',
       },
-      {
-        path: '/report-config/',
-        component: () => import('../views/ReportConfig.vue'),
-        name: 'reportConfig',
-      },
-      {
-        path: '/project-config/',
-        component: () => import('../views/ProjectConfig.vue'),
-        name: 'projectConfig',
-      },
+      // {
+      //   path: '/report-config/',
+      //   component: () => import('../views/ReportConfig.vue'),
+      //   name: 'reportConfig',
+      // },      
       {
         path: '/assistant/',
         component: () => import('../views/AiAssistentInput.vue'),
         name: 'assistant',
       },
-
       {
-        path: '/settings/',
+        path: 'settings', // :category?
         component: () => import('../views/SettingsMain.vue'),
         name: 'settings',
+        redirect: { name: 'user-profile' },
+        children: [
+          {
+            path: 'user-profile',
+            component: () => import('../views/UsersProfile.vue'),
+            name: 'user-profile',
+          },
+          {
+            path: 'user-logout',
+            component: () => import('../views/UsersProfile.vue'),
+            name: 'user-logout',
+          },
+          {
+            path: 'project-general',
+            component: () => import('../views/ProjectsAndSites.vue'),
+            name: 'project-general',
+          },
+          {
+            path: 'project-reports',
+            component: () => import('../views/ReportConfig.vue'),
+            name: 'project-reports',
+          },
+          {
+            path: 'project-targets',
+            component: () => import('../components/TargetDefinition.vue'),
+            name: 'project-targets',
+          },
+          {
+            path: 'project-equivalents',
+            component: () => import('../views/EquivalentList.vue'),
+            name: 'project-equivalents',
+          },
+        ],
       },
     ],
   },

@@ -53,7 +53,9 @@ const data: Ref<FacilityEntry[]> = ref([]);
  */
 const getData = async () => {
   await global.refreshFacilities();
-  data.value = global.facilities;
+  data.value = global.facilities.filter(
+    (f) => f.shutdownDate == null || f.shutdownDate === '',
+  );
   if (props.modelValue != null) {
     const entry = global.facilitiesDict[props.modelValue] ?? null;
     if (entry != null) {

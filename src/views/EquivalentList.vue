@@ -1,4 +1,5 @@
 <template>
+    <h2>Äquivalente und Faktoren</h2>
     <Toolbar :class="{ 'mb-3': !global.showTooltips }">
         <template #end>
             <Button icon="fa-solid fa-download" @click="csvDownload" />

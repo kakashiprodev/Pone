@@ -44,7 +44,15 @@
         />
         <label class="ml-1" for="scope3Active">3</label>
       </template>
-      <span class="ml-4">Menge: {{ round(sumValue, 2) }}[kg]</span>
+      <span class="ml-4"
+        >Menge:
+        {{
+          roundStringWithDecimals(
+            displayInTons ? toTons(sumValue) : sumValue,
+            3,
+          )
+        }}{{ displayInTons ? 'to' : 'kg' }}
+      </span>
     </template>
     <template #end>
       <Button
@@ -248,8 +256,8 @@
           id="userinput-sum"
           :use-grouping="true"
           :min-fraction-digits="0"
-          :max-fraction-digits="10"
-          :suffix="' kg'"
+          :max-fraction-digits="3"
+          :suffix="displayInTons ? ' to' : ' kg'"
         />
       </div>
     </div>
@@ -337,8 +345,9 @@
           Hier kann ein Äquivalent zugeordnet werden. Neue Äquivalente können
           unter dem Benutzermenü > "Äquivalente verwalten" hinzugefügt werden.
           Gelistet werden außerdem alle ausgelieferten Äquivalente. Ist kein
-          Äquivalent ausgewählt, ist die Eingabe in [kg] CO2-Äquivalenten ohne
-          weiteren Faktor.
+          Äquivalent ausgewählt, ist die Eingabe in [{{
+            displayInTons ? 'to' : 'kg'
+          }}] CO2-Äquivalenten ohne weiteren Faktor.
         </InlineMessage>
       </div>
       <div class="field">
@@ -382,8 +391,9 @@
           Hier kann ein Äquivalent zugeordnet werden. Neue Äquivalente können
           unter dem Benutzermenü > "Äquivalente verwalten" hinzugefügt werden.
           Gelistet werden außerdem alle ausgelieferten Äquivalente. Ist kein
-          Äquivalent ausgewählt, ist die Eingabe in [kg] CO2-Äquivalenten ohne
-          weiteren Faktor.
+          Äquivalent ausgewählt, ist die Eingabe in [{{
+            displayInTons ? 'to' : 'kg'
+          }}] CO2-Äquivalenten ohne weiteren Faktor.
         </InlineMessage>
       </div>
       <div class="field">
@@ -456,8 +466,8 @@
           id="userinput-sum"
           :use-grouping="true"
           :min-fraction-digits="0"
-          :max-fraction-digits="10"
-          :suffix="' kg'"
+          :max-fraction-digits="3"
+          :suffix="displayInTons ? ' to' : ' kg'"
         />
         <InlineMessage
           v-if="global.showTooltips"
@@ -489,7 +499,7 @@
     <Column field="name" header="Name" sortable></Column>
     <Column field="rawValue" header="Eingabewert" sortable>
       <template #body="{ data }">
-        {{ round(data.rawValue, 2) }} [{{
+        {{ roundStringWithDecimals(data.rawValue, 3) }} [{{
           global.equivalentDict[data.equivalent]?.in ?? 'Reference error'
         }}]
       </template>
@@ -511,7 +521,15 @@
       </template>
     </Column>
     <Column field="sumValue" header="Menge (Jahr)" sortable>
-      <template #body="{ data }"> {{ round(data.sumValue, 2) }} [kg] </template>
+      <template #body="{ data }">
+        {{
+          roundStringWithDecimals(
+            displayInTons ? toTons(data.sumValue) : data.sumValue,
+            3,
+          )
+        }}
+        {{ displayInTons ? 'to' : 'kg' }}
+      </template>
     </Column>
     <Column field="comment" header="Kommentar"></Column>
     <Column header="">
@@ -573,7 +591,7 @@ import {
   nullable,
   boolean,
 } from 'valibot';
-import { round } from './../pipes';
+import { roundStringWithDecimals, toTons } from './../pipes';
 
 const router = useRouter();
 
@@ -699,6 +717,10 @@ const showChooseFacility = ref(false);
 // edit/new
 const global = useGlobalStore();
 global.refreshEquivalents();
+
+const displayInTons = computed(() => {
+  return global.displayInTons;
+});
 
 // ensure that a report is selected
 if (!global.selectedReport && global.isLoggedIn) {

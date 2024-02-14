@@ -177,7 +177,7 @@ const emptyFacility: FacilityEntry = {
     manufacturer: '',
     model: '',
     description: '',
-    project: global.selectedProject?.id ?? '',
+    site: global.selectedSite?.id ?? '',
     shutdownDate: null,
 };
 
