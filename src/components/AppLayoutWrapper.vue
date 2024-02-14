@@ -8,7 +8,7 @@
     <template #center>
       <ul class="list-none no-underline text-color flex align-items-center">
         <li style="float: left">
-          <router-link to="/settings" :exact-active-class="'active-route'">
+          <router-link to="/settings/project-reports" :exact-active-class="'active-route'">
             <Button v-show="global.selectedProject" severity="secondary" icon="fa-solid fa-building"
               :label="'' + global.selectedProject?.name + ', ' + global.selectedSite?.name + ': ' + global.selectedReport?.year"
               class="button-custom" />
@@ -131,6 +131,13 @@ const sidebarItems = [
   },
   {
     key: 'actions',
+    label: 'Maßnahmen',
+    icon: 'fa-solid fa-list-check',
+    to: '/actions',
+    visible: true,
+  },
+  {
+    key: 'facilities',
     label: 'Anlagen',
     icon: 'fa-solid fa-industry',
     to: '/facilities',
@@ -150,13 +157,6 @@ const sidebarItems = [
     to: '/settings',
     visible: true,
   },
-  {
-    key: 'actions',
-    label: 'Maßnahmen',
-    icon: 'fa-solid fa-list-check',
-    to: '/actions',
-    visible: true,
-  }
   // {
   //     label: 'Flottenverbrauch',
   //     icon: 'fa-solid fa-gas-pump',

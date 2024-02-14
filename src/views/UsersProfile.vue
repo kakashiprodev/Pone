@@ -1,6 +1,5 @@
 <template>
-  <div class="m-auto w-8" v-if="user != null">
-    <h1>Benutzerprofil</h1>
+  <div v-if="user != null">
 
     <div class="p-fluid mt-5">
       <h2>Persönliche Einstellungen</h2>
@@ -14,10 +13,6 @@
 
     <div class="p-fluid mt-5">
       <h2>Angaben</h2>
-      <!-- form for:
-        username: string (readOnly); email: string; firstname: string;
-        surname: string; department: string; role: string; telephone: string;
-      -->
       <div class="p-fluid">
         <div class="p-field">
           <label for="username">Benutzername</label>

@@ -1,8 +1,5 @@
 <template>
     <div>
-        <h5>
-            Projekte
-        </h5>
         <p v-if="global.showTooltips">
             <InlineMessage severity="info" class="w-full">
                 Hier können Sie Projekte anlegen und verwalten.
@@ -15,10 +12,11 @@
                 <span>Ausgewähltes Projekt</span>
                 <Dropdown v-model="global.selectedProject" :options="global.projects" optionLabel="name"
                     placeholder="Projekt wählen" class="ml-3" style="width: 300px;" :disabled="projectForm?.id === 'new'" />
-                <Button icon="fa-solid fa-plus" @click="addProject()" label="Hinzufügen" class="ml-1" />
+                <Button icon="fa-solid fa-pen" @click="showEditEntry = true" class="ml-1" />
+                <Button icon="fa-solid fa-plus" @click="addProject()" class="ml-1" />
                 <ConfirmDialog />
                 <Button v-if="selectedProject" icon="fa-solid fa-trash" @click="confirmDelete(selectedProject, $event)"
-                    label="Löschen" class="ml-1" :disabled="projectForm?.id === 'new'" />
+                    class="ml-1" :disabled="projectForm?.id === 'new'" />
             </template>
         </Toolbar>
 
@@ -30,10 +28,10 @@
             <Button icon="fa-solid fa-plus" @click="projectForm = emptyProject()" label="Projekt anlegen" />
         </div>
 
-        <div v-if="projectForm" class="mt-2">
+        <div v-if="projectForm" class="mt-2" v-show="showEditEntry">
             <div class="card">
-                <h5>Basisdaten des Projekts</h5>
-                <div class="field grid">
+                <!-- <h5>Basisdaten des Projekts</h5> -->
+                <div class="field grid" v-show="false">
                     <label for="id" class="col-12 mb-2 md:col-4 md:mb-0">ID</label>
                     <div class="col-12 md:col-8">
                         <InputText id="id" class="w-full" disabled="true" v-model="projectForm.id" />
@@ -55,7 +53,10 @@
                 </div>
             </div>
 
-            <Button class="mt-3" @click="saveProject()" :label="projectForm.id === 'new' ? 'Hinzufügen' : 'Speichern'" />
+            <div>
+                <Button @click="saveProject()" :label="projectForm.id === 'new' ? 'Hinzufügen' : 'Speichern'" />
+                <Button class="ml-2" @click="cancel()" label="Abbrechen" />
+            </div>
         </div>
     </div>
 </template>
@@ -76,6 +77,8 @@ import InlineMessage from 'primevue/inlinemessage';
 
 const global = useGlobalStore();
 const confirm = useConfirm();
+
+const showEditEntry = ref(false);
 
 const emptyProject = (): ProjectEntry => {
     return {
@@ -106,6 +109,7 @@ const projectSchema = object({
 });
 
 const addProject = () => {
+    showEditEntry.value = true;
     projectForm.value = emptyProject();
 };
 
@@ -143,7 +147,13 @@ const saveProject = async () => {
     } catch (e) {
         error(e + "")
     }
+    showEditEntry.value = false;
 };
+
+const cancel = () => {
+    showEditEntry.value = false;
+    projectForm.value = global.selectedProject;
+}
 
 const init = async () => {
     while (global.isLoading) {

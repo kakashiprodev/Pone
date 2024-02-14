@@ -1,7 +1,4 @@
 <template>
-    <h5 class="mt-5">
-        Standorte für das gewählte Projekt definieren.
-    </h5>
     <InlineMessage v-if="global.showTooltips" severity="info" class="w-full mt-2 mb-4">
         Pro Projekt können mehrere Standorte definiert werden. Es muss mindestens ein Standort definiert sein.
         Der erste Standort ist der Hauptstandort und wurde vom System angelegt. Dieser kann jederzeit bearbeitet werden.
@@ -12,17 +9,18 @@
             <span>Ausgewählter Standort</span>
             <Dropdown v-model="global.selectedSite" :options="global.sites" optionLabel="name" placeholder="Standort wählen"
                 class="ml-3" style="width: 300px;" :disabled="siteForm?.id === 'new'" />
-            <Button icon="fa-solid fa-plus" @click="addEntry()" label="Hinzufügen" class="ml-1" />
+            <Button icon="fa-solid fa-pen" @click="showEditEntry = true" class="ml-1" />
+            <Button icon="fa-solid fa-plus" @click="addEntry()" class="ml-1" />
             <ConfirmDialog />
             <Button v-if="global.selectedSite" icon="fa-solid fa-trash" @click="confirmDelete(global.selectedSite, $event)"
-                label="Löschen" class="ml-1" :disabled="siteForm?.id === 'new'" />
+                class="ml-1" :disabled="siteForm?.id === 'new'" />
         </template>
     </Toolbar>
 
-    <div v-if="siteForm" class="mt-2">
+    <div v-if="siteForm" class="mt-2" v-show="showEditEntry">
         <div class="card">
-            <h5>Basisdaten des Standorts</h5>
-            <div class="field grid">
+            <!-- <h5>Basisdaten des Standorts</h5> -->
+            <div class="field grid" v-show="false">
                 <label for="id" class="col-12 mb-2 md:col-4 md:mb-0">ID</label>
                 <div class="col-12 md:col-8">
                     <InputText id="id" class="w-full" disabled="true" v-model="siteForm.id" />
@@ -43,7 +41,10 @@
             </div>
         </div>
 
-        <Button class="mt-3" @click="saveEntry()" :label="siteForm.id === 'new' ? 'Hinzufügen' : 'Speichern'" />
+        <div>
+            <Button @click="saveEntry()" :label="siteForm.id === 'new' ? 'Hinzufügen' : 'Speichern'" />
+            <Button class="ml-2" @click="cancel()" label="Abbrechen" />
+        </div>
     </div>
 </template>
 
@@ -64,6 +65,8 @@ import { error, info } from './../services/toast';
 const global = useGlobalStore();
 const confirm = useConfirm();
 
+const showEditEntry = ref(false);
+
 const siteForm: Ref<null | SiteEntry> = ref(global.selectedSite);
 const siteSchema = object({
     id: string([minLength(1)]),
@@ -71,6 +74,7 @@ const siteSchema = object({
 });
 
 const addEntry = () => {
+    showEditEntry.value = true;
     if (!global.selectedProject) {
         return error('Es muss ein Projekt ausgewählt sein');
     }
@@ -114,7 +118,13 @@ const saveEntry = async () => {
     } catch (e) {
         error(e + "")
     }
+    showEditEntry.value = false;
 };
+
+const cancel = () => {
+    showEditEntry.value = false;
+    siteForm.value = global.selectedSite;
+}
 
 const init = async () => {
     while (global.isLoading) {
