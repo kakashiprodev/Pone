@@ -9,221 +9,216 @@
       <InputText v-model="filter" placeholder="Filter" class="mr-1" />
     </template>
     <template #end>
-      <Button
-        icon="fa-solid fa-plus"
-        @click="
-          selectedAction = clone(emptyAction);
-          showDialog = true;
-        "
-        class="mr-1"
-      />
+      <Button icon="fa-solid fa-plus" @click="
+        selectedAction = clone(emptyAction);
+      showDialog = true;
+      " class="mr-1" />
       <Button icon="fa-solid fa-download" @click="download()" />
     </template>
   </Toolbar>
 
-  <Dialog
-    id="edit-create-action"
-    v-model:visible="showDialog"
-    modal
-    :header="selectedAction.id === 'new' ? 'Anlegen' : 'Bearbeiten'"
-    :class="{
+  <Dialog id="edit-create-action" v-model:visible="showDialog" modal
+    :header="selectedAction.id === 'new' ? 'Anlegen' : 'Bearbeiten'" :class="{
       'w-8': windowWidth > 990,
       'w-full': windowWidth < 990,
       'h-screen': windowWidth < 990,
-    }"
-  >
-    <div>
-      <div class="field">
-        <label for="action-relevant" class="w-full">Aktiv?</label>
-        <InlineMessage
-          severity="info"
-          v-if="global.showTooltips"
-          class="w-full mb-2"
-        >
-          Ist die Maßnahme aktiv und soll in den Berichten angezeigt werden?
-        </InlineMessage>
-        <Checkbox
-          class="mt-2"
-          v-model="selectedAction.relevant"
-          id="action-relevant"
-          :binary="true"
-        />
-      </div>
-      <div class="field">
-        <label for="action-name">Name*</label>
-        <InlineMessage
-          severity="info"
-          v-if="global.showTooltips"
-          class="w-full mb-2"
-        >
-          Der Name der Maßnahme für die Übersicht und Diagramme.
-        </InlineMessage>
-        <InputText
-          class="w-full"
-          v-model="selectedAction.name"
-          id="action-name"
-        />
-      </div>
-      <div class="field">
-        <label for="action-shortDescription">Kurzbeschreibung*</label>
-        <InlineMessage
-          severity="info"
-          v-if="global.showTooltips"
-          class="w-full mb-2"
-        >
-          Eine Kurzbeschreibung für das Berichtswesen.
-        </InlineMessage>
-        <Editor
-          id="action-shortDescription"
-          v-model="selectedAction.shortDescription"
-          editorStyle="height: 80px"
-          class="w-full"
-        />
-      </div>
-      <div class="field">
-        <label for="action-longDescription">Beschreibung (ausführlich)</label>
-        <InlineMessage
-          severity="info"
-          v-if="global.showTooltips"
-          class="w-full mb-2"
-        >
-          Eine ausführlichere Beschreibung der Maßnahme.
-        </InlineMessage>
-        <Editor
-          id="action-longDescription"
-          v-model="selectedAction.longDescription"
-          editorStyle="height: 280px"
-          class="w-full"
-        />
-      </div>
-      <div class="field">
-        <label for="action-targetValueAbsolut">Zieleinsparung in kg CO2</label>
-        <InlineMessage
-          severity="info"
-          v-if="global.showTooltips"
-          class="w-full mb-2"
-        >
-          Die angestrebte Einsparung der Maßnahe in Tonnen CO2 Äquivalenten.
-        </InlineMessage>
-        <InputNumber
-          class="w-full"
-          v-model="selectedAction.targetValueAbsolut"
-          id="action-targetValueAbsolut"
-          :min-fraction-digits="0"
-          :max-fraction-digits="10"
-        />
-      </div>
-      <div class="field">
-        <label for="action-responsible">Verantwortlich</label>
-        <InlineMessage
-          severity="info"
-          v-if="global.showTooltips"
-          class="w-full mb-2"
-        >
-          Der Name der Verantwortlichen Person für die Maßnahme als
-          Ansprechpartner.
-        </InlineMessage>
-        <InputText
-          class="w-full"
-          v-model="selectedAction.responsible"
-          id="action-responsible"
-        />
-      </div>
-      <div class="field">
-        <label for="action-finishedUntil">Fertigstellungsdatum</label>
-        <InlineMessage
-          severity="info"
-          v-if="global.showTooltips"
-          class="w-full mb-2"
-        >
-          Die geplante Fertigstellung der Maßnahme. Kann im Berichtswesen als
-          Gantt Diagramm dargestellt werden.
-        </InlineMessage>
-        <Calendar
-          id="action-finishedUntil"
-          v-model="selectedAction.finishedUntil"
-          class="w-full"
-          view="month"
-          dateFormat="mm/yy"
-        />
-      </div>
-      <div class="field">
-        <label for="action-status">Status</label>
-        <InlineMessage
-          severity="info"
-          v-if="global.showTooltips"
-          class="w-full mb-2"
-        >
-          Der aktuelle Status der Maßnahme.
-        </InlineMessage>
-        <Dropdown
-          id="action-status"
-          v-model="selectedAction.status"
-          class="w-full"
-          :options="
-            Object.keys(statusTranslations).map((key) => ({
-              label: statusTranslations[key],
-              value: key,
-            }))
-          "
-          option-label="label"
-          option-value="value"
-        />
-      </div>
-      <div class="field">
-        <label for="action-progress">Fortschritt</label>
-        <InlineMessage
-          severity="info"
-          v-if="global.showTooltips"
-          class="w-full mb-2"
-        >
-          Der Fortschritt der Maßnahme in Prozent.
-        </InlineMessage>
-        <InputNumber
-          v-model.number="selectedAction.progress"
-          :use-grouping="false"
-          suffix=" %"
-          class="w-full mt-2 mb-5"
-        />
-        <Slider
-          id="action-progress"
-          v-model="selectedAction.progress"
-          class="w-full mb-3"
-          :step="5"
-        />
-      </div>
+    }">
+
+    <!-- Relevant (Aktiv?) -->
+    <div class="field">
+      <label for="action-relevant" class="w-full">Aktiv?</label>
+      <InlineMessage severity="info" v-if="global.showTooltips" class="w-full mb-2">
+        Ist die Maßnahme aktiv und soll in den Berichten angezeigt werden?
+      </InlineMessage>
+      <Checkbox v-model="selectedAction.relevant" id="action-relevant" :binary="true" />
     </div>
+
+    <!-- Name -->
+    <div class="field">
+      <label for="action-name" class="w-full">Name*</label>
+      <InlineMessage severity="info" v-if="global.showTooltips" class="w-full mb-2">
+        Der Name der Maßnahme für die Übersicht und Diagramme.
+      </InlineMessage>
+      <InputText class="w-full" v-model="selectedAction.name" id="action-name" />
+    </div>
+
+    <!-- Description Before -->
+    <div class="field">
+      <label class="w-full" for="action-descriptionBefore">Beschreibung (vorher)*</label>
+      <InlineMessage severity="info" v-if="global.showTooltips" class="w-full mb-2">
+        Eine Kurzbeschreibung für das Berichtswesen.
+      </InlineMessage>
+      <Editor class="w-full" v-model="selectedAction.descriptionBefore" id="action-descriptionBefore"
+        editorStyle="height: 80px" />
+    </div>
+
+    <!-- Description After -->
+    <div class="field">
+      <label for="action-descriptionAfter" class="w-full">Beschreibung (nachher)</label>
+      <InlineMessage severity="info" v-if="global.showTooltips" class="w-full mb-2">
+        Eine Kurzbeschreibung für das Berichtswesen.
+      </InlineMessage>
+      <Editor class="w-full" v-model="selectedAction.descriptionAfter" id="action-descriptionAfter"
+        editorStyle="height: 80px" />
+    </div>
+
+    <!-- Target Value Absolute Planned -->
+    <div class="field">
+      <label for="action-targetValueAbsolutPlanned" class="w-full">Geplante Einsparung in kg CO2*</label>
+      <InlineMessage severity="info" v-if="global.showTooltips" class="w-full mb-2">
+        Die angestrebte Einsparung der Maßnahe in kg CO2 Äquivalenten.
+      </InlineMessage>
+      <InputNumber class="w-full" v-model="selectedAction.targetValueAbsolutPlanned"
+        id="action-targetValueAbsolutPlanned" />
+    </div>
+
+    <!-- Target Value Absolute Is -->
+    <div class="field">
+      <label for="action-targetValueAbsolutIs" class="w-full">Tatsächliche Einsparung in kg CO2</label>
+      <InlineMessage severity="info" v-if="global.showTooltips" class="w-full mb-2">
+        Die tatsächliche Einsparung der Maßnahe in lg CO2 Äquivalenten.
+      </InlineMessage>
+      <InputNumber class="w-full" v-model="selectedAction.targetValueAbsolutIs" id="action-targetValueAbsolutIs" />
+    </div>
+
+    <!-- Description Target Value -->
+    <div class="field">
+      <label for="action-descriptionTargetValue" class="w-full">Beschreibung der Zielwerte</label>
+      <InlineMessage severity="info" v-if="global.showTooltips" class="w-full mb-2">
+        Beschreibung wie die Zielwerte erreicht werden sollen.
+      </InlineMessage>
+      <Editor class="w-full" v-model="selectedAction.descriptionTargetValue" id="action-descriptionTargetValue"
+        editorStyle="height: 80px" />
+    </div>
+
+    <!-- Responsible -->
+    <div class="field">
+      <label for="action-responsible" class="w-full">Verantwortlich</label>
+      <InlineMessage severity="info" v-if="global.showTooltips" class="w-full mb-2">
+        Wer ist für die Maßnahme verantwortlich?
+      </InlineMessage>
+      <InputText class="w-full" v-model="selectedAction.responsible" id="action-responsible" />
+    </div>
+
+    <!-- Status -->
+    <div class="field">
+      <label class="w-full" for="action-status">Status</label>
+      <InlineMessage severity="info" v-if="global.showTooltips" class="w-full mb-2">
+        Der aktuelle Status der Maßnahme.
+      </InlineMessage>
+      <Dropdown id="action-status" v-model="selectedAction.status" class="w-full" :options="Object.keys(statusTranslations).map((key) => ({
+        label: statusTranslations[key],
+        value: key,
+      }))
+        " option-label="label" option-value="value" />
+    </div>
+
+    <!-- Progress -->
+    <div class="field">
+      <label class="w-full" for="action-progress">Fortschritt</label>
+      <InlineMessage severity="info" v-if="global.showTooltips" class="w-full mb-2">
+        Der aktuelle Fortschritt der Maßnahme in %. (0-100)
+      </InlineMessage>
+      <Slider id="action-progress" v-model="selectedAction.progress" class="w-full mb-3" :step="5" />
+    </div>
+
+    <!-- Finished Until Planned -->
+    <div class="field">
+      <label class="w-full" for="action-finishedUntilPlanned">Geplantes Fertigstellungsdatum</label>
+      <InlineMessage severity="info" v-if="global.showTooltips" class="w-full mb-2">
+        Das geplante Fertigstellungsdatum der Maßnahme.
+      </InlineMessage>
+      <Calendar class="w-full" v-model="selectedAction.finishedUntilPlanned" id="action-finishedUntilPlanned" />
+    </div>
+
+    <!-- Finished Until Is -->
+    <div class="field">
+      <label class="w-full" for="action-finishedUntilIs">Tatsächliches Fertigstellungsdatum</label>
+      <InlineMessage severity="info" v-if="global.showTooltips" class="w-full mb-2">
+        Das tatsächliche Fertigstellungsdatum der Maßnahme.
+      </InlineMessage>
+      <Calendar class="w-full" v-model="selectedAction.finishedUntilIs" id="action-finishedUntilIs" />
+    </div>
+
+    <!-- Category -->
+    <div class="field">
+      <label class="w-full" for="action-category">Kategorie</label>
+      <InlineMessage severity="info" v-if="global.showTooltips" class="w-full mb-2">
+        In welche Kategorie fällt die Maßnahme?
+      </InlineMessage>
+      <Dropdown class="w-full" v-model="selectedAction.category" id="action-category" :options="['keine Ahnung']" />
+    </div>
+
+    <!-- Costs Planned -->
+    <div class="field">
+      <label class="w-full" for="action-costsPlanned">Geplante Kosten</label>
+      <InlineMessage severity="info" v-if="global.showTooltips" class="w-full mb-2">
+        Eine Einschätzung der geplanten Kosten.
+      </InlineMessage>
+      <InputNumber class="w-full" v-model="selectedAction.costsPlanned" id="action-costsPlanned" />
+    </div>
+
+    <!-- Costs Is -->
+    <div class="field">
+      <label class="w-full" for="action-costsIs">Tatsächliche Kosten</label>
+      <InlineMessage severity="info" v-if="global.showTooltips" class="w-full mb-2">
+        Die tatsächlichen Kosten der Maßnahme.
+      </InlineMessage>
+      <InputNumber class="w-full" v-model="selectedAction.costsIs" id="action-costsIs" />
+    </div>
+
+    <!-- ROI -->
+    <div class="field">
+      <label class="w-full" for="action-roi">ROI (Return on Investment)</label>
+      <InlineMessage severity="info" v-if="global.showTooltips" class="w-full mb-2">
+        Der Return on Investment der Maßnahme.
+      </InlineMessage>
+      <InputNumber class="w-full" v-model="selectedAction.roi" id="action-roi" />
+    </div>
+
+    <!-- Description Costs -->
+    <div class="field">
+      <label class="w-full" for="action-descriptionCosts">Beschreibung der Kosten</label>
+      <InlineMessage severity="info" v-if="global.showTooltips" class="w-full mb-2">
+        Wie setzen sich die Kosten zusammen?
+      </InlineMessage>
+      <Editor class="w-full" v-model="selectedAction.descriptionCosts" id="action-descriptionCosts"
+        editorStyle="height: 80px" />
+    </div>
+
+    <!-- Avoidance Costs -->
+    <div class="field">
+      <label class="w-full" for="action-avoidanceCosts">Vermeidungskosten</label>
+      <InlineMessage severity="info" v-if="global.showTooltips" class="w-full mb-2">
+        Wie viel Kosten werden durch die Maßnahme vermieden?
+      </InlineMessage>
+      <InputNumber class="w-full" v-model="selectedAction.avoidanceCosts" id="action-avoidanceCosts" />
+    </div>
+
     <div>
-      <Button
-        :label="selectedAction.id === 'new' ? 'Anlegen' : 'Speichern'"
-        @click="save"
-      />
+      <Button :label="selectedAction.id === 'new' ? 'Anlegen' : 'Speichern'" @click="save" />
     </div>
   </Dialog>
 
   <ConfirmPopup></ConfirmPopup>
-  <DataTable
-    v-if="actions.length > 0"
-    :value="filteredActions"
-    class="cst-no-hover"
-  >
+  <DataTable v-if="actions.length > 0" :value="filteredActions" class="cst-no-hover">
     <Column field="name" header="Name"></Column>
     <Column field="status" header="Status">
       <template #body="{ data }">
         {{ statusTranslations[data.status] || '' }}
       </template>
     </Column>
-    <Column field="finishedUntil" header="Fertigstellungsdatum">
+    <Column field="finishedUntilPlanned" header="Fertigstellungsdatum">
       <template #body="{ data }">
         <!-- formatiertes deutsches Datum -->
-        {{ new Date(data.finishedUntil).getMonth() + 1 }}/{{
-          new Date(data.finishedUntil).getFullYear()
+        {{ new Date(data.finishedUntilPlanned).getMonth() + 1 }}/{{
+          new Date(data.finishedUntilPlanned).getFullYear()
         }}
       </template>
     </Column>
     <!-- <Column field="shortDescription" header="Kurzbeschreibung"></Column>
         <Column field="longDescription" header="Langbeschreibung"></Column> -->
-    <Column field="targetValueAbsolut" header="Zieleinsparung in kg"></Column>
+    <Column field="targetValueAbsolutPlanned" header="Zieleinsparung in kg"></Column>
     <Column field="responsible" header="Verantwortlich"></Column>
     <Column field="progress" header="Fortschritt">
       <template #body="{ data }"> {{ data.progress }} % </template>
@@ -236,19 +231,12 @@
     <Column header="">
       <template #body="{ data }">
         <div class="flex">
-          <Button
-            icon="fa-solid fa-edit"
-            @click="
-              selectedAction = data;
-              originalAction = clone(data);
-              showDialog = true;
-            "
-          />
-          <Button
-            icon="fa-solid fa-trash"
-            class="ml-1"
-            @click="deleteEntry(data, $event)"
-          />
+          <Button icon="fa-solid fa-edit" @click="
+            selectedAction = data;
+          originalAction = clone(data);
+          showDialog = true;
+          " />
+          <Button icon="fa-solid fa-trash" class="ml-1" @click="deleteEntry(data, $event)" />
         </div>
       </template>
     </Column>
@@ -284,24 +272,34 @@ import {
   minLength,
   maxLength,
   minValue,
-  nullable,
   boolean,
   date,
   maxValue,
+  nullable,
 } from 'valibot';
 
 const global = useGlobalStore();
 const windowWidth = ref(window.innerWidth);
 const showDialog = ref(false);
+
 const emptyAction: ActionEntry = {
   id: 'new',
-  project: global.selectedProject?.id ?? '',
+  site: global.selectedSite?.id ?? '',
   name: '',
-  shortDescription: '',
-  longDescription: '',
-  targetValueAbsolut: 0,
+  descriptionBefore: '',
+  descriptionAfter: '',
+  targetValueAbsolutPlanned: 0,
+  targetValueAbsolutIs: 0,
+  descriptionTargetValue: '',
+  finishedUntilPlanned: '',
+  finishedUntilIs: '',
+  category: '',
+  costsPlanned: 0,
+  costsIs: 0,
+  roi: 0,
+  descriptionCosts: '',
+  avoidanceCosts: 0,
   responsible: '',
-  finishedUntil: '',
   status: 'open',
   progress: 0,
   relevant: true,
@@ -313,29 +311,10 @@ const originalAction = ref(emptyAction);
 // validation form
 const actionEntrySchema = object({
   id: string('Die ID scheint korrupt zu sein.'),
-  project: string('Keine gültige Projekt-ID', [
-    minLength(1, 'Projekt-ID zu kurz'),
-    maxLength(255, 'Projekt-ID zu lang'),
-  ]),
-  name: string('Kein Name angegeben', [
-    minLength(1, 'Name zu kurz'),
-    maxLength(255, 'Name zu lang'),
-  ]),
-  shortDescription: string('Keine Kurzbeschreibung angegeben', [
-    minLength(1, 'Kurzbeschreibung zu kurz'),
-    maxLength(500, 'Kurzbeschreibung zu lang'),
-  ]),
-  longDescription: nullable(
-    string([maxLength(4000, 'Langbeschreibung zu lang')]),
-  ),
-  targetValueAbsolut: number('Kein Ziel angegeben', [
-    minValue(0, 'Ziel muss größer als 0 sein'),
-  ]),
   responsible: string('Kein Verantwortlicher angegeben', [
     minLength(1, 'Verantwortlicher zu kurz'),
     maxLength(255, 'Verantwortlicher zu lang'),
   ]),
-  finishedUntil: date('Kein Fertigstellungsdatum angegeben'),
   status: string('Kein Status angegeben', [
     minLength(1, 'Status zu kurz'),
     maxLength(255, 'Status zu lang'),
@@ -345,6 +324,55 @@ const actionEntrySchema = object({
     maxValue(100, 'Fortschritt muss kleiner als 100 sein'),
   ]),
   relevant: boolean('Keine Relevanz angegeben'),
+  site: string('Keine Site angegeben', [
+    minLength(1, 'Site zu kurz'),
+    maxLength(255, 'Site zu lang'),
+  ]),
+  name: string('Kein Name angegeben', [
+    minLength(1, 'Name zu kurz'),
+    maxLength(255, 'Name zu lang'),
+  ]),
+  descriptionBefore: string('Keine Beschreibung angegeben', [
+    minLength(1, 'Beschreibung zu kurz'),
+    maxLength(4000, 'Beschreibung zu lang'),
+  ]),
+  descriptionAfter: string('Keine Beschreibung angegeben', [
+    minLength(1, 'Beschreibung zu kurz'),
+    maxLength(4000, 'Beschreibung zu lang'),
+  ]),
+  targetValueAbsolutPlanned: number('Kein Ziel angegeben', [
+    minValue(0, 'Ziel muss größer als 0 sein'),
+  ]),
+  targetValueAbsolutIs: number('Kein Ziel angegeben', [
+    minValue(0, 'Ziel muss größer als 0 sein'),
+  ]),
+  descriptionTargetValue: string('Keine Beschreibung des Zielwerts angegeben', [
+    minLength(1, 'Beschreibung zu kurz'),
+    maxLength(4000, 'Beschreibung zu lang'),
+  ]),
+  finishedUntilPlanned: date('Kein Fertigstellungsdatum angegeben'),
+  finishedUntilIs: nullable(date('Kein Fertigstellungsdatum angegeben')),
+
+  category: string('Keine Kategorie angegeben', [
+    minLength(1, 'Kategorie zu kurz'),
+    maxLength(255, 'Kategorie zu lang'),
+  ]),
+  costsPlanned: number('Keine geplanten Kosten angegeben', [
+    minValue(0, 'Kosten müssen größer als 0 sein'),
+  ]),
+  costsIs: number('Keine tatsächlichen Kosten angegeben', [
+    minValue(0, 'Kosten müssen größer als 0 sein'),
+  ]),
+  roi: number('Kein ROI angegeben', [
+    minValue(0, 'ROI muss größer als 0 sein'),
+  ]),
+  descriptionCosts: string('Keine Kostenbeschreibung angegeben', [
+    minLength(1, 'Beschreibung zu kurz'),
+    maxLength(4000, 'Beschreibung zu lang'),
+  ]),
+  avoidanceCosts: number('Keine Vermeidungskosten angegeben', [
+    minValue(0, 'Vermeidungskosten müssen größer als 0 sein'),
+  ]),
 });
 
 /**
@@ -394,18 +422,18 @@ const save = async () => {
       const toCreate = clone(selectedAction.value);
       delete toCreate.id;
       const created = await dataprovider.createAction(toCreate);
-      created.finishedUntil =
-        created.finishedUntil && created.finishedUntil !== ''
-          ? new Date(created.finishedUntil)
+      created.finishedUntilPlanned =
+        created.finishedUntilPlanned && created.finishedUntilPlanned !== ''
+          ? new Date(created.finishedUntilPlanned)
           : null;
       actions.value.push(created);
       showDialog.value = false;
       selectedAction.value = clone(emptyAction);
     } else {
       const updated = await dataprovider.updateAction(selectedAction.value);
-      updated.finishedUntil =
-        updated.finishedUntil && updated.finishedUntil !== ''
-          ? new Date(updated.finishedUntil)
+      updated.finishedUntilPlanned =
+        updated.finishedUntilPlanned && updated.finishedUntilPlanned !== ''
+          ? new Date(updated.finishedUntilPlanned)
           : null;
       const index = actions.value.findIndex((item) => item.id === updated.id);
       actions.value[index] = updated;
@@ -458,19 +486,30 @@ getData();
 const download = async () => {
   // export data as CSV and download
   let csv =
-    'ID;Name;Kurzbeschreibung;Langbeschreibung;Ziel in Tonnen;Verantwortlich;Fertigstellungsdatum;Status;Fortschritt\r\n';
+    'ID;Name;Verantwortlicher;Status;Fortschritt;Relevant;Standort;Beschreibung Vorher;Beschreibung Danach;Zielwert geplant;Zielwert tatsächlich;Beschreibung Zielwert;Fertigstellung geplant;Fertigstellung tatsächlich;Kategorie;Kosten geplant;Kosten tatsächlich;ROI;Kostenbeschreibung;Vermeidungs-Kosten\r\n';
   csv += actions.value
     .map((item) => {
       return [
         item.id,
         item.name,
-        item.shortDescription,
-        item.longDescription,
-        item.targetValueAbsolut,
         item.responsible,
-        item.finishedUntil,
-        item.status,
+        statusTranslations[item.status],
         item.progress,
+        item.relevant ? 'Ja' : 'Nein',
+        item.site,
+        item.descriptionBefore,
+        item.descriptionAfter,
+        item.targetValueAbsolutPlanned,
+        item.targetValueAbsolutIs,
+        item.descriptionTargetValue,
+        item.finishedUntilPlanned,
+        item.finishedUntilIs,
+        item.category,
+        item.costsPlanned,
+        item.costsIs,
+        item.roi,
+        item.descriptionCosts,
+        item.avoidanceCosts,
       ].join(';');
     })
     .join('\r\n');
