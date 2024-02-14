@@ -1,44 +1,29 @@
 <template>
   <AppLayout>
     <template #logo>
-      <img
-        src="./../assets/logo-transparent_part.png"
-        class="cursor-pointer"
-        @click="router.push({ name: 'home' })"
-        style="height: 50px"
-      />
+      <img src="./../assets/logo-transparent_part.png" class="cursor-pointer" @click="router.push({ name: 'home' })"
+        style="height: 50px" />
     </template>
 
     <template #center>
       <ul class="list-none no-underline text-color flex align-items-center">
         <li style="float: left">
-          <router-link to="/report-config" :exact-active-class="'active-route'">
-            <Button
-              severity="secondary"
-              icon="fa-solid fa-building"
-              :label="'Berichtsdaten ' + global.selectedReport?.year"
-              class="button-custom"
-            />
+          <router-link to="/settings" :exact-active-class="'active-route'">
+            <Button v-show="global.selectedProject" severity="secondary" icon="fa-solid fa-building"
+              :label="'' + global.selectedProject?.name + ', ' + global.selectedSite?.name + ': ' + global.selectedReport?.year"
+              class="button-custom" />
           </router-link>
         </li>
 
-        <li style="float: left">
+        <!-- <li style="float: left">
           <router-link to="/actions" :exact-active-class="'active-route'">
-            <Button
-              severity="secondary"
-              icon="fa-solid fa-list-check"
-              label="Maßnahmen "
-              class="button-custom ml-2"
-            />
+            <Button severity="secondary" icon="fa-solid fa-list-check" label="Maßnahmen " class="button-custom ml-2" />
           </router-link>
-        </li>
+        </li> -->
 
         <li style="float: left" class="ml-4">
           <div class="flex flex-wrap">
-            <InputSwitch
-              class="flex align-items-center justify-content-center"
-              v-model="global.showTooltips"
-            />
+            <InputSwitch class="flex align-items-center justify-content-center" v-model="global.showTooltips" />
             <span class="ml-2 text-600"> Zeige Hilfe </span>
           </div>
         </li>
@@ -48,19 +33,14 @@
     <template #sidebar>
       <PanelMenu :model="sidebarItems" class="w-1/5">
         <template #item="{ item }">
-          <router-link
-            class="flex align-items-center px-3 py-2 cursor-pointer no-underline text-color"
-            :to="item.to ?? ''"
-            :exact-active-class="'active-route'"
-          >
+          <router-link class="flex align-items-center px-3 py-2 cursor-pointer no-underline text-color"
+            :to="item.to ?? ''" :exact-active-class="'active-route'">
             <span :class="[item.icon, 'text-primary', 'sidebar-item-custom']" />
-            <span
-              :class="[
-                'ml-2',
-                { 'font-semibold': item.items },
-                'sidebar-item-custom',
-              ]"
-            >
+            <span :class="[
+              'ml-2',
+              { 'font-semibold': item.items },
+              'sidebar-item-custom',
+            ]">
               {{ item.label }}
             </span>
           </router-link>
@@ -71,31 +51,23 @@
     <template #submenu>
       <ul class="list-none m-0 p-0">
         <li>
-          <a
-            href="/#/project-config"
-            class="text-800 flex p-2 border-round align-items-center hover:surface-hover transition-colors transition-duration-150 cursor-pointer"
-          >
+          <a href="/#/project-config"
+            class="text-800 flex p-2 border-round align-items-center hover:surface-hover transition-colors transition-duration-150 cursor-pointer">
             <i class="fa-solid fa-people-group mr-3"></i>
             <span>Projekte verwalten</span>
           </a>
-          <a
-            href="/#/equivalents"
-            class="text-800 flex p-2 border-round align-items-center hover:surface-hover transition-colors transition-duration-150 cursor-pointer"
-          >
+          <a href="/#/equivalents"
+            class="text-800 flex p-2 border-round align-items-center hover:surface-hover transition-colors transition-duration-150 cursor-pointer">
             <i class="fa-solid fa-list mr-3"></i>
             <span>Äquivalente verwalten</span>
           </a>
-          <a
-            href="/#/user"
-            class="text-800 flex p-2 border-round align-items-center hover:surface-hover transition-colors transition-duration-150 cursor-pointer"
-          >
+          <a href="/#/user"
+            class="text-800 flex p-2 border-round align-items-center hover:surface-hover transition-colors transition-duration-150 cursor-pointer">
             <i class="fa-solid fa-user mr-3"></i>
             <span>Benutzerprofil</span>
           </a>
-          <a
-            @click="logout()"
-            class="text-800 flex p-2 border-round align-items-center hover:surface-hover transition-colors transition-duration-150 cursor-pointer"
-          >
+          <a @click="logout()"
+            class="text-800 flex p-2 border-round align-items-center hover:surface-hover transition-colors transition-duration-150 cursor-pointer">
             <i class="fa-solid fa-right-from-bracket mr-3"></i>
             <span>Ausloggen</span>
           </a>
@@ -178,6 +150,13 @@ const sidebarItems = [
     to: '/settings',
     visible: true,
   },
+  {
+    key: 'actions',
+    label: 'Maßnahmen',
+    icon: 'fa-solid fa-list-check',
+    to: '/actions',
+    visible: true,
+  }
   // {
   //     label: 'Flottenverbrauch',
   //     icon: 'fa-solid fa-gas-pump',
