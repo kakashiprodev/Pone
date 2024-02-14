@@ -2,16 +2,16 @@ import * as VueRouter from 'vue-router';
 
 const routes = [
   {
+    path: '/login',
+    component: () => import('../views/Login.vue'),
+    name: 'login',
+  },
+  {
     path: '/',
     component: () => import('../components/AppLayoutWrapper.vue'),
     name: 'home',
     redirect: { name: 'dashboard' },
     children: [
-      {
-        path: '/login',
-        component: () => import('../views/Login.vue'),
-        name: 'login',
-      },
       {
         path: '/user',
         component: () => import('../views/UsersProfile.vue'),
