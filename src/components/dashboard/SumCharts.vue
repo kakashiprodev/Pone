@@ -52,7 +52,7 @@
 
 <script setup lang="ts">
 import Chart from 'primevue/chart';
-import { getScopeSums } from '../../services/reporting';
+import { getScopeSums } from '../../services/reporting/index';
 import { ref, Ref } from 'vue';
 import ProgressSpinner from 'primevue/progressspinner';
 import { useGlobalStore } from '../../stores/global';
