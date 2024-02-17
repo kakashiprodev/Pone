@@ -4,6 +4,7 @@ import {
   EquivalentEntry,
   FacilityEntry,
   InputEntry,
+  InputEntryWithExpandedReportAndSite,
   ProjectEntry,
   ReportEntry,
   SiteEntry,
@@ -16,13 +17,13 @@ import { globalStore } from '../../main';
 import { getSumForInput } from '../reporting';
 
 /**
- * 
+ *
  * ACHTUNG. Bisher werden bei einigen READ Funktionen nur die ersten 500 Einträge zurückgegeben!!!
  * Das müsste noch angepasst werden, wenn mehr als 500 Einträge erwartet werden.
- * 
+ *
  * Außerdem muss das Backend selbst noch so angepasst werden, dass ein user nur das tun kann, was er auch darf!
  * D.h. die Row-Level-Security muss noch implementiert werden.
- * 
+ *
  */
 
 let equivalentCache: EquivalentEntry[] = [];
@@ -31,7 +32,7 @@ const ensureDateFormat = (date: null | string | Date) => {
   if (date != null && date !== '') {
     return new Date(date);
   } else return null;
-}
+};
 
 export default class DataProvider {
   private pb: PocketBase;
@@ -118,16 +119,16 @@ export default class DataProvider {
 
   // CRUD for "sites"
   async createSite(data: SiteEntry) {
-    return await this.pb.collection('sites').create<SiteEntry>({ ...data, id: undefined }); // ensure that id is not set
+    return await this.pb
+      .collection('sites')
+      .create<SiteEntry>({ ...data, id: undefined }); // ensure that id is not set
   }
 
   async readSitesForProject() {
     if (!globalStore.selectedProject) throw new Error('No project selected');
-    const res = await this.pb
-      .collection('sites')
-      .getList<SiteEntry>(1, 500, {
-        filter: `project="${globalStore.selectedProject.id}"`,
-      });
+    const res = await this.pb.collection('sites').getList<SiteEntry>(1, 500, {
+      filter: `project="${globalStore.selectedProject.id}"`,
+    });
     return res.items;
   }
 
@@ -223,12 +224,10 @@ export default class DataProvider {
   }
 
   async createEquivalent(data: EquivalentEntry) {
-    return await this.pb
-      .collection('equivalents')
-      .create<EquivalentEntry>({
-        ...data,
-        id: undefined,
-      });
+    return await this.pb.collection('equivalents').create<EquivalentEntry>({
+      ...data,
+      id: undefined,
+    });
   }
 
   async updateEquivalents(data: EquivalentEntry) {
@@ -258,22 +257,35 @@ export default class DataProvider {
   async readUserInputs(query?: UserInputQuery) {
     console.log('input query: ', query);
     const res = await this.pb.collection('inputs').getList<InputEntry>(1, 500, {
-      filter: `report = '${globalStore.selectedReport?.id}'${query?.scope
-        ? ' && (' + query.scope.map((s) => `scope="${s}"`).join(' || ') + ')'
-        : ''
-        }${query?.category
-          ? ' && (' +
-          query.category.map((c) => `category="${c}"`).join(' || ') +
-          ')'
+      filter: `report = '${globalStore.selectedReport?.id}'${
+        query?.scope
+          ? ' && (' + query.scope.map((s) => `scope="${s}"`).join(' || ') + ')'
           : ''
-        }${query?.facility
+      }${
+        query?.category
           ? ' && (' +
-          query.facility.map((f) => `facility="${f}"`).join(' || ') +
-          ')'
+            query.category.map((c) => `category="${c}"`).join(' || ') +
+            ')'
           : ''
-        }`,
+      }${
+        query?.facility
+          ? ' && (' +
+            query.facility.map((f) => `facility="${f}"`).join(' || ') +
+            ')'
+          : ''
+      }`,
       // expand: "equivalent",
     });
+    return res.items;
+  }
+
+  async readUserInputsForReport(projectId: string) {
+    const res = await this.pb
+      .collection('inputs')
+      .getList<InputEntryWithExpandedReportAndSite>(1, 500, {
+        filter: `report.site.project.id = '${projectId}'`,
+        expand: 'report.site',
+      });
     return res.items;
   }
 
@@ -309,7 +321,9 @@ export default class DataProvider {
     // ensure that the date is ISO8601 for each action finishedUntil entry
     res.items.forEach((action: ActionEntry) => {
       action.finishedUntilIs = ensureDateFormat(action.finishedUntilIs);
-      action.finishedUntilPlanned = ensureDateFormat(action.finishedUntilPlanned);
+      action.finishedUntilPlanned = ensureDateFormat(
+        action.finishedUntilPlanned,
+      );
     });
     return res.items;
   }
