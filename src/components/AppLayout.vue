@@ -10,7 +10,7 @@
         darkmode: colorMode !== 'light',
       }">
       <!-- Logo -->
-      <div class="flex-none flex align-items-center justify-content-centerm-1 w-3rem">
+      <div class="flex-none flex align-items-center justify-content-centerm-1 w-7rem">
         <slot name="logo"></slot>
       </div>
       <!-- AppName. Only visible if Desktop -->
