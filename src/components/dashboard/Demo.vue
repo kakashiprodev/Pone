@@ -77,26 +77,33 @@
     </template>
   </Toolbar>
 
-  <Card>
-    <template #content>
-      <p>
-        The repoting Engine works on cached data. So it should be no problem to
-        handle many requests. So you can make one query for each diagram.
-      </p>
-      <p v-if="selectedFunction === 'getPlainReportData'">
-        This function 'getPlainReportData' returns a plain timeseries of the
-        data like it is stored in the database with additional information added
-        to which site and project the data belongs.
-      </p>
-      <p v-else-if="selectedFunction === 'getGroupedReportData'">
-        This function 'getGroupedReportData' returns a grouped data as sum for
-        the selected groupBy. It will return simple timeseries based on the
-        groupBy. The timeseries always returns one value per year.
-      </p>
-    </template>
-  </Card>
-
-  <DemoShowCase :query="plainDataQuery" :result="plainData" />
+  <TabView>
+    <TabPanel header="Data">
+      <Card>
+        <template #content>
+          <p>
+            The repoting Engine works on cached data. So it should be no problem
+            to handle many requests. So you can make one query for each diagram.
+          </p>
+          <p v-if="selectedFunction === 'getPlainReportData'">
+            This function 'getPlainReportData' returns a plain timeseries of the
+            data like it is stored in the database with additional information
+            added to which site and project the data belongs.
+          </p>
+          <p v-else-if="selectedFunction === 'getGroupedReportData'">
+            This function 'getGroupedReportData' returns a grouped data as sum
+            for the selected groupBy. It will return simple timeseries based on
+            the groupBy. The timeseries always returns one value per year.
+          </p>
+        </template>
+      </Card>
+      <DemoShowCase :query="plainDataQuery" :result="plainData" />
+    </TabPanel>
+    <TabPanel header="Plot">
+      <LineChart v-if="plainData" :data="plainData" />
+      <BarXCart v-if="plainData" :data="plainData" />
+    </TabPanel>
+  </TabView>
 </template>
 
 <script setup lang="ts">
@@ -114,9 +121,13 @@ import Button from 'primevue/button';
 import Checkbox from 'primevue/checkbox';
 import Dropdown from 'primevue/dropdown';
 import Card from 'primevue/card';
+import TabView from 'primevue/tabview';
+import TabPanel from 'primevue/tabpanel';
+import BarXCart from './plot/BarXCart.vue';
+import LineChart from './plot/LineChart.vue';
+import { useGlobalStore } from './../../stores/global';
 
 // get necessary data (project, sites, reports) from store
-import { useGlobalStore } from './../../stores/global';
 const global = useGlobalStore();
 
 // a list of the last 5 years dynamically generated

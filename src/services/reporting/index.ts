@@ -200,7 +200,7 @@ export const getSumForInput = (
   let sum = 0;
   months.forEach((month) => {
     // get the equivalent factor for the given month
-    const key = 'raw' + month.charAt(0).toUpperCase() + month.slice(1); // e.g. rawJan, rawFeb, ...
+    const key = 'raw' + month.charAt(0).toUpperCase() + month.slice(1); // e.g. rawValueJan, rawValueFeb, ...
     const monthlyEquivalentFactor = getFullFactorChain(
       input.equivalent,
       equivalents,
@@ -359,7 +359,7 @@ const calculateEquivalentFactorWithSteps = (
   // Monthly detailed calculation
   steps.push('Berechnungsschritt:');
   for (const month of months) {
-    const key = 'raw' + month.charAt(0).toUpperCase() + month.slice(1); // e.g. rawJan, rawFeb, ...
+    const key = 'raw' + month.charAt(0).toUpperCase() + month.slice(1); // e.g. rawValueJan, rawValueFeb, ...
     // @ts-ignore
     const monthlyEquivalentFactor: number =
       equivalent[month as keyof EquivalentEntry] != null &&
@@ -434,12 +434,13 @@ export interface TimeseriesDataEntry extends DataEntry {
   report: string;
 }
 
-interface AggregatedReportResult {
+export interface AggregatedReportResult {
   stat: {
     sum: number; // over all data
   };
   timeseries: {
     [name: string]: {
+      name: string;
       year: number;
       timestamp: string;
       sum: number;
@@ -546,6 +547,7 @@ export const getGroupedReportData = async (
       if (entries.length === 0) {
         // add a 0 entry for the missing groupBy value
         result.timeseries[value].push({
+          name: value,
           year,
           timestamp: year + '-01-01T00:00:00.000Z',
           sum: 0,
@@ -556,6 +558,7 @@ export const getGroupedReportData = async (
         }, 0);
         result.stat.sum += sum;
         result.timeseries[value].push({
+          name: value,
           year,
           timestamp: year + '-01-01T00:00:00.000Z',
           sum,
