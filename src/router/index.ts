@@ -3,50 +3,50 @@ import * as VueRouter from 'vue-router';
 const routes = [
   {
     path: '/login',
-    component: () => import('../views/Login.vue'),
+    component: () => import('../views/user/Login.vue'),
     name: 'login',
   },
   {
     path: '/',
-    component: () => import('../components/AppLayoutWrapper.vue'),
+    component: () => import('../components/layout/AppLayoutWrapper.vue'),
     name: 'home',
     redirect: { name: 'dashboard' },
     children: [
       {
         path: '/dashboard',
-        component: () => import('../views/Dashboard.vue'),
+        component: () => import('../views/dashboard/Dashboard.vue'),
         name: 'dashboard',
       },
       {
         path: '/actions',
-        component: () => import('../views/Actions.vue'),
+        component: () => import('../views/inputs/Actions.vue'),
         name: 'actions',
       },
       {
         path: '/facilities',
-        component: () => import('../views/Facilities.vue'),
+        component: () => import('../views/inputs/Facilities.vue'),
         name: 'facilities',
       },
       {
         path: '/inputs',
-        component: () => import('../views/Inputs.vue'),
+        component: () => import('../views/inputs/Inputs.vue'),
         name: 'inputs',
       },
       {
         path: '/inputs/scope/:scope',
-        component: () => import('../views/Inputs.vue'),
+        component: () => import('../views/inputs/Inputs.vue'),
         name: 'inputs-scope',
         // params: { scope: null },
       },
       {
         path: '/inputs/facility/:facility',
-        component: () => import('../views/Inputs.vue'),
+        component: () => import('../views/inputs/Inputs.vue'),
         name: 'inputs-facility',
         // params: { facility: null },
       },
       {
         path: '/equivalents/',
-        component: () => import('../views/EquivalentList.vue'),
+        component: () => import('../views/config/EquivalentList.vue'),
         name: 'equivalents',
       },
       // {
@@ -56,12 +56,12 @@ const routes = [
       // },
       {
         path: '/assistant/',
-        component: () => import('../views/AiAssistentInput.vue'),
+        component: () => import('../views/inputs/AiAssistentInput.vue'),
         name: 'assistant',
       },
       {
         path: 'settings', // :category?
-        component: () => import('../views/SettingsMain.vue'),
+        component: () => import('../views/config/SettingsMain.vue'),
         name: 'settings',
         redirect: { name: 'user-settings' },
         children: [
@@ -79,22 +79,23 @@ const routes = [
           },
           {
             path: 'project-general',
-            component: () => import('../views/ProjectsAndSites.vue'),
+            component: () => import('../views/config/ProjectsAndSites.vue'),
             name: 'project-general',
           },
           {
             path: 'project-reports',
-            component: () => import('../views/ReportConfig.vue'),
+            component: () => import('../views/config/ReportConfig.vue'),
             name: 'project-reports',
           },
           {
             path: 'project-targets',
-            component: () => import('../components/TargetDefinition.vue'),
+            component: () =>
+              import('../components/targets/TargetDefinition.vue'),
             name: 'project-targets',
           },
           {
             path: 'project-equivalents',
-            component: () => import('../views/EquivalentList.vue'),
+            component: () => import('../views/config/EquivalentList.vue'),
             name: 'project-equivalents',
           },
         ],
@@ -104,7 +105,7 @@ const routes = [
   // other main routes
   {
     path: '/report-preview',
-    component: () => import('../views/ReportPrintPreview.vue'),
+    component: () => import('../views/dashboard/ReportPrintPreview.vue'),
     name: 'report-preview',
   },
 ];

@@ -1,20 +1,32 @@
 <template>
   <!-- Toolbar -->
-  <div class="card" style="padding: 0.5rem" :class="{
-    lightmode: colorMode === 'light',
-    darkmode: colorMode !== 'light',
-  }">
-    <div class="flex overflow-hidden w-full h-6rem justify-content-around"
-      style="border-radius: 7px; border: 1px solid rgb(209, 209, 209);" :class="{
+  <div
+    class="card"
+    style="padding: 0.5rem"
+    :class="{
+      lightmode: colorMode === 'light',
+      darkmode: colorMode !== 'light',
+    }"
+  >
+    <div
+      class="flex overflow-hidden w-full h-6rem justify-content-around"
+      style="border-radius: 7px; border: 1px solid rgb(209, 209, 209)"
+      :class="{
         lightmode: colorMode === 'light',
         darkmode: colorMode !== 'light',
-      }">
+      }"
+    >
       <!-- Logo -->
-      <div class="flex-none flex align-items-center justify-content-centerm-1 w-7rem">
+      <div
+        class="flex-none flex align-items-center justify-content-centerm-1 w-7rem"
+      >
         <slot name="logo"></slot>
       </div>
       <!-- AppName. Only visible if Desktop -->
-      <div v-if="!mobile" class="flex-none flex align-items-center justify-content-center m-1">
+      <div
+        v-if="!mobile"
+        class="flex-none flex align-items-center justify-content-center m-1"
+      >
         <slot name="appname"></slot>
       </div>
       <!-- First Items -->
@@ -22,38 +34,59 @@
         <slot name="start"></slot>
       </div>
       <!-- Center Items. Only visible if Desktop -->
-      <div v-if="!mobile" class="flex-grow-1 flex align-items-center align-items-center justify-content-center m-1">
+      <div
+        v-if="!mobile"
+        class="flex-grow-1 flex align-items-center align-items-center justify-content-center m-1"
+      >
         <slot name="center"></slot>
       </div>
       <!-- Last Items. Only visible if Desktop -->
-      <div class="flex-none flex align-items-center align-items-center justify-content-center m-1">
+      <div
+        class="flex-none flex align-items-center align-items-center justify-content-center m-1"
+      >
         <slot name="before-end"></slot>
       </div>
       <!-- Menu Items. Will be behind a menu if not Desktop -->
-      <div class="flex-none flex align-items-center align-items-center justify-content-center m-1">
+      <div
+        class="flex-none flex align-items-center align-items-center justify-content-center m-1"
+      >
         <!-- Desktop Menu -->
-        <div v-if="!mobile" class="desktop-submenu-list flex gap-3 align-items-center m-3">
+        <div
+          v-if="!mobile"
+          class="desktop-submenu-list flex gap-3 align-items-center m-3"
+        >
           <slot name="end"></slot>
           <DarkModeToggle />
           <Button icon="fa-solid fa-right-from-bracket" @click="logout" />
         </div>
 
         <!-- Mobile Menu -->
-        <div v-if="mobile" class="cursor-pointer" @click="showEndMenu = !showEndMenu">
+        <div
+          v-if="mobile"
+          class="cursor-pointer"
+          @click="showEndMenu = !showEndMenu"
+        >
           <i class="fa-solid fa-bars text-3xl"></i>
         </div>
 
-        <div v-if="mobile && showEndMenu"
+        <div
+          v-if="mobile && showEndMenu"
           class="absolute right-0 surface-10 border-round-xl rounded-md shadow-lg w-full p-3 shadow-3 z-1 flex flex-column gap-2"
           :class="{
             'bg-white': colorMode === 'light',
             'surface-100': colorMode !== 'light',
-          }" style="top: 5rem; min-height: calc(100vh - 5rem)">
+          }"
+          style="top: 5rem; min-height: calc(100vh - 5rem)"
+        >
           <div class="flex justify-content-end align-items-center">
             <slot name="before-end"></slot>
             <slot name="end"></slot>
             <DarkModeToggle />
-            <Button class="ml-3" icon="fa-solid fa-right-from-bracket" @click="logout" />
+            <Button
+              class="ml-3"
+              icon="fa-solid fa-right-from-bracket"
+              @click="logout"
+            />
           </div>
 
           <div class="flex flex-column flex-grow-1">
@@ -85,11 +118,14 @@
   </div>
 
   <!-- sidebar and Content -->
-  <div class="app-layout__content p-2 flex-grow-1" :class="{
-    lightmode: colorMode === 'light',
-    darkmode: colorMode !== 'light',
-    showSidebar: showSidebar && !!slots.sidebar,
-  }">
+  <div
+    class="app-layout__content p-2 flex-grow-1"
+    :class="{
+      lightmode: colorMode === 'light',
+      darkmode: colorMode !== 'light',
+      showSidebar: showSidebar && !!slots.sidebar,
+    }"
+  >
     <div v-if="showSidebar" style="min-width: 50px">
       <slot name="sidebar" />
     </div>
@@ -102,11 +138,11 @@
 
 <script setup lang="ts">
 import { ref, Ref, watch, computed, onMounted } from 'vue';
-import { useGlobalStore } from './../stores/global';
+import { useGlobalStore } from '../../stores/global';
 import DarkModeToggle from './DarkModeToggle.vue';
 import Button from 'primevue/button';
-import dataProvider from './../services/dataprovider';
-import { router } from './../router';
+import dataProvider from '../../services/dataprovider';
+import { router } from '../../router';
 const $global = useGlobalStore();
 
 const slots = defineSlots<{
@@ -253,7 +289,7 @@ div .lightmode {
   color: rgb(87 87 87);
 }
 
-ul.desktop-submenu-list>li {
+ul.desktop-submenu-list > li {
   float: left;
   font-size: 0.9rem;
   padding-left: 5px;
@@ -266,7 +302,7 @@ ul.mobile-submenu-list {
   margin-top: 10px;
 }
 
-ul.mobile-submenu-list>li {
+ul.mobile-submenu-list > li {
   padding-top: 10px;
   padding-bottom: 10px;
 }

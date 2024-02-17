@@ -17,10 +17,10 @@ import {
   EmissionResult,
   EmissionValue,
   OldReportValues,
-} from './../services/forecast';
-import dataprovider from './../services/dataprovider';
+} from '../../services/forecast';
+import dataprovider from '../../services/dataprovider';
 import { ref, Ref } from 'vue';
-import { error, warn } from './../services/toast';
+import { error, warn } from '../../services/toast';
 
 // Chart preparation
 function prepareChartData(emissionValues: EmissionValue[]) {

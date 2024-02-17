@@ -211,7 +211,7 @@
 </template>
 
 <script setup lang="ts">
-import { InputEntry } from '../services/types';
+import { InputEntry } from '../../services/types';
 import { defineProps, PropType, ref, defineEmits, watch } from 'vue';
 import Checkbox from 'primevue/checkbox';
 import InputNumber from 'primevue/inputnumber';

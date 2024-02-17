@@ -19,7 +19,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue';
-import { useGlobalStore } from './../stores/global';
+import { useGlobalStore } from '../../stores/global';
 
 const global = useGlobalStore();
 const report = computed(() => global.selectedReport);

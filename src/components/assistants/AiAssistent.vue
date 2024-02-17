@@ -85,13 +85,12 @@ import Button from 'primevue/button';
 import Card from 'primevue/card';
 import Textarea from 'primevue/textarea';
 import ProgressSpinner from 'primevue/progressspinner';
-import SmartEquivalentList from './SmartEquivalentList.vue';
+import SmartEquivalentList from '../equivalents/SmartEquivalentList.vue';
 import { ref, Ref } from 'vue';
-import { assistentPrompt } from './../services/prompts';
+import { assistentPrompt } from '../../services/prompts';
 import OpenAI from 'openai';
-import { error } from './../services/toast';
-import { useGlobalStore } from './../stores/global';
-// import dataprovider from './../services/dataprovider';
+import { error } from '../../services/toast';
+import { useGlobalStore } from '../../stores/global';
 
 interface Message {
   role: string;

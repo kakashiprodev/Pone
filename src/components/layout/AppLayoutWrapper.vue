@@ -2,7 +2,7 @@
   <AppLayout>
     <template #logo>
       <img
-        src="./../assets/logo-transparent_part.png"
+        src="../../assets/logo-transparent_part.png"
         class="cursor-pointer"
         @click="router.push({ name: 'home' })"
         style="height: 50px"
@@ -43,7 +43,7 @@
             <InputSwitch
               class="flex align-items-center justify-content-center"
               v-model="global.showTooltips"
-            />            
+            />
           </div>
         </li>
       </ul>
@@ -115,10 +115,10 @@
 
 <script setup lang="ts">
 import AppLayout from './AppLayout.vue';
-import { useGlobalStore } from './../stores/global';
+import { useGlobalStore } from '../../stores/global';
 import { useRouter } from 'vue-router';
 import InputSwitch from 'primevue/inputswitch';
-import dataprovider from './../services/dataprovider';
+import dataprovider from '../../services/dataprovider';
 import PanelMenu from 'primevue/panelmenu';
 import Button from 'primevue/button';
 

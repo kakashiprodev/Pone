@@ -9,199 +9,381 @@
       <InputText v-model="filter" placeholder="Filter" class="mr-1" />
     </template>
     <template #end>
-      <Button icon="fa-solid fa-plus" @click="
-        selectedAction = clone(emptyAction);
-      showDialog = true;
-      " class="mr-1" />
+      <Button
+        icon="fa-solid fa-plus"
+        @click="
+          selectedAction = clone(emptyAction);
+          showDialog = true;
+        "
+        class="mr-1"
+      />
       <Button icon="fa-solid fa-download" @click="download()" />
     </template>
   </Toolbar>
 
-  <Dialog id="edit-create-action" v-model:visible="showDialog" modal
-    :header="selectedAction.id === 'new' ? 'Anlegen' : 'Bearbeiten'" :class="{
+  <Dialog
+    id="edit-create-action"
+    v-model:visible="showDialog"
+    modal
+    :header="selectedAction.id === 'new' ? 'Anlegen' : 'Bearbeiten'"
+    :class="{
       'w-8': windowWidth > 990,
       'w-full': windowWidth < 990,
       'h-screen': windowWidth < 990,
-    }">
-
+    }"
+  >
     <!-- Relevant (Aktiv?) -->
     <div class="field">
       <label for="action-relevant" class="w-full">Aktiv?</label>
-      <InlineMessage severity="info" v-if="global.showTooltips" class="w-full mb-2">
+      <InlineMessage
+        severity="info"
+        v-if="global.showTooltips"
+        class="w-full mb-2"
+      >
         Ist die Maßnahme aktiv und soll in den Berichten angezeigt werden?
       </InlineMessage>
-      <Checkbox v-model="selectedAction.relevant" id="action-relevant" :binary="true" />
+      <Checkbox
+        v-model="selectedAction.relevant"
+        id="action-relevant"
+        :binary="true"
+      />
     </div>
 
     <!-- Name -->
     <div class="field">
       <label for="action-name" class="w-full">Name*</label>
-      <InlineMessage severity="info" v-if="global.showTooltips" class="w-full mb-2">
+      <InlineMessage
+        severity="info"
+        v-if="global.showTooltips"
+        class="w-full mb-2"
+      >
         Der Name der Maßnahme für die Übersicht und Diagramme.
       </InlineMessage>
-      <InputText class="w-full" v-model="selectedAction.name" id="action-name" />
+      <InputText
+        class="w-full"
+        v-model="selectedAction.name"
+        id="action-name"
+      />
     </div>
 
     <!-- Description Before -->
     <div class="field">
-      <label class="w-full" for="action-descriptionBefore">Beschreibung (vorher)*</label>
-      <InlineMessage severity="info" v-if="global.showTooltips" class="w-full mb-2">
+      <label class="w-full" for="action-descriptionBefore"
+        >Beschreibung (vorher)*</label
+      >
+      <InlineMessage
+        severity="info"
+        v-if="global.showTooltips"
+        class="w-full mb-2"
+      >
         Eine Kurzbeschreibung für das Berichtswesen.
       </InlineMessage>
-      <Editor class="w-full" v-model="selectedAction.descriptionBefore" id="action-descriptionBefore"
-        editorStyle="height: 80px" />
+      <Editor
+        class="w-full"
+        v-model="selectedAction.descriptionBefore"
+        id="action-descriptionBefore"
+        editorStyle="height: 80px"
+      />
     </div>
 
     <!-- Description After -->
     <div class="field">
-      <label for="action-descriptionAfter" class="w-full">Beschreibung (nachher)</label>
-      <InlineMessage severity="info" v-if="global.showTooltips" class="w-full mb-2">
+      <label for="action-descriptionAfter" class="w-full"
+        >Beschreibung (nachher)</label
+      >
+      <InlineMessage
+        severity="info"
+        v-if="global.showTooltips"
+        class="w-full mb-2"
+      >
         Eine Kurzbeschreibung für das Berichtswesen.
       </InlineMessage>
-      <Editor class="w-full" v-model="selectedAction.descriptionAfter" id="action-descriptionAfter"
-        editorStyle="height: 80px" />
+      <Editor
+        class="w-full"
+        v-model="selectedAction.descriptionAfter"
+        id="action-descriptionAfter"
+        editorStyle="height: 80px"
+      />
     </div>
 
     <!-- Target Value Absolute Planned -->
     <div class="field">
-      <label for="action-targetValueAbsolutPlanned" class="w-full">Geplante Einsparung in kg CO2*</label>
-      <InlineMessage severity="info" v-if="global.showTooltips" class="w-full mb-2">
+      <label for="action-targetValueAbsolutPlanned" class="w-full"
+        >Geplante Einsparung in kg CO2*</label
+      >
+      <InlineMessage
+        severity="info"
+        v-if="global.showTooltips"
+        class="w-full mb-2"
+      >
         Die angestrebte Einsparung der Maßnahe in kg CO2 Äquivalenten.
       </InlineMessage>
-      <InputNumber class="w-full" v-model="selectedAction.targetValueAbsolutPlanned"
-        id="action-targetValueAbsolutPlanned" />
+      <InputNumber
+        class="w-full"
+        v-model="selectedAction.targetValueAbsolutPlanned"
+        id="action-targetValueAbsolutPlanned"
+      />
     </div>
 
     <!-- Target Value Absolute Is -->
     <div class="field">
-      <label for="action-targetValueAbsolutIs" class="w-full">Tatsächliche Einsparung in kg CO2</label>
-      <InlineMessage severity="info" v-if="global.showTooltips" class="w-full mb-2">
+      <label for="action-targetValueAbsolutIs" class="w-full"
+        >Tatsächliche Einsparung in kg CO2</label
+      >
+      <InlineMessage
+        severity="info"
+        v-if="global.showTooltips"
+        class="w-full mb-2"
+      >
         Die tatsächliche Einsparung der Maßnahe in lg CO2 Äquivalenten.
       </InlineMessage>
-      <InputNumber class="w-full" v-model="selectedAction.targetValueAbsolutIs" id="action-targetValueAbsolutIs" />
+      <InputNumber
+        class="w-full"
+        v-model="selectedAction.targetValueAbsolutIs"
+        id="action-targetValueAbsolutIs"
+      />
     </div>
 
     <!-- Description Target Value -->
     <div class="field">
-      <label for="action-descriptionTargetValue" class="w-full">Beschreibung der Zielwerte</label>
-      <InlineMessage severity="info" v-if="global.showTooltips" class="w-full mb-2">
+      <label for="action-descriptionTargetValue" class="w-full"
+        >Beschreibung der Zielwerte</label
+      >
+      <InlineMessage
+        severity="info"
+        v-if="global.showTooltips"
+        class="w-full mb-2"
+      >
         Beschreibung wie die Zielwerte erreicht werden sollen.
       </InlineMessage>
-      <Editor class="w-full" v-model="selectedAction.descriptionTargetValue" id="action-descriptionTargetValue"
-        editorStyle="height: 80px" />
+      <Editor
+        class="w-full"
+        v-model="selectedAction.descriptionTargetValue"
+        id="action-descriptionTargetValue"
+        editorStyle="height: 80px"
+      />
     </div>
 
     <!-- Responsible -->
     <div class="field">
       <label for="action-responsible" class="w-full">Verantwortlich</label>
-      <InlineMessage severity="info" v-if="global.showTooltips" class="w-full mb-2">
+      <InlineMessage
+        severity="info"
+        v-if="global.showTooltips"
+        class="w-full mb-2"
+      >
         Wer ist für die Maßnahme verantwortlich?
       </InlineMessage>
-      <InputText class="w-full" v-model="selectedAction.responsible" id="action-responsible" />
+      <InputText
+        class="w-full"
+        v-model="selectedAction.responsible"
+        id="action-responsible"
+      />
     </div>
 
     <!-- Status -->
     <div class="field">
       <label class="w-full" for="action-status">Status</label>
-      <InlineMessage severity="info" v-if="global.showTooltips" class="w-full mb-2">
+      <InlineMessage
+        severity="info"
+        v-if="global.showTooltips"
+        class="w-full mb-2"
+      >
         Der aktuelle Status der Maßnahme.
       </InlineMessage>
-      <Dropdown id="action-status" v-model="selectedAction.status" class="w-full" :options="Object.keys(statusTranslations).map((key) => ({
-        label: statusTranslations[key],
-        value: key,
-      }))
-        " option-label="label" option-value="value" />
+      <Dropdown
+        id="action-status"
+        v-model="selectedAction.status"
+        class="w-full"
+        :options="
+          Object.keys(statusTranslations).map((key) => ({
+            label: statusTranslations[key],
+            value: key,
+          }))
+        "
+        option-label="label"
+        option-value="value"
+      />
     </div>
 
     <!-- Progress -->
     <div class="field">
       <label class="w-full" for="action-progress">Fortschritt</label>
-      <InlineMessage severity="info" v-if="global.showTooltips" class="w-full mb-2">
+      <InlineMessage
+        severity="info"
+        v-if="global.showTooltips"
+        class="w-full mb-2"
+      >
         Der aktuelle Fortschritt der Maßnahme in %. (0-100)
       </InlineMessage>
-      <Slider id="action-progress" v-model="selectedAction.progress" class="w-full mb-3" :step="5" />
+      <Slider
+        id="action-progress"
+        v-model="selectedAction.progress"
+        class="w-full mb-3"
+        :step="5"
+      />
     </div>
 
     <!-- Finished Until Planned -->
     <div class="field">
-      <label class="w-full" for="action-finishedUntilPlanned">Geplantes Fertigstellungsdatum</label>
-      <InlineMessage severity="info" v-if="global.showTooltips" class="w-full mb-2">
+      <label class="w-full" for="action-finishedUntilPlanned"
+        >Geplantes Fertigstellungsdatum</label
+      >
+      <InlineMessage
+        severity="info"
+        v-if="global.showTooltips"
+        class="w-full mb-2"
+      >
         Das geplante Fertigstellungsdatum der Maßnahme.
       </InlineMessage>
-      <Calendar class="w-full" v-model="selectedAction.finishedUntilPlanned" id="action-finishedUntilPlanned" />
+      <Calendar
+        class="w-full"
+        v-model="selectedAction.finishedUntilPlanned"
+        id="action-finishedUntilPlanned"
+      />
     </div>
 
     <!-- Finished Until Is -->
     <div class="field">
-      <label class="w-full" for="action-finishedUntilIs">Tatsächliches Fertigstellungsdatum</label>
-      <InlineMessage severity="info" v-if="global.showTooltips" class="w-full mb-2">
+      <label class="w-full" for="action-finishedUntilIs"
+        >Tatsächliches Fertigstellungsdatum</label
+      >
+      <InlineMessage
+        severity="info"
+        v-if="global.showTooltips"
+        class="w-full mb-2"
+      >
         Das tatsächliche Fertigstellungsdatum der Maßnahme.
       </InlineMessage>
-      <Calendar class="w-full" v-model="selectedAction.finishedUntilIs" id="action-finishedUntilIs" />
+      <Calendar
+        class="w-full"
+        v-model="selectedAction.finishedUntilIs"
+        id="action-finishedUntilIs"
+      />
     </div>
 
     <!-- Category -->
     <div class="field">
       <label class="w-full" for="action-category">Kategorie</label>
-      <InlineMessage severity="info" v-if="global.showTooltips" class="w-full mb-2">
+      <InlineMessage
+        severity="info"
+        v-if="global.showTooltips"
+        class="w-full mb-2"
+      >
         In welche Kategorie fällt die Maßnahme?
       </InlineMessage>
-      <Dropdown class="w-full" v-model="selectedAction.category" id="action-category" :options="['keine Ahnung']" />
+      <Dropdown
+        class="w-full"
+        v-model="selectedAction.category"
+        id="action-category"
+        :options="['keine Ahnung']"
+      />
     </div>
 
     <!-- Costs Planned -->
     <div class="field">
       <label class="w-full" for="action-costsPlanned">Geplante Kosten</label>
-      <InlineMessage severity="info" v-if="global.showTooltips" class="w-full mb-2">
+      <InlineMessage
+        severity="info"
+        v-if="global.showTooltips"
+        class="w-full mb-2"
+      >
         Eine Einschätzung der geplanten Kosten.
       </InlineMessage>
-      <InputNumber class="w-full" v-model="selectedAction.costsPlanned" id="action-costsPlanned" />
+      <InputNumber
+        class="w-full"
+        v-model="selectedAction.costsPlanned"
+        id="action-costsPlanned"
+      />
     </div>
 
     <!-- Costs Is -->
     <div class="field">
       <label class="w-full" for="action-costsIs">Tatsächliche Kosten</label>
-      <InlineMessage severity="info" v-if="global.showTooltips" class="w-full mb-2">
+      <InlineMessage
+        severity="info"
+        v-if="global.showTooltips"
+        class="w-full mb-2"
+      >
         Die tatsächlichen Kosten der Maßnahme.
       </InlineMessage>
-      <InputNumber class="w-full" v-model="selectedAction.costsIs" id="action-costsIs" />
+      <InputNumber
+        class="w-full"
+        v-model="selectedAction.costsIs"
+        id="action-costsIs"
+      />
     </div>
 
     <!-- ROI -->
     <div class="field">
       <label class="w-full" for="action-roi">ROI (Return on Investment)</label>
-      <InlineMessage severity="info" v-if="global.showTooltips" class="w-full mb-2">
+      <InlineMessage
+        severity="info"
+        v-if="global.showTooltips"
+        class="w-full mb-2"
+      >
         Der Return on Investment der Maßnahme.
       </InlineMessage>
-      <InputNumber class="w-full" v-model="selectedAction.roi" id="action-roi" />
+      <InputNumber
+        class="w-full"
+        v-model="selectedAction.roi"
+        id="action-roi"
+      />
     </div>
 
     <!-- Description Costs -->
     <div class="field">
-      <label class="w-full" for="action-descriptionCosts">Beschreibung der Kosten</label>
-      <InlineMessage severity="info" v-if="global.showTooltips" class="w-full mb-2">
+      <label class="w-full" for="action-descriptionCosts"
+        >Beschreibung der Kosten</label
+      >
+      <InlineMessage
+        severity="info"
+        v-if="global.showTooltips"
+        class="w-full mb-2"
+      >
         Wie setzen sich die Kosten zusammen?
       </InlineMessage>
-      <Editor class="w-full" v-model="selectedAction.descriptionCosts" id="action-descriptionCosts"
-        editorStyle="height: 80px" />
+      <Editor
+        class="w-full"
+        v-model="selectedAction.descriptionCosts"
+        id="action-descriptionCosts"
+        editorStyle="height: 80px"
+      />
     </div>
 
     <!-- Avoidance Costs -->
     <div class="field">
-      <label class="w-full" for="action-avoidanceCosts">Vermeidungskosten</label>
-      <InlineMessage severity="info" v-if="global.showTooltips" class="w-full mb-2">
+      <label class="w-full" for="action-avoidanceCosts"
+        >Vermeidungskosten</label
+      >
+      <InlineMessage
+        severity="info"
+        v-if="global.showTooltips"
+        class="w-full mb-2"
+      >
         Wie viel Kosten werden durch die Maßnahme vermieden?
       </InlineMessage>
-      <InputNumber class="w-full" v-model="selectedAction.avoidanceCosts" id="action-avoidanceCosts" />
+      <InputNumber
+        class="w-full"
+        v-model="selectedAction.avoidanceCosts"
+        id="action-avoidanceCosts"
+      />
     </div>
 
     <div>
-      <Button :label="selectedAction.id === 'new' ? 'Anlegen' : 'Speichern'" @click="save" />
+      <Button
+        :label="selectedAction.id === 'new' ? 'Anlegen' : 'Speichern'"
+        @click="save"
+      />
     </div>
   </Dialog>
 
   <ConfirmPopup></ConfirmPopup>
-  <DataTable v-if="actions.length > 0" :value="filteredActions" class="cst-no-hover">
+  <DataTable
+    v-if="actions.length > 0"
+    :value="filteredActions"
+    class="cst-no-hover"
+  >
     <Column field="name" header="Name"></Column>
     <Column field="status" header="Status">
       <template #body="{ data }">
@@ -218,7 +400,10 @@
     </Column>
     <!-- <Column field="shortDescription" header="Kurzbeschreibung"></Column>
         <Column field="longDescription" header="Langbeschreibung"></Column> -->
-    <Column field="targetValueAbsolutPlanned" header="Zieleinsparung in kg"></Column>
+    <Column
+      field="targetValueAbsolutPlanned"
+      header="Zieleinsparung in kg"
+    ></Column>
     <Column field="responsible" header="Verantwortlich"></Column>
     <Column field="progress" header="Fortschritt">
       <template #body="{ data }"> {{ data.progress }} % </template>
@@ -231,12 +416,19 @@
     <Column header="">
       <template #body="{ data }">
         <div class="flex">
-          <Button icon="fa-solid fa-edit" @click="
-            selectedAction = data;
-          originalAction = clone(data);
-          showDialog = true;
-          " />
-          <Button icon="fa-solid fa-trash" class="ml-1" @click="deleteEntry(data, $event)" />
+          <Button
+            icon="fa-solid fa-edit"
+            @click="
+              selectedAction = data;
+              originalAction = clone(data);
+              showDialog = true;
+            "
+          />
+          <Button
+            icon="fa-solid fa-trash"
+            class="ml-1"
+            @click="deleteEntry(data, $event)"
+          />
         </div>
       </template>
     </Column>
@@ -245,10 +437,10 @@
 
 <script setup lang="ts">
 import { ref, watch } from 'vue';
-import { useGlobalStore } from './../stores/global';
-import { ActionEntry } from './../services/types';
-import dataprovider from './../services/dataprovider';
-import { error } from './../services/toast';
+import { useGlobalStore } from '../../stores/global';
+import { ActionEntry } from '../../services/types';
+import dataprovider from '../../services/dataprovider';
+import { error } from '../../services/toast';
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
 import Toolbar from 'primevue/toolbar';

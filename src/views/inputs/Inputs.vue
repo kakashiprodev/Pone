@@ -566,18 +566,18 @@ import Dialog from 'primevue/dialog';
 import Checkbox from 'primevue/checkbox';
 import Dropdown from 'primevue/dropdown';
 import InlineMessage from 'primevue/inlinemessage';
-import SmartEquivalentList from './../components/SmartEquivalentList.vue';
-import FacilityChooser from './../components/FacilityChooser.vue';
-import ScopeInfoBox from './../components/ScopeInfoBox.vue';
-import MonthlyOrYearlyInput from './../components/MonthlyOrYearlyInput.vue';
-import { EquivalentEntry, InputEntry } from './../services/types';
-import dataprovider from './../services/dataprovider';
+import SmartEquivalentList from '../../components/equivalents/SmartEquivalentList.vue';
+import FacilityChooser from '../../components/facilities/FacilityChooser.vue';
+import ScopeInfoBox from '../../components/equivalents/ScopeInfoBox.vue';
+import MonthlyOrYearlyInput from '../../components/equivalents/MonthlyOrYearlyInput.vue';
+import { EquivalentEntry, InputEntry } from '../../services/types';
+import dataprovider from '../../services/dataprovider';
 import { Ref, ref, computed, watch, ComputedRef } from 'vue';
 import { useRoute } from 'vue-router';
-import { useGlobalStore } from './../stores/global';
-import { error } from './../services/toast';
+import { useGlobalStore } from '../../stores/global';
+import { error } from '../../services/toast';
 import { useConfirm } from 'primevue/useconfirm';
-import { getSumForInput, getCalculationSteps } from './../services/reporting';
+import { getSumForInput, getCalculationSteps } from '../../services/reporting';
 import { useRouter } from 'vue-router';
 import {
   parse,
@@ -591,7 +591,7 @@ import {
   nullable,
   boolean,
 } from 'valibot';
-import { roundStringWithDecimals, toTons } from './../pipes';
+import { roundStringWithDecimals, toTons } from '../../pipes';
 
 const router = useRouter();
 

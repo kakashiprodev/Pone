@@ -10,7 +10,12 @@
         </div>
         <div class="p-field mt-2">
           <label for="password">Passwort</label>
-          <TextInput class="mt-2" id="password" type="password" v-model="password" />
+          <TextInput
+            class="mt-2"
+            id="password"
+            type="password"
+            v-model="password"
+          />
         </div>
         <Button @click="login" :disabled="false" class="mt-5" label="Login" />
       </div>
@@ -22,9 +27,9 @@
 import Button from 'primevue/button';
 import TextInput from 'primevue/inputtext';
 import { useRouter } from 'vue-router';
-import DataProvider from "./../services/dataprovider";
+import DataProvider from '../../services/dataprovider';
 import { Ref, ref } from 'vue';
-import { useGlobalStore } from './../stores/global';
+import { useGlobalStore } from '../../stores/global';
 const router = useRouter();
 const global = useGlobalStore();
 
@@ -37,7 +42,7 @@ const login = async () => {
     await global.initializeStore();
     router.push({ name: 'dashboard' });
   }
-}
+};
 </script>
 
 <style scoped>

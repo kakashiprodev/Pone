@@ -14,7 +14,7 @@
 </template>
 
 <script lang="ts" setup>
-import { useGlobalStore } from './../stores/global';
+import { useGlobalStore } from '../../stores/global';
 import InputSwitch from 'primevue/inputswitch';
 import { computed } from 'vue';
 

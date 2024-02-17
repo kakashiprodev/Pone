@@ -17,9 +17,9 @@
 <script setup lang="ts">
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
-import { FacilityEntry } from './../services/types';
+import { FacilityEntry } from '../../services/types';
 import { PropType, Ref, ref, watch } from 'vue';
-import { useGlobalStore } from './../stores/global';
+import { useGlobalStore } from '../../stores/global';
 
 // load global references
 const global = useGlobalStore();
