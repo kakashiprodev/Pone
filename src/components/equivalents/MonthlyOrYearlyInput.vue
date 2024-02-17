@@ -37,7 +37,7 @@
       <div class="col-3 small-width-ctm">
         <InputNumber
           :use-grouping="false"
-          v-model="innerModelValue.rawJan"
+          v-model="innerModelValue.rawValueJan"
           :min-fraction-digits="0"
           :max-fraction-digits="10"
           class="w-full"
@@ -46,7 +46,7 @@
       <div class="col-3 small-width-ctm">
         <InputNumber
           :use-grouping="false"
-          v-model="innerModelValue.rawFeb"
+          v-model="innerModelValue.rawValueFeb"
           :min-fraction-digits="0"
           :max-fraction-digits="10"
           class="w-full"
@@ -55,7 +55,7 @@
       <div class="col-3 small-width-ctm">
         <InputNumber
           :use-grouping="false"
-          v-model="innerModelValue.rawMar"
+          v-model="innerModelValue.rawValueMar"
           :min-fraction-digits="0"
           :max-fraction-digits="10"
           class="w-full"
@@ -64,7 +64,7 @@
       <div class="col-3 small-width-ctm">
         <InputNumber
           :use-grouping="false"
-          v-model="innerModelValue.rawApr"
+          v-model="innerModelValue.rawValueApr"
           :min-fraction-digits="0"
           :max-fraction-digits="10"
           class="w-full"
@@ -97,7 +97,7 @@
       <div class="col-3 small-width-ctm">
         <InputNumber
           :use-grouping="false"
-          v-model="innerModelValue.rawMay"
+          v-model="innerModelValue.rawValueMay"
           :min-fraction-digits="0"
           :max-fraction-digits="10"
           class="w-full"
@@ -106,7 +106,7 @@
       <div class="col-3 small-width-ctm">
         <InputNumber
           :use-grouping="false"
-          v-model="innerModelValue.rawJun"
+          v-model="innerModelValue.rawValueJun"
           :min-fraction-digits="0"
           :max-fraction-digits="10"
           class="w-full"
@@ -115,7 +115,7 @@
       <div class="col-3 small-width-ctm">
         <InputNumber
           :use-grouping="false"
-          v-model="innerModelValue.rawJul"
+          v-model="innerModelValue.rawValueJul"
           :min-fraction-digits="0"
           :max-fraction-digits="10"
           class="w-full"
@@ -124,7 +124,7 @@
       <div class="col-3 small-width-ctm">
         <InputNumber
           :use-grouping="false"
-          v-model="innerModelValue.rawAug"
+          v-model="innerModelValue.rawValueAug"
           :min-fraction-digits="0"
           :max-fraction-digits="10"
           class="w-full"
@@ -157,7 +157,7 @@
       <div class="col-3 small-width-ctm">
         <InputNumber
           :use-grouping="false"
-          v-model="innerModelValue.rawSep"
+          v-model="innerModelValue.rawValueSep"
           :min-fraction-digits="0"
           :max-fraction-digits="10"
           class="w-full"
@@ -166,7 +166,7 @@
       <div class="col-3 small-width-ctm">
         <InputNumber
           :use-grouping="false"
-          v-model="innerModelValue.rawOct"
+          v-model="innerModelValue.rawValueOct"
           :min-fraction-digits="0"
           :max-fraction-digits="10"
           class="w-full"
@@ -175,7 +175,7 @@
       <div class="col-3 small-width-ctm">
         <InputNumber
           :use-grouping="false"
-          v-model="innerModelValue.rawNov"
+          v-model="innerModelValue.rawValueNov"
           :min-fraction-digits="0"
           :max-fraction-digits="10"
           class="w-full"
@@ -184,7 +184,7 @@
       <div class="col-3 small-width-ctm">
         <InputNumber
           :use-grouping="false"
-          v-model="innerModelValue.rawDec"
+          v-model="innerModelValue.rawValueDec"
           :min-fraction-digits="0"
           :max-fraction-digits="10"
           class="w-full"

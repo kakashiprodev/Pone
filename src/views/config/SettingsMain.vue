@@ -55,6 +55,12 @@ const items = ref([
         icon: 'fa-solid fa-key',
         to: '/settings/user-password',
       },
+      {
+        key: 'user-demo',
+        label: '=> Zeige DataEngine Demo!',
+        icon: 'fa-solid fa-key',
+        to: '/demo',
+      },
     ],
   },
   {

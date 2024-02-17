@@ -487,7 +487,7 @@ import InputNumber from 'primevue/inputnumber';
 import Checkbox from 'primevue/checkbox';
 import Dialog from 'primevue/dialog';
 import ConfirmPopup from 'primevue/confirmpopup';
-import { getAverageEquivalent } from '../../services/reporting';
+import { getAverageEquivalent } from '../../services/reporting/index';
 import { useGlobalStore } from '../../stores/global';
 import { Ref, ref, watchEffect, computed } from 'vue';
 import { EquivalentEntry } from '../../services/types';

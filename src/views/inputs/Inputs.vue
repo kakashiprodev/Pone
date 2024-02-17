@@ -577,7 +577,10 @@ import { useRoute } from 'vue-router';
 import { useGlobalStore } from '../../stores/global';
 import { error } from '../../services/toast';
 import { useConfirm } from 'primevue/useconfirm';
-import { getSumForInput, getCalculationSteps } from '../../services/reporting';
+import {
+  getSumForInput,
+  getCalculationSteps,
+} from '../../services/reporting/index';
 import { useRouter } from 'vue-router';
 import {
   parse,
@@ -744,18 +747,18 @@ const emptyInput: InputEntry = {
   parent: null,
   rawValue: null as any,
   monthlyValues: false,
-  rawJan: null as any,
-  rawFeb: null as any,
-  rawMar: null as any,
-  rawApr: null as any,
-  rawMay: null as any,
-  rawJun: null as any,
-  rawJul: null as any,
-  rawAug: null as any,
-  rawSep: null as any,
-  rawOct: null as any,
-  rawNov: null as any,
-  rawDec: null as any,
+  rawValueJan: null as any,
+  rawValueFeb: null as any,
+  rawValueMar: null as any,
+  rawValueApr: null as any,
+  rawValueMay: null as any,
+  rawValueJun: null as any,
+  rawValueJul: null as any,
+  rawValueAug: null as any,
+  rawValueSep: null as any,
+  rawValueOct: null as any,
+  rawValueNov: null as any,
+  rawValueDec: null as any,
 };
 const clone = (input: InputEntry) => {
   const c = JSON.parse(JSON.stringify(input));
@@ -774,18 +777,18 @@ watch(
   () => {
     if (!selectedValue.value.monthlyValues) {
       const keys: (keyof InputEntry)[] = [
-        'rawJan',
-        'rawFeb',
-        'rawMar',
-        'rawApr',
-        'rawMay',
-        'rawJun',
-        'rawJul',
-        'rawAug',
-        'rawSep',
-        'rawOct',
-        'rawNov',
-        'rawDec',
+        'rawValueJan',
+        'rawValueFeb',
+        'rawValueMar',
+        'rawValueApr',
+        'rawValueMay',
+        'rawValueJun',
+        'rawValueJul',
+        'rawValueAug',
+        'rawValueSep',
+        'rawValueOct',
+        'rawValueNov',
+        'rawValueDec',
       ];
       keys.forEach((key) => {
         // @ts-ignore

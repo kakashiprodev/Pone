@@ -57,6 +57,25 @@ export interface InputEntry {
   rawValueDec: number;
 }
 
+// table "inputs" with expanded report and site
+export interface InputEntryWithExpandedReportAndSite extends InputEntry {
+  expand: {
+    report: {
+      id: string;
+      baseYear: number;
+      year: number;
+      site: string; // reference on table sites
+      expand: {
+        site: {
+          id: string;
+          name: string;
+          project: string; // reference on table projects
+        };
+      };
+    };
+  };
+}
+
 // query object for table "inputs"
 export interface UserInputQuery {
   scope?: number[];
