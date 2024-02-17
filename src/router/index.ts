@@ -13,11 +13,6 @@ const routes = [
     redirect: { name: 'dashboard' },
     children: [
       {
-        path: '/user',
-        component: () => import('../views/UsersProfile.vue'),
-        name: 'user',
-      },
-      {
         path: '/dashboard',
         component: () => import('../views/Dashboard.vue'),
         name: 'dashboard',
@@ -58,7 +53,7 @@ const routes = [
       //   path: '/report-config/',
       //   component: () => import('../views/ReportConfig.vue'),
       //   name: 'reportConfig',
-      // },      
+      // },
       {
         path: '/assistant/',
         component: () => import('../views/AiAssistentInput.vue'),
@@ -68,17 +63,19 @@ const routes = [
         path: 'settings', // :category?
         component: () => import('../views/SettingsMain.vue'),
         name: 'settings',
-        redirect: { name: 'user-profile' },
+        redirect: { name: 'user-settings' },
         children: [
           {
-            path: 'user-profile',
-            component: () => import('../views/UsersProfile.vue'),
-            name: 'user-profile',
+            path: 'user-settings',
+            component: () =>
+              import('../components/usersprofile/UserSettings.vue'),
+            name: 'user-settings',
           },
           {
-            path: 'user-logout',
-            component: () => import('../views/UsersProfile.vue'),
-            name: 'user-logout',
+            path: 'user-password',
+            component: () =>
+              import('../components/usersprofile/ChangePassword.vue'),
+            name: 'user-password',
           },
           {
             path: 'project-general',

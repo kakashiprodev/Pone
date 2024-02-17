@@ -1,10 +1,17 @@
 <template>
   <div class="flex">
     <!-- PanelMenu für das vertikale Menü auf der linken Seite -->
-    <PanelMenu :model="items" class="w-1/5 pr-3" v-model:expandedKeys="expandedKeys">
+    <PanelMenu
+      :model="items"
+      class="w-1/5 pr-3"
+      v-model:expandedKeys="expandedKeys"
+    >
       <template #item="{ item }">
-        <router-link class="flex align-items-center px-3 py-2 cursor-pointer no-underline text-color" :to="item.to ?? ''"
-          :exact-active-class="'active-route'">
+        <router-link
+          class="flex align-items-center px-3 py-2 cursor-pointer no-underline text-color"
+          :to="item.to ?? ''"
+          :exact-active-class="'active-route'"
+        >
           <span :class="[item.icon, 'text-primary']" />
           <span :class="['ml-2', { 'font-semibold': item.items }]">
             {{ item.label }}
@@ -27,8 +34,8 @@ import { useRoute } from 'vue-router';
 const route = useRoute();
 
 const expandedKeys = ref({
-  'user': true,
-  'project': true,
+  user: true,
+  project: true,
 });
 const items = ref([
   {
@@ -37,16 +44,16 @@ const items = ref([
     icon: 'fa-solid fa-user',
     items: [
       {
-        key: 'user-profile',
+        key: 'user-settings',
         label: 'Profil',
         icon: 'fa-solid fa-user-gear',
-        to: '/settings/user-profile',
+        to: '/settings/user-settings',
       },
       {
-        key: 'user-logout',
-        label: 'Ausloggen',
-        icon: 'fa-solid fa-right-from-bracket',
-        to: '/settings/user-logout',
+        key: 'user-password',
+        label: 'Passwort ändern',
+        icon: 'fa-solid fa-key',
+        to: '/settings/user-password',
       },
     ],
   },
