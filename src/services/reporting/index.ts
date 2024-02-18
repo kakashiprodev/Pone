@@ -453,7 +453,7 @@ export interface AggregatedReportResultYearlyGrouped {
     sum: number; // over all data
   };
   yearlyGrouped: {
-    [year: number]: {
+    [year: string]: {
       stat: {
         sum: number; // over all data for the year
       };

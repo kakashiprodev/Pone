@@ -1,8 +1,10 @@
 <template>
   <h2>Demo for Dasbboard DataEngine</h2>
 
+  <!-- Form for query -->
   <div>
     <HorizontalTwoColHeader label="Main" class="mt-2" />
+
     <HorizontalTwoColEntry label="Project" class="mt-2">
       <label>{{ global.selectedProject?.name }}</label>
     </HorizontalTwoColEntry>
@@ -27,9 +29,10 @@
       />
     </HorizontalTwoColEntry>
 
+    <!-- Form for filters -->
     <HorizontalTwoColHeader label="Filters" class="mt-2" />
     <HorizontalTwoColEntry label="Use Filter" class="mt-2">
-      <Checkbox v-model="useFilter" id="Use Filter" :binary="true"/>
+      <Checkbox v-model="useFilter" id="Use Filter" :binary="true" />
     </HorizontalTwoColEntry>
     <HorizontalTwoColEntry label="Scopes" class="mt-2">
       <MultiSelect
@@ -63,17 +66,24 @@
       />
     </HorizontalTwoColEntry>
 
+    <!-- Form for function -->
     <HorizontalTwoColHeader label="Aggregation type" class="mt-2" />
     <HorizontalTwoColEntry label="Function" class="mt-2">
       <Dropdown
         id="function"
-        :options="['getPlainReportData', 'getGroupedReportData']"
+        :options="availableFunctions"
+        option-label="name"
+        option-value="id"
         v-model="selectedFunction"
         placeholder="Select a Function"
         class="w-full"
       />
     </HorizontalTwoColEntry>
-    <HorizontalTwoColEntry label="GroupBy" class="mt-2">
+    <HorizontalTwoColEntry
+      v-show="selectedFunction !== 'getPlainReportData'"
+      label="GroupBy"
+      class="mt-2"
+    >
       <Dropdown
         id="groupBy"
         :options="availableGroupBy"
@@ -83,34 +93,114 @@
       />
     </HorizontalTwoColEntry>
 
-    <HorizontalTwoColEntry label="Get Data" class="mt-2">
+    <HorizontalTwoColEntry
+      v-show="selectedFunction !== 'getPlainReportData'"
+      label="Stacked Charts?"
+    >
+      <Checkbox v-model="stackedCharts" id="stackedCharts" :binary="true" />
+    </HorizontalTwoColEntry>
+
+    <HorizontalTwoColEntry label="" class="mt-2">
       <div class="w-full flex justify-content-end">
         <Button @click="getData()" label="Let´s get data!" />
       </div>
     </HorizontalTwoColEntry>
   </div>
 
+  <!-- RESULTS -->
   <TabView class="mt-2">
+    <!-- Plot result -->
     <TabPanel header="Plot data">
-      <TabView>
+      <div v-if="selectedFunction === 'getPlainReportData'">
+        <Card>
+          <template #content>
+            This data cannot be plotted as a Chart here.
+          </template>
+        </Card>
+      </div>
+      <TabView v-else>
+        <TabPanel header="Bar Vertical">
+          <BarChart
+            v-if="
+              selectedFunction === 'getGroupedReportData' && reportDataGrouped
+            "
+            type="simpleGrouped"
+            :data="reportDataGrouped"
+            index-axis="x"
+          />
+          <BarChart
+            v-if="
+              selectedFunction === 'getYearlyGroupedReportData' &&
+              reportDataYearlyGrouped
+            "
+            type="yearlyGrouped"
+            :data="reportDataYearlyGrouped"
+            :stacked="stackedCharts"
+            index-axis="x"
+          />
+        </TabPanel>
+        <TabPanel header="Bar Horizontal">
+          <BarChart
+            v-if="
+              selectedFunction === 'getGroupedReportData' && reportDataGrouped
+            "
+            type="simpleGrouped"
+            :data="reportDataGrouped"
+            index-axis="y"
+          />
+          <BarChart
+            v-if="
+              selectedFunction === 'getYearlyGroupedReportData' &&
+              reportDataYearlyGrouped
+            "
+            type="yearlyGrouped"
+            :data="reportDataYearlyGrouped"
+            :stacked="stackedCharts"
+            index-axis="y"
+          />
+        </TabPanel>
         <TabPanel header="Line-Chart">
-          <LineChart v-if="plainData" :data="plainData" />
-        </TabPanel>
-        <TabPanel header="Bar-X-Cart">
-          <BarXCart v-if="plainData" :data="plainData" />
-        </TabPanel>
-        <TabPanel header="Bar-Y-Chart">
-          <BarYChart v-if="plainData" :data="plainData" />
+          <LineChart
+            v-if="
+              selectedFunction === 'getGroupedReportData' && reportDataGrouped
+            "
+            :data="reportDataGrouped"
+            :stacked="stackedCharts"
+          />
+          <p v-else>
+            The function 'getYearlyGroupedReportData' returns a three level data
+            structure. It is not possible to plot this data as a line chart.
+          </p>
         </TabPanel>
         <TabPanel header="Radar-Chart">
-          <RadarChart v-if="plainData" :data="plainData" />
+          <RadarChart
+            v-if="
+              selectedFunction === 'getGroupedReportData' && reportDataGrouped
+            "
+            :data="reportDataGrouped"
+          />
+          <p v-else>
+            The function 'getYearlyGroupedReportData' returns a three level data
+            structure. It is not possible to plot this data as a Radar chart.
+          </p>
         </TabPanel>
         <TabPanel header="Pole-Area-Chart">
-          <PoleAreaChart v-if="plainData" :data="plainData" />
+          <PoleAreaChart
+            v-if="
+              selectedFunction === 'getGroupedReportData' && reportDataGrouped
+            "
+            :data="reportDataGrouped"
+          />
+          <p v-else>
+            The function 'getYearlyGroupedReportData' returns a three level data
+            structure. It is not possible to plot this data as a Pole-Area
+            chart.
+          </p>
         </TabPanel>
       </TabView>
     </TabPanel>
 
+    <!-- Data result -->
     <TabPanel header="Data">
       <Card>
         <template #content>
@@ -130,7 +220,24 @@
           </p>
         </template>
       </Card>
-      <DemoShowCase :query="plainDataQuery" :result="plainData" />
+      <DemoShowCase
+        v-if="selectedFunction === 'getPlainReportData' && plainData"
+        :query="plainDataQuery"
+        :result="plainData"
+      />
+      <DemoShowCase
+        v-if="selectedFunction === 'getGroupedReportData' && reportDataGrouped"
+        :query="plainDataQuery"
+        :result="reportDataGrouped"
+      />
+      <DemoShowCase
+        v-if="
+          selectedFunction === 'getYearlyGroupedReportData' &&
+          reportDataYearlyGrouped
+        "
+        :query="plainDataQuery"
+        :result="reportDataYearlyGrouped"
+      />
     </TabPanel>
   </TabView>
 </template>
@@ -140,12 +247,15 @@ import {
   getPlainReportData,
   ReportTimeseriesQuery,
   getGroupedReportData,
+  getYearlyGroupedReportData,
   ReportGroupBy,
+  TimeseriesDataEntry,
+  AggregatedReportResult,
+  AggregatedReportResultYearlyGrouped,
 } from '../../services/reporting/index';
-import { ref, onMounted, Ref, computed, ComputedRef } from 'vue';
+import { ref, Ref, computed, ComputedRef } from 'vue';
 import DemoShowCase from './DemoShowCase.vue';
-import BarXCart from './plot/BarXCart.vue';
-import BarYChart from './plot/BarYChart.vue';
+import BarChart from './plot/BarChart.vue';
 import LineChart from './plot/LineChart.vue';
 import RadarChart from './plot/RadarChart.vue';
 import PoleAreaChart from './plot/PoleAreaChart.vue';
@@ -170,6 +280,15 @@ const availableFacilities = computed(() => {
   return global.facilities;
 });
 
+const availableFunctions = [
+  { name: 'Plain Report Data as timeseries', id: 'getPlainReportData' },
+  { name: 'Report Data (simple grouped)', id: 'getGroupedReportData' },
+  {
+    name: 'Report Data (grouped by Year and Key)',
+    id: 'getYearlyGroupedReportData',
+  },
+];
+
 // users choice
 const selectedSiteIds: Ref<string[]> = ref(global.sites.map((s) => s.id));
 const selectedYears: Ref<number[]> = ref(availableYears.value);
@@ -183,7 +302,11 @@ const selectedFunction: Ref<string> = ref('getGroupedReportData');
 // users choice of groupBy
 const availableGroupBy: ReportGroupBy[] = ['scope', 'category', 'facility'];
 const selectedGroupBy: Ref<ReportGroupBy> = ref('scope');
+const stackedCharts = ref(false);
 
+/**
+ * Build the query for the report
+ */
 const plainDataQuery: ComputedRef<ReportTimeseriesQuery> = computed(() => {
   return {
     projectId: global.selectedProject?.id || '',
@@ -205,20 +328,31 @@ const plainDataQuery: ComputedRef<ReportTimeseriesQuery> = computed(() => {
     },
   };
 });
-const plainData: Ref<any> = ref(null);
 
+/**
+ * The result of the query
+ */
+const plainData: Ref<null | TimeseriesDataEntry[]> = ref(null);
+const reportDataGrouped: Ref<null | AggregatedReportResult> = ref(null);
+const reportDataYearlyGrouped: Ref<null | AggregatedReportResultYearlyGrouped> =
+  ref(null);
+
+/**
+ * This function is called when the user clicks the button to get the data.
+ */
 const getData = async () => {
   if (selectedFunction.value === 'getPlainReportData') {
     plainData.value = await getPlainReportData(plainDataQuery.value);
   } else if (selectedFunction.value === 'getGroupedReportData') {
-    plainData.value = await getGroupedReportData(
+    reportDataGrouped.value = await getGroupedReportData(
       plainDataQuery.value,
       selectedGroupBy.value,
-      true,
+    );
+  } else if (selectedFunction.value === 'getYearlyGroupedReportData') {
+    reportDataYearlyGrouped.value = await getYearlyGroupedReportData(
+      plainDataQuery.value,
+      selectedGroupBy.value,
     );
   }
 };
-onMounted(() => {
-  // getData();
-});
 </script>
