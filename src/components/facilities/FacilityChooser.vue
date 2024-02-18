@@ -7,6 +7,7 @@
     v-model:selection="selectedValue"
     key="id"
   >
+    <Column selectionMode="single" headerStyle="width: 3rem"></Column>
     <Column field="name" header="Name"></Column>
     <Column field="manufacturer" header="Hersteller"></Column>
     <Column field="model" header="Modell/Typ"></Column>
@@ -25,7 +26,7 @@ const global = useGlobalStore();
 const emits = defineEmits(['update:modelValue']);
 const props = defineProps({
   modelValue: {
-    type: Object as PropType<null | string>,
+    type: String as PropType<null | string>,
     required: false,
   },
 });

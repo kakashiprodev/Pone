@@ -71,6 +71,7 @@
     :rows="rowsPerPage"
     v-if="true"
   >
+    <Column selectionMode="single" headerStyle="width: 3rem"></Column>
     <!-- <Column field="id" header="Id"></Column> -->
     <Column
       field="scope"
@@ -341,7 +342,7 @@ const props = defineProps({
     default: false,
   },
   refresh: {
-    type: Number,
+    type: Boolean,
     required: false,
     default: false,
   },
