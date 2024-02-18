@@ -1,5 +1,5 @@
 <template>
-  <h4>Compare only grouped</h4>
+  <h4>Compare grouped</h4>
   <div>
     <Chart
       v-if="chartData"
@@ -8,16 +8,12 @@
       :options="scopeChartOptions"
       class="h-30rem"
     />
-    <div v-else class="m-auto mt-5 w-1">
-      <ProgressSpinner />
-    </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, Ref, onMounted, defineProps, PropType, watch } from 'vue';
 import Chart from 'primevue/chart';
-import ProgressSpinner from 'primevue/progressspinner';
 import { AggregatedReportResult } from '../../../services/reporting/index';
 
 const props = defineProps({
@@ -30,7 +26,7 @@ const props = defineProps({
 const chartData: Ref<any> = ref(null);
 
 const scopeChartOptions = {
-  indexAxis: 'y',
+  indexAxis: 'x',
   maintainAspectRatio: false,
   aspectRatio: 0.8,
   plugins: {

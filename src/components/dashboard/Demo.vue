@@ -100,8 +100,20 @@
       <DemoShowCase :query="plainDataQuery" :result="plainData" />
     </TabPanel>
     <TabPanel header="Plot">
-      <LineChart v-if="plainData" :data="plainData" />
-      <BarXCart v-if="plainData" :data="plainData" />
+      <TabView>
+        <TabPanel header="Line-Chart">
+          <LineChart v-if="plainData" :data="plainData" />
+        </TabPanel>
+        <TabPanel header="Bar-X-Cart">
+          <BarXCart v-if="plainData" :data="plainData" />
+        </TabPanel>
+        <TabPanel header="Bar-Y-Chart">
+          <BarYChart v-if="plainData" :data="plainData" />
+        </TabPanel>
+        <TabPanel header="Radar-Chart">
+          <RadarChart v-if="plainData" :data="plainData" />
+        </TabPanel>
+      </TabView>
     </TabPanel>
   </TabView>
 </template>
@@ -124,7 +136,9 @@ import Card from 'primevue/card';
 import TabView from 'primevue/tabview';
 import TabPanel from 'primevue/tabpanel';
 import BarXCart from './plot/BarXCart.vue';
+import BarYChart from './plot/BarYChart.vue';
 import LineChart from './plot/LineChart.vue';
+import RadarChart from './plot/RadarChart.vue';
 import { useGlobalStore } from './../../stores/global';
 
 // get necessary data (project, sites, reports) from store

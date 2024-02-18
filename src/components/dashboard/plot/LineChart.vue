@@ -16,21 +16,7 @@
 import { ref, Ref, onMounted, defineProps, PropType, watch } from 'vue';
 import Chart from 'primevue/chart';
 import ProgressSpinner from 'primevue/progressspinner';
-
-interface TimeseriesEntry {
-  year: number;
-  timestamp: string;
-  sum: number;
-}
-
-interface AggregatedReportResult {
-  stat: {
-    sum: number;
-  };
-  timeseries: {
-    [name: string]: TimeseriesEntry[];
-  };
-}
+import { AggregatedReportResult } from '../../../services/reporting/index';
 
 const props = defineProps({
   data: {

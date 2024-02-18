@@ -1,23 +1,19 @@
 <template>
-  <h4>Compare only grouped</h4>
+  <h4>Radar chart</h4>
   <div>
     <Chart
       v-if="chartData"
-      :type="'bar'"
+      :type="'radar'"
       :data="chartData"
       :options="scopeChartOptions"
       class="h-30rem"
     />
-    <div v-else class="m-auto mt-5 w-1">
-      <ProgressSpinner />
-    </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, Ref, onMounted, defineProps, PropType, watch } from 'vue';
 import Chart from 'primevue/chart';
-import ProgressSpinner from 'primevue/progressspinner';
 import { AggregatedReportResult } from '../../../services/reporting/index';
 
 const props = defineProps({
@@ -28,11 +24,21 @@ const props = defineProps({
 });
 
 const chartData: Ref<any> = ref(null);
+/*
+  const config = {
+  type: 'radar',
+  data: data,
+  options: {
+    elements: {
+      line: {
+        borderWidth: 3
+      }
+    }
+  },
+};
+*/
 
 const scopeChartOptions = {
-  indexAxis: 'y',
-  maintainAspectRatio: false,
-  aspectRatio: 0.8,
   plugins: {
     legend: {
       position: 'right',
