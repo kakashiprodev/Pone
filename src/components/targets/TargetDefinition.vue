@@ -63,9 +63,6 @@
 
 <script setup lang="ts">
 import { useGlobalStore } from '../../stores/global';
-import Button from 'primevue/button';
-import InputNumber from 'primevue/inputnumber';
-import InlineMessage from 'primevue/inlinemessage';
 
 const global = useGlobalStore();
 </script>

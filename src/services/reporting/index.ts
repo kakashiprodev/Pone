@@ -200,7 +200,7 @@ export const getSumForInput = (
   let sum = 0;
   months.forEach((month) => {
     // get the equivalent factor for the given month
-    const key = 'raw' + month.charAt(0).toUpperCase() + month.slice(1); // e.g. rawJan, rawFeb, ...
+    const key = 'raw' + month.charAt(0).toUpperCase() + month.slice(1); // e.g. rawValueJan, rawValueFeb, ...
     const monthlyEquivalentFactor = getFullFactorChain(
       input.equivalent,
       equivalents,
@@ -359,7 +359,7 @@ const calculateEquivalentFactorWithSteps = (
   // Monthly detailed calculation
   steps.push('Berechnungsschritt:');
   for (const month of months) {
-    const key = 'raw' + month.charAt(0).toUpperCase() + month.slice(1); // e.g. rawJan, rawFeb, ...
+    const key = 'raw' + month.charAt(0).toUpperCase() + month.slice(1); // e.g. rawValueJan, rawValueFeb, ...
     // @ts-ignore
     const monthlyEquivalentFactor: number =
       equivalent[month as keyof EquivalentEntry] != null &&
@@ -434,16 +434,42 @@ export interface TimeseriesDataEntry extends DataEntry {
   report: string;
 }
 
-interface AggregatedReportResult {
+export interface AggregatedReportResult {
   stat: {
     sum: number; // over all data
   };
   timeseries: {
     [name: string]: {
+      name: string;
       year: number;
       timestamp: string;
       sum: number;
     }[];
+  };
+}
+
+export interface AggregatedReportResultYearlyGrouped {
+  stat: {
+    sum: number; // over all data
+  };
+  yearlyGrouped: {
+    [year: string]: {
+      stat: {
+        sum: number; // over all data for the year
+      };
+      grouped: {
+        [name: string]: number; // sum for each groupBy value
+      };
+      timeseries: {
+        [name: string]: {
+          // timeseries for each groupBy value
+          name: string;
+          year: number;
+          timestamp: string;
+          sum: number;
+        }[];
+      };
+    };
   };
 }
 
@@ -466,7 +492,10 @@ const userInputsToDataEntries = (
       sumValue: input.sumValue,
       equivalent: input.equivalent ?? '',
       category: input.category ?? '',
-      facility: input.facility ?? '',
+      facility:
+        input.facility && input.facility !== ''
+          ? input.expand.facility.name
+          : '',
     };
   });
 };
@@ -481,10 +510,8 @@ const filterDataEntries = (
   return data.filter((entry) => {
     return (
       (!filter.scope || filter.scope.includes(entry.scope)) &&
-      (!filter.category ||
-        (entry.category && filter.category.includes(entry.category))) &&
-      (!filter.facility ||
-        (entry.facility && filter.facility.includes(entry.facility)))
+      (!filter.category || filter.category.includes(entry.category)) &&
+      (!filter.facility || filter.facility.includes(entry.facility))
     );
   });
 };
@@ -501,9 +528,11 @@ export const getPlainReportData = async (
   return filterDataEntries(userInputsToDataEntries(data), query.filter);
 };
 
-// here create a nestes structure in the given order of groupBy keys
-// e.g. groupBy = ['site', 'scope', 'category']
-
+/**
+ * Get the grouped report data for the given query
+ * The data will be grouped by the given groupBy key
+ * The result will be aggregated for each groupBy value
+ */
 export const getGroupedReportData = async (
   query: ReportTimeseriesQuery,
   groupBy: ReportGroupBy,
@@ -546,6 +575,7 @@ export const getGroupedReportData = async (
       if (entries.length === 0) {
         // add a 0 entry for the missing groupBy value
         result.timeseries[value].push({
+          name: value,
           year,
           timestamp: year + '-01-01T00:00:00.000Z',
           sum: 0,
@@ -556,6 +586,7 @@ export const getGroupedReportData = async (
         }, 0);
         result.stat.sum += sum;
         result.timeseries[value].push({
+          name: value,
           year,
           timestamp: year + '-01-01T00:00:00.000Z',
           sum,
@@ -563,6 +594,81 @@ export const getGroupedReportData = async (
       }
     }
   }
+
+  return result;
+};
+
+/**
+ * Get the grouped report data for the given query
+ * The data will be grouped by year and then by the given groupBy key
+ */
+export const getYearlyGroupedReportData = async (
+  query: ReportTimeseriesQuery,
+  groupBy: ReportGroupBy,
+  includeTimeseries = false,
+): Promise<AggregatedReportResultYearlyGrouped> => {
+  const plainData: TimeseriesDataEntry[] = await getPlainReportData(query);
+  const result: AggregatedReportResultYearlyGrouped = {
+    stat: {
+      sum: 0,
+    },
+    yearlyGrouped: {},
+  };
+
+  // Order Years from low to high
+  const orderedYears = query.years.sort((a, b) => a - b);
+
+  // First get all possible values for the groupBy key
+  const groupByValues = new Set<string>();
+  plainData.forEach((entry) => {
+    groupByValues.add(entry[groupBy] + '');
+  });
+
+  // Create a Dictionary for each Year
+  const years: { [year: number]: TimeseriesDataEntry[] } = {};
+  for (const year of orderedYears) {
+    years[year] = plainData.filter((entry) => entry.year === year);
+  }
+
+  result.yearlyGrouped = plainData.reduce(
+    (acc: AggregatedReportResultYearlyGrouped['yearlyGrouped'], item) => {
+      const year = new Date(item.timestamp).getFullYear();
+      if (!acc[year]) {
+        acc[year] = {
+          stat: {
+            sum: 0,
+          },
+          grouped: {},
+          timeseries: {},
+        };
+      }
+
+      if (!acc[year].grouped[item[groupBy]]) {
+        acc[year].grouped[item[groupBy]] = 0;
+      }
+      acc[year].grouped[item[groupBy]] += item.sumValue;
+
+      // Update also sums
+      acc[year].stat.sum += item.sumValue;
+      result.stat.sum += item.sumValue;
+
+      if (!acc[year].timeseries[item[groupBy]]) {
+        acc[year].timeseries[item[groupBy]] = [];
+      }
+
+      if (includeTimeseries) {
+        acc[year].timeseries[item[groupBy]].push({
+          name: item.name,
+          year,
+          timestamp: item.timestamp,
+          sum: item.sumValue,
+        });
+      }
+
+      return acc;
+    },
+    {},
+  );
 
   return result;
 };

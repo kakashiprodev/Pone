@@ -9,7 +9,7 @@
       <span>Ausgewählter Bericht</span>
       <Dropdown
         v-model="global.selectedReport"
-        :options="global.reports"
+        :options="availableReports"
         optionLabel="year"
         placeholder="Select a Report"
         :disabled="reportForm?.id === 'new'"
@@ -69,8 +69,13 @@
                 v-model="reportForm[entry[0]]"
                 class="w-full"
               />
-              <!-- <InputNumber v-if="entry[1].schema === 'number'" :id="entry[0]" v-model="reportForm[entry[0]]"
-                  :useGrouping="false" class="w-full" /> -->
+              <InputNumber
+                v-if="entry[1].schema === 'number'"
+                :id="entry[0]"
+                v-model="reportForm[entry[0]]"
+                :useGrouping="false"
+                class="w-full"
+              />
             </div>
           </template>
         </div>
@@ -146,17 +151,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref, Ref, watch } from 'vue';
+import { ref, Ref, watch, computed } from 'vue';
 import { useGlobalStore } from '../../stores/global';
 import { useConfirm } from 'primevue/useconfirm';
 import { ReportEntry } from '../../services/types';
-import Button from 'primevue/button';
-import Dropdown from 'primevue/dropdown';
-import InputNumber from 'primevue/inputnumber';
-import InputText from 'primevue/inputtext';
-import ConfirmDialog from 'primevue/confirmdialog';
-import Toolbar from 'primevue/toolbar';
-import Card from 'primevue/card';
 import {
   minLength,
   maxLength,
@@ -173,6 +171,11 @@ import { error, info } from '../../services/toast';
 
 const global = useGlobalStore();
 const confirm = useConfirm();
+
+const availableReports = computed(() => {
+  // order by year
+  return global.reports.sort((a, b) => a.year - b.year);
+});
 
 const reportForm: Ref<null | ReportEntry> = ref(global.selectedReport);
 // watch for changes in the selected report to update the form

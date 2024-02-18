@@ -1,11 +1,7 @@
 <template>
   <h4>Übersicht aller Eingaben</h4>
 
-  <ScopeInfoBox
-    class="mt-1 mb-1"
-    v-if="preSelectedScope != 'all'"
-    :scope="preSelectedScope"
-  />
+  <ScopeInfoBox v-if="preSelectedScope != 'all'" :scope="preSelectedScope" />
 
   <InlineMessage severity="info" v-if="global.showTooltips" class="w-full mb-2">
     Hier können Sie alle Eingaben für den aktuellen Bericht einsehen und
@@ -555,17 +551,6 @@
 </template>
 
 <script setup lang="ts">
-import DataTable from 'primevue/datatable';
-import Column from 'primevue/column';
-import Toolbar from 'primevue/toolbar';
-import Button from 'primevue/button';
-import ConfirmPopup from 'primevue/confirmpopup';
-import InputNumber from 'primevue/inputnumber';
-import InputText from 'primevue/inputtext';
-import Dialog from 'primevue/dialog';
-import Checkbox from 'primevue/checkbox';
-import Dropdown from 'primevue/dropdown';
-import InlineMessage from 'primevue/inlinemessage';
 import SmartEquivalentList from '../../components/equivalents/SmartEquivalentList.vue';
 import FacilityChooser from '../../components/facilities/FacilityChooser.vue';
 import ScopeInfoBox from '../../components/equivalents/ScopeInfoBox.vue';
@@ -610,18 +595,18 @@ const inputEntrySchema = object({
   rawValue: number('Ein Wert muss angegeben werden.'),
   parent: nullable(string([maxLength(255, 'Referenz auf parent zu lang')])),
   monthlyValues: boolean('monthlyValues muss ein boolean sein.'),
-  rawJan: number('rawJan muss ein number sein.'),
-  rawFeb: number('rawFeb muss ein number sein.'),
-  rawMar: number('rawMar muss ein number sein.'),
-  rawApr: number('rawApr muss ein number sein.'),
-  rawMay: number('rawMay muss ein number sein.'),
-  rawJun: number('rawJun muss ein number sein.'),
-  rawJul: number('rawJul muss ein number sein.'),
-  rawAug: number('rawAug muss ein number sein.'),
-  rawSep: number('rawSep muss ein number sein.'),
-  rawOct: number('rawOct muss ein number sein.'),
-  rawNov: number('rawNov muss ein number sein.'),
-  rawDec: number('rawDec muss ein number sein.'),
+  rawValueJan: number('rawValueJan muss ein number sein.'),
+  rawValueFeb: number('rawValueFeb muss ein number sein.'),
+  rawValueMar: number('rawValueMar muss ein number sein.'),
+  rawValueApr: number('rawValueApr muss ein number sein.'),
+  rawValueMay: number('rawValueMay muss ein number sein.'),
+  rawValueJun: number('rawValueJun muss ein number sein.'),
+  rawValueJul: number('rawValueJul muss ein number sein.'),
+  rawValueAug: number('rawValueAug muss ein number sein.'),
+  rawValueSep: number('rawValueSep muss ein number sein.'),
+  rawValueOct: number('rawValueOct muss ein number sein.'),
+  rawValueNov: number('rawValueNov muss ein number sein.'),
+  rawValueDec: number('rawValueDec muss ein number sein.'),
   equivalent: nullable(
     string([maxLength(255, 'Referenz auf equivalents zu lang')]),
   ),

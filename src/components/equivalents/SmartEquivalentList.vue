@@ -71,6 +71,7 @@
     :rows="rowsPerPage"
     v-if="true"
   >
+    <Column selectionMode="single" headerStyle="width: 3rem"></Column>
     <!-- <Column field="id" header="Id"></Column> -->
     <Column
       field="scope"
@@ -182,17 +183,12 @@
 </template>
 
 <script setup lang="ts">
-import DataTable from 'primevue/datatable';
-import Column from 'primevue/column';
-import MultiSelect from 'primevue/multiselect';
-import InputText from 'primevue/inputtext';
-import Button from 'primevue/button';
 import { useGlobalStore } from '../../stores/global';
 import { PropType, Ref, ref, watch } from 'vue';
 import { EquivalentEntry } from '../../services/types';
 import FormLine from './FormLine.vue';
 import HorizontalScopeSwitch from './HorizontalScopeSwitch.vue';
-import Listbox from 'primevue/listbox';
+
 // import { Equivalent } from './../services/types';
 
 const global = useGlobalStore();
@@ -346,7 +342,7 @@ const props = defineProps({
     default: false,
   },
   refresh: {
-    type: Number,
+    type: Boolean,
     required: false,
     default: false,
   },

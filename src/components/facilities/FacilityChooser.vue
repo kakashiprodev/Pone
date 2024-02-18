@@ -7,6 +7,7 @@
     v-model:selection="selectedValue"
     key="id"
   >
+    <Column selectionMode="single" headerStyle="width: 3rem"></Column>
     <Column field="name" header="Name"></Column>
     <Column field="manufacturer" header="Hersteller"></Column>
     <Column field="model" header="Modell/Typ"></Column>
@@ -15,8 +16,6 @@
 </template>
 
 <script setup lang="ts">
-import DataTable from 'primevue/datatable';
-import Column from 'primevue/column';
 import { FacilityEntry } from '../../services/types';
 import { PropType, Ref, ref, watch } from 'vue';
 import { useGlobalStore } from '../../stores/global';
@@ -27,7 +26,7 @@ const global = useGlobalStore();
 const emits = defineEmits(['update:modelValue']);
 const props = defineProps({
   modelValue: {
-    type: Object as PropType<null | string>,
+    type: String as PropType<null | string>,
     required: false,
   },
 });

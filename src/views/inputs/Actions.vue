@@ -9,14 +9,7 @@
       <InputText v-model="filter" placeholder="Filter" class="mr-1" />
     </template>
     <template #end>
-      <Button
-        icon="fa-solid fa-plus"
-        @click="
-          selectedAction = clone(emptyAction);
-          showDialog = true;
-        "
-        class="mr-1"
-      />
+      <Button icon="fa-solid fa-plus" @click="addNew()" class="mr-1" />
       <Button icon="fa-solid fa-download" @click="download()" />
     </template>
   </Toolbar>
@@ -441,20 +434,7 @@ import { useGlobalStore } from '../../stores/global';
 import { ActionEntry } from '../../services/types';
 import dataprovider from '../../services/dataprovider';
 import { error } from '../../services/toast';
-import DataTable from 'primevue/datatable';
-import Column from 'primevue/column';
-import Toolbar from 'primevue/toolbar';
-import Button from 'primevue/button';
-import ConfirmPopup from 'primevue/confirmpopup';
-import InputNumber from 'primevue/inputnumber';
-import InputText from 'primevue/inputtext';
-import InlineMessage from 'primevue/inlinemessage';
-import Calendar from 'primevue/calendar';
-import Editor from 'primevue/editor';
-import Slider from 'primevue/slider';
-import Dialog from 'primevue/dialog';
-import Dropdown from 'primevue/dropdown';
-import Checkbox from 'primevue/checkbox';
+
 import { useConfirm } from 'primevue/useconfirm';
 import {
   parse,
@@ -634,6 +614,14 @@ const save = async () => {
   } catch (e) {
     error((e + '').replace('ValiError: ', ''));
   }
+};
+
+/***
+ * Add a new action
+ */
+const addNew = () => {
+  selectedAction.value = clone(emptyAction);
+  showDialog.value = true;
 };
 
 /**

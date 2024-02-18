@@ -111,14 +111,8 @@ import { ref, Ref, computed, ComputedRef, watch } from 'vue';
 import { useGlobalStore } from '../../stores/global';
 import { useConfirm } from 'primevue/useconfirm';
 import { ProjectEntry } from '../../services/types';
-import Button from 'primevue/button';
-import Dropdown from 'primevue/dropdown';
-import InputText from 'primevue/inputtext';
-import Toolbar from 'primevue/toolbar';
-import ConfirmDialog from 'primevue/confirmdialog';
 import { minLength, maxLength, object, string, parse } from 'valibot';
 import { error, info } from '../../services/toast';
-import InlineMessage from 'primevue/inlinemessage';
 
 const global = useGlobalStore();
 const confirm = useConfirm();

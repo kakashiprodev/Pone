@@ -11,7 +11,6 @@
 </template>
 
 <script setup lang="ts">
-import Button from 'primevue/button';
 
 const goToReport = () => {
   window.open('/#/report-preview', '_blank');

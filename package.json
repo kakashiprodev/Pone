@@ -18,6 +18,7 @@
     "@fortawesome/free-regular-svg-icons": "^6.4.2",
     "@fortawesome/free-solid-svg-icons": "^6.4.2",
     "@fortawesome/vue-fontawesome": "^3.0.3",
+    "@observablehq/plot": "^0.6.13",
     "chart.js": "^4.4.0",
     "openai": "^4.23.0",
     "pinia": "^2.1.6",

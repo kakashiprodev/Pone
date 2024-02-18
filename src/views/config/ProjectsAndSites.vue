@@ -14,7 +14,6 @@
 </template>
 
 <script setup lang="ts">
-import Card from 'primevue/card';
 import SiteDefinition from '../../components/project/SiteDefinition.vue';
 import ProjectDefinition from '../../components/project/ProjectDefinition.vue';
 </script>

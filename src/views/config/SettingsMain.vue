@@ -29,7 +29,6 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import PanelMenu from 'primevue/panelmenu';
 import { useRoute } from 'vue-router';
 const route = useRoute();
 
@@ -57,9 +56,15 @@ const items = ref([
       },
       {
         key: 'user-demo',
-        label: '=> Zeige DataEngine Demo!',
+        label: '=> Zeige DataEngine Demo',
         icon: 'fa-solid fa-key',
         to: '/demo',
+      },
+      {
+        key: 'user-demo-data-generator',
+        label: '=> Generiere Demo Daten',
+        icon: 'fa-solid fa-key',
+        to: '/demo-data-generator',
       },
     ],
   },

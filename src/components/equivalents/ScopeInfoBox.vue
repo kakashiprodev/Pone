@@ -1,5 +1,5 @@
 <template>
-  <div class="card" v-if="scope === '1'">
+  <div class="card cmt-1 mb-1" v-if="scope === '1'">
     <h5>Scope 1: Direkte Emissionen</h5>
     <p>
       Emissionen aus eigenen oder kontrollierten Quellen. Beispiele: Emissionen

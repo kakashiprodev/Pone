@@ -157,12 +157,13 @@ export default class DataProvider {
     return await this.pb.collection('reports').getOne<ReportEntry>(id);
   }
 
-  async readReports() {
-    if (!globalStore.selectedSite) throw new Error('No site selected');
+  async readReports(siteId?: string) {
+    if (!globalStore.selectedSite && !siteId)
+      throw new Error('No site selected');
     const res = await this.pb
       .collection('reports')
       .getList<ReportEntry>(1, 500, {
-        filter: `site="${globalStore.selectedSite.id}"`,
+        filter: `site="${siteId ?? globalStore.selectedSite?.id}"`,
       });
     return res.items;
   }
@@ -255,7 +256,6 @@ export default class DataProvider {
   }
 
   async readUserInputs(query?: UserInputQuery) {
-    console.log('input query: ', query);
     const res = await this.pb.collection('inputs').getList<InputEntry>(1, 500, {
       filter: `report = '${globalStore.selectedReport?.id}'${
         query?.scope
@@ -284,7 +284,7 @@ export default class DataProvider {
       .collection('inputs')
       .getList<InputEntryWithExpandedReportAndSite>(1, 500, {
         filter: `report.site.project.id = '${projectId}'`,
-        expand: 'report.site',
+        expand: 'report.site,facility',
       });
     return res.items;
   }
@@ -297,6 +297,15 @@ export default class DataProvider {
 
   async deleteUserInput(id: string) {
     return await this.pb.collection('inputs').delete(id);
+  }
+
+  async deleteAllUserInputsForReport(reportId: string) {
+    const res = await this.pb.collection('inputs').getList<InputEntry>(1, 500, {
+      filter: `report = '${reportId}'`,
+    });
+    for (const item of res.items) {
+      await this.pb.collection('inputs').delete(item.id);
+    }
   }
 
   // CRUD for "actions"

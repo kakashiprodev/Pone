@@ -140,7 +140,6 @@
 import { ref, Ref, watch, computed, onMounted } from 'vue';
 import { useGlobalStore } from '../../stores/global';
 import DarkModeToggle from './DarkModeToggle.vue';
-import Button from 'primevue/button';
 import dataProvider from '../../services/dataprovider';
 import { router } from '../../router';
 const $global = useGlobalStore();

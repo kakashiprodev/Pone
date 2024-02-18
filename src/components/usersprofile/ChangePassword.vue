@@ -6,7 +6,7 @@
         <Divider />
         <form @prevent="changePassword">
           <div class="p-field" v-show="false">
-            <TextInput
+            <InputText
               class="mt-2"
               id="username"
               v-model="global.username"
@@ -16,7 +16,7 @@
           </div>
           <div class="p-field mt-2">
             <label for="password">Altes Passwort</label>
-            <TextInput
+            <InputText
               class="mt-2"
               id="old-password"
               type="password"
@@ -26,7 +26,7 @@
           </div>
           <div class="p-field mt-2">
             <label for="password">Neues Passwort</label>
-            <TextInput
+            <InputText
               class="mt-2"
               id="new-password"
               type="password"
@@ -36,7 +36,7 @@
           </div>
           <div class="p-field mt-2">
             <label for="password">Passwort wiesderholen</label>
-            <TextInput
+            <InputText
               class="mt-2"
               id="repeat-password"
               type="password"
@@ -57,10 +57,7 @@
 </template>
 
 <script setup lang="ts">
-import Button from 'primevue/button';
-import TextInput from 'primevue/inputtext';
 import { Ref, ref, onMounted } from 'vue';
-import Divider from 'primevue/divider';
 import { error } from './../../services/toast';
 import { useGlobalStore } from './../../stores/global';
 import { UserEntry } from './../../services/types';

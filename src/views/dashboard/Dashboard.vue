@@ -22,8 +22,6 @@
 </template>
 
 <script setup lang="ts">
-import TabView from 'primevue/tabview';
-import TabPanel from 'primevue/tabpanel';
 import ForecastChart from '../../components/dashboard/ForecastChart.vue';
 import SumCharts from '../../components/dashboard/SumCharts.vue';
 import ReportPrint from '../../components/dashboard/ReportPrint.vue';
