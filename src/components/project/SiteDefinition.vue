@@ -96,7 +96,7 @@ import Dropdown from 'primevue/dropdown';
 import InputText from 'primevue/inputtext';
 import Toolbar from 'primevue/toolbar';
 import InlineMessage from 'primevue/inlinemessage';
-import { ref, Ref } from 'vue';
+import { ref, Ref, watch } from 'vue';
 import { SiteEntry } from '../../services/types';
 import { useConfirm } from 'primevue/useconfirm';
 import { minLength, maxLength, object, string, parse } from 'valibot';
@@ -111,6 +111,15 @@ const siteForm: Ref<null | SiteEntry> = ref(global.selectedSite);
 const siteSchema = object({
   id: string([minLength(1)]),
   name: string([minLength(3), maxLength(255)]),
+});
+
+
+watch(() => global.selectedSite, async (newValue) => {
+  if (!newValue) {
+    return;
+  }
+  global.changeSite(newValue);
+  siteForm.value = newValue;
 });
 
 const addEntry = () => {

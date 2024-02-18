@@ -18,6 +18,12 @@ const routes = [
         name: 'demo',
       },
       {
+        path: '/demo-data-generator',
+        component: () =>
+          import('../components/assistants/DemoDataGenerator.vue'),
+        name: 'demo-data-generator',
+      },
+      {
         path: '/dashboard',
         component: () => import('../views/dashboard/Dashboard.vue'),
         name: 'dashboard',

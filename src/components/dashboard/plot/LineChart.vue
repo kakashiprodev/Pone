@@ -41,8 +41,26 @@ const props = defineProps({
 
 const chartData: Ref<any> = ref(null);
 
+const delayed = ref(false);
 const scopeChartOptions = {
-  indexAxis: 'x', // Typically, line charts use the x-axis for labels
+  animation: {
+    onComplete: () => {
+      delayed.value = true;
+    },
+    delay: (context: any) => {
+      let delay = 0;
+      if (
+        context.type === 'data' &&
+        context.mode === 'default' &&
+        !delayed.value
+      ) {
+        delay = context.dataIndex * 300 + context.datasetIndex * 100;
+      }
+      return delay;
+    },
+  },
+  responsive: true,
+  indexAxis: 'x',
   maintainAspectRatio: false,
   aspectRatio: 0.8,
   plugins: {
@@ -63,14 +81,23 @@ const scopeChartOptions = {
         display: true, // Adjusted to show grid lines for better readability
         drawBorder: true,
       },
+      title: {
+        display: true,
+        text: 'X',
+      },
     },
     y: {
+      stacked: true,
       ticks: {
         color: '#333333',
       },
       grid: {
         color: '#333333',
         drawBorder: true,
+      },
+      title: {
+        display: true,
+        text: 'Y',
       },
     },
   },
@@ -86,7 +113,7 @@ const renderChart = () => {
       return {
         label: key,
         data: props.data.timeseries[key].map((entry) => entry.sum),
-        fill: false,
+        fill: true,
         borderColor: 'rgb(75, 192, 192)',
         tension: 0.1,
       };

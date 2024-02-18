@@ -25,7 +25,7 @@
     </template>
   </Toolbar>
 
-  <Toolbar>
+  <Toolbar class="mt-2">
     <template #start>
       <span> Choose scopes: </span>
       <MultiSelect
@@ -55,7 +55,7 @@
     </template>
   </Toolbar>
 
-  <Toolbar>
+  <Toolbar class="mt-2">
     <template #start>
       <span> Choose Function: </span>
       <Dropdown
@@ -77,7 +77,7 @@
     </template>
   </Toolbar>
 
-  <TabView>
+  <TabView class="mt-2">
     <TabPanel header="Data">
       <Card>
         <template #content>

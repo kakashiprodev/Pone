@@ -61,6 +61,12 @@ const items = ref([
         icon: 'fa-solid fa-key',
         to: '/demo',
       },
+      {
+        key: 'user-demo-data-generator',
+        label: '=> Generiere Demo Daten',
+        icon: 'fa-solid fa-key',
+        to: '/demo-data-generator',
+      },
     ],
   },
   {
