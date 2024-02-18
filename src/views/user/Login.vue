@@ -6,18 +6,18 @@
       <div class="p-fluid">
         <div class="p-field">
           <label for="username">Benutzername</label>
-          <TextInput class="mt-2" id="username" v-model="username" />
+          <InputText class="mt-2" id="username" v-model="username" />
         </div>
         <div class="p-field mt-2">
           <label for="password">Passwort</label>
-          <TextInput
+          <InputText
             class="mt-2"
             id="password"
             type="password"
             v-model="password"
           />
         </div>
-        <Button @click="login" :disabled="false" class="mt-5" label="Login" />
+        <Button @click="login" :disabled="loading" class="mt-5" label="Login" />
       </div>
     </div>
   </div>
@@ -33,13 +33,16 @@ const global = useGlobalStore();
 
 const username: Ref<string> = ref('');
 const password: Ref<string> = ref('');
+const loading = ref(false);
 
 const login = async () => {
+  loading.value = true;
   const loggedIn = await DataProvider.login(username.value, password.value);
   if (loggedIn) {
     await global.initializeStore();
     router.push({ name: 'dashboard' });
   }
+  loading.value = false;
 };
 </script>
 
