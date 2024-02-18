@@ -3,7 +3,7 @@
   <div>
     <Chart
       v-if="chartData"
-      :type="'radar'"
+      :type="'polarArea'"
       :data="chartData"
       :options="scopeChartOptions"
       class="h-30rem"

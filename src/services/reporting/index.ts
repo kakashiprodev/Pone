@@ -446,6 +446,22 @@ export interface AggregatedReportResult {
       sum: number;
     }[];
   };
+  yearlyGrouped: {
+    [year: number]: {
+      stat: {
+        [name: string]: number; // sum for each groupBy value
+      };
+      timeseries: {
+        [name: string]: {
+          // timeseries for each groupBy value
+          name: string;
+          year: number;
+          timestamp: string;
+          sum: number;
+        }[];
+      };
+    };
+  };
 }
 
 /**
@@ -508,6 +524,8 @@ export const getPlainReportData = async (
 export const getGroupedReportData = async (
   query: ReportTimeseriesQuery,
   groupBy: ReportGroupBy,
+  includeGroupByYear = false,
+  includeTimeseries = false,
 ): Promise<AggregatedReportResult> => {
   const plainData: TimeseriesDataEntry[] = await getPlainReportData(query);
   const result: AggregatedReportResult = {
@@ -517,6 +535,7 @@ export const getGroupedReportData = async (
     timeseries: {
       // 'group-a': [],
     },
+    yearlyGrouped: {},
   };
   // Order Years from low to high
   const orderedYears = query.years.sort((a, b) => a - b);
@@ -565,6 +584,41 @@ export const getGroupedReportData = async (
         });
       }
     }
+  }
+
+  if (includeGroupByYear) {
+    result.yearlyGrouped = plainData.reduce(
+      (acc: AggregatedReportResult['yearlyGrouped'], item) => {
+        const year = new Date(item.timestamp).getFullYear();
+        if (!acc[year]) {
+          acc[year] = {
+            stat: {},
+            timeseries: {},
+          };
+        }
+
+        if (!acc[year].stat[item[groupBy]]) {
+          acc[year].stat[item[groupBy]] = 0;
+        }
+        acc[year].stat[item[groupBy]] += item.sumValue;
+
+        if (!acc[year].timeseries[item[groupBy]]) {
+          acc[year].timeseries[item[groupBy]] = [];
+        }
+
+        if (includeTimeseries) {
+          acc[year].timeseries[item[groupBy]].push({
+            name: item.name,
+            year,
+            timestamp: item.timestamp,
+            sum: item.sumValue,
+          });
+        }
+
+        return acc;
+      },
+      {},
+    );
   }
 
   return result;

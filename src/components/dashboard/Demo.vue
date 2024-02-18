@@ -113,6 +113,9 @@
         <TabPanel header="Radar-Chart">
           <RadarChart v-if="plainData" :data="plainData" />
         </TabPanel>
+        <TabPanel header="Pole-Area-Chart">
+          <PoleAreaChart v-if="plainData" :data="plainData" />
+        </TabPanel>
       </TabView>
     </TabPanel>
   </TabView>
@@ -139,6 +142,7 @@ import BarXCart from './plot/BarXCart.vue';
 import BarYChart from './plot/BarYChart.vue';
 import LineChart from './plot/LineChart.vue';
 import RadarChart from './plot/RadarChart.vue';
+import PoleAreaChart from './plot/PoleAreaChart.vue';
 import { useGlobalStore } from './../../stores/global';
 
 // get necessary data (project, sites, reports) from store
@@ -202,6 +206,7 @@ const getData = async () => {
     plainData.value = await getGroupedReportData(
       plainDataQuery.value,
       selectedGroupBy.value,
+      true,
     );
   }
 };
@@ -209,4 +214,3 @@ onMounted(() => {
   // getData();
 });
 </script>
-../../services/reporting/reporting
