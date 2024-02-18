@@ -112,8 +112,6 @@ const renderChart = () => {
     // },
   };
 
-  console.log(data);
-
   chartData.value = data;
 };
 

@@ -446,9 +446,18 @@ export interface AggregatedReportResult {
       sum: number;
     }[];
   };
+}
+
+export interface AggregatedReportResultYearlyGrouped {
+  stat: {
+    sum: number; // over all data
+  };
   yearlyGrouped: {
     [year: number]: {
       stat: {
+        sum: number; // over all data for the year
+      };
+      grouped: {
         [name: string]: number; // sum for each groupBy value
       };
       timeseries: {
@@ -518,14 +527,14 @@ export const getPlainReportData = async (
   return filterDataEntries(userInputsToDataEntries(data), query.filter);
 };
 
-// here create a nestes structure in the given order of groupBy keys
-// e.g. groupBy = ['site', 'scope', 'category']
-
+/**
+ * Get the grouped report data for the given query
+ * The data will be grouped by the given groupBy key
+ * The result will be aggregated for each groupBy value
+ */
 export const getGroupedReportData = async (
   query: ReportTimeseriesQuery,
   groupBy: ReportGroupBy,
-  includeGroupByYear = false,
-  includeTimeseries = false,
 ): Promise<AggregatedReportResult> => {
   const plainData: TimeseriesDataEntry[] = await getPlainReportData(query);
   const result: AggregatedReportResult = {
@@ -535,7 +544,6 @@ export const getGroupedReportData = async (
     timeseries: {
       // 'group-a': [],
     },
-    yearlyGrouped: {},
   };
   // Order Years from low to high
   const orderedYears = query.years.sort((a, b) => a - b);
@@ -586,40 +594,80 @@ export const getGroupedReportData = async (
     }
   }
 
-  if (includeGroupByYear) {
-    result.yearlyGrouped = plainData.reduce(
-      (acc: AggregatedReportResult['yearlyGrouped'], item) => {
-        const year = new Date(item.timestamp).getFullYear();
-        if (!acc[year]) {
-          acc[year] = {
-            stat: {},
-            timeseries: {},
-          };
-        }
+  return result;
+};
 
-        if (!acc[year].stat[item[groupBy]]) {
-          acc[year].stat[item[groupBy]] = 0;
-        }
-        acc[year].stat[item[groupBy]] += item.sumValue;
+/**
+ * Get the grouped report data for the given query
+ * The data will be grouped by year and then by the given groupBy key
+ */
+export const getYearlyGroupedReportData = async (
+  query: ReportTimeseriesQuery,
+  groupBy: ReportGroupBy,
+  includeTimeseries = false,
+): Promise<AggregatedReportResultYearlyGrouped> => {
+  const plainData: TimeseriesDataEntry[] = await getPlainReportData(query);
+  const result: AggregatedReportResultYearlyGrouped = {
+    stat: {
+      sum: 0,
+    },
+    yearlyGrouped: {},
+  };
 
-        if (!acc[year].timeseries[item[groupBy]]) {
-          acc[year].timeseries[item[groupBy]] = [];
-        }
+  // Order Years from low to high
+  const orderedYears = query.years.sort((a, b) => a - b);
 
-        if (includeTimeseries) {
-          acc[year].timeseries[item[groupBy]].push({
-            name: item.name,
-            year,
-            timestamp: item.timestamp,
-            sum: item.sumValue,
-          });
-        }
+  // First get all possible values for the groupBy key
+  const groupByValues = new Set<string>();
+  plainData.forEach((entry) => {
+    groupByValues.add(entry[groupBy] + '');
+  });
 
-        return acc;
-      },
-      {},
-    );
+  // Create a Dictionary for each Year
+  const years: { [year: number]: TimeseriesDataEntry[] } = {};
+  for (const year of orderedYears) {
+    years[year] = plainData.filter((entry) => entry.year === year);
   }
+
+  result.yearlyGrouped = plainData.reduce(
+    (acc: AggregatedReportResultYearlyGrouped['yearlyGrouped'], item) => {
+      const year = new Date(item.timestamp).getFullYear();
+      if (!acc[year]) {
+        acc[year] = {
+          stat: {
+            sum: 0,
+          },
+          grouped: {},
+          timeseries: {},
+        };
+      }
+
+      if (!acc[year].grouped[item[groupBy]]) {
+        acc[year].grouped[item[groupBy]] = 0;
+      }
+      acc[year].grouped[item[groupBy]] += item.sumValue;
+      
+      // Update also sums
+      acc[year].stat.sum += item.sumValue;      
+      result.stat.sum += item.sumValue;
+
+      if (!acc[year].timeseries[item[groupBy]]) {
+        acc[year].timeseries[item[groupBy]] = [];
+      }
+
+      if (includeTimeseries) {
+        acc[year].timeseries[item[groupBy]].push({
+          name: item.name,
+          year,
+          timestamp: item.timestamp,
+          sum: item.sumValue,
+        });
+      }
+
+      return acc;
+    },
+    {},
+  );
 
   return result;
 };
