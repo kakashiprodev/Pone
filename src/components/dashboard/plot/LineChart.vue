@@ -7,9 +7,6 @@
     :options="scopeChartOptions"
     class="h-30rem"
   />
-  <div v-else class="m-auto mt-5 w-1">
-    <ProgressSpinner />
-  </div>
 </template>
 
 <script setup lang="ts">
@@ -77,6 +74,9 @@ const scopeChartOptions: ComputedRef<any> = computed(() => {
 });
 
 const renderChart = () => {
+  if (props.data == null || Object.keys(props.data.timeseries).length === 0) {
+    return;
+  }
   const firstKey = Object.keys(props.data.timeseries)[0];
   const labels = props.data.timeseries[firstKey].map((entry) => entry.year);
 

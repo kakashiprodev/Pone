@@ -284,7 +284,7 @@ export default class DataProvider {
       .collection('inputs')
       .getList<InputEntryWithExpandedReportAndSite>(1, 500, {
         filter: `report.site.project.id = '${projectId}'`,
-        expand: 'report.site',
+        expand: 'report.site,facility',
       });
     return res.items;
   }

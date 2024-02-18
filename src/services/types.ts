@@ -73,6 +73,10 @@ export interface InputEntryWithExpandedReportAndSite extends InputEntry {
         };
       };
     };
+    facility: {
+      id: string;
+      name: string;
+    };
   };
 }
 

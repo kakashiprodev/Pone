@@ -492,7 +492,10 @@ const userInputsToDataEntries = (
       sumValue: input.sumValue,
       equivalent: input.equivalent ?? '',
       category: input.category ?? '',
-      facility: input.facility ?? '',
+      facility:
+        input.facility && input.facility !== ''
+          ? input.expand.facility.name
+          : '',
     };
   });
 };
@@ -507,10 +510,8 @@ const filterDataEntries = (
   return data.filter((entry) => {
     return (
       (!filter.scope || filter.scope.includes(entry.scope)) &&
-      (!filter.category ||
-        (entry.category && filter.category.includes(entry.category))) &&
-      (!filter.facility ||
-        (entry.facility && filter.facility.includes(entry.facility)))
+      (!filter.category || filter.category.includes(entry.category)) &&
+      (!filter.facility || filter.facility.includes(entry.facility))
     );
   });
 };
@@ -646,9 +647,9 @@ export const getYearlyGroupedReportData = async (
         acc[year].grouped[item[groupBy]] = 0;
       }
       acc[year].grouped[item[groupBy]] += item.sumValue;
-      
+
       // Update also sums
-      acc[year].stat.sum += item.sumValue;      
+      acc[year].stat.sum += item.sumValue;
       result.stat.sum += item.sumValue;
 
       if (!acc[year].timeseries[item[groupBy]]) {

@@ -139,6 +139,8 @@ export const useGlobalStore = defineStore('global', {
         console.log('ensure site is selected');
         await this.ensureSiteIsSelected();
       }
+      // then refresh facilities
+      await this.refreshFacilities();
 
       // then load reports for the selected project and site
       await this.refreshReports(true);
@@ -462,6 +464,7 @@ export const useGlobalStore = defineStore('global', {
       this.selectedSite = site;
       this.reports = [];
       this.reports = await dataprovider.readReports();
+      await this.refreshFacilities();
       await this.ensureLatestReport();
 
       // update user settings

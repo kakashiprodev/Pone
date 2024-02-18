@@ -59,7 +59,7 @@
         id="facilities"
         :options="availableFacilities"
         option-label="name"
-        option-value="id"
+        option-value="name"
         v-model="selectedFacilities"
         placeholder="Select a Facility"
         class="w-full"
@@ -321,8 +321,8 @@ const plainDataQuery: ComputedRef<ReportTimeseriesQuery> = computed(() => {
         useFilter.value && selectedCategories.value.length > 0
           ? selectedCategories.value
           : undefined,
-      facilities:
-        useFilter.value && selectedCategories.value.length
+      facility:
+        useFilter.value && selectedFacilities.value.length
           ? selectedFacilities.value
           : undefined,
     },
