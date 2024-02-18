@@ -181,10 +181,19 @@ const getRawInputValueForEquivalent = (
 const generateData = async () => {
   loading.value = true;
   const allReports = await getReports();
+  const allFacilities = global.facilities;
+
   for (const report of allReports) {
     for (let x = 0; x < numberOfRecords.value; x++) {
       // get random scope. this can be 1,2,3
       const scope = Math.floor(Math.random() * 3) + 1;
+
+      // if scope is 3 we need to reference a random facility
+      const facility =
+        scope === 3
+          ? allFacilities[Math.floor(Math.random() * allFacilities.length)].id
+          : null;
+
       const e = getRandomEquivalentByScope(scope);
       const input: InputEntry = {
         id: 'new',
@@ -195,7 +204,7 @@ const generateData = async () => {
         equivalent: e.id,
         report: report.id,
         category: e.category,
-        facility: null,
+        facility,
         parent: null,
         rawValue: 1,
         monthlyValues: false,
