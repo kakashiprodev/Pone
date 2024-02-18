@@ -164,7 +164,7 @@
 <script setup lang="ts">
 import { FacilityEntry, InputEntry } from '../../services/types';
 import dataprovider from '../../services/dataprovider';
-import { Ref, ref, watch } from 'vue';
+import { ComputedRef, Ref, computed, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { useGlobalStore } from '../../stores/global';
 import { error, info } from '../../services/toast';
@@ -198,7 +198,7 @@ const facilityEntrySchema = object({
 });
 
 // main data for table
-const data: Ref<FacilityEntry[]> = ref([]);
+const data: ComputedRef<FacilityEntry[]> = computed(() => global.facilities);
 const filteredData: Ref<FacilityEntry[]> = ref([]);
 
 // filter data
@@ -285,7 +285,8 @@ const save = async () => {
         created.shutdownDate && created.shutdownDate !== ''
           ? new Date(created.shutdownDate)
           : null;
-      data.value.push(created);
+      // add to global
+      global.facilities.push(created);
       filterData();
 
       showDialog.value = false;
@@ -297,7 +298,7 @@ const save = async () => {
           ? new Date(updated.shutdownDate)
           : null;
       const index = data.value.findIndex((item) => item.id === updated.id);
-      data.value[index] = updated;
+      global.facilities[index] = updated;
 
       showDialog.value = false;
     }
@@ -319,7 +320,8 @@ const deleteEntry = async (entry: InputEntry, event: any) => {
       try {
         await dataprovider.deleteFacility(entry.id);
         const index = data.value.findIndex((item) => item.id === entry.id);
-        data.value.splice(index, 1);
+        // remove from global
+        global.facilities.splice(index, 1);
         filterData();
         info('Anlage wurde gelöscht');
       } catch (e) {
@@ -334,7 +336,6 @@ const deleteEntry = async (entry: InputEntry, event: any) => {
  */
 const getData = async () => {
   await global.refreshFacilities();
-  data.value = global.facilities;
   filterData();
 };
 
