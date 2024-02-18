@@ -182,17 +182,12 @@
 </template>
 
 <script setup lang="ts">
-import DataTable from 'primevue/datatable';
-import Column from 'primevue/column';
-import MultiSelect from 'primevue/multiselect';
-import InputText from 'primevue/inputtext';
-import Button from 'primevue/button';
 import { useGlobalStore } from '../../stores/global';
 import { PropType, Ref, ref, watch } from 'vue';
 import { EquivalentEntry } from '../../services/types';
 import FormLine from './FormLine.vue';
 import HorizontalScopeSwitch from './HorizontalScopeSwitch.vue';
-import Listbox from 'primevue/listbox';
+
 // import { Equivalent } from './../services/types';
 
 const global = useGlobalStore();

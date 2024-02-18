@@ -162,16 +162,6 @@
 </template>
 
 <script setup lang="ts">
-import DataTable from 'primevue/datatable';
-import Column from 'primevue/column';
-import Toolbar from 'primevue/toolbar';
-import Button from 'primevue/button';
-import ConfirmPopup from 'primevue/confirmpopup';
-import InputText from 'primevue/inputtext';
-import Dialog from 'primevue/dialog';
-import InlineMessage from 'primevue/inlinemessage';
-import Calendar from 'primevue/calendar';
-import Checkbox from 'primevue/checkbox';
 import { FacilityEntry, InputEntry } from '../../services/types';
 import dataprovider from '../../services/dataprovider';
 import { Ref, ref, watch } from 'vue';

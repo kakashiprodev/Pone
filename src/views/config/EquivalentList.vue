@@ -478,15 +478,6 @@
 </template>
 
 <script setup lang="ts">
-import DataTable from 'primevue/datatable';
-import Column from 'primevue/column';
-import Toolbar from 'primevue/toolbar';
-import Button from 'primevue/button';
-import InputText from 'primevue/inputtext';
-import InputNumber from 'primevue/inputnumber';
-import Checkbox from 'primevue/checkbox';
-import Dialog from 'primevue/dialog';
-import ConfirmPopup from 'primevue/confirmpopup';
 import { getAverageEquivalent } from '../../services/reporting/index';
 import { useGlobalStore } from '../../stores/global';
 import { Ref, ref, watchEffect, computed } from 'vue';
@@ -506,7 +497,6 @@ import {
   nullable,
 } from 'valibot';
 import { roundString } from '../../pipes';
-import InlineMessage from 'primevue/inlinemessage';
 import SmartEquivalentList from '../../components/equivalents/SmartEquivalentList.vue';
 
 const windowWidth = ref(window.innerWidth);

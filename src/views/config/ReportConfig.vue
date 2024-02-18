@@ -155,13 +155,6 @@ import { ref, Ref, watch, computed } from 'vue';
 import { useGlobalStore } from '../../stores/global';
 import { useConfirm } from 'primevue/useconfirm';
 import { ReportEntry } from '../../services/types';
-import Button from 'primevue/button';
-import Dropdown from 'primevue/dropdown';
-import InputNumber from 'primevue/inputnumber';
-import InputText from 'primevue/inputtext';
-import ConfirmDialog from 'primevue/confirmdialog';
-import Toolbar from 'primevue/toolbar';
-import Card from 'primevue/card';
 import {
   minLength,
   maxLength,

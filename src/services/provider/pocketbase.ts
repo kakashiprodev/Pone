@@ -256,7 +256,6 @@ export default class DataProvider {
   }
 
   async readUserInputs(query?: UserInputQuery) {
-    console.log('input query: ', query);
     const res = await this.pb.collection('inputs').getList<InputEntry>(1, 500, {
       filter: `report = '${globalStore.selectedReport?.id}'${
         query?.scope

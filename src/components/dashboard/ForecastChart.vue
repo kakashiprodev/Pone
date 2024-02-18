@@ -11,7 +11,6 @@
 </template>
 
 <script setup lang="ts">
-import Chart from 'primevue/chart';
 import {
   calculateEmissions,
   EmissionResult,

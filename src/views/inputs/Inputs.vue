@@ -1,11 +1,7 @@
 <template>
   <h4>Übersicht aller Eingaben</h4>
 
-  <ScopeInfoBox
-    class="mt-1 mb-1"
-    v-if="preSelectedScope != 'all'"
-    :scope="preSelectedScope"
-  />
+  <ScopeInfoBox v-if="preSelectedScope != 'all'" :scope="preSelectedScope" />
 
   <InlineMessage severity="info" v-if="global.showTooltips" class="w-full mb-2">
     Hier können Sie alle Eingaben für den aktuellen Bericht einsehen und
@@ -555,17 +551,6 @@
 </template>
 
 <script setup lang="ts">
-import DataTable from 'primevue/datatable';
-import Column from 'primevue/column';
-import Toolbar from 'primevue/toolbar';
-import Button from 'primevue/button';
-import ConfirmPopup from 'primevue/confirmpopup';
-import InputNumber from 'primevue/inputnumber';
-import InputText from 'primevue/inputtext';
-import Dialog from 'primevue/dialog';
-import Checkbox from 'primevue/checkbox';
-import Dropdown from 'primevue/dropdown';
-import InlineMessage from 'primevue/inlinemessage';
 import SmartEquivalentList from '../../components/equivalents/SmartEquivalentList.vue';
 import FacilityChooser from '../../components/facilities/FacilityChooser.vue';
 import ScopeInfoBox from '../../components/equivalents/ScopeInfoBox.vue';

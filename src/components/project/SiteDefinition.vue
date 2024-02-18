@@ -90,12 +90,6 @@
 
 <script setup lang="ts">
 import { useGlobalStore } from '../../stores/global';
-import Button from 'primevue/button';
-import ConfirmDialog from 'primevue/confirmdialog';
-import Dropdown from 'primevue/dropdown';
-import InputText from 'primevue/inputtext';
-import Toolbar from 'primevue/toolbar';
-import InlineMessage from 'primevue/inlinemessage';
 import { ref, Ref, watch } from 'vue';
 import { SiteEntry } from '../../services/types';
 import { useConfirm } from 'primevue/useconfirm';

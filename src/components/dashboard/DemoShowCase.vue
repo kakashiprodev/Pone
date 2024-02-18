@@ -18,7 +18,6 @@
 </template>
 
 <script setup lang="ts">
-import Card from 'primevue/card';
 import { defineProps } from 'vue';
 
 defineProps({

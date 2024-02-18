@@ -1,83 +1,116 @@
 <template>
   <h2>Demo for Dasbboard DataEngine</h2>
-  <Toolbar>
-    <template #start>
-      <span>Project: </span>
-      <span class="ml-1">{{ global.selectedProject?.name }}</span>
-      <span class="ml-5"> Choose site(s): </span>
+
+  <div>
+    <HorizontalTwoColHeader label="Main" class="mt-2" />
+    <HorizontalTwoColEntry label="Project" class="mt-2">
+      <label>{{ global.selectedProject?.name }}</label>
+    </HorizontalTwoColEntry>
+    <HorizontalTwoColEntry label="Choose the Sites" class="mt-2">
       <MultiSelect
-        class="ml-2"
+        id="sites"
         :options="global.sites"
         v-model="selectedSiteIds"
         option-label="name"
         option-value="id"
         placeholder="Select a Site"
+        class="w-full"
       />
-      <span class="ml-5"> Choose year(s): </span>
+    </HorizontalTwoColEntry>
+    <HorizontalTwoColEntry label="Choose Years" class="mt-2">
       <MultiSelect
-        class="ml-2"
+        id="years"
         :options="availableYears"
         v-model="selectedYears"
         placeholder="Select a Year"
+        class="w-full"
       />
-      <span class="ml-5"> Filter?</span>
-      <Checkbox v-model="useFilter" class="ml-2" :binary="true" />
-    </template>
-  </Toolbar>
+    </HorizontalTwoColEntry>
 
-  <Toolbar class="mt-2">
-    <template #start>
-      <span> Choose scopes: </span>
+    <HorizontalTwoColHeader label="Filters" class="mt-2" />
+    <HorizontalTwoColEntry label="Use Filter" class="mt-2">
+      <Checkbox v-model="useFilter" id="Use Filter" :binary="true"/>
+    </HorizontalTwoColEntry>
+    <HorizontalTwoColEntry label="Scopes" class="mt-2">
       <MultiSelect
-        class="ml-2"
+        id="scopes"
         :options="[1, 2, 3]"
         v-model="selectedScopes"
         placeholder="Select a Scope"
+        class="w-full"
       />
-      <span class="ml-5"> Choose categorie(s): </span>
+    </HorizontalTwoColEntry>
+    <HorizontalTwoColEntry label="Categories" class="mt-2">
       <MultiSelect
-        class="ml-2 w-20rem"
+        id="categories"
         :options="availableCategories"
         v-model="selectedCategories"
         placeholder="Select a Category"
-        :maxSelectedLabels="3"
+        :maxSelectedLabels="1"
         display="chip"
+        class="w-full"
       />
-      <span class="ml-5"> Choose facilitie(s): </span>
+    </HorizontalTwoColEntry>
+    <HorizontalTwoColEntry label="Facilities" class="mt-2">
       <MultiSelect
-        class="ml-2"
+        id="facilities"
         :options="availableFacilities"
         option-label="name"
         option-value="id"
         v-model="selectedFacilities"
         placeholder="Select a Facility"
+        class="w-full"
       />
-    </template>
-  </Toolbar>
+    </HorizontalTwoColEntry>
 
-  <Toolbar class="mt-2">
-    <template #start>
-      <span> Choose Function: </span>
+    <HorizontalTwoColHeader label="Aggregation type" class="mt-2" />
+    <HorizontalTwoColEntry label="Function" class="mt-2">
       <Dropdown
-        class="ml-2"
+        id="function"
         :options="['getPlainReportData', 'getGroupedReportData']"
         v-model="selectedFunction"
         placeholder="Select a Function"
+        class="w-full"
       />
-      <span class="ml-5"> GroupBy: </span>
+    </HorizontalTwoColEntry>
+    <HorizontalTwoColEntry label="GroupBy" class="mt-2">
       <Dropdown
-        class="ml-2"
+        id="groupBy"
         :options="availableGroupBy"
         v-model="selectedGroupBy"
         placeholder="How to group the data?"
+        class="w-full"
       />
-    </template>
-    <template #end>
-      <Button label="Get Data!" icon="pi pi-refresh" @click="getData" />
-    </template>
-  </Toolbar>
+    </HorizontalTwoColEntry>
+
+    <HorizontalTwoColEntry label="Get Data" class="mt-2">
+      <div class="w-full flex justify-content-end">
+        <Button @click="getData()" label="Let´s get data!" />
+      </div>
+    </HorizontalTwoColEntry>
+  </div>
 
   <TabView class="mt-2">
+    <TabPanel header="Plot data">
+      <TabView>
+        <TabPanel header="Line-Chart">
+          <LineChart v-if="plainData" :data="plainData" />
+        </TabPanel>
+        <TabPanel header="Bar-X-Cart">
+          <BarXCart v-if="plainData" :data="plainData" />
+        </TabPanel>
+        <TabPanel header="Bar-Y-Chart">
+          <BarYChart v-if="plainData" :data="plainData" />
+        </TabPanel>
+        <TabPanel header="Radar-Chart">
+          <RadarChart v-if="plainData" :data="plainData" />
+        </TabPanel>
+        <TabPanel header="Pole-Area-Chart">
+          <PoleAreaChart v-if="plainData" :data="plainData" />
+        </TabPanel>
+      </TabView>
+    </TabPanel>
+
     <TabPanel header="Data">
       <Card>
         <template #content>
@@ -99,25 +132,6 @@
       </Card>
       <DemoShowCase :query="plainDataQuery" :result="plainData" />
     </TabPanel>
-    <TabPanel header="Plot">
-      <TabView>
-        <TabPanel header="Line-Chart">
-          <LineChart v-if="plainData" :data="plainData" />
-        </TabPanel>
-        <TabPanel header="Bar-X-Cart">
-          <BarXCart v-if="plainData" :data="plainData" />
-        </TabPanel>
-        <TabPanel header="Bar-Y-Chart">
-          <BarYChart v-if="plainData" :data="plainData" />
-        </TabPanel>
-        <TabPanel header="Radar-Chart">
-          <RadarChart v-if="plainData" :data="plainData" />
-        </TabPanel>
-        <TabPanel header="Pole-Area-Chart">
-          <PoleAreaChart v-if="plainData" :data="plainData" />
-        </TabPanel>
-      </TabView>
-    </TabPanel>
   </TabView>
 </template>
 
@@ -130,19 +144,13 @@ import {
 } from '../../services/reporting/index';
 import { ref, onMounted, Ref, computed, ComputedRef } from 'vue';
 import DemoShowCase from './DemoShowCase.vue';
-import Toolbar from 'primevue/toolbar';
-import MultiSelect from 'primevue/multiselect';
-import Button from 'primevue/button';
-import Checkbox from 'primevue/checkbox';
-import Dropdown from 'primevue/dropdown';
-import Card from 'primevue/card';
-import TabView from 'primevue/tabview';
-import TabPanel from 'primevue/tabpanel';
 import BarXCart from './plot/BarXCart.vue';
 import BarYChart from './plot/BarYChart.vue';
 import LineChart from './plot/LineChart.vue';
 import RadarChart from './plot/RadarChart.vue';
 import PoleAreaChart from './plot/PoleAreaChart.vue';
+import HorizontalTwoColEntry from '../forms/HorizontalTwoColEntry.vue';
+import HorizontalTwoColHeader from '../forms/HorizontalTwoCoHeader.vue';
 import { useGlobalStore } from './../../stores/global';
 
 // get necessary data (project, sites, reports) from store

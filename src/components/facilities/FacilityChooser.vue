@@ -15,8 +15,6 @@
 </template>
 
 <script setup lang="ts">
-import DataTable from 'primevue/datatable';
-import Column from 'primevue/column';
 import { FacilityEntry } from '../../services/types';
 import { PropType, Ref, ref, watch } from 'vue';
 import { useGlobalStore } from '../../stores/global';

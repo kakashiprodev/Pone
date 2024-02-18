@@ -79,12 +79,6 @@
 </template>
 
 <script setup lang="ts">
-import InputText from 'primevue/inputtext';
-import InputNumber from 'primevue/inputnumber';
-import Button from 'primevue/button';
-import Card from 'primevue/card';
-import Textarea from 'primevue/textarea';
-import ProgressSpinner from 'primevue/progressspinner';
 import SmartEquivalentList from '../equivalents/SmartEquivalentList.vue';
 import { ref, Ref } from 'vue';
 import { assistentPrompt } from '../../services/prompts';

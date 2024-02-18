@@ -13,7 +13,6 @@
 
 <script setup lang="ts">
 import { ref, Ref, onMounted, defineProps, PropType, watch } from 'vue';
-import Chart from 'primevue/chart';
 import { AggregatedReportResult } from '../../../services/reporting/index';
 
 const props = defineProps({

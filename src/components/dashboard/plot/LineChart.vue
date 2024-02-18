@@ -14,8 +14,6 @@
 
 <script setup lang="ts">
 import { ref, Ref, onMounted, defineProps, PropType, watch } from 'vue';
-import Chart from 'primevue/chart';
-import ProgressSpinner from 'primevue/progressspinner';
 import { AggregatedReportResult } from '../../../services/reporting/index';
 
 const props = defineProps({

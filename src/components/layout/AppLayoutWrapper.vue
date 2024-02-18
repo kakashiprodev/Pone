@@ -117,10 +117,7 @@
 import AppLayout from './AppLayout.vue';
 import { useGlobalStore } from '../../stores/global';
 import { useRouter } from 'vue-router';
-import InputSwitch from 'primevue/inputswitch';
 import dataprovider from '../../services/dataprovider';
-import PanelMenu from 'primevue/panelmenu';
-import Button from 'primevue/button';
 
 const router = useRouter();
 const global = useGlobalStore();

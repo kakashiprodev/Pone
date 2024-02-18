@@ -19,31 +19,31 @@
       <div class="p-fluid">
         <div class="p-field">
           <label for="username">Benutzername</label>
-          <TextInput class="mt-2" id="username" v-model="global.username" />
+          <InputText class="mt-2" id="username" v-model="global.username" />
         </div>
         <div class="p-field mt-2">
           <label for="email">E-Mail</label>
-          <TextInput class="mt-2" id="email" v-model="user.email" />
+          <InputText class="mt-2" id="email" v-model="user.email" />
         </div>
         <div class="p-field mt-2">
           <label for="firstname">Vorname</label>
-          <TextInput class="mt-2" id="firstname" v-model="user.firstname" />
+          <InputText class="mt-2" id="firstname" v-model="user.firstname" />
         </div>
         <div class="p-field mt-2">
           <label for="surname">Nachname</label>
-          <TextInput class="mt-2" id="surname" v-model="user.surname" />
+          <InputText class="mt-2" id="surname" v-model="user.surname" />
         </div>
         <div class="p-field mt-2">
           <label for="department">Abteilung</label>
-          <TextInput class="mt-2" id="department" v-model="user.department" />
+          <InputText class="mt-2" id="department" v-model="user.department" />
         </div>
         <div class="p-field mt-2">
           <label for="role">Rolle</label>
-          <TextInput class="mt-2" id="role" v-model="user.role" />
+          <InputText class="mt-2" id="role" v-model="user.role" />
         </div>
         <div class="p-field mt-2">
           <label for="telephone">Telefon</label>
-          <TextInput class="mt-2" id="telephone" v-model="user.telephone" />
+          <InputText class="mt-2" id="telephone" v-model="user.telephone" />
         </div>
 
         <Button
@@ -58,10 +58,7 @@
 </template>
 
 <script setup lang="ts">
-import Button from 'primevue/button';
-import TextInput from 'primevue/inputtext';
 import { Ref, ref, onMounted } from 'vue';
-import InputSwitch from 'primevue/inputswitch';
 import { error } from './../../services/toast';
 import { useGlobalStore } from './../../stores/global';
 import { UserEntry } from './../../services/types';

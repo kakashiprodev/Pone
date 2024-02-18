@@ -64,12 +64,6 @@
 
 <script setup lang="ts">
 import { ref, Ref, computed } from 'vue';
-import Toolbar from 'primevue/toolbar';
-import MultiSelect from 'primevue/multiselect';
-import Button from 'primevue/button';
-import InputNumber from 'primevue/inputnumber';
-import ConfirmDialog from 'primevue/confirmdialog';
-import Card from 'primevue/card';
 import { useGlobalStore } from './../../stores/global';
 import { useConfirm } from 'primevue/useconfirm';
 import { error, info } from '../../services/toast';
