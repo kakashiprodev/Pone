@@ -342,9 +342,9 @@ const props = defineProps({
     default: false,
   },
   refresh: {
-    type: Boolean,
+    type: Number,
     required: false,
-    default: false,
+    default: -1,
   },
   comfortMode: {
     type: Boolean,
