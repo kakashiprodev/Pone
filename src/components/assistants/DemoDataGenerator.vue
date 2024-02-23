@@ -66,7 +66,7 @@
 import { ref, Ref, computed } from 'vue';
 import { useGlobalStore } from './../../stores/global';
 import { useConfirm } from 'primevue/useconfirm';
-import { error, info } from '../../services/toast';
+import { error, info } from '../../services/ui/toast';
 import dataprovider from '../../services/dataprovider';
 import { EquivalentEntry, InputEntry } from '../../services/types';
 import { getSumForInput } from '../../services/reporting';

@@ -26,7 +26,7 @@
 
 <script setup lang="ts">
 import { PropType, ref, onMounted, watch } from 'vue';
-import { round, toTons } from '../../../../pipes/index';
+import { round, toTons } from '../../../../services/pipes/index';
 import { useGlobalStore } from '../../../../stores/global';
 
 const globalStore = useGlobalStore();

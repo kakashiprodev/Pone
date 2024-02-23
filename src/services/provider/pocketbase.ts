@@ -1,3 +1,8 @@
+/**
+ * Data Provider for PocketBase
+ * https://pocketbase.io/
+ */
+
 import PocketBase from 'pocketbase';
 import {
   ActionEntry,
@@ -12,7 +17,7 @@ import {
   UserEntry,
   UserInputQuery,
 } from '../types';
-import { error } from '../toast';
+import { error } from '../ui/toast';
 import { globalStore } from '../../main';
 import { getSumForInput } from '../reporting';
 

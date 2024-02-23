@@ -1,4 +1,11 @@
-import { ActionEntry, TargetEntry } from './types';
+/**
+ * This service contains the calculations for the "actions" in a report
+ * That means the user can add actions to the report that will reduce the emissions
+ * Also he can add targets for the emissions
+ * The service will calculate the emissions for the report
+ */
+
+import { ActionEntry, TargetEntry } from '../types';
 
 // interface Target {
 //     year: number;

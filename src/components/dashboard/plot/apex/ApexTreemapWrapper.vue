@@ -24,7 +24,7 @@ import {
   ComputedRef,
 } from 'vue';
 import { AggregatedReportResult } from '../../../../services/reporting/index';
-import { round, toTons } from '../../../../pipes/index';
+import { round, toTons } from '../../../../services/pipes/index';
 import { useGlobalStore } from '../../../../stores/global';
 import { getMonochromeColorPalette } from './../../../../services/colors';
 

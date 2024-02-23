@@ -11,7 +11,7 @@ import {
   InputEntry,
   InputEntryWithExpandedReportAndSite,
 } from '../types';
-import { roundStringWithDecimals } from '../../pipes/index';
+import { roundStringWithDecimals } from '../pipes/index';
 
 type monthsShort =
   | 'jan'

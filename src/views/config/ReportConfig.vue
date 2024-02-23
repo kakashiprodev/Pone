@@ -167,7 +167,7 @@ import {
   parse,
   nullable,
 } from 'valibot';
-import { error, info } from '../../services/toast';
+import { error, info } from '../../services/ui/toast';
 
 const global = useGlobalStore();
 const confirm = useConfirm();

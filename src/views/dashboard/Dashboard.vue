@@ -28,7 +28,7 @@ import ReportPrint from '../../components/dashboard/report/ReportPrint.vue';
 import ActionOverview from '../../components/dashboard/actions/ActionOverview.vue';
 import { useRouter } from 'vue-router';
 import { useGlobalStore } from '../../stores/global';
-import { error } from '../../services/toast';
+import { error } from '../../services/ui/toast';
 
 const global = useGlobalStore();
 const router = useRouter();

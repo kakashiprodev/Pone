@@ -438,7 +438,7 @@ import { ref, watch } from 'vue';
 import { useGlobalStore } from '../../stores/global';
 import { ActionEntry } from '../../services/types';
 import dataprovider from '../../services/dataprovider';
-import { error } from '../../services/toast';
+import { error } from '../../services/ui/toast';
 
 import { useConfirm } from 'primevue/useconfirm';
 import {

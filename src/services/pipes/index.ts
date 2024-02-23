@@ -1,4 +1,8 @@
 /**
+ * Pipes will be used to transform data in the frontend without hassle
+ */
+
+/**
  * round a number to a given number of decimals
  */
 export const round = (value: number, decimals: number = 3): number => {

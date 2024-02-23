@@ -83,7 +83,7 @@ import SmartEquivalentList from '../equivalents/SmartEquivalentList.vue';
 import { ref, Ref } from 'vue';
 import { assistentPrompt } from '../../services/prompts';
 import OpenAI from 'openai';
-import { error } from '../../services/toast';
+import { error } from '../../services/ui/toast';
 import { useGlobalStore } from '../../stores/global';
 
 interface Message {
