@@ -9,7 +9,8 @@ import Tooltip from 'primevue/tooltip';
 import { useGlobalStore } from './stores/global';
 
 /* Apex charts */
-import VueApexCharts from "vue3-apexcharts";
+// @ts-ignore
+import VueApexCharts from 'vue3-apexcharts';
 
 /* PrimeVue components */
 import MultiSelect from 'primevue/multiselect';
@@ -40,6 +41,7 @@ import Toast from 'primevue/toast';
 import Chart from 'primevue/chart';
 import ToggleButton from 'primevue/togglebutton';
 import Listbox from 'primevue/listbox';
+import ProgressBar from 'primevue/progressbar';
 
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import 'primeflex/primeflex.css';
@@ -82,7 +84,7 @@ app.component('Toast', Toast);
 app.component('Chart', Chart);
 app.component('ToggleButton', ToggleButton);
 app.component('Listbox', Listbox);
-
+app.component('ProgressBar', ProgressBar);
 
 app.directive('tooltip', Tooltip);
 

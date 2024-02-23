@@ -22,9 +22,9 @@
 </template>
 
 <script setup lang="ts">
-import ForecastChart from '../../components/dashboard/ForecastChart.vue';
-import SumCharts from '../../components/dashboard/SumCharts.vue';
-import ReportPrint from '../../components/dashboard/ReportPrint.vue';
+import ForecastChart from '../../components/dashboard/demo/ForecastChart.vue';
+import SumCharts from '../../components/dashboard/demo/SumCharts.vue';
+import ReportPrint from '../../components/dashboard/report/ReportPrint.vue';
 import ActionOverview from '../../components/dashboard/actions/ActionOverview.vue';
 import { useRouter } from 'vue-router';
 import { useGlobalStore } from '../../stores/global';

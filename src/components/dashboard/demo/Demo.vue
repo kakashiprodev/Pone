@@ -265,16 +265,16 @@ import {
   TimeseriesDataEntry,
   AggregatedReportResult,
   AggregatedReportResultYearlyGrouped,
-} from '../../services/reporting/index';
+} from '../../../services/reporting/index';
 import { ref, Ref, computed, ComputedRef } from 'vue';
 import DemoShowCase from './DemoShowCase.vue';
-import HorizontalTwoColEntry from '../forms/HorizontalTwoColEntry.vue';
-import HorizontalTwoColHeader from '../forms/HorizontalTwoCoHeader.vue';
-import { useGlobalStore } from './../../stores/global';
-import ApexChartWrapper from './plot/apex/ApexChartWrapper.vue';
-import ApexGroupedChartWrapper from './plot/apex/ApexGroupedChartWrapper.vue';
-import ApexSumChartWrapper from './plot/apex/ApexSumChartWrapper.vue';
-import ApexTreemapWrapper from './plot/apex/ApexTreemapWrapper.vue';
+import HorizontalTwoColEntry from '../../forms/HorizontalTwoColEntry.vue';
+import HorizontalTwoColHeader from '../../forms/HorizontalTwoCoHeader.vue';
+import { useGlobalStore } from '../../../stores/global';
+import ApexChartWrapper from '../plot/apex/ApexChartWrapper.vue';
+import ApexGroupedChartWrapper from '../plot/apex/ApexGroupedChartWrapper.vue';
+import ApexSumChartWrapper from '../plot/apex/ApexSumChartWrapper.vue';
+import ApexTreemapWrapper from '../plot/apex/ApexTreemapWrapper.vue';
 
 // get necessary data (project, sites, reports) from store
 const global = useGlobalStore();

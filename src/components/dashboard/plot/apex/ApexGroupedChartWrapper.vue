@@ -4,7 +4,7 @@
   </h4>
   <div>
     <apexchart
-      :width="width"
+    width="100%"
       type="bar"
       :options="chartOptions"
       :series="chartData"
@@ -26,6 +26,7 @@ import {
 import { AggregatedReportResultYearlyGrouped } from '../../../../services/reporting/index';
 import { roundArray, toTonsArray } from '../../../../pipes/index';
 import { useGlobalStore } from '../../../../stores/global';
+import { getMonochromeColorPalette } from './../../../../services/colors';
 
 const globalStore = useGlobalStore();
 
@@ -59,9 +60,6 @@ const props = defineProps({
     default: 0,
   },
 });
-
-// max width of the chart via window.innerWidth
-const width = ref(window.innerWidth - 400);
 
 /*
 demo chartData:
@@ -121,6 +119,7 @@ export interface AggregatedReportResultYearlyGrouped {
 
 const chartData: Ref<any> = ref(null);
 
+const colors = ref<string[]>([]);
 const categories = ref<string[]>([]);
 const chartOptions: ComputedRef<any> = computed(() => {
   return {
@@ -137,6 +136,7 @@ const chartOptions: ComputedRef<any> = computed(() => {
         horizontal: props.horizontal,
       },
     },
+    colors: colors.value,
   };
 });
 
@@ -146,6 +146,9 @@ const chartOptions: ComputedRef<any> = computed(() => {
 const renderChart = () => {
   console.log('render chart, yearly grouped');
   if (props.data) {
+    colors.value = getMonochromeColorPalette(
+      Object.keys(props.data.yearlyGrouped).length,
+    );
     const series = [];
     const data = props.data.yearlyGrouped;
     const years = Object.keys(data);

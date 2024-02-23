@@ -4,7 +4,7 @@
   </h4>
   <div>
     <apexchart
-      :width="width"
+      width="100%"
       :type="props.type"
       :options="chartOptions"
       :series="chartData"
@@ -26,6 +26,7 @@ import {
 import { AggregatedReportResult } from '../../../../services/reporting/index';
 import { roundArray, toTonsArray } from '../../../../pipes/index';
 import { useGlobalStore } from '../../../../stores/global';
+import { getMonochromeColorPalette } from './../../../../services/colors';
 
 const globalStore = useGlobalStore();
 
@@ -59,9 +60,6 @@ const props = defineProps({
     default: 0,
   },
 });
-
-// max width of the chart via window.innerWidth
-const width = ref(window.innerWidth - 400);
 
 /**
  * demo chart:
@@ -137,6 +135,7 @@ interface ChartData {
 const chartData: Ref<ChartData[]> = ref([]);
 
 const categories = ref<string[]>([]);
+const colors = ref<string[]>([]);
 const chartOptions: ComputedRef<any> = computed(() => {
   return {
     chart: {
@@ -152,6 +151,7 @@ const chartOptions: ComputedRef<any> = computed(() => {
         horizontal: props.horizontal,
       },
     },
+    colors: colors.value,
   };
 });
 
@@ -159,6 +159,9 @@ const chartOptions: ComputedRef<any> = computed(() => {
  * render the chart with prop data
  */
 const renderChart = () => {
+  colors.value = getMonochromeColorPalette(
+    Object.keys(props.data.timeseries).length,
+  );
   console.log('render chart');
   if (props.data) {
     const series = Object.keys(props.data.timeseries).map((key) => {
@@ -177,6 +180,9 @@ const renderChart = () => {
     categories.value = props.data.timeseries[
       Object.keys(props.data.timeseries)[0]
     ].map((entry) => entry.year.toString());
+    if (categories.value.length === 3 && categories.value[0] === '1') {
+      categories.value = ['Scope 1', 'Scope 2', 'Scope 3'];
+    }
   }
 };
 

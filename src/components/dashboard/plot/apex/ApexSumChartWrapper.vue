@@ -4,7 +4,7 @@
   </h4>
   <div>
     <apexchart
-      :width="width"
+    width="100%"
       :type="props.type"
       :options="chartOptions"
       :series="chartData"
@@ -26,6 +26,7 @@ import {
 import { AggregatedReportResult } from '../../../../services/reporting/index';
 import { round, toTons } from '../../../../pipes/index';
 import { useGlobalStore } from '../../../../stores/global';
+import { getMonochromeColorPalette } from './../../../../services/colors';
 
 const globalStore = useGlobalStore();
 
@@ -39,7 +40,7 @@ const props = defineProps({
     required: true,
   },
   type: {
-    type: String as PropType<'polarArea' | 'radar' | 'pie'>,
+    type: String as PropType<'polarArea' | 'radar' | 'pie' | 'donut'>,
     required: false,
     default: 'polarArea',
   },
@@ -49,9 +50,6 @@ const props = defineProps({
     default: 0,
   },
 });
-
-// max width of the chart via window.innerWidth
-const width = ref(window.innerWidth - 400);
 
 /**
  * demo chart:
@@ -96,8 +94,10 @@ const chartOptions: ComputedRef<any> = computed(() => {
     },
     plotOptions: {},
     labels: categories.value,
+    colors: colors.value,
   };
 });
+const colors = ref<string[]>([]);
 
 const sum = (data: number[]) => {
   return data.reduce((a, b) => a + b, 0);
@@ -118,8 +118,15 @@ const renderChart = () => {
       series.push(round(toTons(sumOfKey, globalStore.displayInTons)));
     });
 
+    // add colors
+    colors.value = getMonochromeColorPalette(
+      Object.keys(props.data.timeseries).length,
+    );
+
     chartData.value =
-      props.type === 'polarArea' || props.type === 'pie'
+      props.type === 'polarArea' ||
+      props.type === 'pie' ||
+      props.type === 'donut'
         ? series
         : [
             {
@@ -129,6 +136,9 @@ const renderChart = () => {
           ];
 
     categories.value = Object.keys(props.data.timeseries);
+    if (categories.value.length === 3 && categories.value[0] === '1') {
+      categories.value = ['Scope 1', 'Scope 2', 'Scope 3'];
+    }
   }
 };
 
