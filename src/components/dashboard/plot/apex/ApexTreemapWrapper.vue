@@ -5,7 +5,7 @@
   <div>
     <apexchart
       :width="width"
-      :type="props.type"
+      type="treemap"
       :options="chartOptions"
       :series="chartData"
     ></apexchart>
@@ -38,11 +38,6 @@ const props = defineProps({
     type: Object as PropType<AggregatedReportResult>,
     required: true,
   },
-  type: {
-    type: String as PropType<'polarArea' | 'radar'>,
-    required: false,
-    default: 'polarArea',
-  },
   decimals: {
     type: Number,
     required: false,
@@ -55,13 +50,20 @@ const width = ref(window.innerWidth - 400);
 
 /**
  * demo chart:
- * [
-        {
-          name: 'Sum',
-          data: [44, 55, 41],
-        },
+ series: [
+  {
+  data: [
+    {
+      x: 'New Delhi',
+      y: 218
+    },
+    {
+      x: 'Kolkata',
+      y: 149
+    },
+    ...
   ]
-*/
+ */
 
 /*
 export interface AggregatedReportResult {
@@ -79,23 +81,24 @@ export interface AggregatedReportResult {
 }
 */
 interface ChartData {
-  name: string;
-  data: number[];
+  data: {
+    x: string;
+    y: number;
+  }[];
 }
 
-const chartData: Ref<ChartData[] | number[]> = ref([]);
+const chartData: Ref<ChartData[]> = ref([]);
 
 const categories = ref<string[]>([]);
 const chartOptions: ComputedRef<any> = computed(() => {
   return {
     chart: {
-      type: 'radar',
+      type: 'treemap',
     },
     xaxis: {
       categories: categories.value,
     },
     plotOptions: {},
-    labels: categories.value,
   };
 });
 
@@ -109,26 +112,26 @@ const sum = (data: number[]) => {
 const renderChart = () => {
   console.log('render chart');
   if (props.data) {
-    const series: number[] = [];
-    // get sum of all entries for each key in timeseries
-    Object.keys(props.data.timeseries).forEach((key) => {
-      const sumOfKey = sum(
-        props.data.timeseries[key].map((entry) => entry.sum),
-      );
-      series.push(round(toTons(sumOfKey, globalStore.displayInTons)));
+    const series = Object.keys(props.data.timeseries).map((key) => {
+      return {
+        x: key,
+        y: round(
+          toTons(
+            sum(props.data.timeseries[key].map((entry) => entry.sum)),
+            globalStore.displayInTons,
+          ),
+        ),
+      };
     });
+    chartData.value = [
+      {
+        data: series,
+      },
+    ];
 
-    chartData.value =
-      props.type === 'polarArea'
-        ? series
-        : [
-            {
-              name: 'Sum',
-              data: series,
-            },
-          ];
-
-    categories.value = Object.keys(props.data.timeseries);
+    categories.value = props.data.timeseries[
+      Object.keys(props.data.timeseries)[0]
+    ].map((entry) => entry.year.toString());
   }
 };
 

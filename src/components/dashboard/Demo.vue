@@ -163,7 +163,7 @@
           </p>
         </TabPanel>
         <TabPanel header="Radar-Chart">
-          <ApexRadarChartWrapper
+          <ApexSumChartWrapper
             v-if="
               selectedFunction === 'getGroupedReportData' && reportDataGrouped
             "
@@ -175,8 +175,21 @@
             structure. It is not possible to plot this data as a Radar chart.
           </p>
         </TabPanel>
+        <TabPanel header="Pie-Chart">
+          <ApexSumChartWrapper
+            v-if="
+              selectedFunction === 'getGroupedReportData' && reportDataGrouped
+            "
+            type="pie"
+            :data="reportDataGrouped"
+          />
+          <p v-else>
+            The function 'getYearlyGroupedReportData' returns a three level data
+            structure. It is not possible to plot this data as a Radar chart.
+          </p>
+        </TabPanel>
         <TabPanel header="Pole-Area-Chart">
-          <ApexRadarChartWrapper
+          <ApexSumChartWrapper
             v-if="
               selectedFunction === 'getGroupedReportData' && reportDataGrouped
             "
@@ -188,6 +201,14 @@
             structure. It is not possible to plot this data as a Pole-Area
             chart.
           </p>
+        </TabPanel>
+        <TabPanel header="TreeMap">
+          <ApexTreemapWrapper
+            v-if="
+              selectedFunction === 'getGroupedReportData' && reportDataGrouped
+            "
+            :data="reportDataGrouped"
+          />
         </TabPanel>
       </TabView>
     </TabPanel>
@@ -252,7 +273,8 @@ import HorizontalTwoColHeader from '../forms/HorizontalTwoCoHeader.vue';
 import { useGlobalStore } from './../../stores/global';
 import ApexChartWrapper from './plot/apex/ApexChartWrapper.vue';
 import ApexGroupedChartWrapper from './plot/apex/ApexGroupedChartWrapper.vue';
-import ApexRadarChartWrapper from './plot/apex/ApexRadarChartWrapper.vue';
+import ApexSumChartWrapper from './plot/apex/ApexSumChartWrapper.vue';
+import ApexTreemapWrapper from './plot/apex/ApexTreemapWrapper.vue';
 
 // get necessary data (project, sites, reports) from store
 const global = useGlobalStore();
