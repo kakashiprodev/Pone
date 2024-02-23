@@ -6,10 +6,29 @@ export const round = (value: number, decimals: number = 3): number => {
 };
 
 /**
+ * round array of numbers to a given number of decimals
+ */
+export const roundArray = (
+  values: number[],
+  decimals: number = 3,
+): number[] => {
+  return values.map((value) => round(value, decimals));
+};
+
+/**
  * divide by 1000 to get the value in tons
  */
-export const toTons = (value: number): number => {
+export const toTons = (value: number, execute = true): number => {
+  if (!execute) return value;
   return value / 1000;
+};
+
+/**
+ * divide by 1000 to get the value in tons as array
+ */
+export const toTonsArray = (values: number[], execute = true): number[] => {
+  if (!execute) return values;
+  return values.map((value) => toTons(value, execute));
 };
 
 /**

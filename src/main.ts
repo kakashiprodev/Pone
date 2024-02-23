@@ -8,6 +8,9 @@ import ConfirmationService from 'primevue/confirmationservice';
 import Tooltip from 'primevue/tooltip';
 import { useGlobalStore } from './stores/global';
 
+/* Apex charts */
+import VueApexCharts from "vue3-apexcharts";
+
 /* PrimeVue components */
 import MultiSelect from 'primevue/multiselect';
 import Button from 'primevue/button';
@@ -48,7 +51,8 @@ export const app = createApp(App)
   .use(pinia)
   .use(PrimeVue)
   .use(ConfirmationService)
-  .use(ToastService);
+  .use(ToastService)
+  .use(VueApexCharts);
 
 app.component('MultiSelect', MultiSelect);
 app.component('Button', Button);

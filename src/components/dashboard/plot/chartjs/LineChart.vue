@@ -20,7 +20,7 @@ import {
   ComputedRef,
   computed,
 } from 'vue';
-import { AggregatedReportResult } from '../../../services/reporting/index';
+import { AggregatedReportResult } from '../../../../services/reporting/index';
 
 const props = defineProps({
   data: {

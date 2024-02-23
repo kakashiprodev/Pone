@@ -100,6 +100,14 @@
       <Checkbox v-model="stackedCharts" id="stackedCharts" :binary="true" />
     </HorizontalTwoColEntry>
 
+    <HorizontalTwoColEntry label="Horizontal Bars?">
+      <Checkbox
+        v-model="horizontalCharts"
+        id="horizontalCharts"
+        :binary="true"
+      />
+    </HorizontalTwoColEntry>
+
     <HorizontalTwoColEntry label="" class="mt-2">
       <div class="w-full flex justify-content-end">
         <Button @click="getData()" label="Let´s get data!" />
@@ -119,53 +127,35 @@
         </Card>
       </div>
       <TabView v-else>
-        <TabPanel header="Bar Vertical">
-          <BarChart
+        <TabPanel header="Bar">
+          <ApexChartWrapper
             v-if="
               selectedFunction === 'getGroupedReportData' && reportDataGrouped
             "
-            type="simpleGrouped"
+            type="bar"
             :data="reportDataGrouped"
-            index-axis="x"
+            :stacked="stackedCharts"
+            :horizontal="horizontalCharts"
           />
-          <BarChart
+          <ApexGroupedChartWrapper
             v-if="
               selectedFunction === 'getYearlyGroupedReportData' &&
               reportDataYearlyGrouped
             "
-            type="yearlyGrouped"
             :data="reportDataYearlyGrouped"
             :stacked="stackedCharts"
-            index-axis="x"
-          />
-        </TabPanel>
-        <TabPanel header="Bar Horizontal">
-          <BarChart
-            v-if="
-              selectedFunction === 'getGroupedReportData' && reportDataGrouped
-            "
-            type="simpleGrouped"
-            :data="reportDataGrouped"
-            index-axis="y"
-          />
-          <BarChart
-            v-if="
-              selectedFunction === 'getYearlyGroupedReportData' &&
-              reportDataYearlyGrouped
-            "
-            type="yearlyGrouped"
-            :data="reportDataYearlyGrouped"
-            :stacked="stackedCharts"
-            index-axis="y"
+            :horizontal="horizontalCharts"
           />
         </TabPanel>
         <TabPanel header="Line-Chart">
-          <LineChart
+          <ApexChartWrapper
             v-if="
               selectedFunction === 'getGroupedReportData' && reportDataGrouped
             "
+            :type="stackedCharts ? 'area' : 'line'"
             :data="reportDataGrouped"
             :stacked="stackedCharts"
+            :horizontal="horizontalCharts"
           />
           <p v-else>
             The function 'getYearlyGroupedReportData' returns a three level data
@@ -173,10 +163,11 @@
           </p>
         </TabPanel>
         <TabPanel header="Radar-Chart">
-          <RadarChart
+          <ApexRadarChartWrapper
             v-if="
               selectedFunction === 'getGroupedReportData' && reportDataGrouped
             "
+            type="radar"
             :data="reportDataGrouped"
           />
           <p v-else>
@@ -185,10 +176,11 @@
           </p>
         </TabPanel>
         <TabPanel header="Pole-Area-Chart">
-          <PoleAreaChart
+          <ApexRadarChartWrapper
             v-if="
               selectedFunction === 'getGroupedReportData' && reportDataGrouped
             "
+            type="polarArea"
             :data="reportDataGrouped"
           />
           <p v-else>
@@ -255,13 +247,12 @@ import {
 } from '../../services/reporting/index';
 import { ref, Ref, computed, ComputedRef } from 'vue';
 import DemoShowCase from './DemoShowCase.vue';
-import BarChart from './plot/BarChart.vue';
-import LineChart from './plot/LineChart.vue';
-import RadarChart from './plot/RadarChart.vue';
-import PoleAreaChart from './plot/PoleAreaChart.vue';
 import HorizontalTwoColEntry from '../forms/HorizontalTwoColEntry.vue';
 import HorizontalTwoColHeader from '../forms/HorizontalTwoCoHeader.vue';
 import { useGlobalStore } from './../../stores/global';
+import ApexChartWrapper from './plot/apex/ApexChartWrapper.vue';
+import ApexGroupedChartWrapper from './plot/apex/ApexGroupedChartWrapper.vue';
+import ApexRadarChartWrapper from './plot/apex/ApexRadarChartWrapper.vue';
 
 // get necessary data (project, sites, reports) from store
 const global = useGlobalStore();
@@ -302,7 +293,10 @@ const selectedFunction: Ref<string> = ref('getGroupedReportData');
 // users choice of groupBy
 const availableGroupBy: ReportGroupBy[] = ['scope', 'category', 'facility'];
 const selectedGroupBy: Ref<ReportGroupBy> = ref('scope');
+
+// chart options
 const stackedCharts = ref(false);
+const horizontalCharts = ref(false);
 
 /**
  * Build the query for the report

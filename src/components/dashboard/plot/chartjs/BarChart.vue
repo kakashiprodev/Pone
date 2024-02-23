@@ -27,7 +27,7 @@ import {
 import {
   AggregatedReportResult,
   AggregatedReportResultYearlyGrouped,
-} from '../../../services/reporting/index';
+} from '../../../../services/reporting/index';
 
 const props = defineProps({
   label: {
