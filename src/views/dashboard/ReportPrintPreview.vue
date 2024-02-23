@@ -2,18 +2,30 @@
   <div class="report-page">
     <h3>DAS IST NUR EINE VORSCHAU UND NICHT DRUCKBAR!</h3>
 
-    <ReportHeader />
-    <SumCharts />
+    <h2>CO2-Bilanzierung Gesamt</h2>
+    <ReportSumYear :sites="[global.selectedSite?.id ?? '']" />
+
+    <h2>Scope 1</h2>
+    <ReportSumScope :scope="1" :sites="[global.selectedSite?.id ?? '']" />
+
+    <h2>Scope 2</h2>
+    <ReportSumScope :scope="2" :sites="[global.selectedSite?.id ?? '']" />
+
+    <h2>Scope 3</h2>
+    <ReportSumScope :scope="3" :sites="[global.selectedSite?.id ?? '']" />
+
+    <h2>Maßnahmen</h2>
     <ActionOverview />
-    <ForecastChart />
   </div>
 </template>
 
 <script setup lang="ts">
-import SumCharts from '../../components/dashboard/SumCharts.vue';
-import ForecastChart from '../../components/dashboard/ForecastChart.vue';
+import ReportSumScope from '../../components/dashboard/report/ReportSumScope.vue';
+import ReportSumYear from '../../components/dashboard/report/ReportSumYear.vue';
 import ActionOverview from '../../components/dashboard/actions/ActionOverview.vue';
-import ReportHeader from '../../components/dashboard/ReportHeader.vue';
+
+import { useGlobalStore } from '../../stores/global';
+const global = useGlobalStore();
 </script>
 
 <style>

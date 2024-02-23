@@ -19,6 +19,7 @@
     "@fortawesome/free-solid-svg-icons": "^6.4.2",
     "@fortawesome/vue-fontawesome": "^3.0.3",
     "@observablehq/plot": "^0.6.13",
+    "apexcharts": "^3.46.0",
     "chart.js": "^4.4.0",
     "openai": "^4.23.0",
     "pinia": "^2.1.6",
@@ -30,7 +31,8 @@
     "valibot": "^0.19.0",
     "vue": "^3.3.4",
     "vue-blockful-editor": "^0.3.1",
-    "vue-router": "^4.2.4"
+    "vue-router": "^4.2.4",
+    "vue3-apexcharts": "^1.5.2"
   },
   "devDependencies": {
     "@types/node": "^20.6.5",

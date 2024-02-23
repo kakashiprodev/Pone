@@ -8,6 +8,10 @@ import ConfirmationService from 'primevue/confirmationservice';
 import Tooltip from 'primevue/tooltip';
 import { useGlobalStore } from './stores/global';
 
+/* Apex charts */
+// @ts-ignore
+import VueApexCharts from 'vue3-apexcharts';
+
 /* PrimeVue components */
 import MultiSelect from 'primevue/multiselect';
 import Button from 'primevue/button';
@@ -37,6 +41,7 @@ import Toast from 'primevue/toast';
 import Chart from 'primevue/chart';
 import ToggleButton from 'primevue/togglebutton';
 import Listbox from 'primevue/listbox';
+import ProgressBar from 'primevue/progressbar';
 
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import 'primeflex/primeflex.css';
@@ -48,7 +53,8 @@ export const app = createApp(App)
   .use(pinia)
   .use(PrimeVue)
   .use(ConfirmationService)
-  .use(ToastService);
+  .use(ToastService)
+  .use(VueApexCharts);
 
 app.component('MultiSelect', MultiSelect);
 app.component('Button', Button);
@@ -78,7 +84,7 @@ app.component('Toast', Toast);
 app.component('Chart', Chart);
 app.component('ToggleButton', ToggleButton);
 app.component('Listbox', Listbox);
-
+app.component('ProgressBar', ProgressBar);
 
 app.directive('tooltip', Tooltip);
 

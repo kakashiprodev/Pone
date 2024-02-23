@@ -14,7 +14,7 @@ const routes = [
     children: [
       {
         path: '/demo',
-        component: () => import('../components/dashboard/Demo.vue'),
+        component: () => import('../components/dashboard/demo/Demo.vue'),
         name: 'demo',
       },
       {
@@ -25,7 +25,7 @@ const routes = [
       },
       {
         path: '/dashboard',
-        component: () => import('../views/dashboard/Dashboard.vue'),
+        component: () => import('../components/dashboard/report/ReportMain.vue'),
         name: 'dashboard',
       },
       {

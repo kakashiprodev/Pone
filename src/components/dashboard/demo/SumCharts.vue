@@ -51,10 +51,10 @@
 </template>
 
 <script setup lang="ts">
-import { getScopeSums } from '../../services/reporting/index';
+import { getScopeSums } from '../../../services/reporting/index';
 import { ref, Ref } from 'vue';
-import { useGlobalStore } from '../../stores/global';
-import dataprovider from '../../services/dataprovider';
+import { useGlobalStore } from '../../../stores/global';
+import dataprovider from '../../../services/dataprovider';
 
 const global = useGlobalStore();
 
