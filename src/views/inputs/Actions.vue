@@ -269,7 +269,12 @@
         class="w-full"
         v-model="selectedAction.category"
         id="action-category"
-        :options="['keine Ahnung']"
+        :options="[
+          'Steigerung der Energieeffizienz',
+          'Ausbau erneuerbare Energien',
+          'Organisatorische Maßnahme',
+          'Kompensation',
+        ]"
       />
     </div>
 
