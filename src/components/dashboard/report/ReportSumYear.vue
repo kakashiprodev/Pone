@@ -5,6 +5,8 @@
   </div>
   <ReportSpacer />
 
+  <ProgressBarWithTarget color="#786544" :value="50" :target-value="70" />
+
   <!-- ZEILE -->
   <HorizontalTwoColLayout>
     <template #left>
@@ -90,6 +92,7 @@ import ScopeDescription from './ScopeDescription.vue';
 import ApexGroupedChartWrapper from '../plot/apex/ApexGroupedChartWrapper.vue';
 import ReportSpacer from './ReportSpacer.vue';
 import TextBarList from '../plot/custom/TextBarList.vue';
+import ProgressBarWithTarget from '../plot/custom/ProgressBarWithTarget.vue';
 import ApexTreemapWrapper from '../plot/apex/ApexTreemapWrapper.vue';
 // import { error } from '../../services/toast';
 
