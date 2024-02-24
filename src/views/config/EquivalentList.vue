@@ -482,7 +482,7 @@ import { getAverageEquivalent } from '../../services/reporting/index';
 import { useGlobalStore } from '../../stores/global';
 import { Ref, ref, watchEffect, computed } from 'vue';
 import { EquivalentEntry } from '../../services/types';
-import { error, info } from '../../services/toast';
+import { error, info } from '../../services/ui/toast';
 import { useConfirm } from 'primevue/useconfirm';
 import {
   parse,
@@ -496,7 +496,7 @@ import {
   maxValue,
   nullable,
 } from 'valibot';
-import { roundString } from '../../pipes';
+import { roundString } from '../../services/pipes';
 import SmartEquivalentList from '../../components/equivalents/SmartEquivalentList.vue';
 
 const windowWidth = ref(window.innerWidth);
@@ -632,7 +632,6 @@ const selectedValue: Ref<EquivalentEntry> = ref(emptyEquivalent());
 // calculate avg value for the year
 watchEffect(() => {
   if (selectedValue.value.monthlyValues) {
-    console.log('recalc avg');
     selectedValue.value.avgValue =
       Math.round(getAverageEquivalent(selectedValue.value) * 10000) / 10000;
   }

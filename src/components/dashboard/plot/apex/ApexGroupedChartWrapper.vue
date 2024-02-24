@@ -4,7 +4,8 @@
   </h4>
   <div>
     <apexchart
-    width="100%"
+      v-if="chartData"
+      width="100%"
       type="bar"
       :options="chartOptions"
       :series="chartData"
@@ -24,7 +25,7 @@ import {
   ComputedRef,
 } from 'vue';
 import { AggregatedReportResultYearlyGrouped } from '../../../../services/reporting/index';
-import { roundArray, toTonsArray } from '../../../../pipes/index';
+import { roundArray, toTonsArray } from '../../../../services/pipes/index';
 import { useGlobalStore } from '../../../../stores/global';
 import { getMonochromeColorPalette } from './../../../../services/colors';
 
@@ -144,7 +145,6 @@ const chartOptions: ComputedRef<any> = computed(() => {
  * render the chart with prop data
  */
 const renderChart = () => {
-  console.log('render chart, yearly grouped');
   if (props.data) {
     colors.value = getMonochromeColorPalette(
       Object.keys(props.data.yearlyGrouped).length,
@@ -173,7 +173,6 @@ const renderChart = () => {
         ),
       });
     }
-    console.log('series', series);
     chartData.value = series;
   }
 };

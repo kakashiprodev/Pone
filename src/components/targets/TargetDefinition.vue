@@ -10,7 +10,14 @@
     Treibhausgasemissionen in Schritten eingegeben werden.
   </InlineMessage>
 
-  <!-- Button to add a new entry as target -->
+  <!-- head row -->
+  <div class="mt-2 mb-5 w-full">
+    Jahr / CO2-Ausstoß in %.<br />
+    100% bedeutet volle Klimeneutralität.<br />
+    0% = Keine Einsparung. Verbrauch ist gleich dem des angegebenen Basisjahr
+    des Berichts.
+  </div>
+
   <div
     class="field grid"
     v-for="target in global.targetOnSiteForProject"

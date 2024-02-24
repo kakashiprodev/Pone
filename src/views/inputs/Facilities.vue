@@ -167,7 +167,7 @@ import dataprovider from '../../services/dataprovider';
 import { ComputedRef, Ref, computed, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { useGlobalStore } from '../../stores/global';
-import { error, info } from '../../services/toast';
+import { error, info } from '../../services/ui/toast';
 import { useConfirm } from 'primevue/useconfirm';
 // import { getSumForInput, getCalculationSteps } from "./../services/reporting";
 import { parse, string, object, minLength, maxLength } from 'valibot';

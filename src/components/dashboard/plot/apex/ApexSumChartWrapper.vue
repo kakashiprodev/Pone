@@ -4,7 +4,7 @@
   </h4>
   <div>
     <apexchart
-    width="100%"
+      width="100%"
       :type="props.type"
       :options="chartOptions"
       :series="chartData"
@@ -24,7 +24,7 @@ import {
   ComputedRef,
 } from 'vue';
 import { AggregatedReportResult } from '../../../../services/reporting/index';
-import { round, toTons } from '../../../../pipes/index';
+import { round, toTons } from '../../../../services/pipes/index';
 import { useGlobalStore } from '../../../../stores/global';
 import { getMonochromeColorPalette } from './../../../../services/colors';
 
@@ -107,7 +107,6 @@ const sum = (data: number[]) => {
  * render the chart with prop data
  */
 const renderChart = () => {
-  console.log('render chart');
   if (props.data) {
     const series: number[] = [];
     // get sum of all entries for each key in timeseries

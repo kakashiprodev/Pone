@@ -3,7 +3,7 @@
  * This is also a wrapper to easily use the toast service with a one-liner
  */
 
-import { app } from './../main';
+import { app } from '../../main';
 
 const STD_LIFETIME = 3000;
 

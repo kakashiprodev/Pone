@@ -11,7 +11,7 @@ import {
   InputEntry,
   InputEntryWithExpandedReportAndSite,
 } from '../types';
-import { roundStringWithDecimals } from '../../pipes/index';
+import { roundStringWithDecimals } from '../pipes/index';
 
 type monthsShort =
   | 'jan'
@@ -491,11 +491,14 @@ const userInputsToDataEntries = (
       comment: input.comment,
       sumValue: input.sumValue,
       equivalent: input.equivalent ?? '',
-      category: input.category ?? '',
+      category:
+        input.category && input.category !== ''
+          ? input.category
+          : 'Ohne Zuordnung',
       facility:
         input.facility && input.facility !== ''
           ? input.expand.facility.name
-          : '',
+          : 'Ohne Zuordnung',
     };
   });
 };

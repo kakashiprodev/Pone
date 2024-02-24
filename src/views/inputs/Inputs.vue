@@ -560,7 +560,7 @@ import dataprovider from '../../services/dataprovider';
 import { Ref, ref, computed, watch, ComputedRef } from 'vue';
 import { useRoute } from 'vue-router';
 import { useGlobalStore } from '../../stores/global';
-import { error } from '../../services/toast';
+import { error } from '../../services/ui/toast';
 import { useConfirm } from 'primevue/useconfirm';
 import {
   getSumForInput,
@@ -579,7 +579,7 @@ import {
   nullable,
   boolean,
 } from 'valibot';
-import { roundStringWithDecimals, toTons } from '../../pipes';
+import { roundStringWithDecimals, toTons } from '../../services/pipes';
 
 const router = useRouter();
 

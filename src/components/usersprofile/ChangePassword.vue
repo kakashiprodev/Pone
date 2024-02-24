@@ -58,7 +58,7 @@
 
 <script setup lang="ts">
 import { Ref, ref, onMounted } from 'vue';
-import { error } from './../../services/toast';
+import { error } from './../../services/ui/toast';
 import { useGlobalStore } from './../../stores/global';
 import { UserEntry } from './../../services/types';
 import dataprovider from './../../services/dataprovider';

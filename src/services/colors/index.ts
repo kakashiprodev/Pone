@@ -1,3 +1,7 @@
+/**
+ * This service will help with helpers and utilities for colors
+ */
+
 // base color: #00ae97
 const colorPalette = [
   '#001512',

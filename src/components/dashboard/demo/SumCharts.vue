@@ -112,7 +112,6 @@ const chartOptions = ref({
 
 const loadDasboard = async () => {
   const data = await getScopeSums();
-  console.log(data);
 
   // save last result to database
   // get report

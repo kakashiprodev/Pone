@@ -1,11 +1,5 @@
 <template>
   <!-- ZEILE -->
-  <div style="width: 100%">
-    <ScopeDescription scope="all" />
-  </div>
-  <ReportSpacer />
-
-  <!-- ZEILE -->
   <HorizontalTwoColLayout>
     <template #left>
       <ReportHeader />
@@ -22,7 +16,47 @@
   <ReportSpacer />
 
   <!-- ZEILE -->
-  <div style="width: 100%">
+  <HorizontalOneColLayout>
+    <ScopeDescription scope="all" />
+  </HorizontalOneColLayout>
+  <ReportSpacer />
+
+  <div style="overflow-x: scroll; width: 100%" v-if="false">
+    <Timeline
+      layout="horizontal"
+      :align="'top'"
+      :value="[
+        {
+          year: 2019,
+          status: 'Gesamt: 1000t',
+        },
+        {
+          year: 2020,
+          status: 'Gesamt: 1000t',
+        },
+      ]"
+    >
+      <template #opposite="{ item }">
+        <small class="p-text-secondary">{{ item.year }}</small>
+      </template>
+      <template #content="{ item }">
+        <div
+          style="
+            height: 180px;
+            width: 150px;
+            padding: 5px;
+            display: block;
+            background-color: aqua;
+          "
+        >
+          {{ item.status }}
+        </div>
+      </template>
+    </Timeline>
+  </div>
+
+  <!-- ZEILE -->
+  <HorizontalOneColLayout>
     <TextBarList
       v-if="yearlyList"
       label="Mengen der letzten Berichtsjahre"
@@ -31,24 +65,24 @@
       :header="['Jahr', 'Status', 'Menge']"
       :use-maximum-as-reference="true"
     />
-  </div>
+  </HorizontalOneColLayout>
   <ReportSpacer />
 
   <!-- ZEILE -->
-  <div style="width: 100%">
+  <HorizontalOneColLayout>
     <ApexSumChartWrapper
       v-if="sumGroupedByCategory"
       type="radar"
       :data="sumGroupedByCategory"
     />
-  </div>
+  </HorizontalOneColLayout>
   <ReportSpacer />
 
   <!-- ZEILE -->
   <HorizontalTwoColLayout>
     <template #left>
       <ApexGroupedChartWrapper
-        v-if="sumGroupedByScopeAndYear"
+        v-if="sumGroupedByScopeAndYear != null"
         label="CO2 Emissionen, aufgeteilt nach Scope und Jahr"
         :data="sumGroupedByScopeAndYear"
         :horizontal="true"
@@ -65,12 +99,6 @@
     </template>
   </HorizontalTwoColLayout>
   <ReportSpacer />
-
-  <!-- ZEILE -->
-  <HorizontalTwoColLayout>
-    <template #left> </template>
-    <template #right> </template>
-  </HorizontalTwoColLayout>
 </template>
 
 <script setup lang="ts">
@@ -91,6 +119,8 @@ import ApexGroupedChartWrapper from '../plot/apex/ApexGroupedChartWrapper.vue';
 import ReportSpacer from './ReportSpacer.vue';
 import TextBarList from '../plot/custom/TextBarList.vue';
 import ApexTreemapWrapper from '../plot/apex/ApexTreemapWrapper.vue';
+import Timeline from 'primevue/timeline';
+import HorizontalOneColLayout from './HorizontalOneColLayout.vue';
 // import { error } from '../../services/toast';
 
 const global = useGlobalStore();
@@ -158,12 +188,21 @@ const getData = async () => {
 
   // map each stat value per year to one data array
   const d = [];
+  const reportYear = global.selectedReport?.year || -1;
   for (const key in Object.keys(sumGroupedByScopeAndYear.value.yearlyGrouped)) {
     const year = Object.keys(sumGroupedByScopeAndYear.value.yearlyGrouped)[key];
+    const yearAsNumber = parseInt(year);
+    let color = '#00ae97';
+    if (yearAsNumber === reportYear) {
+      color = '#6177a3';
+    } else if (yearAsNumber > reportYear) {
+      color = '#333333';
+    }
     d.push({
       name: year + '',
       value: sumGroupedByScopeAndYear.value.yearlyGrouped[year].stat.sum,
       status: true,
+      color,
     });
   }
   yearlyList.value = d;

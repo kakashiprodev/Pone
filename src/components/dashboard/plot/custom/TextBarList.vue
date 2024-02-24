@@ -16,9 +16,16 @@
     </Column>
     <Column field="value" :header="header[2]">
       <template #body="{ data }">
-        <ProgressBar :value="data.percentage">
+        <!-- <ProgressBar :value="data.percentage" v-if="!data.targetValue">
           {{ round(toTons(data.value, globalStore.displayInTons)) }}
-        </ProgressBar>
+        </ProgressBar> -->
+        <ProgressBarWithTarget
+          :value="data.percentage"
+          :target-value="data.targetValue ?? undefined"
+          :color="data.color ?? '#00ae97'"
+        >
+          {{ round(toTons(data.value, globalStore.displayInTons)) }}
+        </ProgressBarWithTarget>
       </template>
     </Column>
   </DataTable>
@@ -26,8 +33,9 @@
 
 <script setup lang="ts">
 import { PropType, ref, onMounted, watch } from 'vue';
-import { round, toTons } from '../../../../pipes/index';
+import { round, toTons } from '../../../../services/pipes/index';
 import { useGlobalStore } from '../../../../stores/global';
+import ProgressBarWithTarget from './ProgressBarWithTarget.vue';
 
 const globalStore = useGlobalStore();
 
@@ -36,6 +44,7 @@ interface Data {
   status: boolean;
   value: number;
   color?: string;
+  targetValue?: number;
 }
 
 interface InnerData {
@@ -69,10 +78,7 @@ const props = defineProps({
   },
 });
 
-const renderData = () => {
-  console.log(
-    'renderData for TextBarList.vue. ' + props.data.length + ' items',
-  );
+const renderData = () => { 
   if (props.useMaximumAsReference) {
     sum.value = props.data.reduce((acc, cur) => Math.max(acc, cur.value), 0);
   } else {

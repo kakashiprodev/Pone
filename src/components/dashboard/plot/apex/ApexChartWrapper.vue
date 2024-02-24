@@ -24,7 +24,7 @@ import {
   ComputedRef,
 } from 'vue';
 import { AggregatedReportResult } from '../../../../services/reporting/index';
-import { roundArray, toTonsArray } from '../../../../pipes/index';
+import { roundArray, toTonsArray } from '../../../../services/pipes/index';
 import { useGlobalStore } from '../../../../stores/global';
 import { getMonochromeColorPalette } from './../../../../services/colors';
 
@@ -162,7 +162,6 @@ const renderChart = () => {
   colors.value = getMonochromeColorPalette(
     Object.keys(props.data.timeseries).length,
   );
-  console.log('render chart');
   if (props.data) {
     const series = Object.keys(props.data.timeseries).map((key) => {
       return {

@@ -94,7 +94,7 @@ import { ref, Ref, watch } from 'vue';
 import { SiteEntry } from '../../services/types';
 import { useConfirm } from 'primevue/useconfirm';
 import { minLength, maxLength, object, string, parse } from 'valibot';
-import { error, info } from '../../services/toast';
+import { error, info } from '../../services/ui/toast';
 
 const global = useGlobalStore();
 const confirm = useConfirm();

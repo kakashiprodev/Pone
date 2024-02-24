@@ -16,18 +16,39 @@
   <ReportSpacer />
 
   <!-- ZEILE -->
+  <HorizontalOneColLayout>
+    <ApexSumChartWrapper
+      label="CO2 Emissionen, aufgeteilt nach Kategorie"
+      v-if="sumGroupedByCategory"
+      type="radar"
+      :data="sumGroupedByCategory"
+    />
+  </HorizontalOneColLayout>
+
+  <!-- ZEILE -->
+  <HorizontalOneColLayout>
+    <TextBarList
+      label="CO2 Emissionen, aufgeteilt nach Anlage"
+      :data="facilityList"
+      :header="['Anlagenname', 'Aktiv/Inaktiv', 'CO2 Emissionen']"
+      :use-maximum-as-reference="true"
+    />
+  </HorizontalOneColLayout>
+  <ReportSpacer />
+
+  <!-- ZEILE -->
   <HorizontalTwoColLayout>
     <template #left>
-      <TextBarList
-        :data="facilityList"
-        :header="['Kategorie', 'Status', 'CO2 Emissionen']"
-        :use-maximum-as-reference="true"
+      <ApexTreemapWrapper
+        v-if="sumGroupedByFacility"
+        label="CO2 Emissionen, aufgeteilt nach Anlage"
+        :data="sumGroupedByFacility"
       />
     </template>
     <template #right>
-      <ApexSumChartWrapper
+      <ApexTreemapWrapper
         v-if="sumGroupedByCategory"
-        type="radar"
+        label="CO2 Emissionen, aufgeteilt nach Kategorie"
         :data="sumGroupedByCategory"
       />
     </template>
@@ -48,6 +69,8 @@ import ApexSumChartWrapper from '../plot/apex/ApexSumChartWrapper.vue';
 import ScopeDescription from './ScopeDescription.vue';
 import ReportSpacer from './ReportSpacer.vue';
 import TextBarList from '../plot/custom/TextBarList.vue';
+import ApexTreemapWrapper from '../plot/apex/ApexTreemapWrapper.vue';
+import HorizontalOneColLayout from './HorizontalOneColLayout.vue';
 // import { error } from '../../services/toast';
 
 const global = useGlobalStore();

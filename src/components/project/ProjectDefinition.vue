@@ -112,7 +112,7 @@ import { useGlobalStore } from '../../stores/global';
 import { useConfirm } from 'primevue/useconfirm';
 import { ProjectEntry } from '../../services/types';
 import { minLength, maxLength, object, string, parse } from 'valibot';
-import { error, info } from '../../services/toast';
+import { error, info } from '../../services/ui/toast';
 
 const global = useGlobalStore();
 const confirm = useConfirm();
