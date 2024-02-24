@@ -30,7 +30,9 @@
         <ReportSumScope :scope="3" :sites="[global.selectedSite?.id ?? '']" />
       </TabPanel>
 
-      <TabPanel header="Soll/Ist-Vergleich"> </TabPanel>
+      <TabPanel header="Soll/Ist-Vergleich">
+        <ForecastChart />
+      </TabPanel>
 
       <TabPanel header="Maßnahmen und Ziele">
         <ActionOverview />
@@ -48,6 +50,7 @@ import ReportSumScope from '../../components/dashboard/report/ReportSumScope.vue
 import ReportSumYear from '../../components/dashboard/report/ReportSumYear.vue';
 import ActionOverview from '../../components/dashboard/actions/ActionOverview.vue';
 import ReportPrint from '../../components/dashboard/report/ReportPrint.vue';
+import ForecastChart from '../../components/dashboard/plot/custom/ForecastChart.vue';
 import { useGlobalStore } from '../../stores/global';
 import { ref } from 'vue';
 

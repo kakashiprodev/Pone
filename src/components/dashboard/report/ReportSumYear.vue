@@ -21,7 +21,7 @@
   </HorizontalOneColLayout>
   <ReportSpacer />
 
-  <div style="overflow-x: scroll; width: 100%">
+  <div style="overflow-x: scroll; width: 100%" v-if="false">
     <Timeline
       layout="horizontal"
       :align="'top'"
