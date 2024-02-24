@@ -14,6 +14,7 @@
         placeholder="Select a Report"
         :disabled="reportForm?.id === 'new'"
         class="ml-3"
+        @change="global.changeReport()"
       />
       <Button
         icon="fa-solid fa-plus"
@@ -30,6 +31,13 @@
         label="Löschen"
         :disabled="reportForm?.id === 'new'"
         class="ml-1"
+      />
+      <Button
+        v-if="global.targetOnSiteForProject.length < 1"
+        icon="fa-solid fa-copy"
+        @click="copyTargetsFromYearBefore()"
+        class="ml-1"
+        v-tooltip="'Ziele aus dem Vorjahr kopieren'"
       />
     </template>
   </Toolbar>
@@ -294,6 +302,24 @@ const confirmDelete = async (report: ReportEntry, event: any) => {
   });
 };
 
+const copyTargetsFromYearBefore = async () => {
+  if (reportForm.value != null) {
+    const yearBefore = reportForm.value.year - 1;
+    const reportBefore = global.reports.find((r) => r.year === yearBefore);
+    if (reportBefore) {
+      const res = await global.copyTargets(
+        reportBefore.id,
+        reportForm.value.id,
+      );
+      info(
+        `${res.copied} Ziele aus dem Jahr ${
+          reportForm.value.year - 1
+        } wurden ins Berichtsjahr ${reportForm.value.year} kopiert.`,
+      );
+    }
+  }
+};
+
 const saveReport = async () => {
   if (!reportForm.value) {
     return;
@@ -304,6 +330,8 @@ const saveReport = async () => {
     parse(reportSchemaYearlyFocus, reportForm.value);
     if (reportForm.value.id === 'new') {
       reportForm.value = await global.addReport(reportForm.value);
+      // if the report was added then copy all report targets to the new report. This will be the year before
+      await copyTargetsFromYearBefore();
     } else {
       reportForm.value = await global.updateReport(reportForm.value);
     }

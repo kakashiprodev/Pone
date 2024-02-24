@@ -332,7 +332,7 @@
     <!-- Description Costs -->
     <div class="field">
       <label class="w-full" for="action-descriptionCosts"
-        >Beschreibung der Kosten</label
+        >Beschreibung der Kosten*</label
       >
       <InlineMessage
         severity="info"
@@ -427,6 +427,15 @@
             class="ml-1"
             @click="deleteEntry(data, $event)"
           />
+          <Button
+            icon="fa-solid fa-copy"
+            class="ml-1"
+            @click="
+              selectedAction = clone(data);
+              selectedAction.id = 'new';
+              showDialog = true;
+            "
+          />
         </div>
       </template>
     </Column>
@@ -439,7 +448,6 @@ import { useGlobalStore } from '../../stores/global';
 import { ActionEntry } from '../../services/types';
 import dataprovider from '../../services/dataprovider';
 import { error } from '../../services/ui/toast';
-
 import { useConfirm } from 'primevue/useconfirm';
 import {
   parse,
@@ -450,9 +458,9 @@ import {
   maxLength,
   minValue,
   boolean,
-  date,
+  // date,
   maxValue,
-  nullable,
+  // nullable,
 } from 'valibot';
 
 const global = useGlobalStore();
@@ -527,8 +535,8 @@ const actionEntrySchema = object({
     minLength(1, 'Beschreibung zu kurz'),
     maxLength(4000, 'Beschreibung zu lang'),
   ]),
-  finishedUntilPlanned: date('Kein Fertigstellungsdatum angegeben'),
-  finishedUntilIs: nullable(date('Kein Fertigstellungsdatum angegeben')),
+  // finishedUntilPlanned: date('Kein Fertigstellungsdatum angegeben'),
+  // finishedUntilIs: nullable(string('Kein Fertigstellungsdatum angegeben')),
 
   category: string('Keine Kategorie angegeben', [
     minLength(1, 'Kategorie zu kurz'),
@@ -574,7 +582,6 @@ const filter = ref('');
 const filteredActions = ref<ActionEntry[]>([]);
 const filterData = () => {
   let filtered = actions.value;
-  console.log('filter data');
   if (filter.value !== '') {
     filtered = actions.value.filter((item) => {
       return item.name.toLowerCase().includes(filter.value.toLowerCase());

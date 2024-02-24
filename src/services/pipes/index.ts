@@ -58,3 +58,22 @@ export const roundStringWithDecimals = (
 export const roundString = (value: number): string => {
   return value + '';
 };
+
+/**
+ * A date formatter to get a date in the format of 'MM.yyyy'
+ */
+export const dateToMonthYear = (date: Date | string): string => {
+  return new Date(date).toLocaleDateString('de-DE', {
+    month: '2-digit',
+    year: 'numeric',
+  });
+};
+
+/**
+ * A date formatter to get a date in the format of 'yyyy'
+ */
+export const dateToYear = (date: Date | string): string => {
+  return new Date(date).toLocaleDateString('de-DE', {
+    year: 'numeric',
+  });
+};

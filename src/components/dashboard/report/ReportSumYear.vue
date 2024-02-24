@@ -82,7 +82,7 @@
   <HorizontalTwoColLayout>
     <template #left>
       <ApexGroupedChartWrapper
-        v-if="sumGroupedByScopeAndYear"
+        v-if="sumGroupedByScopeAndYear != null"
         label="CO2 Emissionen, aufgeteilt nach Scope und Jahr"
         :data="sumGroupedByScopeAndYear"
         :horizontal="true"

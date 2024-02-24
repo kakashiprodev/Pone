@@ -4,6 +4,7 @@
   </h4>
   <div>
     <apexchart
+      v-if="chartData"
       width="100%"
       type="bar"
       :options="chartOptions"
@@ -144,7 +145,6 @@ const chartOptions: ComputedRef<any> = computed(() => {
  * render the chart with prop data
  */
 const renderChart = () => {
-  console.log('render chart, yearly grouped');
   if (props.data) {
     colors.value = getMonochromeColorPalette(
       Object.keys(props.data.yearlyGrouped).length,
@@ -173,7 +173,6 @@ const renderChart = () => {
         ),
       });
     }
-    console.log('series', series);
     chartData.value = series;
   }
 };

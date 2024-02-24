@@ -68,9 +68,7 @@ export default class DataProvider {
    * this is done by a cookie/token which is stored in the browser (or not)
    */
   async checkLogin(): Promise<boolean> {
-    console.log('checking login');
     try {
-      // console.log("token: ", this.pb.authStore.token);
       const res = await this.pb.collection('users').getList(1, 1);
       if (res.items.length < 1) return false;
       // set globalStore username and company
@@ -80,7 +78,7 @@ export default class DataProvider {
       globalStore.displayInTons = res.items[0].displayInTons;
       return true;
     } catch (error) {
-      console.log('error: ', error);
+      console.log('error, checking login: ', error);
       globalStore.isLoggedIn = false;
       return false;
     }
@@ -364,12 +362,12 @@ export default class DataProvider {
     return await this.pb.collection('targets').getOne<TargetEntry>(id);
   }
 
-  async readTargets() {
+  async readTargets(reportId?: string) {
     if (!globalStore.selectedReport) throw new Error('No report selected');
     const res = await this.pb
       .collection('targets')
       .getList<TargetEntry>(1, 500, {
-        filter: `report="${globalStore.selectedReport.id}"`,
+        filter: `report="${reportId ?? globalStore.selectedReport.id}"`,
       });
     return res.items;
   }

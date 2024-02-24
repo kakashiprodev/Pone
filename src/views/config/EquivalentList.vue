@@ -632,7 +632,6 @@ const selectedValue: Ref<EquivalentEntry> = ref(emptyEquivalent());
 // calculate avg value for the year
 watchEffect(() => {
   if (selectedValue.value.monthlyValues) {
-    console.log('recalc avg');
     selectedValue.value.avgValue =
       Math.round(getAverageEquivalent(selectedValue.value) * 10000) / 10000;
   }

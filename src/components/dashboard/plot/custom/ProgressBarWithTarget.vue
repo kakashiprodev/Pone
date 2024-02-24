@@ -43,7 +43,7 @@ const targetStyle = computed(() => ({
   transition: width 0.5s ease;
   border-radius: 10px;
   color: white;
-  padding-left: 5px;
+  padding-left: 2px;
 }
 
 .target-marker {

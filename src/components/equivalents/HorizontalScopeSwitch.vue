@@ -71,7 +71,6 @@ if (props.modelValue != null) {
 const update = (scope: 1 | 2 | 3) => {
   if (props.singleSelection) {
     // clear all but scope
-    console.log('single', scope);
     for (const key in selection.value) {
       if (key !== scope.toString()) selection.value[key] = false;
     }

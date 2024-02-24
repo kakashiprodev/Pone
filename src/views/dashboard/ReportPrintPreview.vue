@@ -1,6 +1,6 @@
 <template>
   <div class="report-page">
-    <h3>DAS IST NUR EINE VORSCHAU UND NICHT DRUCKBAR!</h3>
+    <h3 class="mb-5" style="color: red;">DAS IST NUR EINE VORSCHAU UND NICHT DRUCKBAR!</h3>
 
     <h2>CO2-Bilanzierung Gesamt</h2>
     <ReportSumYear :sites="[global.selectedSite?.id ?? '']" />

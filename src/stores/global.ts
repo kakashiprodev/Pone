@@ -368,6 +368,36 @@ export const useGlobalStore = defineStore('global', {
       this.sortTargets();
     },
 
+    /**
+     * a function to copy all targets from one report to another.
+     * will check if targets exist and skip all if some are already existing.
+     */
+    async copyTargets(fromId: string, toId: string) {
+      // get all targets from the source report
+      const targets = await dataprovider.readTargets(fromId);
+      // check if targets are already existing in the target report
+      const existing = await dataprovider.readTargets(toId);
+
+      let copied = 0;
+
+      if (existing.length < 1) {
+        // copy all targets to the target report
+        targets.forEach(async (target: TargetEntry) => {
+          await dataprovider.createTarget({
+            ...target,
+            report: toId,
+          });
+        });
+        // reload targets
+        this.refreshTargets();
+
+        copied = targets.length;
+      }
+      return {
+        copied,
+      };
+    },
+
     // *************************************************************
     // CRUD cache for "projects"
     // *************************************************************
@@ -583,6 +613,19 @@ export const useGlobalStore = defineStore('global', {
       }
       this.selectedReport = updated;
       return updated;
+    },
+
+    async changeReport(report?: ReportEntry) {
+      if (report) {
+        this.selectedReport = report;
+      }
+      this.refreshTargets();
+      // update user settings
+      const user = await dataprovider.getUser();
+      await dataprovider.updateUser({
+        ...user,
+        lastSelectedReport: this.selectedReport?.id ?? '',
+      });
     },
 
     // *************************************************************

@@ -107,7 +107,6 @@ const sum = (data: number[]) => {
  * render the chart with prop data
  */
 const renderChart = () => {
-  console.log('render chart');
   if (props.data) {
     const series: number[] = [];
     // get sum of all entries for each key in timeseries
