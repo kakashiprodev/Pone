@@ -1,7 +1,21 @@
 <template>
   <!-- <SmartInput :data="demo" /> -->
   <div class="report" v-if="global.selectedReport">
-    <TabView v-if="!global.isLoading">
+    <Toolbar class="mb-4">
+      <template #start>
+        <span>Ausgewählter Bericht</span>
+        <Dropdown
+          v-if="global.reports && global.selectedReport"
+          v-model="global.selectedReport"
+          :options="global.reports"
+          optionLabel="year"
+          placeholder="Select a Report"
+          class="ml-3"
+          @change="switchReport()"
+        />
+      </template>
+    </Toolbar>
+    <TabView v-if="!global.isLoading && !loading">
       <TabPanel header="CO2-Bilanzierung">
         <ReportSumYear :sites="[global.selectedSite?.id ?? '']" />
       </TabPanel>
@@ -35,13 +49,16 @@ import ReportSumYear from '../../components/dashboard/report/ReportSumYear.vue';
 import ActionOverview from '../../components/dashboard/actions/ActionOverview.vue';
 import ReportPrint from '../../components/dashboard/report/ReportPrint.vue';
 import { useGlobalStore } from '../../stores/global';
-//import { ref } from 'vue';
-// import { error } from '../../services/toast';
+import { ref } from 'vue';
 
+const loading = ref(false);
 const global = useGlobalStore();
 
-// const selectedReport = ref<string>(global.selectedReport?.id ?? '');
-// const selectedSites = ref<string[]>([global.selectedSite?.id ?? '']);
+const switchReport = async () => {
+  loading.value = true;
+  await global.changeReport();
+  loading.value = false;
+};
 </script>
 
 <style scoped>
