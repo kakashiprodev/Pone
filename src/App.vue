@@ -4,7 +4,7 @@
 </template>
 
 <script setup lang="ts">
-import Toast from 'primevue/toast';
+
 import DataProvider from './services/dataprovider';
 import { useRouter, useRoute } from 'vue-router';
 import { useGlobalStore } from './stores/global';

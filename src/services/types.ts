@@ -43,18 +43,41 @@ export interface InputEntry {
   parent: null | string; // reference on table inputs. set if the input belongs to a group
   rawValue: number;
   monthlyValues: boolean;
-  rawJan: number;
-  rawFeb: number;
-  rawMar: number;
-  rawApr: number;
-  rawMay: number;
-  rawJun: number;
-  rawJul: number;
-  rawAug: number;
-  rawSep: number;
-  rawOct: number;
-  rawNov: number;
-  rawDec: number;
+  rawValueJan: number;
+  rawValueFeb: number;
+  rawValueMar: number;
+  rawValueApr: number;
+  rawValueMay: number;
+  rawValueJun: number;
+  rawValueJul: number;
+  rawValueAug: number;
+  rawValueSep: number;
+  rawValueOct: number;
+  rawValueNov: number;
+  rawValueDec: number;
+}
+
+// table "inputs" with expanded report and site
+export interface InputEntryWithExpandedReportAndSite extends InputEntry {
+  expand: {
+    report: {
+      id: string;
+      baseYear: number;
+      year: number;
+      site: string; // reference on table sites
+      expand: {
+        site: {
+          id: string;
+          name: string;
+          project: string; // reference on table projects
+        };
+      };
+    };
+    facility: {
+      id: string;
+      name: string;
+    };
+  };
 }
 
 // query object for table "inputs"

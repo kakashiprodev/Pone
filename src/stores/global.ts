@@ -8,7 +8,7 @@ import {
   TargetEntry,
 } from './../services/types';
 import dataprovider from './../services/dataprovider';
-import { info } from '../services/toast';
+import { info } from '../services/ui/toast';
 
 // simple hack to get the equivalent entries as a dict without the store
 // should be changed in the future
@@ -116,36 +116,44 @@ export const useGlobalStore = defineStore('global', {
       await this.refreshProjects();
       // check the last selected entries if they are still valid
       if (user.lastSelectedProject != null && user.lastSelectedProject !== '') {
-        console.log("select last selected project with id", user.lastSelectedProject);
-        const p = this.projects.find(p => p.id === user.lastSelectedProject);
+        console.log(
+          'select last selected project with id',
+          user.lastSelectedProject,
+        );
+        const p = this.projects.find((p) => p.id === user.lastSelectedProject);
         if (p) this.selectedProject = p;
       } else {
         // select another project or create a new one
-        console.log("ensure project is selected");
+        console.log('ensure project is selected');
         await this.ensureProjectIsSelected();
       }
 
       // then refresh the sites
       this.sites = await dataprovider.readSitesForProject();
       if (user.lastSelectedSite != null && user.lastSelectedSite !== '') {
-        console.log("select last selected site with id", user.lastSelectedSite);
-        const s = this.sites.find(s => s.id === user.lastSelectedSite);
+        console.log('select last selected site with id', user.lastSelectedSite);
+        const s = this.sites.find((s) => s.id === user.lastSelectedSite);
         if (s) this.selectedSite = s;
       } else {
         // select another site or create a new one
-        console.log("ensure site is selected");
+        console.log('ensure site is selected');
         await this.ensureSiteIsSelected();
       }
+      // then refresh facilities
+      await this.refreshFacilities();
 
       // then load reports for the selected project and site
       await this.refreshReports(true);
       if (user.lastSelectedReport != null && user.lastSelectedReport !== '') {
-        console.log("select last selected report with id", user.lastSelectedReport);
-        const r = this.reports.find(r => r.id === user.lastSelectedReport);
+        console.log(
+          'select last selected report with id',
+          user.lastSelectedReport,
+        );
+        const r = this.reports.find((r) => r.id === user.lastSelectedReport);
         if (r) this.selectedReport = r;
       } else {
         // load the latest report
-        console.log("load latest report");
+        console.log('load latest report');
         await this.ensureLatestReport();
       }
 
@@ -360,6 +368,36 @@ export const useGlobalStore = defineStore('global', {
       this.sortTargets();
     },
 
+    /**
+     * a function to copy all targets from one report to another.
+     * will check if targets exist and skip all if some are already existing.
+     */
+    async copyTargets(fromId: string, toId: string) {
+      // get all targets from the source report
+      const targets = await dataprovider.readTargets(fromId);
+      // check if targets are already existing in the target report
+      const existing = await dataprovider.readTargets(toId);
+
+      let copied = 0;
+
+      if (existing.length < 1) {
+        // copy all targets to the target report
+        targets.forEach(async (target: TargetEntry) => {
+          await dataprovider.createTarget({
+            ...target,
+            report: toId,
+          });
+        });
+        // reload targets
+        this.refreshTargets();
+
+        copied = targets.length;
+      }
+      return {
+        copied,
+      };
+    },
+
     // *************************************************************
     // CRUD cache for "projects"
     // *************************************************************
@@ -447,6 +485,27 @@ export const useGlobalStore = defineStore('global', {
       });
     },
 
+    /**
+     * Action to change the current site.
+     * This will also reload the reports for the new site.
+     */
+    async changeSite(site: SiteEntry) {
+      console.log('changeSite', site.id);
+      this.selectedSite = site;
+      this.reports = [];
+      this.reports = await dataprovider.readReports();
+      await this.refreshFacilities();
+      await this.ensureLatestReport();
+
+      // update user settings
+      const user = await dataprovider.getUser();
+      await dataprovider.updateUser({
+        ...user,
+        lastSelectedSite: this.selectedSite?.id ?? '',
+        lastSelectedReport: this.selectedReport?.id ?? '',
+      });
+    },
+
     // *************************************************************
     // CRUD cache for "reports"
     // *************************************************************
@@ -512,7 +571,9 @@ export const useGlobalStore = defineStore('global', {
         );
       } else {
         // create a new one since at least one report is needed
-        this.selectedReport = await dataprovider.createReport(this.getNewReport());
+        this.selectedReport = await dataprovider.createReport(
+          this.getNewReport(),
+        );
       }
     },
 
@@ -554,12 +615,25 @@ export const useGlobalStore = defineStore('global', {
       return updated;
     },
 
+    async changeReport(report?: ReportEntry) {
+      if (report) {
+        this.selectedReport = report;
+      }
+      this.refreshTargets();
+      // update user settings
+      const user = await dataprovider.getUser();
+      await dataprovider.updateUser({
+        ...user,
+        lastSelectedReport: this.selectedReport?.id ?? '',
+      });
+    },
+
     // *************************************************************
     // CRUD cache for "sites"
     // *************************************************************
 
     /**
-     * Add a new site to the cache and backend. 
+     * Add a new site to the cache and backend.
      */
     async addSite(site: SiteEntry) {
       const created = await dataprovider.createSite(site);
@@ -579,7 +653,7 @@ export const useGlobalStore = defineStore('global', {
       return updated;
     },
 
-    /** 
+    /**
      * Drop a site from the cache and backend.
      */
     async dropSite(site: SiteEntry) {
@@ -593,7 +667,9 @@ export const useGlobalStore = defineStore('global', {
      */
     async ensureSiteIsSelected() {
       if (this.sites.length === 0) {
-        info('Es wurde kein angelegter Standort für das Projekt gefunden. Der erste Standort wird automatisch angelegt.');
+        info(
+          'Es wurde kein angelegter Standort für das Projekt gefunden. Der erste Standort wird automatisch angelegt.',
+        );
         await this.addSite({
           id: 'new',
           name: 'Haupstandort',
@@ -619,7 +695,6 @@ export const useGlobalStore = defineStore('global', {
         );
       }
     },
-
 
     // *************************************************************
     // theme and ui
