@@ -18,6 +18,7 @@
 
 <script setup lang="ts">
 import { defineProps, PropType, computed, ComputedRef } from 'vue';
+import Config from "../../../../config";
 
 const props = defineProps({
   label: {
@@ -59,7 +60,7 @@ const chartOptions: ComputedRef<any> = computed(() => {
             enabled: true,
             top: 2,
             left: 0,
-            color: '#999',
+            color: Config.colors.grey,
             opacity: 1,
             blur: 2,
           },
@@ -81,7 +82,7 @@ const chartOptions: ComputedRef<any> = computed(() => {
       },
     },
     labels: [props.unit ?? ''],
-    colors: ['#00ae97'],
+    colors: [Config.colors.data2],
   };
 });
 </script>

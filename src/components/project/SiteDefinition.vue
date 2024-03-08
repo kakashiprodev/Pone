@@ -107,14 +107,16 @@ const siteSchema = object({
   name: string([minLength(3), maxLength(255)]),
 });
 
-
-watch(() => global.selectedSite, async (newValue) => {
-  if (!newValue) {
-    return;
-  }
-  global.changeSite(newValue);
-  siteForm.value = newValue;
-});
+watch(
+  () => global.selectedSite,
+  async (newValue) => {
+    if (!newValue) {
+      return;
+    }
+    global.changeSite(newValue);
+    siteForm.value = newValue;
+  },
+);
 
 const addEntry = () => {
   showEditEntry.value = true;

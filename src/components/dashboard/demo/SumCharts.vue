@@ -55,7 +55,7 @@ import { getScopeSums } from '../../../services/reporting/index';
 import { ref, Ref } from 'vue';
 import { useGlobalStore } from '../../../stores/global';
 import dataprovider from '../../../services/dataprovider';
-
+import Config from  '../../../config';
 const global = useGlobalStore();
 
 const loading = ref(true);
@@ -78,7 +78,7 @@ const scopeChartOptions = {
   scales: {
     x: {
       ticks: {
-        color: '#333333',
+        color: Config.colors.typo,
         font: {
           weight: 500,
         },
@@ -90,10 +90,10 @@ const scopeChartOptions = {
     },
     y: {
       ticks: {
-        color: '#333333',
+        color: Config.colors.typo,
       },
       grid: {
-        color: '#333333',
+        color: Config.colors.typo,
         drawBorder: false,
       },
     },
@@ -126,7 +126,7 @@ const loadDasboard = async () => {
     datasets: [
       {
         data: [data.scope1.sum, data.scope2.sum, data.scope3.sum],
-        backgroundColor: ['#6bc5b7', '#009ca6', '#00494e'],
+        backgroundColor: [Config.colors.data1, Config.colors.data2, Config.colors.data5],
         label: 'Mengen in [kg]',
       },
     ],
@@ -137,7 +137,7 @@ const loadDasboard = async () => {
     datasets: data.scope1.list.map((item: any) => {
       return {
         data: [item.value],
-        backgroundColor: '#6bc5b7',
+        backgroundColor: Config.colors.data1,
         label: item.name,
       };
     }),
@@ -147,7 +147,7 @@ const loadDasboard = async () => {
     datasets: data.scope2.list.map((item: any) => {
       return {
         data: [item.value],
-        backgroundColor: '#6bc5b7',
+        backgroundColor: Config.colors.data1,
         label: item.name,
       };
     }),
@@ -157,7 +157,7 @@ const loadDasboard = async () => {
     datasets: data.scope3.list.map((item: any) => {
       return {
         data: [item.value],
-        backgroundColor: '#6bc5b7',
+        backgroundColor: Config.colors.data1,
         label: item.name,
       };
     }),

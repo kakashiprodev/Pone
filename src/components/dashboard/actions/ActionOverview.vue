@@ -59,7 +59,7 @@
 
           <ProgressBarWithTarget
             v-else
-            color="#00ae97"
+            :color=Config.colors.data2
             :value="data.targetValueIs"
             :targetValue="data.targetValuePlanned"
           >
@@ -92,6 +92,7 @@ import { dateToYear, toTons } from '../../../services/pipes/index';
 import ProgressBarWithTarget from '../../dashboard/plot/custom/ProgressBarWithTarget.vue';
 import ActionCharacteristics from './ActionCharacteristics.vue';
 import ApexGaugeWrapper from '../../dashboard/plot/apex/ApexGaugeWrapper.vue';
+import Config from '../../../config';
 
 /*
 // table "actions"

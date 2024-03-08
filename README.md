@@ -5,8 +5,6 @@
 user / some-long-password
 my-private-mail-as-username / same...
 
-
-
 # PONE Farben
 
 Hauptfarbe 1, Dunkelblau: #004151

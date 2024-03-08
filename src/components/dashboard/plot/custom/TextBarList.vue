@@ -9,7 +9,7 @@
         <div
           style="height: 20px; width: 20px; border-radius: 10px"
           :style="
-            data.status ? 'background-color: grey' : 'background-color: #00ae97'
+            data.status ? 'background-color: grey' : `background-color: ${Config.colors.data2}`
           "
         ></div>
       </template>
@@ -22,7 +22,7 @@
         <ProgressBarWithTarget
           :value="data.percentage"
           :target-value="data.targetValue ?? undefined"
-          :color="data.color ?? '#00ae97'"
+          :color="data.color ?? Config.colors.data2"
         >
           {{ round(toTons(data.value, globalStore.displayInTons)) }}
         </ProgressBarWithTarget>
@@ -36,6 +36,7 @@ import { PropType, ref, onMounted, watch } from 'vue';
 import { round, toTons } from '../../../../services/pipes/index';
 import { useGlobalStore } from '../../../../stores/global';
 import ProgressBarWithTarget from './ProgressBarWithTarget.vue';
+import Config from '../../../../config';
 
 const globalStore = useGlobalStore();
 
@@ -78,7 +79,7 @@ const props = defineProps({
   },
 });
 
-const renderData = () => { 
+const renderData = () => {
   if (props.useMaximumAsReference) {
     sum.value = props.data.reduce((acc, cur) => Math.max(acc, cur.value), 0);
   } else {

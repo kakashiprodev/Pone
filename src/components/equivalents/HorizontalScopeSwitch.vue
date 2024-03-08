@@ -33,7 +33,6 @@
 <script setup lang="ts">
 import { PropType, ref, Ref } from 'vue';
 
-
 const selection: Ref<{
   [key: string]: boolean;
 }> = ref({

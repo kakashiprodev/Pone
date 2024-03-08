@@ -11,7 +11,6 @@
 </template>
 
 <script setup lang="ts">
-
 const goToReport = () => {
   window.open('/#/report-preview', '_blank');
 };
