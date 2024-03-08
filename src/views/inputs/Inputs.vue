@@ -12,196 +12,106 @@
     <template #start>
       <template v-if="preSelectedScope === 'all'">
         <label class="ml-2">Zeige Scopes:</label>
-        <Checkbox
-          id="scope1Active"
-          v-model="scope1Active"
-          value="1"
-          class="ml-3"
-          :binary="true"
-          @change="getData"
-        />
+        <Checkbox id="scope1Active" v-model="scope1Active" value="1" class="ml-3" :binary="true" @change="getData" />
         <label class="ml-1" for="scope1Active">1</label>
-        <Checkbox
-          id="scope2Active"
-          v-model="scope2Active"
-          value="1"
-          class="ml-4"
-          :binary="true"
-          @change="getData"
-        />
+        <Checkbox id="scope2Active" v-model="scope2Active" value="1" class="ml-4" :binary="true" @change="getData" />
         <label class="ml-1" for="scope2Active">2</label>
-        <Checkbox
-          id="scope3Active"
-          v-model="scope3Active"
-          value="1"
-          class="ml-4"
-          :binary="true"
-          @change="getData"
-        />
+        <Checkbox id="scope3Active" v-model="scope3Active" value="1" class="ml-4" :binary="true" @change="getData" />
         <label class="ml-1" for="scope3Active">3</label>
       </template>
-      <span class="ml-4"
-        >Menge:
+      <span class="ml-4">Menge:
         {{
-          roundStringWithDecimals(
-            displayInTons ? toTons(sumValue) : sumValue,
-            3,
-          )
-        }}{{ displayInTons ? 'to' : 'kg' }}
+    roundStringWithDecimals(
+      displayInTons ? toTons(sumValue) : sumValue,
+      3,
+    )
+  }}{{ displayInTons ? 'to' : 'kg' }}
       </span>
     </template>
     <template #end>
-      <Button
-        icon="fa-solid fa-wand-magic-sparkles"
-        @click="
-          selectedValue = clone(emptyInput);
-          showComfortInput = true;
-        "
-        class="mr-1"
-      />
-      <Button
-        icon="fa-solid fa-plus"
-        @click="
-          selectedValue = clone(emptyInput);
-          showDialog = true;
-        "
-        class="mr-1"
-      />
+      <Button icon="fa-solid fa-wand-magic-sparkles" @click="
+    selectedValue = clone(emptyInput);
+  showComfortInput = true;
+  " class="mr-1" />
+      <Button icon="fa-solid fa-plus" @click="
+    selectedValue = clone(emptyInput);
+  showDialog = true;
+  " class="mr-1" />
       <Button icon="fa-solid fa-download" @click="download()" />
     </template>
   </Toolbar>
 
   <!-- choose equivalent modal for non-comfort input -->
-  <Dialog
-    id="choose-equivalent"
-    v-model:visible="showChooseEquivalent"
-    modal
-    header="Äquivalent auswählen"
-    :class="{
-      'w-8': windowWidth > 990,
-      'w-full': windowWidth < 990,
-      'h-screen': windowWidth < 990,
-    }"
-  >
-    <SmartEquivalentList
-      v-model="selectedValue.equivalent"
-      :filter-by="{
-        scope: selectedValue.scope ? [selectedValue.scope] : [1, 2, 3],
-      }"
-      :hide-scope-input="preSelectedScope != 'all'"
-    />
+  <Dialog id="choose-equivalent" v-model:visible="showChooseEquivalent" modal header="Äquivalent auswählen" :class="{
+    'w-8': windowWidth > 990,
+    'w-full': windowWidth < 990,
+    'h-screen': windowWidth < 990,
+  }">
+    <SmartEquivalentList v-model="selectedValue.equivalent" :filter-by="{
+    scope: selectedValue.scope ? [selectedValue.scope] : [1, 2, 3],
+  }" :hide-scope-input="preSelectedScope != 'all'" />
     <div class="mt-4">
-      <Button
-        label="Ok"
-        @click="
-          showChooseEquivalent = false;
-          updateNameAndCategory();
-        "
-      />
-      <Button
-        class="ml-1"
-        label="Auswahl leeren"
-        @click="
-          selectedValue.equivalent = null;
-          showChooseEquivalent = false;
-        "
-      />
-      <Button
-        class="ml-1"
-        label="Abbrechen"
-        @click="
-          selectedValue = originalValue;
-          showChooseEquivalent = false;
-        "
-      />
+      <Button label="Ok" @click="
+    showChooseEquivalent = false;
+  updateNameAndCategory();
+  " />
+      <Button class="ml-1" label="Auswahl leeren" @click="
+    selectedValue.equivalent = null;
+  showChooseEquivalent = false;
+  " />
+      <Button class="ml-1" label="Abbrechen" @click="
+    selectedValue = originalValue;
+  showChooseEquivalent = false;
+  " />
     </div>
   </Dialog>
 
   <!-- choose facility modal -->
-  <Dialog
-    id="choose-facility"
-    v-model:visible="showChooseFacility"
-    modal
-    header="Anlage auswählen"
-    :class="{
-      'w-8': windowWidth > 990,
-      'w-full': windowWidth < 990,
-      'h-screen': windowWidth < 990,
-    }"
-  >
+  <Dialog id="choose-facility" v-model:visible="showChooseFacility" modal header="Anlage auswählen" :class="{
+    'w-8': windowWidth > 990,
+    'w-full': windowWidth < 990,
+    'h-screen': windowWidth < 990,
+  }">
     <FacilityChooser v-model="selectedValue.facility" />
     <div class="mt-4">
       <Button label="Ok" @click="showChooseFacility = false" />
-      <Button
-        class="ml-1"
-        label="Auswahl leeren"
-        @click="
-          selectedValue.facility = null;
-          showChooseFacility = false;
-        "
-      />
-      <Button
-        class="ml-1"
-        label="Abbrechen"
-        @click="
-          selectedValue = originalValue;
-          showChooseFacility = false;
-        "
-      />
+      <Button class="ml-1" label="Auswahl leeren" @click="
+    selectedValue.facility = null;
+  showChooseFacility = false;
+  " />
+      <Button class="ml-1" label="Abbrechen" @click="
+    selectedValue = originalValue;
+  showChooseFacility = false;
+  " />
     </div>
   </Dialog>
 
   <!-- comfort input -->
-  <Dialog
-    modal
-    header="Komforteingabe"
-    id="create-input-comfort"
-    v-model:visible="showComfortInput"
-    :class="{ 'w-9': true }"
-    maximizable
-  >
+  <Dialog modal header="Komforteingabe" id="create-input-comfort" v-model:visible="showComfortInput"
+    :class="{ 'w-9': true }" maximizable>
     <!-- step 1 -->
     <div class="card" v-if="actualComfortStep === 0">
-      <SmartEquivalentList
-        v-model="selectedValue.equivalent"
-        :comfort-mode="true"
-        :rowsPerPage="5"
-        :visible-columns="['source', 'in', 'out', 'fullName', 'avgValue']"
-        :showColumnChooser="false"
-        @change="updateNameAndCategory"
-        :hide-scope-input="preSelectedScope != 'all'"
-        :filter-by="{
-          scope:
-            preSelectedScope === 'all' ? [1] : [parseInt(preSelectedScope)],
-        }"
-      />
+      <SmartEquivalentList v-model="selectedValue.equivalent" :comfort-mode="true" :rowsPerPage="5"
+        :visible-columns="['source', 'in', 'out', 'fullName', 'avgValue']" :showColumnChooser="false"
+        @change="updateNameAndCategory" :hide-scope-input="preSelectedScope != 'all'" :filter-by="{
+    scope:
+      preSelectedScope === 'all' ? [1] : [parseInt(preSelectedScope)],
+  }" />
     </div>
 
     <!-- step 2 -->
     <div class="card" v-if="actualComfortStep === 1">
       <div class="field">
         <label for="userinput-category">Kategorie</label>
-        <InputText
-          class="w-full"
-          v-model="selectedValue.category"
-          id="userinput-category"
-        />
+        <InputText class="w-full" v-model="selectedValue.category" id="userinput-category" />
       </div>
       <div class="field">
         <label for="userinput-name">Name</label>
-        <InputText
-          class="w-full"
-          v-model="selectedValue.name"
-          id="userinput-name"
-        />
+        <InputText class="w-full" v-model="selectedValue.name" id="userinput-name" />
       </div>
       <div class="field">
         <label for="userinput-comment">Kommentar</label>
-        <InputText
-          class="w-full"
-          v-model="selectedValue.comment"
-          id="userinput-comment"
-        />
+        <InputText class="w-full" v-model="selectedValue.comment" id="userinput-comment" />
       </div>
     </div>
 
@@ -211,17 +121,13 @@
       <div class="field">
         <label for="userinput-equivalent">Anlage</label>
         <div>
-          <div
-            v-if="
-              selectedValue.facility != null && selectedValue.facility !== ''
-            "
-            @click="showChooseFacility = true"
-            class="bg-teal-300 text-white border-round m-2 flex align-items-center justify-content-center cursor-pointer p-2"
-          >
+          <div v-if="selectedValue.facility != null && selectedValue.facility !== ''
+    " @click="showChooseFacility = true"
+            class="bg-teal-300 text-white border-round m-2 flex align-items-center justify-content-center cursor-pointer p-2">
             {{
-              global.facilitiesDict[selectedValue.facility]?.name ??
-              'Reference error'
-            }}
+    global.facilitiesDict[selectedValue.facility]?.name ??
+    'Reference error'
+  }}
           </div>
           <Button v-else label="Auswählen" @click="showChooseFacility = true" />
         </div>
@@ -231,133 +137,75 @@
     <!-- step 4 -->
     <div class="card" v-if="actualComfortStep === 3">
       <div>
-        <MonthlyOrYearlyInput
-          v-model="selectedValue"
-          :input-unit="choosenEquivalent ? ' ' + choosenEquivalent.in : ''"
-        />
+        <MonthlyOrYearlyInput v-model="selectedValue"
+          :input-unit="choosenEquivalent ? ' ' + choosenEquivalent.in : ''" />
       </div>
       <!-- helping information -->
-      <div class="field" v-if="computedSumCalculation !== ''">
+      <div class="field" v-if="global.showTooltips && computedSumCalculation !== ''">
         <label for="userinput-sum">Berechnungsschritte</label>
         <p style="white-space: pre-wrap">
           {{ computedSumCalculation }}
         </p>
       </div>
+
       <div class="field">
         <label for="userinput-sum">Menge (berechnet)</label>
-        <InputNumber
-          :disabled="true"
-          class="w-full"
-          v-model="computedSumValue"
-          id="userinput-sum"
-          :use-grouping="true"
-          :min-fraction-digits="0"
-          :max-fraction-digits="3"
-          :suffix="displayInTons ? ' to' : ' kg'"
-        />
+        <InputNumber :disabled="true" class="w-full" v-model="computedSumValue" id="userinput-sum" :use-grouping="true"
+          :min-fraction-digits="0" :max-fraction-digits="3" :suffix="displayInTons ? ' to' : ' kg'" />
       </div>
     </div>
 
     <!-- Step Buttons -->
     <div class="flex align-items-center justify-content-center">
-      <Button
-        :label="'Zurück'"
-        @click="decStep"
-        class="flex-grow-1 mr-1"
-        :disabled="actualComfortStep === 0"
-      />
-      <Button
-        v-if="actualComfortStep < 3"
-        :label="'Weiter'"
-        @click="incStep"
-        class="flex-grow-1 ml-1"
-        :disabled="actualComfortStep === 0 && selectedValue.equivalent == null"
-      />
-      <Button
-        v-else
-        :label="'Anlegen'"
-        @click="save"
-        class="flex-grow-1 ml-1"
-        :disabled="selectedValue.rawValue == null"
-      />
+      <Button :label="'Zurück'" @click="decStep" class="flex-grow-1 mr-1" :disabled="actualComfortStep === 0" />
+      <Button v-if="actualComfortStep < 3" :label="'Weiter'" @click="incStep" class="flex-grow-1 ml-1"
+        :disabled="actualComfortStep === 0 && selectedValue.equivalent == null" />
+      <Button v-else :label="'Anlegen'" @click="save" class="flex-grow-1 ml-1"
+        :disabled="selectedValue.rawValue == null" />
     </div>
   </Dialog>
 
-  <Dialog
-    id="edit-create-input"
-    v-model:visible="showDialog"
-    modal
-    :header="selectedValue.id === 'new' ? 'Anlegen' : 'Bearbeiten'"
-    :class="{
-      'w-6': windowWidth > 990,
-      'w-full': windowWidth < 990,
-      'h-screen': windowWidth < 990,
-    }"
-  >
+  <Dialog id="edit-create-input" v-model:visible="showDialog" modal
+    :header="selectedValue.id === 'new' ? 'Anlegen' : 'Bearbeiten'" :class="{
+    'w-6': windowWidth > 990,
+    'w-full': windowWidth < 990,
+    'h-screen': windowWidth < 990,
+  }">
     <div>
       <div class="field">
         <label for="userinput-scope">Scope</label>
-        <Dropdown
-          class="w-full"
-          id="userinput-scope"
-          v-model="selectedValue.scope"
-          :options="[1, 2, 3]"
-        />
-        <InlineMessage
-          v-if="global.showTooltips"
-          class="w-full mt-1"
-          severity="info"
-        >
+        <Dropdown class="w-full" id="userinput-scope" v-model="selectedValue.scope" :options="[1, 2, 3]" />
+        <InlineMessage v-if="global.showTooltips" class="w-full mt-1" severity="info">
           Auswahl des Scopes für den die Eingabe gilt.
         </InlineMessage>
       </div>
       <div class="field">
         <label for="userinput-equivalent">Äquivalent</label>
         <div>
-          <div
-            v-if="
-              selectedValue.equivalent != null &&
-              selectedValue.equivalent !== ''
-            "
-            @click="showChooseEquivalent = true"
-            class="bg-teal-300 text-white border-round m-2 flex align-items-center justify-content-center cursor-pointer p-2"
-          >
+          <div v-if="selectedValue.equivalent != null &&
+    selectedValue.equivalent !== ''
+    " @click="showChooseEquivalent = true"
+            class="bg-teal-300 text-white border-round m-2 flex align-items-center justify-content-center cursor-pointer p-2">
             {{
-              global.equivalentDict[selectedValue.equivalent]?.specification1 ??
-              'Reference error'
-            }}
+    global.equivalentDict[selectedValue.equivalent]?.specification1 ??
+    'Reference error'
+  }}
           </div>
-          <Button
-            v-else
-            label="Auswählen"
-            @click="showChooseEquivalent = true"
-          />
+          <Button v-else label="Auswählen" @click="showChooseEquivalent = true" />
         </div>
-        <InlineMessage
-          v-if="global.showTooltips"
-          class="w-full mt-1"
-          severity="info"
-        >
+        <InlineMessage v-if="global.showTooltips" class="w-full mt-1" severity="info">
           Hier kann ein Äquivalent zugeordnet werden. Neue Äquivalente können
           unter dem Benutzermenü > "Äquivalente verwalten" hinzugefügt werden.
           Gelistet werden außerdem alle ausgelieferten Äquivalente. Ist kein
           Äquivalent ausgewählt, ist die Eingabe in [{{
-            displayInTons ? 'to' : 'kg'
-          }}] CO2-Äquivalenten ohne weiteren Faktor.
+    displayInTons ? 'to' : 'kg'
+  }}] CO2-Äquivalenten ohne weiteren Faktor.
         </InlineMessage>
       </div>
       <div class="field">
         <label for="userinput-category">Kategorie</label>
-        <InputText
-          class="w-full"
-          v-model="selectedValue.category"
-          id="userinput-category"
-        />
-        <InlineMessage
-          v-if="global.showTooltips"
-          class="w-full mt-1"
-          severity="info"
-        >
+        <InputText class="w-full" v-model="selectedValue.category" id="userinput-category" />
+        <InlineMessage v-if="global.showTooltips" class="w-full mt-1" severity="info">
           Die Angabe einer Kategorie dient der späteren Auswertung und besseren
           Sortierbarkeit. Es können beliebige Kategorien angelegt werden.
         </InlineMessage>
@@ -365,89 +213,55 @@
       <div class="field">
         <label for="userinput-equivalent">Anlage (optional)</label>
         <div>
-          <div
-            v-if="
-              selectedValue.facility != null && selectedValue.facility !== ''
-            "
-            @click="showChooseFacility = true"
-            class="bg-teal-300 text-white border-round m-2 flex align-items-center justify-content-center cursor-pointer p-2"
-          >
+          <div v-if="selectedValue.facility != null && selectedValue.facility !== ''
+    " @click="showChooseFacility = true"
+            class="bg-teal-300 text-white border-round m-2 flex align-items-center justify-content-center cursor-pointer p-2">
             {{
-              global.facilitiesDict[selectedValue.facility]?.name ??
-              'Reference error'
-            }}
+    global.facilitiesDict[selectedValue.facility]?.name ??
+    'Reference error'
+  }}
           </div>
           <Button v-else label="Auswählen" @click="showChooseFacility = true" />
         </div>
-        <InlineMessage
-          v-if="global.showTooltips"
-          class="w-full mt-1"
-          severity="info"
-        >
+        <InlineMessage v-if="global.showTooltips" class="w-full mt-1" severity="info">
           Hier kann ein Äquivalent zugeordnet werden. Neue Äquivalente können
           unter dem Benutzermenü > "Äquivalente verwalten" hinzugefügt werden.
           Gelistet werden außerdem alle ausgelieferten Äquivalente. Ist kein
           Äquivalent ausgewählt, ist die Eingabe in [{{
-            displayInTons ? 'to' : 'kg'
-          }}] CO2-Äquivalenten ohne weiteren Faktor.
+    displayInTons ? 'to' : 'kg'
+  }}] CO2-Äquivalenten ohne weiteren Faktor.
         </InlineMessage>
       </div>
       <div class="field">
         <label for="userinput-name">Name</label>
-        <InputText
-          class="w-full"
-          v-model="selectedValue.name"
-          id="userinput-name"
-        />
-        <InlineMessage
-          v-if="global.showTooltips"
-          class="w-full mt-1"
-          severity="info"
-        >
+        <InputText class="w-full" v-model="selectedValue.name" id="userinput-name" />
+        <InlineMessage v-if="global.showTooltips" class="w-full mt-1" severity="info">
           Bezeichnung der Eingabe. Diese wird in der Liste und im Bericht als
           Name angezeigt.
         </InlineMessage>
       </div>
       <div class="field">
         <label for="userinput-comment">Kommentar</label>
-        <InputText
-          class="w-full"
-          v-model="selectedValue.comment"
-          id="userinput-comment"
-        />
-        <InlineMessage
-          v-if="global.showTooltips"
-          class="w-full mt-1"
-          severity="info"
-        >
+        <InputText class="w-full" v-model="selectedValue.comment" id="userinput-comment" />
+        <InlineMessage v-if="global.showTooltips" class="w-full mt-1" severity="info">
           Eine optionale Beschreibung der Eingabe.
         </InlineMessage>
       </div>
       <div>
-        <MonthlyOrYearlyInput
-          v-model="selectedValue"
-          :input-unit="choosenEquivalent ? ' ' + choosenEquivalent.in : ''"
-        />
-        <InlineMessage
-          v-if="global.showTooltips"
-          class="w-full mt-1"
-          severity="info"
-        >
+        <MonthlyOrYearlyInput v-model="selectedValue"
+          :input-unit="choosenEquivalent ? ' ' + choosenEquivalent.in : ''" />
+        <InlineMessage v-if="global.showTooltips" class="w-full mt-1" severity="info">
           Der Eingabewert vor dem Umrechnen in CO2-Äquivalente. Wird mit dem
           Äquivalent verrechnet.
         </InlineMessage>
       </div>
       <!-- helping information -->
-      <div class="field" v-if="computedSumCalculation !== ''">
+      <div class="field" v-if="global.showTooltips && computedSumCalculation !== ''">
         <label for="userinput-sum">Berechnungsschritte</label>
         <p style="white-space: pre-wrap">
           {{ computedSumCalculation }}
         </p>
-        <InlineMessage
-          v-if="global.showTooltips"
-          class="w-full mt-1"
-          severity="info"
-        >
+        <InlineMessage v-if="global.showTooltips" class="w-full mt-1" severity="info">
           Hier werden alle Berechnugnsschritte angezeigt, die zur Berechnung der
           Menge (Jahr) verwendet werden. Dies können z.B. Umrechnungsfaktoren
           sein.
@@ -455,40 +269,21 @@
       </div>
       <div class="field">
         <label for="userinput-sum">Menge (berechnet)</label>
-        <InputNumber
-          :disabled="true"
-          class="w-full"
-          v-model="computedSumValue"
-          id="userinput-sum"
-          :use-grouping="true"
-          :min-fraction-digits="0"
-          :max-fraction-digits="3"
-          :suffix="displayInTons ? ' to' : ' kg'"
-        />
-        <InlineMessage
-          v-if="global.showTooltips"
-          class="w-full mt-1"
-          severity="info"
-        >
+        <InputNumber :disabled="true" class="w-full" v-model="computedSumValue" id="userinput-sum" :use-grouping="true"
+          :min-fraction-digits="0" :max-fraction-digits="3" :suffix="displayInTons ? ' to' : ' kg'" />
+        <InlineMessage v-if="global.showTooltips" class="w-full mt-1" severity="info">
           Die Berechnung erfolgt automatisch aus dem Eingabewert und dem
           Äquivalent.
         </InlineMessage>
       </div>
     </div>
     <div>
-      <Button
-        :label="selectedValue.id === 'new' ? 'Anlegen' : 'Speichern'"
-        @click="save"
-      />
+      <Button :label="selectedValue.id === 'new' ? 'Anlegen' : 'Speichern'" @click="save" />
     </div>
   </Dialog>
 
   <ConfirmPopup></ConfirmPopup>
-  <DataTable
-    v-if="global.equivalents.length > 0"
-    :value="data"
-    class="cst-no-hover"
-  >
+  <DataTable v-if="global.equivalents.length > 0" :value="data" class="cst-no-hover">
     <!-- <Column field="id" header="ID"></Column> -->
     <Column field="scope" header="Scope" sortable></Column>
     <Column field="category" header="Kategorie" sortable></Column>
@@ -496,17 +291,17 @@
     <Column field="rawValue" header="Eingabewert" sortable>
       <template #body="{ data }">
         {{ roundStringWithDecimals(data.rawValue, 3) }} [{{
-          global.equivalentDict[data.equivalent]?.in ?? 'Reference error'
-        }}]
+    global.equivalentDict[data.equivalent]?.in ?? 'Reference error'
+  }}]
       </template>
     </Column>
     <Column field="equivalent" header="Äquivalent" sortable>
       <template #body="{ data }">
         <div v-if="data.equivalent != null && data.equivalent !== ''">
           {{
-            global.equivalentDict[data.equivalent]?.specification1 ??
-            'Reference error'
-          }}
+    global.equivalentDict[data.equivalent]?.specification1 ??
+    'Reference error'
+  }}
         </div>
         <div v-else></div>
       </template>
@@ -519,11 +314,11 @@
     <Column field="sumValue" header="Menge (Jahr)" sortable>
       <template #body="{ data }">
         {{
-          roundStringWithDecimals(
-            displayInTons ? toTons(data.sumValue) : data.sumValue,
-            3,
-          )
-        }}
+    roundStringWithDecimals(
+      displayInTons ? toTons(data.sumValue) : data.sumValue,
+      3,
+    )
+  }}
         {{ displayInTons ? 'to' : 'kg' }}
       </template>
     </Column>
@@ -531,19 +326,12 @@
     <Column header="">
       <template #body="{ data }">
         <div class="flex">
-          <Button
-            icon="fa-solid fa-edit"
-            @click="
-              selectedValue = data;
-              originalValue = clone(data);
-              showDialog = true;
-            "
-          />
-          <Button
-            icon="fa-solid fa-trash"
-            class="ml-1"
-            @click="deleteEntry(data, $event)"
-          />
+          <Button icon="fa-solid fa-edit" @click="
+    selectedValue = data;
+  originalValue = clone(data);
+  showDialog = true;
+  " />
+          <Button icon="fa-solid fa-trash" class="ml-1" @click="deleteEntry(data, $event)" />
         </div>
       </template>
     </Column>
@@ -658,7 +446,7 @@ const setRouteFilter = () => {
   // else return 1
   preSelectedScope.value =
     !Array.isArray(scopeParam) &&
-    ['1', '2', '3', 'all'].indexOf(scopeParam) > -1
+      ['1', '2', '3', 'all'].indexOf(scopeParam) > -1
       ? scopeParam
       : 'all';
   if (preSelectedScope.value === 'all') {
@@ -877,6 +665,7 @@ const getData = async () => {
   if (scope3Active.value) {
     scope.push(3);
   }
+  console.log('get data', preSelectedFacility.value);
   data.value = await dataprovider.readUserInputs({
     scope,
     [preSelectedFacility.value != null ? 'facility' : '']:
@@ -926,7 +715,7 @@ const download = async () => {
 </script>
 
 <style>
-.cst-no-hover > * > * > .p-datatable-tbody > tr:focus {
+.cst-no-hover>*>*>.p-datatable-tbody>tr:focus {
   outline: none !important;
 }
 </style>

@@ -121,6 +121,7 @@ import TextBarList from '../plot/custom/TextBarList.vue';
 import ApexTreemapWrapper from '../plot/apex/ApexTreemapWrapper.vue';
 import Timeline from 'primevue/timeline';
 import HorizontalOneColLayout from './HorizontalOneColLayout.vue';
+import Config from '../../../config';
 // import { error } from '../../services/toast';
 
 const global = useGlobalStore();
@@ -192,11 +193,11 @@ const getData = async () => {
   for (const key in Object.keys(sumGroupedByScopeAndYear.value.yearlyGrouped)) {
     const year = Object.keys(sumGroupedByScopeAndYear.value.yearlyGrouped)[key];
     const yearAsNumber = parseInt(year);
-    let color = '#00ae97';
+    let color = Config.colors.data2;
     if (yearAsNumber === reportYear) {
-      color = '#6177a3';
+      color = Config.colors.data6;
     } else if (yearAsNumber > reportYear) {
-      color = '#333333';
+      color = Config.colors.typo;
     }
     d.push({
       name: year + '',
@@ -225,11 +226,3 @@ onMounted(() => {
   getData();
 });
 </script>
-
-<style scoped>
-.report {
-  width: 90%;
-  margin: 0 auto;
-  margin-top: 2rem;
-}
-</style>

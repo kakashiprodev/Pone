@@ -1,10 +1,15 @@
 <template>
   <Toast />
   <router-view v-if="!global.isLoading" :key="route.path" />
+  <div
+    v-else
+    class="m-auto w-1 min-h-screen flex align-items-center justify-content-center"
+  >
+    <ProgressSpinner />
+  </div>
 </template>
 
 <script setup lang="ts">
-
 import DataProvider from './services/dataprovider';
 import { useRouter, useRoute } from 'vue-router';
 import { useGlobalStore } from './stores/global';

@@ -36,10 +36,7 @@
       </template>
     </Toolbar>
 
-    <div v-if="global.isLoading" class="card mt-2">
-      <p>Wird geladen...</p>
-    </div>
-    <div v-else-if="global.projects.length === 0" class="card mt-2">
+    <div v-if="global.projects.length === 0" class="card mt-2">
       <p>
         Es sind keine Projekte vorhanden. Bitte legen Sie mind. ein Projekt an.
       </p>

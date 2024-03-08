@@ -1,6 +1,6 @@
 <template>
   <!-- <SmartInput :data="demo" /> -->
-  <div class="report" v-if="global.selectedReport">
+  <div class="report" v-if="global.selectedReport" style="max-width: 1200px;">
     <Toolbar class="mb-4">
       <template #start>
         <span>Ausgewählter Bericht</span>
@@ -67,6 +67,7 @@ const switchReport = async () => {
 <style scoped>
 .report {
   width: 90%;
+  max-width: 105rem;
   margin: 0 auto;
   margin-top: 2rem;
 }
