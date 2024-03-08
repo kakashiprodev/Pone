@@ -9,7 +9,9 @@
         <div
           style="height: 20px; width: 20px; border-radius: 10px"
           :style="
-            data.status ? 'background-color: grey' : `background-color: ${Config.colors.data2}`
+            data.status
+              ? 'background-color: grey'
+              : `background-color: ${Config.colors.data2}`
           "
         ></div>
       </template>

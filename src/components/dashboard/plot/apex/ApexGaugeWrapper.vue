@@ -18,7 +18,7 @@
 
 <script setup lang="ts">
 import { defineProps, PropType, computed, ComputedRef } from 'vue';
-import Config from "../../../../config";
+import Config from '../../../../config';
 
 const props = defineProps({
   label: {

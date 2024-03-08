@@ -1,8 +1,6 @@
 <template>
-  <Card v-if="scope === 'all'">
-    <template #header>
-      <h4>CO2-Bilanzierung</h4>
-    </template>
+  <Card v-if="scope === 'all'" class="h-full">
+    <template #title>CO2-Bilanzierung</template>
     <template #content>
       <img src="./../../../assets/scopes.png" alt="Scope" style="width: 100%" />
       <p>
@@ -21,10 +19,8 @@
     </template>
   </Card>
 
-  <Card v-if="scope === '1'">
-    <template #header>
-      <h4>Scope 1</h4>
-    </template>
+  <Card v-if="scope === '1'" class="h-full">
+    <template #title>Scope 1</template>
     <template #content>
       <p>
         Umfasst Emissionen aus direkten Quellen des Unternehmens. Diese
@@ -34,10 +30,8 @@
     </template>
   </Card>
 
-  <Card v-if="scope === '2'">
-    <template #header>
-      <h4>Scope 2</h4>
-    </template>
+  <Card v-if="scope === '2'" class="h-full">
+    <template #title>Scope 2</template>
     <template #content>
       <p>
         Umfasst Emissionen aus indirekten Quellen, die durch die Erzeugung von
@@ -48,10 +42,8 @@
     </template>
   </Card>
 
-  <Card v-if="scope === '3'">
-    <template #header>
-      <h4>Scope 3</h4>
-    </template>
+  <Card v-if="scope === '3'" class="h-full">
+    <template #title>Scope 3</template>
     <template #content>
       <p>
         Umfasst alle anderen indirekten Emissionen, die durch Aktivitäten des

@@ -67,6 +67,7 @@ const switchReport = async () => {
 <style scoped>
 .report {
   width: 90%;
+  max-width: 105rem;
   margin: 0 auto;
   margin-top: 2rem;
 }

@@ -1,7 +1,10 @@
 <template>
   <Toast />
   <router-view v-if="!global.isLoading" :key="route.path" />
-  <div v-else class="m-auto w-1 min-h-screen flex align-items-center justify-content-center">
+  <div
+    v-else
+    class="m-auto w-1 min-h-screen flex align-items-center justify-content-center"
+  >
     <ProgressSpinner />
   </div>
 </template>
