@@ -1,6 +1,6 @@
 <template>
   <!-- <SmartInput :data="demo" /> -->
-  <div class="report" v-if="global.selectedReport">
+  <div class="report" v-if="global.selectedReport" style="max-width: 1200px;">
     <Toolbar class="mb-4">
       <template #start>
         <span>Ausgewählter Bericht</span>
