@@ -55,7 +55,7 @@ const routes = [
             name: 'inputs-facility',
             // params: { facility: null },
           },
-        ]
+        ],
       },
       {
         path: 'equivalents/',

@@ -55,7 +55,7 @@ import { getScopeSums } from '../../../services/reporting/index';
 import { ref, Ref } from 'vue';
 import { useGlobalStore } from '../../../stores/global';
 import dataprovider from '../../../services/dataprovider';
-import Config from  '../../../config';
+import Config from '../../../config';
 const global = useGlobalStore();
 
 const loading = ref(true);
@@ -126,7 +126,11 @@ const loadDasboard = async () => {
     datasets: [
       {
         data: [data.scope1.sum, data.scope2.sum, data.scope3.sum],
-        backgroundColor: [Config.colors.data1, Config.colors.data2, Config.colors.data5],
+        backgroundColor: [
+          Config.colors.data1,
+          Config.colors.data2,
+          Config.colors.data5,
+        ],
         label: 'Mengen in [kg]',
       },
     ],

@@ -5,12 +5,14 @@
       <ScopeDescription :scope="props.scope + ''" />
     </template>
     <template #right>
-      <ApexSumChartWrapper
-        label="CO2 Emissionen, aufgeteilt nach Scope"
-        v-if="sumGroupedByCategory"
-        type="donut"
-        :data="sumGroupedByCategory"
-      />
+      <div class="report-chart-wrapper">
+        <ApexSumChartWrapper
+          label="CO2 Emissionen, aufgeteilt nach Scope"
+          v-if="sumGroupedByCategory"
+          type="donut"
+          :data="sumGroupedByCategory"
+        />
+      </div>
     </template>
   </HorizontalTwoColLayout>
   <ReportSpacer />
@@ -147,10 +149,16 @@ onMounted(() => {
 });
 </script>
 
-<style scoped>
-.report {
-  width: 90%;
-  margin: 0 auto;
-  margin-top: 2rem;
+<style scoped lang="scss">
+.report-chart-wrapper {
+  min-height: 18rem; // prevents jumping of height
+
+  @media (min-width: 1600px) {
+    min-height: 25rem;
+  }
+
+  @media (min-width: 1920px) {
+    min-height: 32rem;
+  }
 }
 </style>

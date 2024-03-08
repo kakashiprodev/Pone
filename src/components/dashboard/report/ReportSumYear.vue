@@ -226,11 +226,3 @@ onMounted(() => {
   getData();
 });
 </script>
-
-<style scoped>
-.report {
-  width: 90%;
-  margin: 0 auto;
-  margin-top: 2rem;
-}
-</style>

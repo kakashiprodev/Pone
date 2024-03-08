@@ -59,7 +59,7 @@
 
           <ProgressBarWithTarget
             v-else
-            :color=Config.colors.data2
+            :color="Config.colors.data2"
             :value="data.targetValueIs"
             :targetValue="data.targetValuePlanned"
           >

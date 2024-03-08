@@ -1,5 +1,5 @@
 <template>
-  <Card v-if="global.selectedReport">
+  <Card v-if="global.selectedReport" class="h-full">
     <template #content>
       <div class="report-section">
         <p><strong>Jahr:</strong> {{ global.selectedReport.year }}</p>
