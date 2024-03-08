@@ -64,7 +64,7 @@ const routes = [
       },
       // {
       //   path: '/report-config/',
-      //   component: () => import('../views/ReportConfig.vue'),
+      //   component: () => import('../views/config/ReportConfig.vue'),
       //   name: 'reportConfig',
       // },
       {

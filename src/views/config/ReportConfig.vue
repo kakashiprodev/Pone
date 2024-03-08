@@ -42,10 +42,7 @@
     </template>
   </Toolbar>
 
-  <div v-if="global.isLoading" class="card">
-    <p>Wird geladen...</p>
-  </div>
-  <div v-else-if="global.reports.length === 0" class="card">
+  <div v-if="global.reports.length === 0" class="card">
     <p>
       Es sind noch keine Berichte vorhanden. Bitte legen Sie einen neuen Bericht
       an.

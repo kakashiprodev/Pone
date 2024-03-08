@@ -17,7 +17,7 @@
             v-model="password"
           />
         </div>
-        <Button @click="login" :disabled="loading" class="mt-5" label="Login" />
+        <Button @click="login" :loading="loading" class="mt-5" label="Login" />
       </div>
     </div>
   </div>
@@ -39,8 +39,8 @@ const login = async () => {
   loading.value = true;
   const loggedIn = await DataProvider.login(username.value, password.value);
   if (loggedIn) {
-    await global.initializeStore();
     router.push({ name: 'dashboard' });
+    await global.initializeStore();
   }
   loading.value = false;
 };
