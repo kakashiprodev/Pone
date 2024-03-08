@@ -1402,9 +1402,9 @@
         "indexes": [],
         "listRule": "@request.auth.id != '' &&\nreport.site.project.id ?= @request.auth.projects.id",
         "viewRule": "@request.auth.id != '' &&\nreport.site.project.id ?= @request.auth.projects.id",
-        "createRule": "@request.auth.id != '' &&\n@request.data.site.project.id ?= @request.auth.projects.id",
-        "updateRule": "@request.auth.id != '' &&\n@request.data.site.project.id ?= @request.auth.projects.id",
-        "deleteRule": "@request.auth.id != '' &&\n@request.data.site.project.id ?= @request.auth.projects.id",
+        "createRule": "@request.auth.id != '' &&\n@request.data.report.site.project.id ?= @request.auth.projects.id",
+        "updateRule": "@request.auth.id != '' &&\n@request.data.report.site.project.id ?= @request.auth.projects.id",
+        "deleteRule": "@request.auth.id != '' &&\n@request.data.report.site.project.id ?= @request.auth.projects.id",
         "options": {}
     }
 ]
