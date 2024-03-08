@@ -13,50 +13,52 @@ const routes = [
     redirect: { name: 'dashboard' },
     children: [
       {
-        path: '/demo',
+        path: 'demo',
         component: () => import('../components/dashboard/demo/Demo.vue'),
         name: 'demo',
       },
       {
-        path: '/demo-data-generator',
+        path: 'demo-data-generator',
         component: () =>
           import('../components/assistants/DemoDataGenerator.vue'),
         name: 'demo-data-generator',
       },
       {
-        path: '/dashboard',
+        path: 'dashboard',
         component: () => import('../views/dashboard/Dashboard.vue'),
         name: 'dashboard',
       },
       {
-        path: '/actions',
+        path: 'actions',
         component: () => import('../views/inputs/Actions.vue'),
         name: 'actions',
       },
       {
-        path: '/facilities',
+        path: 'facilities',
         component: () => import('../views/inputs/Facilities.vue'),
         name: 'facilities',
       },
       {
-        path: '/inputs',
+        path: 'inputs',
         component: () => import('../views/inputs/Inputs.vue'),
         name: 'inputs',
+        children: [
+          {
+            path: 'scope/:scope',
+            component: () => import('../views/inputs/Inputs.vue'),
+            name: 'inputs-scope',
+            // params: { scope: null },
+          },
+          {
+            path: 'facility/:facility',
+            component: () => import('../views/inputs/Inputs.vue'),
+            name: 'inputs-facility',
+            // params: { facility: null },
+          },
+        ]
       },
       {
-        path: '/inputs/scope/:scope',
-        component: () => import('../views/inputs/Inputs.vue'),
-        name: 'inputs-scope',
-        // params: { scope: null },
-      },
-      {
-        path: '/inputs/facility/:facility',
-        component: () => import('../views/inputs/Inputs.vue'),
-        name: 'inputs-facility',
-        // params: { facility: null },
-      },
-      {
-        path: '/equivalents/',
+        path: 'equivalents/',
         component: () => import('../views/config/EquivalentList.vue'),
         name: 'equivalents',
       },
@@ -66,7 +68,7 @@ const routes = [
       //   name: 'reportConfig',
       // },
       {
-        path: '/assistant/',
+        path: 'assistant/',
         component: () => import('../views/inputs/AiAssistentInput.vue'),
         name: 'assistant',
       },
