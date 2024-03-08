@@ -64,6 +64,20 @@ export default class DataProvider {
   }
 
   /**
+   * Login with Microsoft
+   */
+  async loginWithMicrosoft(): Promise<boolean> {
+    try {
+      await this.pb.collection('users').authWithOAuth2({ provider: 'microsoft' });
+      console.log('logged in with microsoft');
+      return this.checkLogin();
+    } catch (err) {
+      error(err + '');
+      return false;
+    }
+  }
+
+  /**
    * check if a user is already logged in
    * this is done by a cookie/token which is stored in the browser (or not)
    */

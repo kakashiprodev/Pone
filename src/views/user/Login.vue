@@ -3,22 +3,34 @@
     <h1 class="welcome-text">Willkommen</h1>
     <div>
       <!--login with username and password -->
-      <div class="p-fluid">
-        <div class="p-field">
-          <label for="username">Benutzername</label>
-          <InputText class="mt-2" id="username" v-model="username" />
-        </div>
-        <div class="p-field mt-2">
-          <label for="password">Passwort</label>
-          <InputText
-            class="mt-2"
-            id="password"
-            type="password"
-            v-model="password"
-          />
-        </div>
-        <Button @click="login" :loading="loading" class="mt-5" label="Login" />
-      </div>
+      <Card>
+        <template #header>
+          Login
+        </template>
+        <template #content>
+          <div class="p-fluid m-auto">
+            <div class=" p-field">
+              <label for="username">Benutzername</label>
+              <InputText class="mt-2" id="username" v-model="username" />
+            </div>
+            <div class="p-field mt-2">
+              <label for="password">Passwort</label>
+              <InputText class="mt-2" id="password" type="password" v-model="password" />
+            </div>
+            <div class="w-full mt-5 flex justify-content-center	">
+              <Button @click="login" :loading="loading" class="mt-5" label="Login" />
+            </div>
+            <!-- Divider -->
+            <div class="w-full mt-5 flex justify-content-center	">
+              <Divider class="mt-5" />
+            </div>
+            <div class="w-full mt-1 flex justify-content-center	">
+              <img src="./../../assets/ms-symbollockup_signin_dark.svg" alt="Microsoft" class="cursor-pointer"
+                @click="loginWithMs()" />
+            </div>
+          </div>
+        </template>
+      </Card>
     </div>
   </div>
 </template>
@@ -38,6 +50,16 @@ const loading = ref(false);
 const login = async () => {
   loading.value = true;
   const loggedIn = await DataProvider.login(username.value, password.value);
+  if (loggedIn) {
+    router.push({ name: 'dashboard' });
+    await global.initializeStore();
+  }
+  loading.value = false;
+};
+
+const loginWithMs = async () => {
+  loading.value = true;
+  const loggedIn = await DataProvider.loginWithMicrosoft();
   if (loggedIn) {
     router.push({ name: 'dashboard' });
     await global.initializeStore();
