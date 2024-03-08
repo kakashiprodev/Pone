@@ -78,7 +78,7 @@ const props = defineProps({
   },
 });
 
-const renderData = () => { 
+const renderData = () => {
   if (props.useMaximumAsReference) {
     sum.value = props.data.reduce((acc, cur) => Math.max(acc, cur.value), 0);
   } else {

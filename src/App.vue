@@ -4,7 +4,6 @@
 </template>
 
 <script setup lang="ts">
-
 import DataProvider from './services/dataprovider';
 import { useRouter, useRoute } from 'vue-router';
 import { useGlobalStore } from './stores/global';
