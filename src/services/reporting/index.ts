@@ -357,13 +357,13 @@ const calculateEquivalentFactorWithSteps = (
   fakeInput.rawValue = 0;
 
   // Monthly detailed calculation
-  steps.push('Berechnungsschritt:');
+  steps.push('Berechnungsschritt ' + (steps.length + 1));
   for (const month of months) {
     const key = 'raw' + month.charAt(0).toUpperCase() + month.slice(1); // e.g. rawValueJan, rawValueFeb, ...
     // @ts-ignore
     const monthlyEquivalentFactor: number =
       equivalent[month as keyof EquivalentEntry] != null &&
-      equivalent[month as keyof EquivalentEntry] != ''
+        equivalent[month as keyof EquivalentEntry] != ''
         ? equivalent[month as keyof EquivalentEntry]
         : equivalent.avgValue;
     // @ts-ignore
@@ -526,7 +526,7 @@ const filterDataEntries = (
 export const getPlainReportData = async (
   query: ReportTimeseriesQuery,
 ): Promise<TimeseriesDataEntry[]> => {
-  const data = await dataprovider.readUserInputsForReport(query.projectId);
+  const data = await dataprovider.readUserInputsForProject(query.projectId, query.years);
   // map to simpler data entry
   return filterDataEntries(userInputsToDataEntries(data), query.filter);
 };

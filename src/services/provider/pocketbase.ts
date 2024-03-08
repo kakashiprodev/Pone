@@ -259,34 +259,32 @@ export default class DataProvider {
   }
 
   async readUserInputs(query?: UserInputQuery) {
+    const filter = `report = '${globalStore.selectedReport?.id}'${query?.scope
+      ? ' && (' + query.scope.map((s) => `scope="${s}"`).join(' || ') + ')'
+      : ''
+      }${query?.category
+        ? ' && (' +
+        query.category.map((c) => `category="${c}"`).join(' || ') +
+        ')'
+        : ''
+      }${query?.facility
+        ? ' && (' +
+        query.facility.map((f) => `facility="${f}"`).join(' || ') +
+        ')'
+        : ''
+      }`;
     const res = await this.pb.collection('inputs').getList<InputEntry>(1, 500, {
-      filter: `report = '${globalStore.selectedReport?.id}'${
-        query?.scope
-          ? ' && (' + query.scope.map((s) => `scope="${s}"`).join(' || ') + ')'
-          : ''
-      }${
-        query?.category
-          ? ' && (' +
-            query.category.map((c) => `category="${c}"`).join(' || ') +
-            ')'
-          : ''
-      }${
-        query?.facility
-          ? ' && (' +
-            query.facility.map((f) => `facility="${f}"`).join(' || ') +
-            ')'
-          : ''
-      }`,
+      filter,
       // expand: "equivalent",
     });
     return res.items;
   }
 
-  async readUserInputsForReport(projectId: string) {
+  async readUserInputsForProject(projectId: string, years: number[]) {
     const res = await this.pb
       .collection('inputs')
       .getList<InputEntryWithExpandedReportAndSite>(1, 500, {
-        filter: `report.site.project.id = '${projectId}'`,
+        filter: `report.site.project.id = '${projectId}' && (${years.map((y) => `report.year = ${y}`).join(' || ')})`,
         expand: 'report.site,facility',
       });
     return res.items;
