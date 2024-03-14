@@ -363,7 +363,7 @@ const calculateEquivalentFactorWithSteps = (
     // @ts-ignore
     const monthlyEquivalentFactor: number =
       equivalent[month as keyof EquivalentEntry] != null &&
-        equivalent[month as keyof EquivalentEntry] != ''
+      equivalent[month as keyof EquivalentEntry] != ''
         ? equivalent[month as keyof EquivalentEntry]
         : equivalent.avgValue;
     // @ts-ignore
@@ -526,7 +526,10 @@ const filterDataEntries = (
 export const getPlainReportData = async (
   query: ReportTimeseriesQuery,
 ): Promise<TimeseriesDataEntry[]> => {
-  const data = await dataprovider.readUserInputsForProject(query.projectId, query.years);
+  const data = await dataprovider.readUserInputsForProject(
+    query.projectId,
+    query.years,
+  );
   // map to simpler data entry
   return filterDataEntries(userInputsToDataEntries(data), query.filter);
 };
