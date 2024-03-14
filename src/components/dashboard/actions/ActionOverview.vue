@@ -68,15 +68,15 @@
       </Column>
       <Column header="Menge">
         <template #body="{ data }">
-          <span v-if="data.progress < 100">
-            {{ toTons(data.targetValueAbsolutPlanned) }} to
-          </span>
-          <span v-else>
+          <nobr v-if="data.progress < 100">
+            {{ toTons(data.targetValueAbsolutPlanned).toLocaleString() }} to
+          </nobr>
+          <nobr v-else>
             {{ toTons(data.targetValueAbsolutIs) }}/{{
               toTons(data.targetValueAbsolutPlanned)
             }}
             to
-          </span>
+          </nobr>
         </template>
       </Column>
     </DataTable>
