@@ -90,7 +90,7 @@ const chartOptions: ComputedRef<any> = computed(() => {
     plotOptions: {
       [props.type === 'donut' ? 'pie' : "_"]: {
         donut: {
-          size: '50%',
+          size: '20%',
         },
       },
     },
