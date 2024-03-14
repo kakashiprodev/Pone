@@ -347,7 +347,7 @@
           Gelistet werden außerdem alle ausgelieferten Äquivalente. Ist kein
           Äquivalent ausgewählt, ist die Eingabe in [{{
             displayInTons ? 'to' : 'kg'
-          }}] CO2-Äquivalenten ohne weiteren Faktor.
+          }}] CO<sub>2</sub>-Äquivalenten ohne weiteren Faktor.
         </InlineMessage>
       </div>
       <div class="field">
@@ -393,7 +393,7 @@
           Gelistet werden außerdem alle ausgelieferten Äquivalente. Ist kein
           Äquivalent ausgewählt, ist die Eingabe in [{{
             displayInTons ? 'to' : 'kg'
-          }}] CO2-Äquivalenten ohne weiteren Faktor.
+          }}] CO<sub>2</sub>-Äquivalenten ohne weiteren Faktor.
         </InlineMessage>
       </div>
       <div class="field">
@@ -437,7 +437,7 @@
           class="w-full mt-1"
           severity="info"
         >
-          Der Eingabewert vor dem Umrechnen in CO2-Äquivalente. Wird mit dem
+          Der Eingabewert vor dem Umrechnen in CO<sub>2</sub>-Äquivalente. Wird mit dem
           Äquivalent verrechnet.
         </InlineMessage>
       </div>

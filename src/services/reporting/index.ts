@@ -1,6 +1,6 @@
 /**
  * This service is used to generate reports
- * It will use the data from the database and calculate the CO2 values
+ * It will use the data from the database and calculate the CO-2 values
  * It will calculate chains of equivalent values
  * It will calculate the sum of all inputs
  */

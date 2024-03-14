@@ -12,7 +12,7 @@
   </p>
   <p>
     Geplante Einsparung:
-    {{ action.targetValueAbsolutPlanned }} kg-CO2/Jahr
+    {{ action.targetValueAbsolutPlanned }} kg-CO<sub>2</sub>/Jahr
   </p>
 </template>
 

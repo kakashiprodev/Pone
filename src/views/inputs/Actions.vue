@@ -102,14 +102,14 @@
     <!-- Target Value Absolute Planned -->
     <div class="field">
       <label for="action-targetValueAbsolutPlanned" class="w-full"
-        >Geplante Einsparung in kg CO2*</label
+        >Geplante Einsparung in kg CO<sub>2</sub>*</label
       >
       <InlineMessage
         severity="info"
         v-if="global.showTooltips"
         class="w-full mb-2"
       >
-        Die angestrebte Einsparung der Maßnahe in kg CO2 Äquivalenten.
+        Die angestrebte Einsparung der Maßnahe in kg CO<sub>2</sub> Äquivalenten.
       </InlineMessage>
       <InputNumber
         class="w-full"
@@ -121,14 +121,14 @@
     <!-- Target Value Absolute Is -->
     <div class="field">
       <label for="action-targetValueAbsolutIs" class="w-full"
-        >Tatsächliche Einsparung in kg CO2</label
+        >Tatsächliche Einsparung in kg CO<sub>2</sub></label
       >
       <InlineMessage
         severity="info"
         v-if="global.showTooltips"
         class="w-full mb-2"
       >
-        Die tatsächliche Einsparung der Maßnahe in lg CO2 Äquivalenten.
+        Die tatsächliche Einsparung der Maßnahe in lg CO<sub>2</sub> Äquivalenten.
       </InlineMessage>
       <InputNumber
         class="w-full"

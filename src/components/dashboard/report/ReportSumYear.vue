@@ -6,7 +6,7 @@
     </template>
     <template #right>
       <ApexSumChartWrapper
-        label="CO2 Emissionen, aufgeteilt nach Scope"
+        label="CO&#8322; Emissionen, aufgeteilt nach Scope"
         v-if="sumGroupedByScope"
         type="donut"
         :data="sumGroupedByScope"
@@ -83,7 +83,7 @@
     <template #left>
       <ApexGroupedChartWrapper
         v-if="sumGroupedByScopeAndYear != null"
-        label="CO2 Emissionen, aufgeteilt nach Scope und Jahr"
+        label="CO&#8322; Emissionen, aufgeteilt nach Scope und Jahr"
         :data="sumGroupedByScopeAndYear"
         :horizontal="true"
         :stacked="true"
@@ -93,7 +93,7 @@
     <template #right>
       <ApexTreemapWrapper
         v-if="sumGroupedByScope"
-        label="CO2 Emissionen, aktueller Berichtszeitraum"
+        label="CO&#8322; Emissionen, aktueller Berichtszeitraum"
         :data="sumGroupedByScope"
       />
     </template>

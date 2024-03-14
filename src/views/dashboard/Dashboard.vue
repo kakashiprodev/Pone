@@ -16,7 +16,7 @@
       </template>
     </Toolbar>
     <TabView v-if="!global.isLoading && !loading">
-      <TabPanel header="CO2-Bilanzierung">
+      <TabPanel header="Bilanzierung">
         <ReportSumYear :sites="[global.selectedSite?.id ?? '']" />
       </TabPanel>
 

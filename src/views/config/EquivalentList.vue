@@ -20,7 +20,7 @@
     severity="info"
   >
     Hier werden alle Äquivalente angezeigt, die für die Berechnung der
-    CO2-Äquivalente verwendet werden können. Die System Einträge können nicht
+    CO<sub>2</sub>-Äquivalente verwendet werden können. Die System Einträge können nicht
     editiert oder gelöscht werden. Überliegende Berechnungen bedeuten, dass der
     Faktor in Kette mit dem überliegenden Faktor berechnet wird. Hierbei
     entspricht die Ausgangseinheit des Eingabewertes der Eingangseinheit des
@@ -196,7 +196,7 @@
         >
           Der "Ausgang" entspricht der Einheit in die umgerechnet wird. Wenn
           keine übergeordnete Berechnung verknüpft wird muss(!) Die
-          Ausgangseinheit kg-CO2 entsprechen.
+          Ausgangseinheit kg-CO<sub>2</sub> entsprechen.
         </InlineMessage>
       </div>
       <div class="field">
@@ -451,7 +451,7 @@
           Wenn eine überliegende Berechnung gewählt wird, muss die
           Ausgangseinheit der überliegenden Berechnung mit der Eingangseinheit
           dieses Faktors übereinstimmen. In dem Fall wird beim Berechnen der
-          CO2-Äquivalete der überliegende Faktor in Kette mit diesem Faktors
+          CO<sub>2</sub>-Äquivalete der überliegende Faktor in Kette mit diesem Faktors
           berechnet.
         </InlineMessage>
       </div>
@@ -660,13 +660,13 @@ const save = async () => {
 
     parse(equivalentSchema, selectedValue.value);
 
-    // check if parent is set. If not the output unit must be kg-CO2
+    // check if parent is set. If not the output unit must be kg-CO-2
     if (
       selectedValue.value.parent == null &&
       selectedValue.value.out !== 'kg'
     ) {
       throw new Error(
-        'Wenn kein überliegender Faktor gewählt wird, muss die Ausgangseinheit [kg] (CO2-Äquivalente) sein.',
+        'Wenn kein überliegender Faktor gewählt wird, muss die Ausgangseinheit [kg] (Äquivalente) sein.',
       );
     }
     // if a parent is set. check if the output unit is the same as the input unit of the parent

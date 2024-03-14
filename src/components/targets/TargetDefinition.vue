@@ -8,7 +8,7 @@
 
   <!-- head row -->
   <div class="mt-2 mb-5 w-full">
-    Jahr / CO2-Ausstoß in %.<br />
+    Jahr / CO<sub>2</sub>-Ausstoß in %.<br />
     100% bedeutet volle Klimeneutralität.<br />
     0% = Keine Einsparung. Verbrauch ist gleich dem des angegebenen Basisjahr
     des Berichts.
