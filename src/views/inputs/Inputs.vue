@@ -47,7 +47,7 @@
             displayInTons ? toTons(sumValue) : sumValue,
             3,
           )
-        }}{{ displayInTons ? 'to' : 'kg' }}
+        }}{{ displayInTons ? ' to' : ' kg' }}
       </span>
     </template>
     <template #end>
