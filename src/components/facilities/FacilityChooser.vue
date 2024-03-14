@@ -11,7 +11,6 @@
     <Column field="name" header="Name"></Column>
     <Column field="manufacturer" header="Hersteller"></Column>
     <Column field="model" header="Modell/Typ"></Column>
-    <Column field="description" header="Beschreibung"></Column>
   </DataTable>
 </template>
 

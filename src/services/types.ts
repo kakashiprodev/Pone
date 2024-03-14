@@ -161,7 +161,7 @@ export interface FacilityEntry {
   name: string;
   manufacturer: string;
   model: null | string;
-  description: null | string;
+  description: string;
   shutdownDate: null | string | Date; // if null or empty the facility is in use
 }
 
