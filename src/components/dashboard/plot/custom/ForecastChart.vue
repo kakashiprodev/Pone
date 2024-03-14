@@ -31,9 +31,9 @@ function prepareChartData(emissionValues: EmissionValue[]) {
   const realValuesWithActions = emissionValues.map(
     (result) => result.realValueWithActions,
   );
-  const realValueWithActionsInterpolated = emissionValues.map(
-    (result) => result.realValueWithActionsInterpolated,
-  );
+  // const realValueWithActionsInterpolated = emissionValues.map(
+  //   (result) => result.realValueWithActionsInterpolated,
+  // );
   const targetValueInterpolated = emissionValues.map(
     (result) => result.targetValueInterpolated,
   );
@@ -58,15 +58,15 @@ function prepareChartData(emissionValues: EmissionValue[]) {
       borderColor: 'rgba(75, 192, 192, 1)',
       borderWidth: 1,
     },
-    {
-      type: 'line',
-      label: 'Erreichbarer Wert mit Maßnahmen (linear interpoliert)',
-      data: realValueWithActionsInterpolated,
-      backgroundColor: 'rgba(153, 102, 255, 0.8)',
-      borderColor: 'rgba(153, 102, 255, 1)',
-      borderWidth: 1,
-      spanGaps: true,
-    },
+    // {
+    //   type: 'line',
+    //   label: 'Erreichbarer Wert mit Maßnahmen (linear interpoliert)',
+    //   data: realValueWithActionsInterpolated,
+    //   backgroundColor: 'rgba(153, 102, 255, 0.8)',
+    //   borderColor: 'rgba(153, 102, 255, 1)',
+    //   borderWidth: 1,
+    //   spanGaps: true,
+    // },
     {
       type: 'line',
       label: 'Zielwert nach Projektvorgaben (linear interpoliert)',
