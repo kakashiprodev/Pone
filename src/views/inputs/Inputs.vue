@@ -437,8 +437,8 @@
           class="w-full mt-1"
           severity="info"
         >
-          Der Eingabewert vor dem Umrechnen in CO<sub>2</sub>-Äquivalente. Wird mit dem
-          Äquivalent verrechnet.
+          Der Eingabewert vor dem Umrechnen in CO<sub>2</sub>-Äquivalente. Wird
+          mit dem Äquivalent verrechnet.
         </InlineMessage>
       </div>
       <!-- helping information -->
@@ -497,7 +497,12 @@
     class="cst-no-hover"
   >
     <!-- <Column field="id" header="ID"></Column> -->
-    <Column field="scope" header="Scope" sortable></Column>
+    <Column
+      field="scope"
+      header="Scope"
+      sortable
+      v-if="preSelectedScope === 'all'"
+    ></Column>
     <Column field="category" header="Kategorie" sortable></Column>
     <Column field="name" header="Name" sortable></Column>
     <Column field="rawValue" header="Eingabewert" sortable>
