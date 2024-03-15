@@ -4,17 +4,18 @@
     <template #content>
       <img src="./../../../assets/scopes.png" alt="Scope" style="width: 100%" />
       <p>
-        In einer CO<sub>2</sub>-Bilanz werden, die direkten und indirekten verursachten
-        Emissionen erfasst. Für die Erstellung dieser Bilanz werden die
-        Anforderungen nach GHG-Protokoll berücksichtigt. Zur Berechnung können
-        Emissionen entlang des gesamten Produktzyklus betrachtet werden, hierbei
-        muss deutlich zwischen Scope 1, Scope 2 und Scope 3 unterschieden
-        werden. Nach dem GHG-Protokoll verfügen Treibhausgase über
+        In einer CO<sub>2</sub>-Bilanz werden, die direkten und indirekten
+        verursachten Emissionen erfasst. Für die Erstellung dieser Bilanz werden
+        die Anforderungen nach GHG-Protokoll berücksichtigt. Zur Berechnung
+        können Emissionen entlang des gesamten Produktzyklus betrachtet werden,
+        hierbei muss deutlich zwischen Scope 1, Scope 2 und Scope 3
+        unterschieden werden. Nach dem GHG-Protokoll verfügen Treibhausgase über
         unterschiedliche Erwärmungspotenziale. Um diese vergleichen zu können
         wurde der Indikator „Global Warming Potenzial“ (GWP) gebildet. Der GWP
-        wird in CO<sub>2</sub>-Äquivalenten (CO2e) zum relativen Treibhausgaspotenzial von
-        CO<sub>2</sub> angegeben. In der nachfolgenden Abbildung ist die Scope-Betrachtung
-        entlang des Lebenszyklus dargestellt.
+        wird in CO<sub>2</sub>-Äquivalenten (CO2e) zum relativen
+        Treibhausgaspotenzial von CO<sub>2</sub> angegeben. In der nachfolgenden
+        Abbildung ist die Scope-Betrachtung entlang des Lebenszyklus
+        dargestellt.
       </p>
     </template>
   </Card>

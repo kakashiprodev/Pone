@@ -109,7 +109,8 @@
         v-if="global.showTooltips"
         class="w-full mb-2"
       >
-        Die angestrebte Einsparung der Maßnahe in kg CO<sub>2</sub> Äquivalenten.
+        Die angestrebte Einsparung der Maßnahe in kg CO<sub>2</sub>
+        Äquivalenten.
       </InlineMessage>
       <InputNumber
         class="w-full"
@@ -128,7 +129,8 @@
         v-if="global.showTooltips"
         class="w-full mb-2"
       >
-        Die tatsächliche Einsparung der Maßnahe in lg CO<sub>2</sub> Äquivalenten.
+        Die tatsächliche Einsparung der Maßnahe in lg CO<sub>2</sub>
+        Äquivalenten.
       </InlineMessage>
       <InputNumber
         class="w-full"
