@@ -449,6 +449,7 @@ import { ref, watch } from 'vue';
 import { useGlobalStore } from '../../stores/global';
 import { ActionEntry } from '../../services/types';
 import dataprovider from '../../services/dataprovider';
+import statusTranslations from '../../services/statusTranslations.ts';
 import { error } from '../../services/ui/toast';
 import { useConfirm } from 'primevue/useconfirm';
 import {
@@ -561,16 +562,6 @@ const actionEntrySchema = object({
     minValue(0, 'Vermeidungskosten müssen größer als 0 sein'),
   ]),
 });
-
-/**
- * status translations dict
- */
-const statusTranslations: any = {
-  open: 'Geplant',
-  inProgress: 'In Bearbeitung',
-  finished: 'Abgeschlossen',
-  canceled: 'Abgebrochen',
-};
 
 /**
  * Action list
