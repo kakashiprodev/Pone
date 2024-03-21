@@ -20,13 +20,15 @@
     <DataTable :value="actions" class="mt-5">
       <Column header="Jahr">
         <template #body="{ data }">
-          <span
-            v-if="data.finishedUntilIs != null && data.finishedUntilIs != ''"
-          >
-            {{ dateToYear(data.finishedUntilIs) }}
-          </span>
-          <span v-else>
-            {{ dateToYear(data.finishedUntilPlanned) }}
+          <span class="flex justify-content-end text-right">
+            <span
+              v-if="data.finishedUntilIs != null && data.finishedUntilIs != ''"
+            >
+              {{ dateToYear(data.finishedUntilIs) }}
+            </span>
+            <span v-else>
+              {{ dateToYear(data.finishedUntilPlanned) }}
+            </span>
           </span>
         </template>
       </Column>
@@ -68,15 +70,17 @@
       </Column>
       <Column header="Menge">
         <template #body="{ data }">
-          <nobr v-if="data.progress < 100">
-            {{ toTons(data.targetValueAbsolutPlanned).toLocaleString() }} to
-          </nobr>
-          <nobr v-else>
-            {{ toTons(data.targetValueAbsolutIs) }}/{{
-              toTons(data.targetValueAbsolutPlanned)
-            }}
-            to
-          </nobr>
+          <span class="flex justify-content-end text-right">
+            <nobr v-if="data.progress < 100">
+              {{ toTons(data.targetValueAbsolutPlanned).toLocaleString() }} to
+            </nobr>
+            <nobr v-else>
+              {{ toTons(data.targetValueAbsolutIs) }}/{{
+                toTons(data.targetValueAbsolutPlanned)
+              }}
+              to
+            </nobr>
+          </span>
         </template>
       </Column>
     </DataTable>
