@@ -25,10 +25,10 @@
       <ProgressBar :value="action.progress" />
     </Panel>
     <Panel header="Geplantes Fertigstellungsdatum" class="mb-3">
-      {{ action.finishedUntilPlanned?.toLocaleDateString() }}
+      {{ toReadableDate(action.finishedUntilPlanned) }}
     </Panel>
     <Panel header="Tatsächliches Fertigstellungsdatum" class="mb-3">
-      {{ action.finishedUntilIs?.toLocaleDateString() }}
+      {{ toReadableDate(action.finishedUntilIs) }}
     </Panel>
     <Panel header="Kategorie" class="mb-3">
       {{ action.category }}
@@ -66,5 +66,12 @@ defineProps({
 // provide the status translation for the template
 const getStatusTranslation = (status: string) => {
   return statusTranslations[status as keyof typeof statusTranslations];
+};
+
+const toReadableDate = (date: string | Date | null) => {
+  if (date) {
+    return new Date(date).toLocaleDateString();
+  }
+  return '';
 };
 </script>
