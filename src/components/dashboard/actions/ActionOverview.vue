@@ -1,7 +1,11 @@
 <template>
   <h4 class="m-auto mt-5">Auflistung aller geplanten Maßnahmen</h4>
   <div>
-    <Dialog header="Steckbrief" v-model:visible="actionCharacteristicsVisible">
+    <Dialog
+      :header="`Steckbrief ${selectedAction?.name}`"
+      v-model:visible="actionCharacteristicsVisible"
+      class="action-overview__dialog"
+    >
       <ActionCharacteristics v-if="selectedAction" :action="selectedAction" />
     </Dialog>
 
@@ -232,3 +236,15 @@ const getData = async () => {
 };
 getData();
 </script>
+
+<style lang="scss">
+.action-overview {
+  &__dialog {
+    width: 95%;
+    max-width: 80rem;
+  }
+}
+.p-dialog-title {
+  color: var(--primary-color);
+}
+</style>

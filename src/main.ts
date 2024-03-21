@@ -41,6 +41,7 @@ import Toast from 'primevue/toast';
 import Chart from 'primevue/chart';
 import ToggleButton from 'primevue/togglebutton';
 import Listbox from 'primevue/listbox';
+import Panel from 'primevue/panel';
 import ProgressBar from 'primevue/progressbar';
 
 import '@fortawesome/fontawesome-free/css/all.min.css';
@@ -84,6 +85,7 @@ app.component('Toast', Toast);
 app.component('Chart', Chart);
 app.component('ToggleButton', ToggleButton);
 app.component('Listbox', Listbox);
+app.component('Panel', Panel);
 app.component('ProgressBar', ProgressBar);
 
 app.directive('tooltip', Tooltip);
