@@ -502,13 +502,21 @@
       header="Scope"
       sortable
       v-if="preSelectedScope === 'all'"
-    ></Column>
+    >
+      <template #body="{ data }">
+          <span class="flex justify-content-center">
+            {{ data.scope }}
+          </span>
+      </template>
+    </Column>
     <Column field="category" header="Kategorie" sortable></Column>
     <Column field="name" header="Name" sortable></Column>
     <Column field="rawValue" header="Eingabewert" sortable>
       <template #body="{ data }">
+          <span class="flex justify-content-end text-right">
         {{ roundStringWithDecimals(data.rawValue, 3) }}
         {{ global.equivalentDict[data.equivalent]?.in ?? 'Reference error' }}
+          </span>
       </template>
     </Column>
     <Column field="equivalent" header="Äquivalent" sortable>
@@ -529,6 +537,7 @@
     </Column>
     <Column field="sumValue" header="Menge (Jahr)" sortable>
       <template #body="{ data }">
+        <span class="flex justify-content-end text-right ">
         {{
           roundStringWithDecimals(
             displayInTons ? toTons(data.sumValue) : data.sumValue,
@@ -536,6 +545,7 @@
           )
         }}
         {{ displayInTons ? 'to' : 'kg' }}
+        </span>
       </template>
     </Column>
     <Column field="comment" header="Kommentar"></Column>

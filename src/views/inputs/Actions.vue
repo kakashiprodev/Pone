@@ -403,7 +403,13 @@
     <Column
       field="targetValueAbsolutPlanned"
       header="Zieleinsparung in kg"
-    ></Column>
+    >
+      <template #body="{ data }">
+        <span class="flex justify-content-end text-right ">
+          {{ data.targetValueAbsolutPlanned }}
+        </span>
+      </template>
+    </Column>
     <Column field="responsible" header="Verantwortlich"></Column>
     <Column field="progress" header="Fortschritt">
       <template #body="{ data }"> {{ data.progress }} % </template>
