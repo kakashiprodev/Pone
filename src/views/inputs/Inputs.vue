@@ -346,7 +346,7 @@
           unter dem Benutzermenü > "Äquivalente verwalten" hinzugefügt werden.
           Gelistet werden außerdem alle ausgelieferten Äquivalente. Ist kein
           Äquivalent ausgewählt, ist die Eingabe in [{{
-            displayInTons ? 'to' : 'kg'
+            displayInTons ? ' to' : ' kg'
           }}] CO<sub>2</sub>-Äquivalenten ohne weiteren Faktor.
         </InlineMessage>
       </div>
@@ -392,7 +392,7 @@
           unter dem Benutzermenü > "Äquivalente verwalten" hinzugefügt werden.
           Gelistet werden außerdem alle ausgelieferten Äquivalente. Ist kein
           Äquivalent ausgewählt, ist die Eingabe in [{{
-            displayInTons ? 'to' : 'kg'
+            displayInTons ? ' to' : ' kg'
           }}] CO<sub>2</sub>-Äquivalenten ohne weiteren Faktor.
         </InlineMessage>
       </div>
@@ -544,7 +544,7 @@
               3,
             )
           }}
-          {{ displayInTons ? 'to' : 'kg' }}
+          {{ displayInTons ? ' to' : ' kg' }}
         </span>
       </template>
     </Column>

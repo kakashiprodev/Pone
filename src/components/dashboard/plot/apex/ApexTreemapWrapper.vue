@@ -103,7 +103,7 @@ const chartOptions: ComputedRef<any> = computed(() => {
       y: {
         formatter: function (value: number) {
           return (
-            value.toLocaleString() + (globalStore.displayInTons ? 'to' : 'kg')
+            value.toLocaleString() + (globalStore.displayInTons ? ' to' : ' kg')
           );
         },
       },

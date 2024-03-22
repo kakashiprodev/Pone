@@ -663,7 +663,7 @@ const save = async () => {
     // check if parent is set. If not the output unit must be kg-CO-2
     if (
       selectedValue.value.parent == null &&
-      selectedValue.value.out !== 'kg'
+      selectedValue.value.out !== ' kg'
     ) {
       throw new Error(
         'Wenn kein überliegender Faktor gewählt wird, muss die Ausgangseinheit [kg] (Äquivalente) sein.',
