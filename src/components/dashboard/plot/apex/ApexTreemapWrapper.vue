@@ -99,6 +99,15 @@ const chartOptions: ComputedRef<any> = computed(() => {
     },
     plotOptions: {},
     colors: colors.value,
+    tooltip: {
+      y: {
+        formatter: function (value: number) {
+          return (
+            value.toLocaleString() + (globalStore.displayInTons ? 'to' : 'kg')
+          );
+        },
+      },
+    },
   };
 });
 
