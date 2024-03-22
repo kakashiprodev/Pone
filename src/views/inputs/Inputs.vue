@@ -1,5 +1,5 @@
 <template>
-  <h4>Übersicht aller Eingaben</h4>
+  <h2>Übersicht aller Eingaben</h2>
 
   <ScopeInfoBox v-if="preSelectedScope != 'all'" :scope="preSelectedScope" />
 
@@ -504,19 +504,19 @@
       v-if="preSelectedScope === 'all'"
     >
       <template #body="{ data }">
-          <span class="flex justify-content-center">
-            {{ data.scope }}
-          </span>
+        <span class="flex justify-content-center">
+          {{ data.scope }}
+        </span>
       </template>
     </Column>
     <Column field="category" header="Kategorie" sortable></Column>
     <Column field="name" header="Name" sortable></Column>
     <Column field="rawValue" header="Eingabewert" sortable>
       <template #body="{ data }">
-          <span class="flex justify-content-end text-right">
-        {{ roundStringWithDecimals(data.rawValue, 3) }}
-        {{ global.equivalentDict[data.equivalent]?.in ?? 'Reference error' }}
-          </span>
+        <span class="flex justify-content-end text-right">
+          {{ roundStringWithDecimals(data.rawValue, 3) }}
+          {{ global.equivalentDict[data.equivalent]?.in ?? 'Reference error' }}
+        </span>
       </template>
     </Column>
     <Column field="equivalent" header="Äquivalent" sortable>
@@ -537,14 +537,14 @@
     </Column>
     <Column field="sumValue" header="Menge (Jahr)" sortable>
       <template #body="{ data }">
-        <span class="flex justify-content-end text-right ">
-        {{
-          roundStringWithDecimals(
-            displayInTons ? toTons(data.sumValue) : data.sumValue,
-            3,
-          )
-        }}
-        {{ displayInTons ? 'to' : 'kg' }}
+        <span class="flex justify-content-end text-right">
+          {{
+            roundStringWithDecimals(
+              displayInTons ? toTons(data.sumValue) : data.sumValue,
+              3,
+            )
+          }}
+          {{ displayInTons ? 'to' : 'kg' }}
         </span>
       </template>
     </Column>
