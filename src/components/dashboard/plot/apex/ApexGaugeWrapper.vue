@@ -1,9 +1,9 @@
 <template>
   <div style="max-width: 25%">
     <div class="m-auto text-center w-full">
-      <h6 v-if="label">
+      <h4 v-if="label">
         {{ label }}
-      </h6>
+      </h4>
     </div>
 
     <div>
