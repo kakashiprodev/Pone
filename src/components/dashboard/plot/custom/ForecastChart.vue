@@ -1,5 +1,5 @@
 <template>
-  <h1>Soll/Ist-Analyse</h1>
+  <h2>Soll/Ist-Analyse</h2>
   <p>
     Die Soll/Ist-Analyse wertet die bekannten Berichtsdaten aus und zeigt die
     gesetzten Jahresziele im Vergleich. Die angegebenen Maßnahmen im Projekt

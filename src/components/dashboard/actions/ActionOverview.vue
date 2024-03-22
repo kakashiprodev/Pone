@@ -1,5 +1,5 @@
 <template>
-  <h4 class="m-auto mt-5">Auflistung aller geplanten Maßnahmen</h4>
+  <h2 class="m-auto mt-5">Auflistung aller geplanten Maßnahmen</h2>
   <div>
     <Dialog
       :header="`Steckbrief ${selectedAction?.name}`"
