@@ -7,7 +7,7 @@
     <template #right>
       <div class="report-chart-wrapper">
         <ApexSumChartWrapper
-          label="CO2 Emissionen, aufgeteilt nach Scope"
+          label="CO&#8322; Emissionen, aufgeteilt nach Scope"
           v-if="sumGroupedByCategory"
           type="donut"
           :data="sumGroupedByCategory"
@@ -20,7 +20,7 @@
   <!-- ZEILE -->
   <HorizontalOneColLayout>
     <ApexSumChartWrapper
-      label="CO2 Emissionen, aufgeteilt nach Kategorie"
+      label="CO&#8322; Emissionen, aufgeteilt nach Kategorie"
       v-if="sumGroupedByCategory"
       type="radar"
       :data="sumGroupedByCategory"
@@ -30,9 +30,9 @@
   <!-- ZEILE -->
   <HorizontalOneColLayout>
     <TextBarList
-      label="CO2 Emissionen, aufgeteilt nach Anlage"
+      label="CO&#8322; Emissionen, aufgeteilt nach Anlage"
       :data="facilityList"
-      :header="['Anlagenname', 'Aktiv/Inaktiv', 'CO2 Emissionen']"
+      :header="['Anlagenname', 'Aktiv/Inaktiv', 'CO&#8322; Emissionen']"
       :use-maximum-as-reference="true"
     />
   </HorizontalOneColLayout>
@@ -43,14 +43,14 @@
     <template #left>
       <ApexTreemapWrapper
         v-if="sumGroupedByFacility"
-        label="CO2 Emissionen, aufgeteilt nach Anlage"
+        label="CO&#8322; Emissionen, aufgeteilt nach Anlage"
         :data="sumGroupedByFacility"
       />
     </template>
     <template #right>
       <ApexTreemapWrapper
         v-if="sumGroupedByCategory"
-        label="CO2 Emissionen, aufgeteilt nach Kategorie"
+        label="CO&#8322; Emissionen, aufgeteilt nach Kategorie"
         :data="sumGroupedByCategory"
       />
     </template>

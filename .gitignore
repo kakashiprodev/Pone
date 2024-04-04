@@ -13,8 +13,6 @@ dist-ssr
 *.local
 
 # Editor directories and files
-.vscode/*
-!.vscode/extensions.json
 .idea
 .DS_Store
 *.suo
@@ -46,3 +44,5 @@ viewer/[path].paths.ts.*.mjs
 assets/pocketbase/import/__pycache__/**/*
 assets/Faktoren/*.json
 assets/Faktoren/import/*.json
+
+repository_contents.md

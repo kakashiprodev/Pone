@@ -102,14 +102,15 @@
     <!-- Target Value Absolute Planned -->
     <div class="field">
       <label for="action-targetValueAbsolutPlanned" class="w-full"
-        >Geplante Einsparung in kg CO2*</label
+        >Geplante Einsparung in kg CO<sub>2</sub>*</label
       >
       <InlineMessage
         severity="info"
         v-if="global.showTooltips"
         class="w-full mb-2"
       >
-        Die angestrebte Einsparung der Maßnahe in kg CO2 Äquivalenten.
+        Die angestrebte Einsparung der Maßnahe in kg CO<sub>2</sub>
+        Äquivalenten.
       </InlineMessage>
       <InputNumber
         class="w-full"
@@ -121,14 +122,15 @@
     <!-- Target Value Absolute Is -->
     <div class="field">
       <label for="action-targetValueAbsolutIs" class="w-full"
-        >Tatsächliche Einsparung in kg CO2</label
+        >Tatsächliche Einsparung in kg CO<sub>2</sub></label
       >
       <InlineMessage
         severity="info"
         v-if="global.showTooltips"
         class="w-full mb-2"
       >
-        Die tatsächliche Einsparung der Maßnahe in lg CO2 Äquivalenten.
+        Die tatsächliche Einsparung der Maßnahe in lg CO<sub>2</sub>
+        Äquivalenten.
       </InlineMessage>
       <InputNumber
         class="w-full"
@@ -401,7 +403,13 @@
     <Column
       field="targetValueAbsolutPlanned"
       header="Zieleinsparung in kg"
-    ></Column>
+    >
+      <template #body="{ data }">
+        <span class="flex justify-content-end text-right ">
+          {{ data.targetValueAbsolutPlanned }}
+        </span>
+      </template>
+    </Column>
     <Column field="responsible" header="Verantwortlich"></Column>
     <Column field="progress" header="Fortschritt">
       <template #body="{ data }"> {{ data.progress }} % </template>
@@ -447,6 +455,7 @@ import { ref, watch } from 'vue';
 import { useGlobalStore } from '../../stores/global';
 import { ActionEntry } from '../../services/types';
 import dataprovider from '../../services/dataprovider';
+import statusTranslations from '../../services/statusTranslations.ts';
 import { error } from '../../services/ui/toast';
 import { useConfirm } from 'primevue/useconfirm';
 import {
@@ -559,16 +568,6 @@ const actionEntrySchema = object({
     minValue(0, 'Vermeidungskosten müssen größer als 0 sein'),
   ]),
 });
-
-/**
- * status translations dict
- */
-const statusTranslations: any = {
-  open: 'Geplant',
-  inProgress: 'In Bearbeitung',
-  finished: 'Abgeschlossen',
-  canceled: 'Abgebrochen',
-};
 
 /**
  * Action list

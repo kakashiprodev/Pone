@@ -4,7 +4,7 @@
       DAS IST NUR EINE VORSCHAU UND NICHT DRUCKBAR!
     </h3>
 
-    <h2>CO2-Bilanzierung Gesamt</h2>
+    <h2>CO<sub>2</sub>-Bilanzierung Gesamt</h2>
     <ReportSumYear :sites="[global.selectedSite?.id ?? '']" />
 
     <h2>Scope 1</h2>

@@ -1,7 +1,11 @@
 <template>
-  <h4 class="m-auto mt-5">Auflistung aller geplanten Maßnahmen</h4>
+  <h2 class="m-auto mt-5">Auflistung aller geplanten Maßnahmen</h2>
   <div>
-    <Dialog header="Steckbrief" v-model:visible="actionCharacteristicsVisible">
+    <Dialog
+      :header="`Steckbrief ${selectedAction?.name}`"
+      v-model:visible="actionCharacteristicsVisible"
+      class="action-overview__dialog"
+    >
       <ActionCharacteristics v-if="selectedAction" :action="selectedAction" />
     </Dialog>
 
@@ -20,13 +24,15 @@
     <DataTable :value="actions" class="mt-5">
       <Column header="Jahr">
         <template #body="{ data }">
-          <span
-            v-if="data.finishedUntilIs != null && data.finishedUntilIs != ''"
-          >
-            {{ dateToYear(data.finishedUntilIs) }}
-          </span>
-          <span v-else>
-            {{ dateToYear(data.finishedUntilPlanned) }}
+          <span class="flex justify-content-end text-right">
+            <span
+              v-if="data.finishedUntilIs != null && data.finishedUntilIs != ''"
+            >
+              {{ dateToYear(data.finishedUntilIs) }}
+            </span>
+            <span v-else>
+              {{ dateToYear(data.finishedUntilPlanned) }}
+            </span>
           </span>
         </template>
       </Column>
@@ -68,14 +74,16 @@
       </Column>
       <Column header="Menge">
         <template #body="{ data }">
-          <span v-if="data.progress < 100">
-            {{ toTons(data.targetValueAbsolutPlanned) }} to
-          </span>
-          <span v-else>
-            {{ toTons(data.targetValueAbsolutIs) }}/{{
-              toTons(data.targetValueAbsolutPlanned)
-            }}
-            to
+          <span class="flex justify-content-end text-right">
+            <nobr v-if="data.progress < 100">
+              {{ toTons(data.targetValueAbsolutPlanned).toLocaleString() }} to
+            </nobr>
+            <nobr v-else>
+              {{ toTons(data.targetValueAbsolutIs) }}/{{
+                toTons(data.targetValueAbsolutPlanned)
+              }}
+              to
+            </nobr>
           </span>
         </template>
       </Column>
@@ -228,3 +236,15 @@ const getData = async () => {
 };
 getData();
 </script>
+
+<style lang="scss">
+.action-overview {
+  &__dialog {
+    width: 95%;
+    max-width: 80rem;
+  }
+}
+.p-dialog-title {
+  color: var(--primary-color);
+}
+</style>

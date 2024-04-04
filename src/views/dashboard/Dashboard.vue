@@ -1,6 +1,6 @@
 <template>
   <!-- <SmartInput :data="demo" /> -->
-  <div class="report" v-if="global.selectedReport" style="max-width: 1200px;">
+  <div class="report" v-if="global.selectedReport" style="max-width: 1200px">
     <Toolbar class="mb-4">
       <template #start>
         <span>Ausgewählter Bericht</span>
@@ -16,7 +16,7 @@
       </template>
     </Toolbar>
     <TabView v-if="!global.isLoading && !loading">
-      <TabPanel header="CO2-Bilanzierung">
+      <TabPanel header="Bilanzierung">
         <ReportSumYear :sites="[global.selectedSite?.id ?? '']" />
       </TabPanel>
 

@@ -41,7 +41,7 @@ const targetStyle = computed(() => ({
 .progress-bar {
   height: 100%;
   transition: width 0.5s ease;
-  border-radius: 10px;
+  border-radius: 3px;
   color: white;
   padding-left: 2px;
 }

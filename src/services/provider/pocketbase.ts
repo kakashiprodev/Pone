@@ -68,7 +68,9 @@ export default class DataProvider {
    */
   async loginWithMicrosoft(): Promise<boolean> {
     try {
-      await this.pb.collection('users').authWithOAuth2({ provider: 'microsoft' });
+      await this.pb
+        .collection('users')
+        .authWithOAuth2({ provider: 'microsoft' });
       console.log('logged in with microsoft');
       return this.checkLogin();
     } catch (err) {
@@ -273,20 +275,23 @@ export default class DataProvider {
   }
 
   async readUserInputs(query?: UserInputQuery) {
-    const filter = `report = '${globalStore.selectedReport?.id}'${query?.scope
-      ? ' && (' + query.scope.map((s) => `scope="${s}"`).join(' || ') + ')'
-      : ''
-      }${query?.category
-        ? ' && (' +
-        query.category.map((c) => `category="${c}"`).join(' || ') +
-        ')'
+    const filter = `report = '${globalStore.selectedReport?.id}'${
+      query?.scope
+        ? ' && (' + query.scope.map((s) => `scope="${s}"`).join(' || ') + ')'
         : ''
-      }${query?.facility
+    }${
+      query?.category
         ? ' && (' +
-        query.facility.map((f) => `facility="${f}"`).join(' || ') +
-        ')'
+          query.category.map((c) => `category="${c}"`).join(' || ') +
+          ')'
         : ''
-      }`;
+    }${
+      query?.facility
+        ? ' && (' +
+          query.facility.map((f) => `facility="${f}"`).join(' || ') +
+          ')'
+        : ''
+    }`;
     const res = await this.pb.collection('inputs').getList<InputEntry>(1, 500, {
       filter,
       // expand: "equivalent",
@@ -298,7 +303,9 @@ export default class DataProvider {
     const res = await this.pb
       .collection('inputs')
       .getList<InputEntryWithExpandedReportAndSite>(1, 500, {
-        filter: `report.site.project.id = '${projectId}' && (${years.map((y) => `report.year = ${y}`).join(' || ')})`,
+        filter: `report.site.project.id = '${projectId}' && (${years
+          .map((y) => `report.year = ${y}`)
+          .join(' || ')})`,
         expand: 'report.site,facility',
       });
     return res.items;

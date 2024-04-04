@@ -27,6 +27,7 @@
           :color="data.color ?? Config.colors.data2"
         >
           {{ round(toTons(data.value, globalStore.displayInTons)) }}
+          {{ globalStore.displayInTons ? ' to' : ' kg' }}
         </ProgressBarWithTarget>
       </template>
     </Column>

@@ -26,6 +26,28 @@
     </template>
   </Toolbar>
 
+  <!-- Info Dialog for description -->
+  <Dialog
+    id="info-dialog"
+    v-model:visible="showDescriptionDialog"
+    modal
+    header="Beschreibung"
+    style="width: 45%"
+  >
+    <Editor
+      class="w-full"
+      v-model="selectedValue.description"
+      editorStyle="height: 160px; width: 100%;"
+      :readonly="true"
+    >
+      <template v-slot:toolbar>
+        <span class="ql-formats">
+          <span v-show="false"> dummy </span>
+        </span>
+      </template>
+    </Editor>
+  </Dialog>
+
   <!-- edit and new modal dialog -->
   <Dialog
     id="edit-create-input"
@@ -85,19 +107,22 @@
           Die Typenbezeichnung der Anlage (Typenschild, Seriennummer, etc.).
         </InlineMessage>
       </div>
+
       <div class="field">
-        <label for="facility-comment">Kommentar</label>
-        <InputText
+        <label for="facility-model">Beschreibung</label>
+        <Editor
           class="w-full"
           v-model="selectedValue.description"
-          id="facility-comment"
+          id="facility-description"
+          editorStyle="height: 80px"
+          :readonly="false"
         />
         <InlineMessage
           v-if="global.showTooltips"
           class="w-full mt-1"
           severity="info"
         >
-          Ein freies Kommentarfeld.
+          Eine detailierte Beschreibung der Anlage.
         </InlineMessage>
       </div>
 
@@ -135,7 +160,14 @@
     <Column field="name" header="Name"></Column>
     <Column field="manufacturer" header="Hersteller"></Column>
     <Column field="model" header="Modell/Typ"></Column>
-    <Column field="description" header="Beschreibung"></Column>
+    <Column header="Beschreibung">
+      <template #body="{ data }">
+        <Button
+          icon="fa-solid fa-info-circle"
+          @click="showDescription(data)"
+        ></Button>
+      </template>
+    </Column>
 
     <Column header="">
       <template #body="{ data }">
@@ -261,6 +293,15 @@ const originalValue: Ref<FacilityEntry> = ref(emptyFacility);
  */
 const openFacility = (data: FacilityEntry) => {
   router.push({ name: 'inputs-facility', params: { facility: data.id } });
+};
+
+/**
+ * show info dialog
+ */
+const showDescriptionDialog = ref(false);
+const showDescription = (data: FacilityEntry) => {
+  selectedValue.value = data;
+  showDescriptionDialog.value = true;
 };
 
 /**

@@ -3,7 +3,12 @@
     {{ label }}
   </h4>
   <div>
-    <apexchart width="100%" :type="props.type" :options="chartOptions" :series="chartData"></apexchart>
+    <apexchart
+      width="100%"
+      :type="props.type"
+      :options="chartOptions"
+      :series="chartData"
+    ></apexchart>
   </div>
 </template>
 
@@ -88,14 +93,23 @@ const chartOptions: ComputedRef<any> = computed(() => {
       categories: categories.value,
     },
     plotOptions: {
-      [props.type === 'donut' ? 'pie' : "_"]: {
+      [props.type === 'donut' ? 'pie' : '_']: {
         donut: {
-          size: '50%',
+          size: '20%',
         },
       },
     },
     labels: categories.value,
     colors: colors.value,
+    tooltip: {
+      y: {
+        formatter: function (value: number) {
+          return (
+            value.toLocaleString() + (globalStore.displayInTons ? ' to' : ' kg')
+          );
+        },
+      },
+    },
   };
 });
 const colors = ref<string[]>([]);
@@ -125,15 +139,15 @@ const renderChart = () => {
 
     chartData.value =
       props.type === 'polarArea' ||
-        props.type === 'pie' ||
-        props.type === 'donut'
+      props.type === 'pie' ||
+      props.type === 'donut'
         ? series
         : [
-          {
-            name: 'Sum',
-            data: series,
-          },
-        ];
+            {
+              name: 'Sum',
+              data: series,
+            },
+          ];
 
     categories.value = Object.keys(props.data.timeseries);
     if (categories.value.length === 3 && categories.value[0] === '1') {

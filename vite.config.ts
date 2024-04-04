@@ -7,7 +7,16 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [vue()],
+  plugins: [
+    vue({
+      template: {
+        compilerOptions: {
+          // vue doesnt like the <nobr> tag but its known and supported by all browsers https://caniuse.com/?search=nobr
+          isCustomElement: (tag) => 'nobr' === tag,
+        },
+      },
+    }),
+  ],
   resolve: {
     alias: {
       '@': resolve(__dirname, 'src'),

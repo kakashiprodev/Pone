@@ -1,13 +1,13 @@
 <template>
   <div class="card cmt-1 mb-1" v-if="scope === '1'">
-    <h5>Scope 1: Direkte Emissionen</h5>
+    <h3>Scope 1: Direkte Emissionen</h3>
     <p>
       Emissionen aus eigenen oder kontrollierten Quellen. Beispiele: Emissionen
       von Verbrennungsprozessen in eigenen Anlagen, Fahrzeugemissionen
     </p>
   </div>
   <div class="card" v-if="scope === '2'">
-    <h5>Scope 2: Indirekte Emissionen aus bezogener Energie</h5>
+    <h3>Scope 2: Indirekte Emissionen aus bezogener Energie</h3>
     <p>
       Emissionen aus der Erzeugung gekaufter oder sonstwie bezogener
       Elektrizität, Dampf, Wärme und Kühlung Beispiele: Emissionen durch
@@ -15,7 +15,7 @@
     </p>
   </div>
   <div class="card" v-if="scope === '3'">
-    <h5>Scope 3: Sonstige indirekte Emissionen</h5>
+    <h3>Scope 3: Sonstige indirekte Emissionen</h3>
     <p>
       Emissionen, die nicht direkt aus eigenen oder kontrollierten Quellen
       stammen, aber mit der Wertschöpfungskette des Unternehmens verbunden sind

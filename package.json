@@ -37,10 +37,11 @@
   "devDependencies": {
     "@types/node": "^20.6.5",
     "@vitejs/plugin-vue": "^4.2.3",
+    "glob": "^10.3.10",
     "prettier": "^3.0.3",
     "sass": "^1.68.0",
     "typescript": "^5.0.2",
-    "vite": "^4.5.2",
+    "vite": "^4.5.3",
     "vitepress": "^1.0.0-rc.20",
     "vue-tsc": "^1.8.5"
   }

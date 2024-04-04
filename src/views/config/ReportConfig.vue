@@ -56,7 +56,7 @@
 
   <template v-if="reportForm">
     <Card class="mt-1">
-      <template #title> Basisdaten des CO2-Berichts </template>
+      <template #title> Basisdaten des CO<sub>2</sub>-Berichts </template>
       <template #content>
         <div
           class="field grid"
