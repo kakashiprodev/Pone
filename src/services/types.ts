@@ -154,6 +154,11 @@ export interface ActionEntry {
   avoidanceCosts: number; // de="vermeidungskosten"
 }
 
+export interface ActionWithPercentage extends ActionEntry {
+  targetValuePlanned: number;
+  targetValueIs: number;
+}
+
 // table facilities
 export interface FacilityEntry {
   id: string;

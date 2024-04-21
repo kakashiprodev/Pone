@@ -88,18 +88,22 @@
         </template>
       </Column>
     </DataTable>
+    <h2 class="m-auto mt-8">Zeitliche Übersicht aller Maßnahmen</h2>
+    <action-dumbbell-chart-wrapper v-if="actions.length" :actions="actions" />
+
   </div>
 </template>
 
 <script setup lang="ts">
 import dataprovider from '../../../services/dataprovider';
 import { ref, Ref } from 'vue';
-import { ActionEntry } from '../../../services/types';
+import {ActionEntry, ActionWithPercentage} from '../../../services/types';
 import { useGlobalStore } from '../../../stores/global';
 import { dateToYear, toTons } from '../../../services/pipes/index';
 import ProgressBarWithTarget from '../../dashboard/plot/custom/ProgressBarWithTarget.vue';
 import ActionCharacteristics from './ActionCharacteristics.vue';
 import ApexGaugeWrapper from '../../dashboard/plot/apex/ApexGaugeWrapper.vue';
+import ActionDumbbellChartWrapper from "./ActionDumbbellChartWrapper.vue";
 import Config from '../../../config';
 
 /*
@@ -138,11 +142,6 @@ export interface ActionEntry {
 const global = useGlobalStore();
 const actionCharacteristicsVisible = ref(false);
 const selectedAction = ref<ActionEntry | null>(null);
-
-interface ActionWithPercentage extends ActionEntry {
-  targetValuePlanned: number;
-  targetValueIs: number;
-}
 
 interface ActionCategorySumDict {
   [key: string]: {

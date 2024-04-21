@@ -55,6 +55,7 @@
 import { PropType } from 'vue';
 import { ActionEntry } from '../../../services/types.ts';
 import statusTranslations from '../../../services/statusTranslations.ts';
+import {toReadableDate} from "../../../services/pipes";
 
 defineProps({
   action: {
@@ -68,10 +69,4 @@ const getStatusTranslation = (status: string) => {
   return statusTranslations[status as keyof typeof statusTranslations];
 };
 
-const toReadableDate = (date: string | Date | null) => {
-  if (date) {
-    return new Date(date).toLocaleDateString();
-  }
-  return '';
-};
 </script>
