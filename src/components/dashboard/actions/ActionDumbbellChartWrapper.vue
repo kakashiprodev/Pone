@@ -18,7 +18,6 @@ import config from '@/config';
 
 const CHART_TYPE = 'rangeBar';
 
-// the height attribute for the chartoption seems to have no effect, so we need to calculate it manually
 const chartHeight = computed(() => props.actions.length * 100 + 'px');
 
 const chartData = ref<any>([
