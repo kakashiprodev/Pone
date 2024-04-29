@@ -20,6 +20,7 @@ import {
   watch,
 } from 'vue';
 import { AggregatedReportResult } from '../../../../services/reporting/index';
+import config from "@/config.ts";
 
 const props = defineProps({
   label: {
@@ -42,6 +43,38 @@ const props = defineProps({
   },
 });
 
+const annotations = computed(() => {
+  return {
+    xaxis: props.annotations?.actions.map((action) => {
+      return {
+        x: action.x,
+        strokeDashArray: 0,
+        borderColor: config.colors.data5,
+        label: {
+          borderColor: config.colors.data5,
+          style: {
+            color: '#fff',
+            background: config.colors.data5,
+          },
+          text: action.name,
+        }
+    }
+  }),
+  points: props.annotations?.targets.map((target) => {
+    if (target) return {
+      x: target.x,
+      y: target.y,
+      marker: {
+        size: 4,
+        fillColor: config.colors.data7,
+        strokeColor: config.colors.data7,
+        radius: 2,
+        cssClass: 'apexcharts-custom-class'
+      }
+    }
+  })
+}})
+
 const chartOptions = ref({
   id: 'ForecastChart',
   chart: {
@@ -54,10 +87,7 @@ const chartOptions = ref({
   legend: {
     position: 'top',
   },
-  annotations: {
-    xaxis: props.annotations?.actions,
-    points: props.annotations?.targets,
-  },
+  annotations,
   stroke: {
     width: [0, 4]
   },

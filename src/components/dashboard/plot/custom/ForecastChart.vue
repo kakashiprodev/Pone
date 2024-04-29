@@ -30,21 +30,12 @@ import { ref, Ref } from 'vue';
 import { error, warn } from '../../../../services/ui/toast';
 import ForecastChartWrapper from '../../../../components/dashboard/plot/apex/ForecastChartWrapper.vue';
 
-function prepareAnnotations(options: { actions: any[], targets: any[], labels: any[] }) {
-  // prepare the actions to be displayed as annotations
+function prepareAnnotationsData(options: { actions: any[], targets: any[], labels: any[] }) {
+  // prepare the actions to be displayed as xaxis-annotations
   if (options.actions) annotations.value.actions = options.actions.map((action) => {
     return {
       x: action.finishedUntilIs?.getFullYear(),
-      strokeDashArray: 0,
-      borderColor: '#775DD0',
-      label: {
-        borderColor: '#775DD0',
-        style: {
-          color: '#fff',
-          background: '#775DD0',
-        },
-        text: `Fertigstellung der Maßname ${action.name}`,
-      }
+      name: action.name
     }
   })
   // map the values to be displayed as point annotations
@@ -52,13 +43,7 @@ function prepareAnnotations(options: { actions: any[], targets: any[], labels: a
     if (target) return {
       x: options.labels[index],
       y: target,
-      marker: {
-        size: 4,
-        fillColor:'#FFA500',
-        strokeColor: '#FFA500',
-        radius: 2,
-        cssClass: 'apexcharts-custom-class'
-      }
+
     }
   }).filter(el => !!el)
 }
@@ -79,7 +64,7 @@ function prepareChartData(emissionValues: EmissionValue[], actions: any[]) {
   const targetValueInterpolated = emissionValues.map(
     (result) => result.targetValueInterpolated,
   );
-  prepareAnnotations({
+  prepareAnnotationsData({
     targets: targetValueInterpolated,
     actions,
     labels,
