@@ -108,7 +108,7 @@
     </template>
 
     <template #content>
-      <router-view />
+      <router-view :key="route.path" />
     </template>
   </AppLayout>
 </template>
@@ -118,7 +118,9 @@ import AppLayout from './AppLayout.vue';
 import { useGlobalStore } from '../../stores/global';
 import { useRouter } from 'vue-router';
 import dataprovider from '../../services/dataprovider';
+import { useRoute } from 'vue-router';
 
+const route = useRoute();
 const router = useRouter();
 const global = useGlobalStore();
 
