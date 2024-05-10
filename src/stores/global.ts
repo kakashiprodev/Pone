@@ -419,6 +419,12 @@ export const useGlobalStore = defineStore('global', {
      */
     async addProject(project: ProjectEntry) {
       const created = await dataprovider.createProject(project);
+      // add this user to this project. Update user settings
+      const user = await dataprovider.getUser();
+      await dataprovider.updateUser({
+        ...user,
+        projects: [...user.projects, created.id],
+      });
       this.projects.push(created);
       return created;
     },
