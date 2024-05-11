@@ -6,6 +6,7 @@ export default {
     data4: '#6177a3',
     data5: '#00494e',
     data6: '#6177a3',
+    data7: '#FFA500',
     grey: '#999999',
     typo: '#333333',
   },
