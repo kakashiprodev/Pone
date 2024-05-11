@@ -75,7 +75,7 @@ const chartOptions = ref<any>({
     },
     type: 'datetime',
     min: minDate,
-    max: maxDate
+    max: maxDate,
   },
 });
 
@@ -84,18 +84,20 @@ const props = defineProps<{
 }>();
 
 // necessary to calc the min and max date, otherwise apexcharts cuts of the max dates
-const calcMinAndMaxValues = (chartDataArray: Array<{x: string; y: Array<number>}>) => {
+const calcMinAndMaxValues = (
+  chartDataArray: Array<{ x: string; y: Array<number> }>,
+) => {
   let min = minDate.value;
   let max = maxDate.value;
-  chartDataArray.forEach(point => {
+  chartDataArray.forEach((point) => {
     if (point.y[0] < min) min = point.y[0];
     if (point.y[1] < min) min = point.y[1];
     if (point.y[0] > max) max = point.y[0];
     if (point.y[1] > max) max = point.y[1];
   });
-  if(min) minDate.value = min;
+  if (min) minDate.value = min;
   if (max) maxDate.value = max;
-}
+};
 
 const renderChart = () => {
   chartData.value = [
@@ -105,9 +107,11 @@ const renderChart = () => {
         return {
           x: action.name,
           y: [
-              // if only "planned" or only "Is" is set, this ensures that the single point is displayed correctly
-            toReadableDate(action.finishedUntilPlanned) || toReadableDate(action.finishedUntilIs),
-            toReadableDate(action.finishedUntilIs) || toReadableDate(action.finishedUntilPlanned)
+            // if only "planned" or only "Is" is set, this ensures that the single point is displayed correctly
+            toReadableDate(action.finishedUntilPlanned) ||
+              toReadableDate(action.finishedUntilIs),
+            toReadableDate(action.finishedUntilIs) ||
+              toReadableDate(action.finishedUntilPlanned),
           ],
         };
       }),
