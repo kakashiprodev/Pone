@@ -255,7 +255,7 @@ const filterData = () => {
     if (onlyActive.value === false) {
       return true;
     }
-    return item.shutdownDate === null || item.shutdownDate === '';
+    return item.shutdownDate == null || item.shutdownDate === '';
   });
   filteredData.value = filtered;
 };

@@ -1,0 +1,194 @@
+<template>
+  <div class="border-solid border-b-2 border-gray-200 mb-4 p-2 border-round-lg">
+    <h3>Interview basierte Informationserfassung für den CSRD-Bericht.</h3>
+  </div>
+  <div class="grid">
+    <!-- PanelMenu für das vertikale Menü auf der linken Seite -->
+    <PanelMenu :model="items" class="col-4" v-model:expandedKeys="expandedKeys">
+      <template #item="{ item }">
+        <a
+          @click="switchTopic(item)"
+          class="flex align-items-center px-3 py-2 cursor-pointer gap-1"
+          :class="{ 'text-green-500': interviewStatus[item.data.id]?.done }"
+        >
+          <span :class="[item.icon, 'text-primary']" />
+          <i
+            v-if="interviewStatus[item.data.id]?.done"
+            class="fa-solid fa-check"
+          />
+          <span :class="['ml-2', { 'font-semibold': item.items }]">{{
+            item.label
+          }}</span>
+          <Tag
+            v-if="userAnswers[item.data.id]"
+            severity="success"
+            :value="userAnswers[item.data.id].length + ''"
+          ></Tag>
+        </a>
+      </template>
+    </PanelMenu>
+
+    <!-- Bereich für die Anzeige der Komponenten auf der rechten Seite -->
+    <div class="col-8">
+      <Card v-if="selectedItem && userAnswers[selectedItem.id]" class="mb-3">
+        <template #content>
+          <p>Bereits gesammelte Themen:</p>
+          <ul class="list-disc list-inside">
+            <li v-for="answer in userAnswers[selectedItem.id]">
+              <h4>{{ answer.topicHeader }}</h4>
+              <!-- first 100 chars of the result -->
+              <p>{{ answer.summary.substring(0, 100) }}...</p>
+            </li>
+          </ul>
+        </template>
+      </Card>
+
+      <Card v-if="selectedItem">
+        <template #content>
+          <ReportInterview
+            :topicId="selectedItem.id"
+            :initialQuestion="selectedItem.description"
+            :topicsExisting="userAnswers[selectedItem.id]?.length > 0 ?? false"
+            :collectedInformation="
+              userAnswers[selectedItem.id] != null &&
+              userAnswers[selectedItem.id].length > 0
+                ? userAnswers[selectedItem.id][0].collectedInformation
+                : []
+            "
+            @submit="addTopic($event)"
+          />
+        </template>
+      </Card>
+
+      <Card v-else>
+        <template #content>
+          <div class="text-lg p-1">
+            <p>
+              Wählen Sie ein Thema aus der linken Liste aus, um die
+              Interview-basierte Informationserfassung zu starten. Sie können
+              auch bereits als abgeschlossen markierte Themen weiter bearbeiten.
+            </p>
+          </div>
+        </template>
+      </Card>
+    </div>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { computed, onMounted, ref } from 'vue';
+import {
+  esrsTopics,
+  TopicState,
+  InterviewTopic,
+  UsersTopicAnswer,
+  UsersTopicAnswerDict,
+} from './../../services/csrd-esrs/topics';
+import ReportInterview from './../../components/assistants/ReportInterview.vue';
+import dataprovider from './../../services/dataprovider';
+import { error } from './../../services/ui/toast';
+
+const interviewStatus = ref<TopicState>({});
+const userAnswers = ref<UsersTopicAnswerDict>({});
+
+const items = computed(() => {
+  return esrsTopics.map((topic) => ({
+    key: topic.id,
+    label: topic.name,
+    data: topic,
+    items: topic.interviewTopics.map((interviewTopic) => ({
+      key: interviewTopic.id,
+      label: interviewTopic.name,
+      data: interviewTopic,
+    })),
+  }));
+});
+const expandedKeys = ref({});
+const selectedItem = ref<null | InterviewTopic>();
+
+const switchTopic = (item: any) => {
+  selectedItem.value = null;
+  if (!item.items) {
+    selectedItem.value = item.data;
+  }
+};
+
+const addTopic = async (topicAnswer: UsersTopicAnswer) => {
+  if (!selectedItem.value) {
+    return;
+  }
+  try {
+    // then add to backend
+    const entry = await dataprovider.createCsrdTopic(topicAnswer);
+
+    interviewStatus.value[selectedItem.value.id] = {
+      started: true,
+      done: true,
+    };
+    if (userAnswers.value[selectedItem.value.id]) {
+      userAnswers.value[selectedItem.value.id].push(entry);
+    } else {
+      userAnswers.value[selectedItem.value.id] = [entry];
+    }
+  } catch (e) {
+    console.error('Error while adding topic:', e);
+    error('Fehler beim Hinzufügen des Themas. ' + e);
+  }
+};
+
+const init = async () => {
+  try {
+    const answers = await dataprovider.readCsrdTopics();
+    answers.forEach((answer) => {
+      if (userAnswers.value[answer.topicId]) {
+        userAnswers.value[answer.topicId].push(answer);
+      } else {
+        userAnswers.value[answer.topicId] = [answer];
+      }
+      interviewStatus.value[answer.topicId] = {
+        started: true,
+        done: true,
+      };
+    });
+  } catch (e) {
+    console.error('Error while loading topics:', e);
+    error('Fehler beim Laden der Themen. ' + e);
+  }
+};
+
+onMounted(() => {
+  init();
+});
+
+/*
+sample EsrsTopic:
+{
+    id: 'E1-01',
+    esrsGroup: 'ESRS E1',
+    name: 'Klimaschutz (Minderung)',
+    tags: ['Klimaschutz', 'Minderung'],
+    descriptionForInterviewModerator:
+      'Diskutieren Sie Initiativen und Strategien zur Reduzierung des CO2-Fußabdrucks und der Treibhausgasemissionen.',
+    interviewTopics: [
+      {
+        id: 'E1-01-01',
+        name: 'Ziele zur Emissionsreduktion',
+        description:
+          'Welche aktuellen Ziele zur Emissionsreduktion gibt es und welche Strategien sind zur Erreichung dieser Ziele vorhanden?',
+      },
+      {
+        id: 'E1-01-02',
+        name: 'Nutzung erneuerbarer Energien',
+        description:
+          'Welcher Prozentsatz Ihrer Energie stammt aus erneuerbaren Quellen und welche Pläne gibt es, diesen Anteil zu erhöhen?',
+      },
+      {
+        id: 'E1-01-03',
+        name: 'Maßnahmen zur Energieeffizienz',
+        description:
+          'Welche Verbesserungen der Energieeffizienz wurden implementiert oder sind in den Betriebsprozessen geplant?',
+      },
+    ],
+  }
+*/
+</script>

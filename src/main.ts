@@ -43,6 +43,7 @@ import ToggleButton from 'primevue/togglebutton';
 import Listbox from 'primevue/listbox';
 import Panel from 'primevue/panel';
 import ProgressBar from 'primevue/progressbar';
+import Tag from 'primevue/tag';
 
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import 'primeflex/primeflex.css';
@@ -87,6 +88,7 @@ app.component('ToggleButton', ToggleButton);
 app.component('Listbox', Listbox);
 app.component('Panel', Panel);
 app.component('ProgressBar', ProgressBar);
+app.component('Tag', Tag);
 
 app.directive('tooltip', Tooltip);
 

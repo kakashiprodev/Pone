@@ -182,6 +182,13 @@ const sidebarItems = [
     visible: true,
   },
   {
+    key: 'csrd-report-interview',
+    label: 'CSRD Interview',
+    icon: 'fa-solid fa-magic',
+    to: '/csrd-report-interview',
+    visible: true,
+  },
+  {
     key: 'settings',
     label: 'Einstellungen',
     icon: 'fa-solid fa-gear',

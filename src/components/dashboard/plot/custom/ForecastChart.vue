@@ -7,12 +7,20 @@
     ist der älteste Berichtswert des Projekts.
   </p>
   <!-- Chart as Mixed-Chart -->
-  <Chart :data="barChartYear" class="h-30rem mt-5" />
+
+  <ForecastChartWrapper
+    v-if="barChartYear?.datasets?.length"
+    :data="barChartYear.datasets"
+    :labels="barChartYear?.labels"
+    :annotations="annotations"
+    label="Soll/Ist-Analyse"
+  />
 </template>
 
 <script setup lang="ts">
 import {
   calculateEmissions,
+  getAverageValues,
   EmissionResult,
   EmissionValue,
   OldReportValues,
@@ -20,23 +28,73 @@ import {
 import dataprovider from '../../../../services/dataprovider';
 import { ref, Ref } from 'vue';
 import { error, warn } from '../../../../services/ui/toast';
+import ForecastChartWrapper from '../../../../components/dashboard/plot/apex/ForecastChartWrapper.vue';
+
+function prepareAnnotationsData(options: {
+  actions: any[];
+  targets: any[];
+  labels: any[];
+}) {
+  // prepare the actions to be displayed as xaxis-annotations
+  if (options.actions)
+    annotations.value.actions = options.actions.map((action) => {
+      console.log({ action });
+      return {
+        x:
+          action.finishedUntilIs?.getFullYear() ||
+          action.finishedUntilPlanned?.getFullYear(),
+        name: action.name,
+      };
+    });
+  // map the values to be displayed as point annotations
+  if (options.targets && options.labels)
+    annotations.value.targets = options.targets
+      .map((target, index) => {
+        if (target)
+          return {
+            x: options.labels[index],
+            y: target,
+          };
+      })
+      .filter((el) => !!el);
+}
+
+// Group the action annotations by year, separating the action names by comma
+function groupAnnotationsByYear() {
+  const groupedAnnotations: Record<string, string> = {};
+  annotations.value.actions.forEach(action => {
+    if (!groupedAnnotations[action.x]) {
+      groupedAnnotations[action.x] = action.name;
+    } else {
+      groupedAnnotations[action.x] += ', ' + action.name;
+    }
+  });
+
+  annotations.value.actions = Object.keys(groupedAnnotations).map(x => ({
+    x: Number(x),
+    name: groupedAnnotations[x]
+  }));
+}
 
 // Chart preparation
-function prepareChartData(emissionValues: EmissionValue[]) {
+function prepareChartData(emissionValues: EmissionValue[], actions: any[]) {
   const labels = emissionValues.map((result) =>
     new Date(result.date).getFullYear(),
   );
-  // const refValues = emissionValues.map(result => result.refValue);
-  // const targetValues = emissionValues.map(result => result.targetValue);
+
   const realValuesWithActions = emissionValues.map(
     (result) => result.realValueWithActions,
   );
-  // const realValueWithActionsInterpolated = emissionValues.map(
-  //   (result) => result.realValueWithActionsInterpolated,
-  // );
+
   const targetValueInterpolated = emissionValues.map(
     (result) => result.targetValueInterpolated,
   );
+  prepareAnnotationsData({
+    targets: targetValueInterpolated,
+    actions,
+    labels,
+  });
+  groupAnnotationsByYear();
   const realReportValues = emissionValues.map(
     (result) => result.realReportValue,
   );
@@ -44,37 +102,18 @@ function prepareChartData(emissionValues: EmissionValue[]) {
   const datasets = [
     {
       type: 'bar',
-      label: 'Berichtsdaten',
+      name: 'Berichtsdaten',
       data: realReportValues,
-      backgroundColor: 'rgba(255, 99, 132, 0.8)',
-      borderColor: 'rgba(255, 99, 132, 1)',
-      borderWidth: 1,
     },
     {
       type: 'bar',
-      label: 'Erreichbarer Wert mit Maßnahmen',
+      name: 'Erreichbarer Wert mit Maßnahmen',
       data: realValuesWithActions,
-      backgroundColor: 'rgba(75, 192, 192, 0.8)',
-      borderColor: 'rgba(75, 192, 192, 1)',
-      borderWidth: 1,
     },
-    // {
-    //   type: 'line',
-    //   label: 'Erreichbarer Wert mit Maßnahmen (linear interpoliert)',
-    //   data: realValueWithActionsInterpolated,
-    //   backgroundColor: 'rgba(153, 102, 255, 0.8)',
-    //   borderColor: 'rgba(153, 102, 255, 1)',
-    //   borderWidth: 1,
-    //   spanGaps: true,
-    // },
     {
       type: 'line',
-      label: 'Zielwert nach Projektvorgaben (linear interpoliert)',
-      data: targetValueInterpolated,
-      backgroundColor: 'rgba(255, 159, 64, 0.8)',
-      borderColor: 'rgba(255, 159, 64, 1)',
-      borderWidth: 1,
-      spanGaps: true,
+      name: 'Zielwert nach Projektvorgaben (linear interpoliert)',
+      data: getAverageValues(targetValueInterpolated),
     },
   ];
   return { labels, datasets };
@@ -82,6 +121,13 @@ function prepareChartData(emissionValues: EmissionValue[]) {
 
 const reportData: Ref<null | EmissionResult> = ref(null);
 const barChartYear: Ref<null | any> = ref(null);
+const annotations: Ref<{
+  actions: any[];
+  targets: any[];
+}> = ref({
+  actions: [],
+  targets: [],
+});
 
 /**
  * Load report data initially
@@ -123,7 +169,10 @@ const getData = async () => {
     actions,
     oldValues[0].year,
   );
-  barChartYear.value = prepareChartData(reportData.value.yearlyResults);
+  barChartYear.value = prepareChartData(
+    reportData.value.yearlyResults,
+    actions,
+  );
 };
 getData();
 </script>
