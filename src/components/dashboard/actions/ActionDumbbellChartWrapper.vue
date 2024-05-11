@@ -1,11 +1,14 @@
 <template>
   <div class="mt-5">
+    <p v-if="chartLoading">Lade Dumbbell Chart...</p>
     <apexchart
       width="100%"
       :height="chartHeight"
       :series="chartData"
       :type="CHART_TYPE"
       :options="chartOptions"
+      @animationEnd="onAnimationEnd"
+      @updated="onChartUpdated"
     />
   </div>
 </template>
@@ -18,7 +21,13 @@ import config from '@/config';
 
 const CHART_TYPE = 'rangeBar';
 
+const chartLoading = ref(true);
+
 const chartHeight = computed(() => props.actions.length * 100 + 'px');
+
+const chartDataReady = ref(false);
+const minDate = ref(new Date().getTime());
+const maxDate = ref(new Date().getTime());
 
 const chartData = ref<any>([
   {
@@ -26,6 +35,13 @@ const chartData = ref<any>([
     data: [],
   },
 ]);
+
+const onAnimationEnd = () => {
+  chartLoading.value = false;
+};
+const onChartUpdated = () => {
+  chartLoading.value = false;
+};
 
 const chartOptions = ref<any>({
   chart: {
@@ -58,12 +74,28 @@ const chartOptions = ref<any>({
       show: true,
     },
     type: 'datetime',
+    min: minDate,
+    max: maxDate
   },
 });
 
 const props = defineProps<{
   actions: ActionWithPercentage[];
 }>();
+
+// necessary to calc the min and max date, otherwise apexcharts cuts of the max dates
+const calcMinAndMaxValues = (chartDataArray: Array<{x: string; y: Array<number>}>) => {
+  let min = minDate.value;
+  let max = maxDate.value;
+  chartDataArray.forEach(point => {
+    if (point.y[0] < min) min = point.y[0];
+    if (point.y[1] < min) min = point.y[1];
+    if (point.y[0] > max) max = point.y[0];
+    if (point.y[1] > max) max = point.y[1];
+  });
+  if(min) minDate.value = min;
+  if (max) maxDate.value = max;
+}
 
 const renderChart = () => {
   chartData.value = [
@@ -73,13 +105,16 @@ const renderChart = () => {
         return {
           x: action.name,
           y: [
-            toReadableDate(action.finishedUntilPlanned),
-            toReadableDate(action.finishedUntilIs),
+              // if only "planned" or only "Is" is set, this ensures that the single point is displayed correctly
+            toReadableDate(action.finishedUntilPlanned) || toReadableDate(action.finishedUntilIs),
+            toReadableDate(action.finishedUntilIs) || toReadableDate(action.finishedUntilPlanned)
           ],
         };
       }),
     },
   ];
+  calcMinAndMaxValues(chartData.value[0].data);
+  chartDataReady.value = true;
 };
 
 onMounted(() => {
