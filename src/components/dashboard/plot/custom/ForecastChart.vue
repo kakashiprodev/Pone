@@ -30,22 +30,50 @@ import { ref, Ref } from 'vue';
 import { error, warn } from '../../../../services/ui/toast';
 import ForecastChartWrapper from '../../../../components/dashboard/plot/apex/ForecastChartWrapper.vue';
 
-function prepareAnnotationsData(options: { actions: any[], targets: any[], labels: any[] }) {
+function prepareAnnotationsData(options: {
+  actions: any[];
+  targets: any[];
+  labels: any[];
+}) {
   // prepare the actions to be displayed as xaxis-annotations
-  if (options.actions) annotations.value.actions = options.actions.map((action) => {
-    return {
-      x: action.finishedUntilIs?.getFullYear(),
-      name: action.name
-    }
-  })
+  if (options.actions)
+    annotations.value.actions = options.actions.map((action) => {
+      console.log({ action });
+      return {
+        x:
+          action.finishedUntilIs?.getFullYear() ||
+          action.finishedUntilPlanned?.getFullYear(),
+        name: action.name,
+      };
+    });
   // map the values to be displayed as point annotations
-  if (options.targets && options.labels) annotations.value.targets = options.targets.map((target, index) => {
-    if (target) return {
-      x: options.labels[index],
-      y: target,
+  if (options.targets && options.labels)
+    annotations.value.targets = options.targets
+      .map((target, index) => {
+        if (target)
+          return {
+            x: options.labels[index],
+            y: target,
+          };
+      })
+      .filter((el) => !!el);
+}
 
+// Group the action annotations by year, separating the action names by comma
+function groupAnnotationsByYear() {
+  const groupedAnnotations: Record<string, string> = {};
+  annotations.value.actions.forEach(action => {
+    if (!groupedAnnotations[action.x]) {
+      groupedAnnotations[action.x] = action.name;
+    } else {
+      groupedAnnotations[action.x] += ', ' + action.name;
     }
-  }).filter(el => !!el)
+  });
+
+  annotations.value.actions = Object.keys(groupedAnnotations).map(x => ({
+    x: Number(x),
+    name: groupedAnnotations[x]
+  }));
 }
 
 // Chart preparation
@@ -53,14 +81,11 @@ function prepareChartData(emissionValues: EmissionValue[], actions: any[]) {
   const labels = emissionValues.map((result) =>
     new Date(result.date).getFullYear(),
   );
-  // const refValues = emissionValues.map(result => result.refValue);
-  // const targetValues = emissionValues.map(result => result.targetValue);
+
   const realValuesWithActions = emissionValues.map(
     (result) => result.realValueWithActions,
   );
-  // const realValueWithActionsInterpolated = emissionValues.map(
-  //   (result) => result.realValueWithActionsInterpolated,
-  // );
+
   const targetValueInterpolated = emissionValues.map(
     (result) => result.targetValueInterpolated,
   );
@@ -68,7 +93,8 @@ function prepareChartData(emissionValues: EmissionValue[], actions: any[]) {
     targets: targetValueInterpolated,
     actions,
     labels,
-  })
+  });
+  groupAnnotationsByYear();
   const realReportValues = emissionValues.map(
     (result) => result.realReportValue,
   );
@@ -96,14 +122,12 @@ function prepareChartData(emissionValues: EmissionValue[], actions: any[]) {
 const reportData: Ref<null | EmissionResult> = ref(null);
 const barChartYear: Ref<null | any> = ref(null);
 const annotations: Ref<{
-  actions: any[],
-  targets: any[],
+  actions: any[];
+  targets: any[];
 }> = ref({
   actions: [],
-  targets: []
+  targets: [],
 });
-
-
 
 /**
  * Load report data initially
@@ -145,7 +169,10 @@ const getData = async () => {
     actions,
     oldValues[0].year,
   );
-  barChartYear.value = prepareChartData(reportData.value.yearlyResults, actions);
+  barChartYear.value = prepareChartData(
+    reportData.value.yearlyResults,
+    actions,
+  );
 };
 getData();
 </script>
