@@ -38,7 +38,6 @@ function prepareAnnotationsData(options: {
   // prepare the actions to be displayed as xaxis-annotations
   if (options.actions)
     annotations.value.actions = options.actions.map((action) => {
-      console.log({ action });
       return {
         x:
           action.finishedUntilIs?.getFullYear() ||
@@ -137,6 +136,14 @@ const getData = async () => {
   const targets = await dataprovider.readTargets();
   const actions = await dataprovider.readActions();
   const reports = await dataprovider.readReports();
+
+  // TODO remove after fixing the chart
+  console.log({
+    targets,
+    actions,
+    reports,
+  })
+
   const oldValues: OldReportValues[] = [];
   for (const report of reports) {
     if (report.sumEmissions && report.sumEmissions > 0) {
