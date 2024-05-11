@@ -115,7 +115,10 @@ export const useGlobalStore = defineStore('global', {
 
       await this.refreshProjects();
       // check the last selected entries if they are still valid
-      if (user.lastSelectedProject != null && user.lastSelectedProject !== '') {
+      if (user.lastSelectedProject != null
+        && user.lastSelectedProject !== ''
+        && this.projects.length > 0
+        && this.projects.find((p) => p.id === user.lastSelectedProject) != null) {
         console.log(
           'select last selected project with id',
           user.lastSelectedProject,
@@ -130,6 +133,8 @@ export const useGlobalStore = defineStore('global', {
 
       // then refresh the sites
       this.sites = await dataprovider.readSitesForProject();
+      await this.ensureSiteIsSelected();
+
       if (user.lastSelectedSite != null && user.lastSelectedSite !== '') {
         console.log('select last selected site with id', user.lastSelectedSite);
         const s = this.sites.find((s) => s.id === user.lastSelectedSite);
@@ -157,6 +162,7 @@ export const useGlobalStore = defineStore('global', {
         await this.ensureLatestReport();
       }
 
+      await this.ensureLatestReport();
       await this.refreshEquivalents(true);
       await this.refreshTargets();
 
@@ -419,6 +425,12 @@ export const useGlobalStore = defineStore('global', {
      */
     async addProject(project: ProjectEntry) {
       const created = await dataprovider.createProject(project);
+      // add this user to this project. Update user settings
+      const user = await dataprovider.getUser();
+      await dataprovider.updateUser({
+        ...user,
+        projects: [...user.projects, created.id],
+      });
       this.projects.push(created);
       return created;
     },

@@ -23,6 +23,7 @@ type monthsShort =
   | 'jul'
   | 'aug'
   | 'sep'
+  | 'oct'
   | 'nov'
   | 'dec';
 const months: monthsShort[] = [
@@ -35,6 +36,7 @@ const months: monthsShort[] = [
   'jul',
   'aug',
   'sep',
+  'oct',
   'nov',
   'dec',
 ];
@@ -53,6 +55,7 @@ const monthsFullDict: MonthsFullDict = {
   jul: 'Juli',
   aug: 'August',
   sep: 'September',
+  oct: 'Oktober',
   nov: 'November',
   dec: 'Dezember',
 };
@@ -200,7 +203,7 @@ export const getSumForInput = (
   let sum = 0;
   months.forEach((month) => {
     // get the equivalent factor for the given month
-    const key = 'raw' + month.charAt(0).toUpperCase() + month.slice(1); // e.g. rawValueJan, rawValueFeb, ...
+    const key = 'rawValue' + month.charAt(0).toUpperCase() + month.slice(1); // e.g. rawValueJan, rawValueFeb, ...
     const monthlyEquivalentFactor = getFullFactorChain(
       input.equivalent,
       equivalents,
@@ -363,7 +366,7 @@ const calculateEquivalentFactorWithSteps = (
     // @ts-ignore
     const monthlyEquivalentFactor: number =
       equivalent[month as keyof EquivalentEntry] != null &&
-      equivalent[month as keyof EquivalentEntry] != ''
+        equivalent[month as keyof EquivalentEntry] != ''
         ? equivalent[month as keyof EquivalentEntry]
         : equivalent.avgValue;
     // @ts-ignore
