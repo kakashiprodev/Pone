@@ -89,12 +89,7 @@
       </Column>
     </DataTable>
     <h2 class="m-auto mt-8">Zeitliche Übersicht aller Maßnahmen</h2>
-    <!-- hide with "false" until there is a Bug -->
-    <span>Comming soon</span>
-    <action-dumbbell-chart-wrapper
-      v-if="false && actions.length"
-      :actions="actions"
-    />
+    <action-dumbbell-chart-wrapper v-if="actions.length" :actions="actions" />
   </div>
 </template>
 
