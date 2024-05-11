@@ -20,6 +20,7 @@ import {
 import { error } from '../ui/toast';
 import { globalStore } from '../../main';
 import { getSumForInput } from '../reporting';
+import { UsersTopicAnswer } from '../csrd-esrs/topics';
 
 /**
  *
@@ -437,5 +438,31 @@ export default class DataProvider {
 
   async deleteFacility(id: string) {
     return await this.pb.collection('facilities').delete(id);
+  }
+
+  // CRUD for "csrdtopics"
+  async createCsrdTopic(data: UsersTopicAnswer) {
+    return await this.pb
+      .collection('csrdtopics')
+      .create<UsersTopicAnswer>({ ...data, id: undefined });
+  }
+
+  async readCsrdTopics() {
+    const res = await this.pb
+      .collection('csrdtopics')
+      .getList<UsersTopicAnswer>(1, 500, {
+        filter: `report="${globalStore.selectedReport?.id}"`,
+      });
+    return res.items;
+  }
+
+  async updateCsrdTopic(data: UsersTopicAnswer) {
+    return await this.pb
+      .collection('csrdtopics')
+      .update<UsersTopicAnswer>(data.id, data);
+  }
+
+  async deleteCsrdTopic(id: string) {
+    return await this.pb.collection('csrdtopics').delete(id);
   }
 }
