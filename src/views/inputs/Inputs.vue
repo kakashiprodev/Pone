@@ -252,7 +252,7 @@
         <InputNumber
           :disabled="true"
           class="w-full"
-          v-model="computedSumValue"
+          v-model="scaledSumValue"
           id="userinput-sum"
           :use-grouping="true"
           :min-fraction-digits="0"
@@ -465,7 +465,7 @@
         <InputNumber
           :disabled="true"
           class="w-full"
-          v-model="computedSumValue"
+          v-model="scaledSumValue"
           id="userinput-sum"
           :use-grouping="true"
           :min-fraction-digits="0"
@@ -826,6 +826,13 @@ const updateNameAndCategory = () => {
 const computedSumValue = computed(() => {
   return getSumForInput(selectedValue.value, global.equivalentDict);
 });
+
+const scaledSumValue = computed(() => {
+  return displayInTons.value
+    ? toTons(computedSumValue.value)
+    : computedSumValue.value;
+});
+
 const computedSumCalculation: ComputedRef<string> = computed(() => {
   if (
     selectedValue.value.equivalent != null &&

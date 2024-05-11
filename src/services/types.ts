@@ -188,6 +188,8 @@ export interface UserEntry {
   lastSelectedSite: null | string; // reference on table sites. can be empty
   lastSelectedReport: null | string; // reference on table reports. can be empty
   selectedTheme: string; // dark | light
+  // admin
+  canManageProjects: number;
 }
 
 // table "targets"
