@@ -192,10 +192,14 @@ const renderSimpleGroupedChart = () => {
  * Render the chart initially and on data change
  */
 const renderChart = () => {
-  if (props.type === 'yearlyGrouped') {
-    renderYearlyGroupedChart();
-  } else {
-    renderSimpleGroupedChart();
+  try {
+    if (props.type === 'yearlyGrouped') {
+      renderYearlyGroupedChart();
+    } else {
+      renderSimpleGroupedChart();
+    }
+  } catch (error) {
+    console.error('Error rendering chart:', error);
   }
 };
 
