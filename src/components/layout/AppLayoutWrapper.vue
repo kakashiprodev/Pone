@@ -10,6 +10,10 @@
     </template>
 
     <template #start>
+      <h3 class="text-600 ml-5 text-2xl">Sustainability Management</h3>
+    </template>
+
+    <template #end>
       <ul class="list-none no-underline text-color flex align-items-center">
         <li style="float: left">
           <router-link
@@ -18,25 +22,24 @@
           >
             <Button
               v-show="global.selectedProject"
-              severity="secondary"
-              icon="fa-solid fa-building"
-              :label="
-                '' +
-                global.selectedProject?.name +
-                ', ' +
-                global.selectedSite?.name +
-                ': ' +
-                global.selectedReport?.year
-              "
               class="button-custom"
-            />
+              severity="secondary"
+            >
+              <template #default>
+                <i class="fa-solid fa-building mr-2" />
+                <div class="flex flex-column">
+                  <div class="font-bold">
+                    {{ global.selectedProject?.name }}
+                  </div>
+                  <div>
+                    {{ global.selectedSite?.name }}:
+                    {{ global.selectedReport?.year }}
+                  </div>
+                </div>
+              </template>
+            </Button>
           </router-link>
         </li>
-      </ul>
-    </template>
-
-    <template #end>
-      <ul class="list-none no-underline text-color flex align-items-center">
         <li style="float: left" class="ml-4">
           <div class="flex flex-wrap">
             <span class="mr-3 text-600"> Zeige Hilfe </span>
@@ -252,6 +255,7 @@ const logout = async () => {
 <style>
 .less-padding > .p-panelmenu-panel {
   margin-bottom: 0 !important;
+  border: none;
 }
 
 .sidebar-toggle-button {

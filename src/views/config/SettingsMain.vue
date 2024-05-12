@@ -8,6 +8,7 @@
     >
       <template #item="{ item }">
         <router-link
+          v-if="!item.onlyAdmin || globalStore.isGlobalAdmin"
           class="flex align-items-center px-3 py-2 cursor-pointer no-underline text-color"
           :to="item.to ?? ''"
           :exact-active-class="'active-route'"
@@ -30,7 +31,10 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { useRoute } from 'vue-router';
+import { useGlobalStore } from '@/stores/global';
+
 const route = useRoute();
+const globalStore = useGlobalStore();
 
 const expandedKeys = ref({
   user: true,
@@ -59,12 +63,14 @@ const items = ref([
         label: '=> Zeige DataEngine Demo',
         icon: 'fa-solid fa-key',
         to: '/demo',
+        onlyAdmin: true,
       },
       {
         key: 'user-demo-data-generator',
         label: '=> Generiere Demo Daten',
         icon: 'fa-solid fa-key',
         to: '/demo-data-generator',
+        onlyAdmin: true,
       },
     ],
   },

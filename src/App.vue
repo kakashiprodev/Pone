@@ -59,7 +59,8 @@ Custom CARD stlye for #header
     #26d0b8,
     #2accb6
   );*/
-  background-image: linear-gradient(to left top, #00ae973d, #008a770f);
+  /*background-image: linear-gradient(to left top, #00ae973d, #008a770f);*/
+  background-color: var(--surface-200) !important;
   text-align: center;
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
