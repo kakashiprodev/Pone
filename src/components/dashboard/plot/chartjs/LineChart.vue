@@ -74,26 +74,30 @@ const scopeChartOptions: ComputedRef<any> = computed(() => {
 });
 
 const renderChart = () => {
-  if (props.data == null || Object.keys(props.data.timeseries).length === 0) {
-    return;
+  try {
+    if (props.data == null || Object.keys(props.data.timeseries).length === 0) {
+      return;
+    }
+    const firstKey = Object.keys(props.data.timeseries)[0];
+    const labels = props.data.timeseries[firstKey].map((entry) => entry.year);
+
+    const data = {
+      labels,
+      datasets: Object.keys(props.data.timeseries).map((key) => {
+        return {
+          label: key,
+          data: props.data.timeseries[key].map((entry) => entry.sum),
+          fill: true,
+          borderColor: 'rgb(75, 192, 192)',
+          tension: 0.1,
+        };
+      }),
+    };
+
+    chartData.value = data;
+  } catch (error) {
+    console.error('Error rendering chart', error);
   }
-  const firstKey = Object.keys(props.data.timeseries)[0];
-  const labels = props.data.timeseries[firstKey].map((entry) => entry.year);
-
-  const data = {
-    labels,
-    datasets: Object.keys(props.data.timeseries).map((key) => {
-      return {
-        label: key,
-        data: props.data.timeseries[key].map((entry) => entry.sum),
-        fill: true,
-        borderColor: 'rgb(75, 192, 192)',
-        tension: 0.1,
-      };
-    }),
-  };
-
-  chartData.value = data;
 };
 
 watch(

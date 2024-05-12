@@ -2,7 +2,7 @@
   <!-- Toolbar -->
   <div
     class="card"
-    style="padding: 0.5rem"
+    style="padding-left: 0.5rem; padding-right: 0.5rem; padding-top: 0.5rem"
     :class="{
       lightmode: colorMode === 'light',
       darkmode: colorMode !== 'light',
