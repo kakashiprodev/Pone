@@ -39,7 +39,7 @@
       <ul class="list-none no-underline text-color flex align-items-center">
         <li style="float: left" class="ml-4">
           <div class="flex flex-wrap">
-            <span class="mr-3 text-600"> Zeige Hilfe </span>
+            <span class="mr-3 text-600"> {{ $t("global.showHelp") }} </span>
             <InputSwitch
               class="flex align-items-center justify-content-center"
               v-model="global.showTooltips"
@@ -80,28 +80,28 @@
             class="text-800 flex p-2 border-round align-items-center hover:surface-hover transition-colors transition-duration-150 cursor-pointer"
           >
             <i class="fa-solid fa-people-group mr-3"></i>
-            <span>Projekte verwalten</span>
+            <span>{{ $t("global.manageProjects") }}</span>
           </a>
           <a
             href="/#/equivalents"
             class="text-800 flex p-2 border-round align-items-center hover:surface-hover transition-colors transition-duration-150 cursor-pointer"
           >
             <i class="fa-solid fa-list mr-3"></i>
-            <span>Äquivalente verwalten</span>
+            <span>{{ $t("global.manageEquivalents") }}</span>
           </a>
           <a
             href="/#/user"
             class="text-800 flex p-2 border-round align-items-center hover:surface-hover transition-colors transition-duration-150 cursor-pointer"
           >
             <i class="fa-solid fa-user mr-3"></i>
-            <span>Benutzerprofil</span>
+            <span>{{ $t("global.userProfile") }}</span>
           </a>
           <a
             @click="logout()"
             class="text-800 flex p-2 border-round align-items-center hover:surface-hover transition-colors transition-duration-150 cursor-pointer"
           >
             <i class="fa-solid fa-right-from-bracket mr-3"></i>
-            <span>Ausloggen</span>
+            <span>{{ $t("global.logout") }}</span>
           </a>
         </li>
       </ul>
@@ -119,7 +119,9 @@ import { useGlobalStore } from '../../stores/global';
 import { useRouter } from 'vue-router';
 import dataprovider from '../../services/dataprovider';
 import { useRoute } from 'vue-router';
+import { useI18n } from 'vue-i18n'
 
+const { t } = useI18n()
 const route = useRoute();
 const router = useRouter();
 const global = useGlobalStore();
@@ -127,70 +129,70 @@ const global = useGlobalStore();
 const sidebarItems = [
   {
     key: 'dashboard',
-    label: 'Dashboard',
+    label: t('global.sidebar.dashboard'),
     icon: 'fa-solid fa-chart-line',
     to: '/dashboard',
     visible: true,
   },
   {
     key: 'scope-1',
-    label: 'Scope 1',
+    label: t('global.sidebar.scope', {scope: '1'}),
     icon: 'fa-solid fa-1',
     to: '/inputs/scope/1',
     visible: true,
   },
   {
     key: 'scope-2',
-    label: 'Scope 2',
+    label: t('global.sidebar.scope', {scope: '2'}),
     icon: 'fa-solid fa-2',
     to: '/inputs/scope/2',
     visible: true,
   },
   {
     key: 'scope-3',
-    label: 'Scope 3',
+    label: t('global.sidebar.scope', {scope: '3'}),
     icon: 'fa-solid fa-3',
     to: '/inputs/scope/3',
     visible: true,
   },
   {
     key: 'overview',
-    label: 'Gesamtübersicht',
+    label: t('global.sidebar.overview'),
     icon: 'fa-solid fa-list',
     to: '/inputs',
     visible: true,
   },
   {
     key: 'actions',
-    label: 'Maßnahmen',
+    label: t('global.sidebar.actions'),
     icon: 'fa-solid fa-list-check',
     to: '/actions',
     visible: true,
   },
   {
     key: 'facilities',
-    label: 'Anlagen',
+    label: t('global.sidebar.facilities'),
     icon: 'fa-solid fa-industry',
     to: '/facilities',
     visible: true,
   },
   {
     key: 'assistant',
-    label: 'Assistent',
+    label: t('global.sidebar.assistant'),
     icon: 'fa-solid fa-magic',
     to: '/assistant',
     visible: true,
   },
   {
     key: 'csrd-report-interview',
-    label: 'CSRD Interview',
+    label:t('global.sidebar.csrdReportInterview'),
     icon: 'fa-solid fa-magic',
     to: '/csrd-report-interview',
     visible: true,
   },
   {
     key: 'settings',
-    label: 'Einstellungen',
+    label: t('global.sidebar.settings'),
     icon: 'fa-solid fa-gear',
     to: '/settings',
     visible: true,
