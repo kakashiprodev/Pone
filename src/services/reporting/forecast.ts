@@ -186,37 +186,43 @@ export function calculateEmissions(
 // accepts an array of numbers or null values and gets the average values instead of the null values
 // Necessary for apexcharts to draw a line with interpolated values in a mixed chart
 export function getAverageValues(
-  array: Array<number | null | undefined>,
+  arr: Array<number | null | undefined>,
 ): Array<any> {
-  let startIndex = null;
-  let endIndex = null;
+  let result = [...arr];
 
-  // Find the start and end index of the non-null values
-  for (let i = 0; i < array.length; i++) {
-    if (array[i] !== null && startIndex == null) {
-      startIndex = i;
-    } else if (array[i] !== null && startIndex !== null) {
-      endIndex = i;
-      break;
+  for (let i = 0; i < result.length; i++) {
+    if (result[i] === null) {
+      // Find the previous non-null value
+      let startIndex = i - 1;
+      while (startIndex >= 0 && result[startIndex] === null) {
+        startIndex--;
+      }
+      const startValue = startIndex >= 0 ? result[startIndex] : null;
+
+      // Find the next non-null value
+      let endIndex = i + 1;
+      while (endIndex < result.length && result[endIndex] === null) {
+        endIndex++;
+      }
+      const endValue = endIndex < result.length ? result[endIndex] : null;
+
+      // If both startValue and endValue are non-null, interpolate
+      if (startValue && endValue) {
+        const gap = endIndex - startIndex;
+        const step = (endValue - startValue) / gap;
+        for (let j = startIndex + 1; j < endIndex; j++) {
+          result[j] = startValue + step * (j - startIndex);
+        }
+      } else {
+        // If one of the ends is null, fill all values with the non-null end value
+        // Or use 0 if both ends are null (though this case should ideally not happen in chart data)
+        const fillValue = startValue !== null ? startValue : endValue !== null ? endValue : 0;
+        for (let j = startIndex + 1; j <= endIndex - 1; j++) {
+          result[j] = fillValue;
+        }
+      }
     }
   }
 
-  // If startIndex or endIndex is still null, return the original array
-  if (startIndex == null || endIndex == null) {
-    return array;
-  }
-
-  // Calculate the step between non-null values
-  // @ts-ignore
-  let step = (array[endIndex] - array[startIndex]) / (endIndex - startIndex);
-
-  // Interpolate null values
-  for (let i = 0; i < array.length; i++) {
-    if (array[i] == null) {
-      // @ts-ignore
-      array[i] = array[startIndex] + (i - startIndex) * step;
-    }
-  }
-
-  return array;
+  return result;
 }
