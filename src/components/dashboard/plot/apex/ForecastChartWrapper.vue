@@ -101,5 +101,8 @@ const chartOptions = ref({
   dataLabels: {
     enabled: false,
   },
+  yaxis: {
+    decimalsInFloat: 0,
+  },
 });
 </script>
