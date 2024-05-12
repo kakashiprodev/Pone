@@ -50,26 +50,37 @@
     </template>
 
     <template #sidebar>
-      <PanelMenu :model="sidebarItems" class="w-1/5">
-        <template #item="{ item }">
-          <router-link
-            class="flex align-items-center px-3 py-2 cursor-pointer no-underline text-color"
-            :to="item.to ?? ''"
-            :exact-active-class="'active-route'"
-          >
-            <span :class="[item.icon, 'text-primary', 'sidebar-item-custom']" />
-            <span
-              :class="[
-                'ml-2',
-                { 'font-semibold': item.items },
-                'sidebar-item-custom',
-              ]"
-            >
-              {{ item.label }}
-            </span>
-          </router-link>
+      <div>
+        <template v-for="item in sidebar">
+          <div class="border-round surface-100 mt-2 pt-1">
+            <h3 class="text-xs px-1 text-500">
+              {{ item.header }}
+            </h3>
+            <PanelMenu :model="item.items" class="w-1/5 less-padding">
+              <template #item="{ item }">
+                <router-link
+                  class="flex align-items-center px-3 py-2 cursor-pointer no-underline text-color"
+                  :to="item.to ?? ''"
+                  :exact-active-class="'active-route'"
+                >
+                  <span
+                    :class="[item.icon, 'text-primary', 'sidebar-item-custom']"
+                  />
+                  <span
+                    :class="[
+                      'ml-2',
+                      { 'font-semibold': item.items },
+                      'sidebar-item-custom',
+                    ]"
+                  >
+                    {{ item.label }}
+                  </span>
+                </router-link>
+              </template>
+            </PanelMenu>
+          </div>
         </template>
-      </PanelMenu>
+      </div>
     </template>
 
     <template #submenu>
@@ -124,7 +135,7 @@ const route = useRoute();
 const router = useRouter();
 const global = useGlobalStore();
 
-const sidebarItems = [
+const sidebarAnalysis = [
   {
     key: 'dashboard',
     label: 'Dashboard',
@@ -132,6 +143,16 @@ const sidebarItems = [
     to: '/dashboard',
     visible: true,
   },
+  {
+    key: 'overview',
+    label: 'Alle Eingaben',
+    icon: 'fa-solid fa-list',
+    to: '/inputs',
+    visible: true,
+  },
+];
+
+const sidebarInputs = [
   {
     key: 'scope-1',
     label: 'Scope 1',
@@ -154,12 +175,25 @@ const sidebarItems = [
     visible: true,
   },
   {
-    key: 'overview',
-    label: 'Gesamtübersicht',
-    icon: 'fa-solid fa-list',
-    to: '/inputs',
+    key: 'assistant',
+    label: 'Assistent',
+    icon: 'fa-solid fa-magic',
+    to: '/assistant',
     visible: true,
   },
+];
+
+const sidebarCsrd = [
+  {
+    key: 'csrd-report-interview',
+    label: 'CSRD Interview',
+    icon: 'fa-solid fa-magic',
+    to: '/csrd-report-interview',
+    visible: true,
+  },
+];
+
+const sidebarActions = [
   {
     key: 'actions',
     label: 'Maßnahmen',
@@ -174,20 +208,9 @@ const sidebarItems = [
     to: '/facilities',
     visible: true,
   },
-  {
-    key: 'assistant',
-    label: 'Assistent',
-    icon: 'fa-solid fa-magic',
-    to: '/assistant',
-    visible: true,
-  },
-  {
-    key: 'csrd-report-interview',
-    label: 'CSRD Interview',
-    icon: 'fa-solid fa-magic',
-    to: '/csrd-report-interview',
-    visible: true,
-  },
+];
+
+const sidebarSettings = [
   {
     key: 'settings',
     label: 'Einstellungen',
@@ -195,36 +218,29 @@ const sidebarItems = [
     to: '/settings',
     visible: true,
   },
-  // {
-  //     label: 'Flottenverbrauch',
-  //     icon: 'fa-solid fa-gas-pump',
-  //     to: '/inputPerCategory/mobility',
-  //     visible: true,
-  // },
-  // {
-  //     label: 'Direkte Verbrennung',
-  //     icon: 'fa-solid fa-fire',
-  //     to: '/inputPerCategory/combustion',
-  //     visible: true,
-  // },
-  // {
-  //     label: 'Raumheizung',
-  //     icon: 'fa-solid fa-fire-flame-curved',
-  //     to: '/inputPerCategory/room-heating',
-  //     visible: true,
-  // },
-  // {
-  //     label: 'Kühlmittelverlust und Isoliergase',
-  //     icon: 'fa-solid fa-cloud',
-  //     to: '/inputPerCategory/insulating-gases',
-  //     visible: true,
-  // },
-  // {
-  //     label: 'Äquivalente',
-  //     icon: 'fa-solid fa-hashtag',
-  //     to: '/equivalents',
-  //     visible: true,
-  // },
+];
+
+const sidebar = [
+  {
+    header: 'Auswertung',
+    items: sidebarAnalysis,
+  },
+  {
+    header: 'Eingabe',
+    items: sidebarInputs,
+  },
+  {
+    header: 'Zuordnung',
+    items: sidebarActions,
+  },
+  {
+    header: 'Berichtswesen',
+    items: sidebarCsrd,
+  },
+  {
+    header: 'Einstellungen',
+    items: sidebarSettings,
+  },
 ];
 
 const logout = async () => {
@@ -233,7 +249,11 @@ const logout = async () => {
 };
 </script>
 
-<style scoped>
+<style>
+.less-padding > .p-panelmenu-panel {
+  margin-bottom: 0 !important;
+}
+
 .sidebar-toggle-button {
   background: none;
   border: none;

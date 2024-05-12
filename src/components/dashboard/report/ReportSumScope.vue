@@ -5,54 +5,102 @@
       <ScopeDescription :scope="props.scope + ''" />
     </template>
     <template #right>
-      <div class="report-chart-wrapper">
-        <ApexSumChartWrapper
-          label="CO&#8322; Emissionen, aufgeteilt nach Scope"
-          v-if="sumGroupedByCategory"
-          type="donut"
-          :data="sumGroupedByCategory"
-        />
-      </div>
+      <Card>
+        <template #header>
+          <div class="psm-report-header">
+            <h3>CO&#8322; Emissionen, aufgeteilt nach Scope</h3>
+          </div>
+        </template>
+        <template #content>
+          <div class="report-chart-wrapper">
+            <ApexSumChartWrapper
+              v-if="sumGroupedByCategory"
+              type="donut"
+              :data="sumGroupedByCategory"
+            />
+          </div>
+        </template>
+      </Card>
     </template>
   </HorizontalTwoColLayout>
   <ReportSpacer />
 
   <!-- ZEILE -->
   <HorizontalOneColLayout>
-    <ApexSumChartWrapper
-      label="CO&#8322; Emissionen, aufgeteilt nach Kategorie"
-      v-if="sumGroupedByCategory"
-      type="radar"
-      :data="sumGroupedByCategory"
-    />
+    <Card>
+      <template #header>
+        <div class="psm-report-header">
+          <h3>CO&#8322; Emissionen, aufgeteilt nach Scope</h3>
+        </div>
+      </template>
+      <template #content>
+        <div class="report-chart-wrapper">
+          <ApexSumChartWrapper
+            v-if="sumGroupedByCategory"
+            type="radar"
+            :data="sumGroupedByCategory"
+          />
+        </div>
+      </template>
+    </Card>
   </HorizontalOneColLayout>
 
   <!-- ZEILE -->
   <HorizontalOneColLayout>
-    <TextBarList
-      label="CO&#8322; Emissionen, aufgeteilt nach Anlage"
-      :data="facilityList"
-      :header="['Anlagenname', 'Aktiv/Inaktiv', 'CO&#8322; Emissionen']"
-      :use-maximum-as-reference="true"
-    />
+    <Card>
+      <template #header>
+        <div class="psm-report-header">
+          <h3>CO&#8322; Emissionen, aufgeteilt nach Anlage</h3>
+        </div>
+      </template>
+      <template #content>
+        <div class="report-chart-wrapper">
+          <TextBarList
+            :data="facilityList"
+            :header="['Anlagenname', 'Aktiv/Inaktiv', 'CO&#8322; Emissionen']"
+            :use-maximum-as-reference="true"
+          />
+        </div>
+      </template>
+    </Card>
   </HorizontalOneColLayout>
   <ReportSpacer />
 
   <!-- ZEILE -->
   <HorizontalTwoColLayout>
     <template #left>
-      <ApexTreemapWrapper
-        v-if="sumGroupedByFacility"
-        label="CO&#8322; Emissionen, aufgeteilt nach Anlage"
-        :data="sumGroupedByFacility"
-      />
+      <Card>
+        <template #header>
+          <div class="psm-report-header">
+            <h3>CO&#8322; Emissionen, aufgeteilt nach Anlage</h3>
+          </div>
+        </template>
+        <template #content>
+          <div class="report-chart-wrapper">
+            <ApexTreemapWrapper
+              v-if="sumGroupedByFacility"
+              :data="sumGroupedByFacility"
+            />
+          </div>
+        </template>
+      </Card>
     </template>
     <template #right>
-      <ApexTreemapWrapper
-        v-if="sumGroupedByCategory"
-        label="CO&#8322; Emissionen, aufgeteilt nach Kategorie"
-        :data="sumGroupedByCategory"
-      />
+      <Card>
+        <template #header>
+          <div class="psm-report-header">
+            <h3>CO&#8322; Emissionen, aufgeteilt nach Kategorie</h3>
+          </div>
+        </template>
+        <template #content>
+          <div class="report-chart-wrapper">
+            <ApexTreemapWrapper
+              v-if="sumGroupedByCategory"
+              :data="sumGroupedByCategory"
+            />
+          </div>
+        </template>
+      </Card>
     </template>
   </HorizontalTwoColLayout>
   <ReportSpacer />
