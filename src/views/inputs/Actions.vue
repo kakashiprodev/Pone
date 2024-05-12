@@ -400,12 +400,9 @@
     </Column>
     <!-- <Column field="shortDescription" header="Kurzbeschreibung"></Column>
         <Column field="longDescription" header="Langbeschreibung"></Column> -->
-    <Column
-      field="targetValueAbsolutPlanned"
-      header="Zieleinsparung in kg"
-    >
+    <Column field="targetValueAbsolutPlanned" header="Zieleinsparung in kg">
       <template #body="{ data }">
-        <span class="flex justify-content-end text-right ">
+        <span class="flex justify-content-end text-right">
           {{ data.targetValueAbsolutPlanned }}
         </span>
       </template>

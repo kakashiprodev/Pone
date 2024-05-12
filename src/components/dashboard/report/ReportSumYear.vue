@@ -5,12 +5,22 @@
       <ReportHeader />
     </template>
     <template #right>
-      <ApexSumChartWrapper
-        label="CO&#8322; Emissionen, aufgeteilt nach Scope"
-        v-if="sumGroupedByScope"
-        type="donut"
-        :data="sumGroupedByScope"
-      />
+      <Card>
+        <template #header>
+          <div class="psm-report-header">
+            <h3>CO&#8322; Emissionen, aufgeteilt nach Scope</h3>
+          </div>
+        </template>
+        <template #content>
+          <div class="report-chart-wrapper">
+            <ApexSumChartWrapper
+              v-if="sumGroupedByScope"
+              type="donut"
+              :data="sumGroupedByScope"
+            />
+          </div>
+        </template>
+      </Card>
     </template>
   </HorizontalTwoColLayout>
   <ReportSpacer />
@@ -57,45 +67,86 @@
 
   <!-- ZEILE -->
   <HorizontalOneColLayout>
-    <TextBarList
-      v-if="yearlyList"
-      label="Mengen der letzten Berichtsjahre"
-      :data="yearlyList"
-      :show-status-column="false"
-      :header="['Jahr', 'Status', 'Menge']"
-      :use-maximum-as-reference="true"
-    />
+    <Card>
+      <template #header>
+        <div class="psm-report-header">
+          <h3>Mengen der letzten Berichtsjahre</h3>
+        </div>
+      </template>
+      <template #content>
+        <div class="report-chart-wrapper">
+          <TextBarList
+            v-if="yearlyList"
+            :data="yearlyList"
+            :show-status-column="false"
+            :header="['Jahr', 'Status', 'Menge']"
+            :use-maximum-as-reference="true"
+          />
+        </div>
+      </template>
+    </Card>
   </HorizontalOneColLayout>
   <ReportSpacer />
 
   <!-- ZEILE -->
   <HorizontalOneColLayout>
-    <ApexSumChartWrapper
-      v-if="sumGroupedByCategory"
-      type="radar"
-      :data="sumGroupedByCategory"
-    />
+    <Card>
+      <template #header>
+        <div class="psm-report-header">
+          <h3>Aufteilung der Ursprüunge</h3>
+        </div>
+      </template>
+      <template #content>
+        <div class="report-chart-wrapper">
+          <ApexSumChartWrapper
+            v-if="sumGroupedByCategory"
+            type="radar"
+            :data="sumGroupedByCategory"
+          />
+        </div>
+      </template>
+    </Card>
   </HorizontalOneColLayout>
   <ReportSpacer />
 
   <!-- ZEILE -->
   <HorizontalTwoColLayout>
     <template #left>
-      <ApexGroupedChartWrapper
-        v-if="sumGroupedByScopeAndYear != null"
-        label="CO&#8322; Emissionen, aufgeteilt nach Scope und Jahr"
-        :data="sumGroupedByScopeAndYear"
-        :horizontal="true"
-        :stacked="true"
-        type="bar"
-      />
+      <Card>
+        <template #header>
+          <div class="psm-report-header">
+            <h3>CO&#8322; Emissionen, aufgeteilt nach Scope und Jahr</h3>
+          </div>
+        </template>
+        <template #content>
+          <div class="report-chart-wrapper">
+            <ApexGroupedChartWrapper
+              v-if="sumGroupedByScopeAndYear != null"
+              :data="sumGroupedByScopeAndYear"
+              :horizontal="true"
+              :stacked="true"
+              type="bar"
+            />
+          </div>
+        </template>
+      </Card>
     </template>
     <template #right>
-      <ApexTreemapWrapper
-        v-if="sumGroupedByScope"
-        label="CO&#8322; Emissionen, aktueller Berichtszeitraum"
-        :data="sumGroupedByScope"
-      />
+      <Card>
+        <template #header>
+          <div class="psm-report-header">
+            <h3>CO&#8322; Emissionen, aktueller Berichtszeitraum</h3>
+          </div>
+        </template>
+        <template #content>
+          <div class="report-chart-wrapper">
+            <ApexTreemapWrapper
+              v-if="sumGroupedByScope"
+              :data="sumGroupedByScope"
+            />
+          </div>
+        </template>
+      </Card>
     </template>
   </HorizontalTwoColLayout>
   <ReportSpacer />

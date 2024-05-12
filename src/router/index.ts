@@ -73,6 +73,11 @@ const routes = [
         name: 'assistant',
       },
       {
+        path: 'csrd-report-interview/',
+        component: () => import('../views/csrd/CsrdReportInterview.vue'),
+        name: 'csrd-report-interview',
+      },
+      {
         path: 'settings', // :category?
         component: () => import('../views/config/SettingsMain.vue'),
         name: 'settings',

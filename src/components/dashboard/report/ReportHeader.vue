@@ -1,5 +1,10 @@
 <template>
   <Card v-if="global.selectedReport" class="h-full">
+    <template #header>
+      <div class="psm-report-header">
+        <h3>Unternehmen</h3>
+      </div>
+    </template>
     <template #content>
       <div class="report-section">
         <h3 class="report-section__heading mb-2">
@@ -14,12 +19,12 @@
           <p>{{ global.selectedReport.companyCountry }}</p>
         </div>
         <p class="report-row">
-          <span>Jahr:</span> <strong>{{ global.selectedReport.year }}</strong>
+          <span>Jahr:</span> <span>{{ global.selectedReport.year }}</span>
         </p>
 
         <p class="report-row">
           <span>Branche:</span>
-          <strong>{{ global.selectedReport.companyDomain }}</strong>
+          <span>{{ global.selectedReport.companyDomain }}</span>
         </p>
       </div>
 
@@ -28,20 +33,20 @@
         <p class="report-row">
           <span>Name:</span>
           <span
-            ><strong>{{ global.selectedReport.contactName }}</strong></span
+            ><span>{{ global.selectedReport.contactName }}</span></span
           >
         </p>
         <p class="report-row">
           <span>Telefon:</span>
-          <strong>{{ global.selectedReport.contactTelephone }}</strong>
+          <span>{{ global.selectedReport.contactTelephone }}</span>
         </p>
         <p class="report-row">
           <span>E-Mail:</span>
-          <strong>{{ global.selectedReport.contactEmail }}</strong>
+          <span>{{ global.selectedReport.contactEmail }}</span>
         </p>
         <p class="report-row">
           <span>Abteilung:</span>
-          <strong>{{ global.selectedReport.contactDomain }}</strong>
+          <span>{{ global.selectedReport.contactDomain }}</span>
         </p>
       </div>
 
@@ -49,15 +54,15 @@
         <h3>Unternehmenszahlen</h3>
         <p class="report-row">
           <span>Anzahl Mitarbeiter:</span>
-          <strong>{{ global.selectedReport.countEmployees }}</strong>
+          <span>{{ global.selectedReport.countEmployees }}</span>
         </p>
         <p class="report-row">
           <span>Jahresumsatz:</span>
-          <strong>{{ global.selectedReport.businessTurnover }}</strong>
+          <span>{{ global.selectedReport.businessTurnover }}</span>
         </p>
         <p class="report-row">
           <span>Referenzjahr:</span>
-          <strong>{{ global.selectedReport.baseYear }}</strong>
+          <span>{{ global.selectedReport.baseYear }}</span>
         </p>
       </div>
     </template>

@@ -185,13 +185,15 @@ export function calculateEmissions(
 
 // accepts an array of numbers or null values and gets the average values instead of the null values
 // Necessary for apexcharts to draw a line with interpolated values in a mixed chart
-export function getAverageValues(array: Array<number | null | undefined>): Array<any> {
+export function getAverageValues(
+  array: Array<number | null | undefined>,
+): Array<any> {
   let startIndex = null;
   let endIndex = null;
 
   // Find the start and end index of the non-null values
   for (let i = 0; i < array.length; i++) {
-    if (array[i] !== null && startIndex === null) {
+    if (array[i] !== null && startIndex == null) {
       startIndex = i;
     } else if (array[i] !== null && startIndex !== null) {
       endIndex = i;
@@ -200,16 +202,18 @@ export function getAverageValues(array: Array<number | null | undefined>): Array
   }
 
   // If startIndex or endIndex is still null, return the original array
-  if (startIndex === null || endIndex === null) {
+  if (startIndex == null || endIndex == null) {
     return array;
   }
 
   // Calculate the step between non-null values
+  // @ts-ignore
   let step = (array[endIndex] - array[startIndex]) / (endIndex - startIndex);
 
   // Interpolate null values
   for (let i = 0; i < array.length; i++) {
-    if (array[i] === null) {
+    if (array[i] == null) {
+      // @ts-ignore
       array[i] = array[startIndex] + (i - startIndex) * step;
     }
   }

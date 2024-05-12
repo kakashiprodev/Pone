@@ -1,105 +1,125 @@
 <template>
-  <h2 class="m-auto mt-5">Auflistung aller geplanten Maßnahmen</h2>
-  <div>
-    <Dialog
-      :header="`Steckbrief ${selectedAction?.name}`"
-      v-model:visible="actionCharacteristicsVisible"
-      class="action-overview__dialog"
-    >
-      <ActionCharacteristics v-if="selectedAction" :action="selectedAction" />
-    </Dialog>
-
-    <template v-if="Object.keys(categorySumDict).length > 0">
-      <div class="flex justify-center">
-        <ApexGaugeWrapper
-          v-for="cat in Object.keys(categorySumDict)"
-          :key="cat"
-          :label="cat"
-          :data="Math.round(categorySumDict[cat].precentagePart)"
-          unit="%"
-        />
+  <Card>
+    <template #header>
+      <div class="psm-report-header">
+        <h3>Geplante Maßnahmen</h3>
       </div>
     </template>
+    <template #content>
+      <Dialog
+        :header="`Steckbrief ${selectedAction?.name}`"
+        v-model:visible="actionCharacteristicsVisible"
+        class="action-overview__dialog"
+      >
+        <ActionCharacteristics v-if="selectedAction" :action="selectedAction" />
+      </Dialog>
 
-    <DataTable :value="actions" class="mt-5">
-      <Column header="Jahr">
-        <template #body="{ data }">
-          <span class="flex justify-content-end text-right">
-            <span
-              v-if="data.finishedUntilIs != null && data.finishedUntilIs != ''"
+      <template v-if="Object.keys(categorySumDict).length > 0">
+        <div class="flex justify-center">
+          <ApexGaugeWrapper
+            v-for="cat in Object.keys(categorySumDict)"
+            :key="cat"
+            :label="cat"
+            :data="Math.round(categorySumDict[cat].precentagePart)"
+            unit="%"
+          />
+        </div>
+      </template>
+
+      <DataTable :value="actions" class="mt-5">
+        <Column header="Jahr">
+          <template #body="{ data }">
+            <span class="flex justify-content-end text-right font-bold">
+              <span
+                v-if="
+                  data.finishedUntilIs != null && data.finishedUntilIs != ''
+                "
+              >
+                {{ dateToYear(data.finishedUntilIs) }}
+              </span>
+              <span v-else>
+                {{ dateToYear(data.finishedUntilPlanned) }}
+              </span>
+            </span>
+          </template>
+        </Column>
+        <Column field="name" header="Name"></Column>
+        <Column header="Beschreibung (Ziel)">
+          <template #body="{ data }">
+            <div class="flex align-content-center flex-wrap">
+              <span
+                v-html="data.descriptionTargetValue"
+                style="cursor: pointer"
+                class="hover:text-blue-500"
+                @click="
+                  selectedAction = data;
+                  actionCharacteristicsVisible = true;
+                "
+              ></span>
+            </div>
+          </template>
+        </Column>
+        <Column field="category" header="Kategorie"></Column>
+        <Column header="Status">
+          <template #body="{ data }">
+            <ProgressBarWithTarget
+              v-if="data.progress < 100"
+              color="grey"
+              :value="data.targetValuePlanned"
+              :targetValue="data.targetValuePlanned"
             >
-              {{ dateToYear(data.finishedUntilIs) }}
-            </span>
-            <span v-else>
-              {{ dateToYear(data.finishedUntilPlanned) }}
-            </span>
-          </span>
-        </template>
-      </Column>
-      <Column field="name" header="Name"></Column>
-      <Column header="Beschreibung (Ziel)">
-        <template #body="{ data }">
-          <div class="flex align-content-center flex-wrap">
-            <span
-              v-html="data.descriptionTargetValue"
-              style="cursor: pointer"
-              class="hover:text-blue-500"
-              @click="
-                selectedAction = data;
-                actionCharacteristicsVisible = true;
-              "
-            ></span>
-          </div>
-        </template>
-      </Column>
-      <Column field="category" header="Kategorie"></Column>
-      <Column header="Status">
-        <template #body="{ data }">
-          <ProgressBarWithTarget
-            v-if="data.progress < 100"
-            color="grey"
-            :value="data.targetValuePlanned"
-            :targetValue="data.targetValuePlanned"
-          >
-          </ProgressBarWithTarget>
+            </ProgressBarWithTarget>
 
-          <ProgressBarWithTarget
-            v-else
-            :color="Config.colors.data2"
-            :value="data.targetValueIs"
-            :targetValue="data.targetValuePlanned"
-          >
-          </ProgressBarWithTarget>
-        </template>
-      </Column>
-      <Column header="Menge">
-        <template #body="{ data }">
-          <span class="flex justify-content-end text-right">
-            <nobr v-if="data.progress < 100">
-              {{ toTons(data.targetValueAbsolutPlanned).toLocaleString() }} to
-            </nobr>
-            <nobr v-else>
-              {{ toTons(data.targetValueAbsolutIs) }}/{{
-                toTons(data.targetValueAbsolutPlanned)
-              }}
-              to
-            </nobr>
-          </span>
-        </template>
-      </Column>
-    </DataTable>
-  </div>
+            <ProgressBarWithTarget
+              v-else
+              :color="Config.colors.data2"
+              :value="data.targetValueIs"
+              :targetValue="data.targetValuePlanned"
+            >
+            </ProgressBarWithTarget>
+          </template>
+        </Column>
+        <Column header="Menge">
+          <template #body="{ data }">
+            <span class="flex justify-content-end text-right">
+              <nobr v-if="data.progress < 100">
+                {{ toTons(data.targetValueAbsolutPlanned).toLocaleString() }} to
+              </nobr>
+              <nobr v-else>
+                {{ toTons(data.targetValueAbsolutIs) }}/{{
+                  toTons(data.targetValueAbsolutPlanned)
+                }}
+                to
+              </nobr>
+            </span>
+          </template>
+        </Column>
+      </DataTable>
+    </template>
+  </Card>
+
+  <Card>
+    <template #header>
+      <div class="psm-report-header">
+        <h3>Roadmap</h3>
+      </div>
+    </template>
+    <template #content>
+      <action-dumbbell-chart-wrapper v-if="actions.length" :actions="actions" />
+    </template>
+  </Card>
 </template>
 
 <script setup lang="ts">
 import dataprovider from '../../../services/dataprovider';
 import { ref, Ref } from 'vue';
-import { ActionEntry } from '../../../services/types';
+import { ActionEntry, ActionWithPercentage } from '../../../services/types';
 import { useGlobalStore } from '../../../stores/global';
 import { dateToYear, toTons } from '../../../services/pipes/index';
 import ProgressBarWithTarget from '../../dashboard/plot/custom/ProgressBarWithTarget.vue';
 import ActionCharacteristics from './ActionCharacteristics.vue';
 import ApexGaugeWrapper from '../../dashboard/plot/apex/ApexGaugeWrapper.vue';
+import ActionDumbbellChartWrapper from './ActionDumbbellChartWrapper.vue';
 import Config from '../../../config';
 
 /*
@@ -138,11 +158,6 @@ export interface ActionEntry {
 const global = useGlobalStore();
 const actionCharacteristicsVisible = ref(false);
 const selectedAction = ref<ActionEntry | null>(null);
-
-interface ActionWithPercentage extends ActionEntry {
-  targetValuePlanned: number;
-  targetValueIs: number;
-}
 
 interface ActionCategorySumDict {
   [key: string]: {

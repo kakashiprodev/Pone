@@ -115,10 +115,12 @@ export const useGlobalStore = defineStore('global', {
 
       await this.refreshProjects();
       // check the last selected entries if they are still valid
-      if (user.lastSelectedProject != null
-        && user.lastSelectedProject !== ''
-        && this.projects.length > 0
-        && this.projects.find((p) => p.id === user.lastSelectedProject) != null) {
+      if (
+        user.lastSelectedProject != null &&
+        user.lastSelectedProject !== '' &&
+        this.projects.length > 0 &&
+        this.projects.find((p) => p.id === user.lastSelectedProject) != null
+      ) {
         console.log(
           'select last selected project with id',
           user.lastSelectedProject,
