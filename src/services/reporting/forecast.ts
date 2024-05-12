@@ -216,7 +216,8 @@ export function getAverageValues(
       } else {
         // If one of the ends is null, fill all values with the non-null end value
         // Or use 0 if both ends are null (though this case should ideally not happen in chart data)
-        const fillValue = startValue !== null ? startValue : endValue !== null ? endValue : 0;
+        const fillValue =
+          startValue !== null ? startValue : endValue !== null ? endValue : 0;
         for (let j = startIndex + 1; j <= endIndex - 1; j++) {
           result[j] = fillValue;
         }
@@ -226,3 +227,14 @@ export function getAverageValues(
 
   return result;
 }
+
+// formats numbers to the german format (1.000,00), optional number of fractiondigits
+export const numbersFormatter = (
+  value: number,
+  maximumFractionDigits: number = 2,
+) => {
+  const formatter = new Intl.NumberFormat('de-DE', {
+    maximumFractionDigits,
+  });
+  return formatter.format(value);
+};

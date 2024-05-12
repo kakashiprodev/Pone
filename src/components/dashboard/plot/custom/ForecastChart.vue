@@ -61,7 +61,7 @@ function prepareAnnotationsData(options: {
 // Group the action annotations by year, separating the action names by comma
 function groupAnnotationsByYear() {
   const groupedAnnotations: Record<string, string> = {};
-  annotations.value.actions.forEach(action => {
+  annotations.value.actions.forEach((action) => {
     if (!groupedAnnotations[action.x]) {
       groupedAnnotations[action.x] = action.name;
     } else {
@@ -69,9 +69,9 @@ function groupAnnotationsByYear() {
     }
   });
 
-  annotations.value.actions = Object.keys(groupedAnnotations).map(x => ({
+  annotations.value.actions = Object.keys(groupedAnnotations).map((x) => ({
     x: Number(x),
-    name: groupedAnnotations[x]
+    name: groupedAnnotations[x],
   }));
 }
 
@@ -136,13 +136,6 @@ const getData = async () => {
   const targets = await dataprovider.readTargets();
   const actions = await dataprovider.readActions();
   const reports = await dataprovider.readReports();
-
-  // TODO remove after fixing the chart
-  console.log({
-    targets,
-    actions,
-    reports,
-  })
 
   const oldValues: OldReportValues[] = [];
   for (const report of reports) {

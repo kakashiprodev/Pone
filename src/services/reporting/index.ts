@@ -366,7 +366,7 @@ const calculateEquivalentFactorWithSteps = (
     // @ts-ignore
     const monthlyEquivalentFactor: number =
       equivalent[month as keyof EquivalentEntry] != null &&
-        equivalent[month as keyof EquivalentEntry] != ''
+      equivalent[month as keyof EquivalentEntry] != ''
         ? equivalent[month as keyof EquivalentEntry]
         : equivalent.avgValue;
     // @ts-ignore
