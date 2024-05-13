@@ -22,7 +22,7 @@
     </PanelMenu>
 
     <!-- Bereich für die Anzeige der Komponenten auf der rechten Seite -->
-    <div class="w-4/5">
+    <div class="w-full">
       <router-view :key="route.path" />
     </div>
   </div>

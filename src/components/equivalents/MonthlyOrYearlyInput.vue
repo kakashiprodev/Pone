@@ -41,6 +41,7 @@
           :min-fraction-digits="0"
           :max-fraction-digits="10"
           class="w-full"
+          :suffix="inputUnit"
         />
       </div>
       <div class="col-3 small-width-ctm">
@@ -50,6 +51,7 @@
           :min-fraction-digits="0"
           :max-fraction-digits="10"
           class="w-full"
+          :suffix="inputUnit"
         />
       </div>
       <div class="col-3 small-width-ctm">
@@ -59,6 +61,7 @@
           :min-fraction-digits="0"
           :max-fraction-digits="10"
           class="w-full"
+          :suffix="inputUnit"
         />
       </div>
       <div class="col-3 small-width-ctm">
@@ -68,6 +71,7 @@
           :min-fraction-digits="0"
           :max-fraction-digits="10"
           class="w-full"
+          :suffix="inputUnit"
         />
       </div>
     </div>
@@ -101,6 +105,7 @@
           :min-fraction-digits="0"
           :max-fraction-digits="10"
           class="w-full"
+          :suffix="inputUnit"
         />
       </div>
       <div class="col-3 small-width-ctm">
@@ -110,6 +115,7 @@
           :min-fraction-digits="0"
           :max-fraction-digits="10"
           class="w-full"
+          :suffix="inputUnit"
         />
       </div>
       <div class="col-3 small-width-ctm">
@@ -119,6 +125,7 @@
           :min-fraction-digits="0"
           :max-fraction-digits="10"
           class="w-full"
+          :suffix="inputUnit"
         />
       </div>
       <div class="col-3 small-width-ctm">
@@ -128,6 +135,7 @@
           :min-fraction-digits="0"
           :max-fraction-digits="10"
           class="w-full"
+          :suffix="inputUnit"
         />
       </div>
     </div>
@@ -161,6 +169,7 @@
           :min-fraction-digits="0"
           :max-fraction-digits="10"
           class="w-full"
+          :suffix="inputUnit"
         />
       </div>
       <div class="col-3 small-width-ctm">
@@ -170,6 +179,7 @@
           :min-fraction-digits="0"
           :max-fraction-digits="10"
           class="w-full"
+          :suffix="inputUnit"
         />
       </div>
       <div class="col-3 small-width-ctm">
@@ -179,6 +189,7 @@
           :min-fraction-digits="0"
           :max-fraction-digits="10"
           class="w-full"
+          :suffix="inputUnit"
         />
       </div>
       <div class="col-3 small-width-ctm">
@@ -188,8 +199,24 @@
           :min-fraction-digits="0"
           :max-fraction-digits="10"
           class="w-full"
+          :suffix="inputUnit"
         />
       </div>
+    </div>
+    <div class="field">
+      <label for="userinput-rawvalue">
+        Summe {{ inputUnit !== '' ? ' in ' + inputUnit : '' }}
+      </label>
+      <InputNumber
+        class="w-full"
+        :disabled="true"
+        v-model="innerModelValue.rawValue"
+        id="userinput-rawvalue"
+        :use-grouping="false"
+        :suffix="inputUnit"
+        :min-fraction-digits="0"
+        :max-fraction-digits="10"
+      />
     </div>
   </div>
   <div v-else>
@@ -229,7 +256,24 @@ const emits = defineEmits(['update:modelValue']);
 
 watch(
   () => innerModelValue.value,
-  (newValue) => {
+  (newValue: InputEntry) => {
+    // update rawValue if monthlyValues is true. Then calculate the sum of all monthly values
+    if (newValue.monthlyValues) {
+      let sum = 0;
+      sum += newValue.rawValueJan ?? 0;
+      sum += newValue.rawValueFeb ?? 0;
+      sum += newValue.rawValueMar ?? 0;
+      sum += newValue.rawValueApr ?? 0;
+      sum += newValue.rawValueMay ?? 0;
+      sum += newValue.rawValueJun ?? 0;
+      sum += newValue.rawValueJul ?? 0;
+      sum += newValue.rawValueAug ?? 0;
+      sum += newValue.rawValueSep ?? 0;
+      sum += newValue.rawValueOct ?? 0;
+      sum += newValue.rawValueNov ?? 0;
+      sum += newValue.rawValueDec ?? 0;
+      newValue.rawValue = sum;
+    }
     emits('update:modelValue', newValue);
   },
   { deep: true },
