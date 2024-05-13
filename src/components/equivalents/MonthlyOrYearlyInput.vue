@@ -229,7 +229,24 @@ const emits = defineEmits(['update:modelValue']);
 
 watch(
   () => innerModelValue.value,
-  (newValue) => {
+  (newValue: InputEntry) => {
+    // update rawValue if monthlyValues is true. Then calculate the sum of all monthly values
+    if (newValue.monthlyValues) {
+      let sum = 0;
+      sum += newValue.rawValueJan ?? 0;
+      sum += newValue.rawValueFeb ?? 0;
+      sum += newValue.rawValueMar ?? 0;
+      sum += newValue.rawValueApr ?? 0;
+      sum += newValue.rawValueMay ?? 0;
+      sum += newValue.rawValueJun ?? 0;
+      sum += newValue.rawValueJul ?? 0;
+      sum += newValue.rawValueAug ?? 0;
+      sum += newValue.rawValueSep ?? 0;
+      sum += newValue.rawValueOct ?? 0;
+      sum += newValue.rawValueNov ?? 0;
+      sum += newValue.rawValueDec ?? 0;
+      newValue.rawValue = sum;
+    }
     emits('update:modelValue', newValue);
   },
   { deep: true },
