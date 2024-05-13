@@ -4,7 +4,7 @@
     Hier legen Sie die Berichtszeiträume für das ausgewählte Projekt fest. Jeder
     Bericht umfasst ein Jahr.
   </p>
-  <Toolbar>
+  <Toolbar class="w-full">
     <template #start>
       <span>Ausgewählter Bericht</span>
       <Dropdown
@@ -38,6 +38,19 @@
         @click="copyTargetsFromYearBefore()"
         class="ml-1"
         v-tooltip="'Ziele aus dem Vorjahr kopieren'"
+      />
+
+      <Button
+        class="ml-1"
+        v-if="reportForm"
+        @click="saveReport()"
+        :label="reportForm.id === 'new' ? 'Hinzufügen' : 'Speichern'"
+      />
+      <Button
+        v-if="reportForm?.id === 'new'"
+        class="ml-1"
+        label="Abbrechen"
+        @click="reportForm = global.selectedReport"
       />
     </template>
   </Toolbar>
@@ -137,21 +150,6 @@
         </div>
       </template>
     </Card>
-
-    <div>
-      <Button
-        class="mt-3"
-        v-if="reportForm"
-        @click="saveReport()"
-        :label="reportForm.id === 'new' ? 'Hinzufügen' : 'Speichern'"
-      />
-      <Button
-        v-if="reportForm.id === 'new'"
-        class="ml-3"
-        label="Abbrechen"
-        @click="reportForm = global.selectedReport"
-      />
-    </div>
   </template>
 </template>
 
