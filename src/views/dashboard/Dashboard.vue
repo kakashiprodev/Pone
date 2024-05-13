@@ -38,7 +38,7 @@
         <ActionOverview />
       </TabPanel>
 
-      <TabPanel header="Bericht Export">
+      <TabPanel header="Bericht Export" v-if="global.isGlobalAdmin">
         <ReportPrint />
       </TabPanel>
     </TabView>
