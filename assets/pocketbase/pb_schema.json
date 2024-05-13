@@ -582,7 +582,7 @@
         "viewRule": "@request.auth.id != \"\" && \n@collection.csrdtopics.report ?= @collection.reports.id && \n@collection.reports.site ?= @collection.sites.id && \n@collection.sites.project ?= @collection.projects.id && \n@collection.projects.id ?= @request.auth.projects.id",
         "createRule": "@request.auth.id != \"\" && \n@request.data.report ?= @collection.reports.id && \n@collection.reports.site ?= @collection.sites.id && \n@collection.sites.project ?= @collection.projects.id && \n@collection.projects.id ?= @request.auth.projects.id",
         "updateRule": "@request.auth.id != \"\" && \n@request.data.report ?= @collection.reports.id && \n@collection.reports.site ?= @collection.sites.id && \n@collection.sites.project ?= @collection.projects.id && \n@collection.projects.id ?= @request.auth.projects.id",
-        "deleteRule": "@request.auth.id != \"\" && \n@request.data.report ?= @collection.reports.id && \n@collection.reports.site ?= @collection.sites.id && \n@collection.sites.project ?= @collection.projects.id && \n@collection.projects.id ?= @request.auth.projects.id",
+        "deleteRule": "@request.auth.id != \"\"",
         "options": {}
     },
     {
@@ -1692,7 +1692,7 @@
         "viewRule": "@request.auth.id != \"\" && \nsite.project.id ?= @request.auth.projects.id",
         "createRule": "@request.auth.id != \"\" &&\n@request.data.site.project.id ?= @request.auth.projects.id",
         "updateRule": "@request.auth.id != \"\" &&\n@request.data.site.project.id ?= @request.auth.projects.id",
-        "deleteRule": "@request.auth.id != \"\" &&\n@request.data.site.project.id ?= @request.auth.projects.id",
+        "deleteRule": "@request.auth.id != \"\"",
         "options": {}
     },
     {
@@ -1737,7 +1737,7 @@
         "viewRule": "@request.auth.id != \"\" &&\nproject.id ?= @request.auth.projects.id",
         "createRule": "@request.auth.id != \"\" &&\n@request.data.project.id ?= @request.auth.projects.id",
         "updateRule": "@request.auth.id != \"\" &&\n@request.data.project.id ?= @request.auth.projects.id",
-        "deleteRule": "@request.auth.id != \"\" &&\n@request.data.project.id ?= @request.auth.projects.id",
+        "deleteRule": "@request.auth.id != \"\"",
         "options": {}
     },
     {
@@ -1798,7 +1798,7 @@
         "viewRule": "@request.auth.id != '' &&\nreport.site.project.id ?= @request.auth.projects.id",
         "createRule": "@request.auth.id != '' &&\n@request.data.report.site.project.id ?= @request.auth.projects.id",
         "updateRule": "@request.auth.id != '' &&\n@request.data.report.site.project.id ?= @request.auth.projects.id",
-        "deleteRule": "@request.auth.id != '' &&\n@request.data.report.site.project.id ?= @request.auth.projects.id",
+        "deleteRule": "@request.auth.id != ''",
         "options": {}
     }
 ]
