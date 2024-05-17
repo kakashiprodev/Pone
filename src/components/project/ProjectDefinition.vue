@@ -48,35 +48,34 @@
     </div>
 
     <div v-if="projectForm" class="mt-2" v-show="showEditEntry">
-      <div class="card">
-        <!-- <h5>Basisdaten des Projekts</h5> -->
-        <div class="mb-4 grid" v-show="false">
-          <label for="id" class="col-span-12 mb-2 md:col-span-4 md:mb-0"
-            >ID</label
-          >
-          <div class="col-span-12 md:col-span-8">
-            <InputText
-              id="id"
-              class="w-full"
-              disabled="true"
-              v-model="projectForm.id"
+      <div class="mt-5">
+        <div class="mb-4 grid grid-cols-12 flex items-center">
+          <label for="image" class="col-span-12 mb-2 md:col-span-4 md:mb-0">
+            Logo des Unternehmens
+          </label>
+          <div class="flex flex-col gap-2">
+            <img
+              v-if="projectForm.logo && projectForm.logo !== ''"
+              :src="projectForm.logo"
+              class="w-24 h-24 rounded-lg object-scale-down"
+            />
+            <FileUpload
+              mode="basic"
+              accept="image/*"
+              customUpload
+              @uploader="uploadImage"
+              :auto="true"
             />
           </div>
-          <InlineMessage
-            v-if="global.showTooltips"
-            severity="info"
-            class="w-full mt-2"
-          >
-            Die ID wird automatisch vergeben und kann nicht geändert werden. Die
-            Anzeige dient rein Support-Zwecken.
-          </InlineMessage>
         </div>
-        <div class="mb-4 grid">
+
+        <div class="mb-4 grid grid-cols-12 flex items-center">
           <label
             for="projectname"
             class="col-span-12 mb-2 md:col-span-4 md:mb-0"
-            >Projektname</label
           >
+            Projektname
+          </label>
           <div class="col-span-12 md:col-span-8">
             <InputText
               id="projectname"
@@ -114,6 +113,7 @@ import { useConfirm } from 'primevue/useconfirm';
 import { ProjectEntry } from '../../services/types';
 import { minLength, maxLength, object, string, parse } from 'valibot';
 import { error, info } from '../../services/ui/toast';
+import dataprovider from '@/services/dataprovider';
 
 const global = useGlobalStore();
 const confirm = useConfirm();
@@ -124,6 +124,8 @@ const emptyProject = (): ProjectEntry => {
   return {
     id: 'new',
     name: '',
+    logo: '',
+    logoId: null,
   };
 };
 
@@ -188,6 +190,24 @@ const saveProject = async () => {
     error(e + '');
   }
   showEditEntry.value = false;
+};
+
+const uploadImage = async (event: any) => {
+  if (!projectForm.value) {
+    return;
+  }
+  const file = event.files[0];
+
+  // check if an logo is already uploaded
+  if (projectForm.value.logoId) {
+    // delete old image
+    await dataprovider.deleteImage(projectForm.value.logoId);
+  }
+  const data = await dataprovider.uploadImage(file);
+  // update project entry with image url
+  projectForm.value.logo = data.url;
+  projectForm.value.logoId = data.id;
+  await dataprovider.updateProject(projectForm.value);
 };
 
 const cancel = () => {

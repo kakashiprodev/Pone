@@ -1,5 +1,5 @@
 <template>
-  <div class="border-solid border-b-2 border-gray-200 mb-4 p-2 border-round-lg">
+  <div class="border-solid border-b-2 border-gray-200 mb-4 p-2 rounded-lg">
     <h3>Interview basierte Informationserfassung für den CSRD-Bericht.</h3>
   </div>
   <div class="grid grid-cols-12">

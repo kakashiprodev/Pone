@@ -3,7 +3,7 @@
     <!-- PanelMenu für das vertikale Menü auf der linken Seite -->
     <PanelMenu
       :model="items"
-      class="w-1/5 pr-3"
+      class="w-1/7 pr-3"
       v-model:expandedKeys="expandedKeys"
     >
       <template #item="{ item }">
@@ -26,7 +26,7 @@
     </PanelMenu>
 
     <!-- Bereich für die Anzeige der Komponenten auf der rechten Seite -->
-    <div class="w-full">
+    <div class="w-full p-5">
       <router-view :key="route.path" />
     </div>
   </div>

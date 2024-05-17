@@ -1,4 +1,59 @@
 <template>
+  <Sidebar v-model:visible="showSidebar" position="right">
+    <div class="flex flex-col gap-3 w-full mt-3 rounded-xl bg-slate-100 p-3">
+      <Chip :label="global.selectedSite?.name" class="bg-slate-200">
+        <img
+          v-if="
+            global.selectedProject?.logo && global.selectedProject.logo !== ''
+          "
+          :src="global.selectedProject.logo"
+          class="rounded-lg object-scale-down"
+        />
+        <span>{{ global.selectedProject?.name }}</span>
+      </Chip>
+
+      <span>Standorte</span>
+      <Dropdown
+        :options="global.sites"
+        optionLabel="name"
+        v-model="global.selectedSite"
+        @change="switchReport()"
+      />
+    </div>
+
+    <div class="flex flex-col gap-3 w-full mt-5 rounded-xl bg-slate-100 p-3">
+      <span class="text-sm font-bold">{{ global.username }}</span>
+
+      <div class="flex flex-col gap-2 mt-5 w-full">
+        <div class="flex flex-col gap-4">
+          <div class="flex justify-items-end gap-2">
+            <i v-if="colorMode === 'dark'" class="fa-solid fa-moon" />
+            <i v-if="colorMode === 'light'" class="fa-solid fa-sun" />
+            <span class="grow">Dark/Light Mode</span>
+            <InputSwitch
+              v-model="global.theme"
+              :true-value="'dark'"
+              :false-value="'light'"
+            />
+          </div>
+
+          <div class="flex justify-items-end gap-2">
+            <i class="fa-solid fa-question-circle" />
+            <span class="grow">Zeige Hilfe</span>
+            <InputSwitch v-model="global.showTooltips" />
+          </div>
+        </div>
+      </div>
+
+      <Button
+        class="mt-5"
+        icon="fa-solid fa-right-from-bracket"
+        @click="logout"
+        label="Abmelden"
+      />
+    </div>
+  </Sidebar>
+
   <AppLayout>
     <template #logo>
       <img
@@ -15,39 +70,41 @@
 
     <template #end>
       <ul class="list-none no-underline text-color flex items-center">
-        <li style="float: left">
+        <li>
+          <Dropdown
+            v-show="global.reports.length > 0"
+            :options="global.reports.sort((a, b) => b.year - a.year)"
+            optionLabel="year"
+            v-model="global.selectedReport"
+            @change="switchReport()"
+          />
+        </li>
+
+        <li class="ml-2">
           <router-link
             to="/settings/project-reports"
             :exact-active-class="'active-route'"
           >
-            <Button
-              v-show="global.selectedProject"
-              class="button-custom"
-              severity="secondary"
-            >
-              <template #default>
-                <i class="fa-solid fa-building mr-2" />
-                <div class="flex flex-col">
-                  <div class="font-bold">
-                    {{ global.selectedProject?.name }}
-                  </div>
-                  <div>
-                    {{ global.selectedSite?.name }}:
-                    {{ global.selectedReport?.year }}
-                  </div>
-                </div>
-              </template>
-            </Button>
+            <Chip :label="global.selectedSite?.name">
+              <img
+                v-if="
+                  global.selectedProject?.logo &&
+                  global.selectedProject.logo !== ''
+                "
+                :src="global.selectedProject.logo"
+                class="rounded-lg object-scale-down"
+              />
+              <span>{{ global.selectedProject?.name }}</span>
+            </Chip>
           </router-link>
         </li>
-        <li style="float: left" class="ml-4">
-          <div class="flex flex-wrap">
-            <span class="mr-3 text-slate-600"> Zeige Hilfe </span>
-            <InputSwitch
-              class="flex items-center justify-center"
-              v-model="global.showTooltips"
-            />
-          </div>
+
+        <li class="ml-4">
+          <Button
+            icon="fa-solid fa-bars"
+            @click="showSidebar = !showSidebar"
+            class="bg-slate-400 text-slate-1 border-slate-400"
+          />
         </li>
       </ul>
     </template>
@@ -56,7 +113,7 @@
       <div>
         <template v-for="item in sidebar">
           <div
-            class="border-round dark:bg-slate-700 mt-2 pt-1"
+            class="rounded-sm dark:bg-slate-700 mt-2 pt-1"
             :class="{
               'bg-slate-100': global.theme === 'light',
               'bg-slate-700': global.theme !== 'light',
@@ -98,28 +155,28 @@
         <li>
           <a
             href="/#/project-config"
-            class="text-800 flex p-2 border-round items-center hover:surface-hover transition-colors transition-duration-150 cursor-pointer"
+            class="text-800 flex p-2 rounded-sm items-center hover:surface-hover transition-colors transition-duration-150 cursor-pointer"
           >
             <i class="fa-solid fa-people-group mr-3"></i>
             <span>Projekte verwalten</span>
           </a>
           <a
             href="/#/equivalents"
-            class="text-800 flex p-2 border-round items-center hover:surface-hover transition-colors transition-duration-150 cursor-pointer"
+            class="text-800 flex p-2 rounded-sm items-center hover:surface-hover transition-colors transition-duration-150 cursor-pointer"
           >
             <i class="fa-solid fa-list mr-3"></i>
             <span>Äquivalente verwalten</span>
           </a>
           <a
             href="/#/user"
-            class="text-800 flex p-2 border-round items-center hover:surface-hover transition-colors transition-duration-150 cursor-pointer"
+            class="text-800 flex p-2 rounded-sm items-center hover:surface-hover transition-colors transition-duration-150 cursor-pointer"
           >
             <i class="fa-solid fa-user mr-3"></i>
             <span>Benutzerprofil</span>
           </a>
           <a
             @click="logout()"
-            class="text-800 flex p-2 border-round items-center hover:surface-hover transition-colors transition-duration-150 cursor-pointer"
+            class="text-800 flex p-2 rounded-sm items-center hover:surface-hover transition-colors transition-duration-150 cursor-pointer"
           >
             <i class="fa-solid fa-right-from-bracket mr-3"></i>
             <span>Ausloggen</span>
@@ -140,10 +197,26 @@ import { useGlobalStore } from '../../stores/global';
 import { useRouter } from 'vue-router';
 import dataprovider from '../../services/dataprovider';
 import { useRoute } from 'vue-router';
+import { ref, computed } from 'vue';
 
 const route = useRoute();
 const router = useRouter();
 const global = useGlobalStore();
+const loading = ref(false);
+const colorMode = computed(() => global.theme);
+
+const logout = async () => {
+  await dataprovider.logout();
+  router.push('/login');
+};
+
+const switchReport = async () => {
+  loading.value = true;
+  await global.changeReport();
+  loading.value = false;
+};
+
+const showSidebar = ref(false);
 
 const sidebarAnalysis = [
   {
@@ -252,11 +325,6 @@ const sidebar = [
     items: sidebarSettings,
   },
 ];
-
-const logout = async () => {
-  await dataprovider.logout();
-  router.push('/login');
-};
 </script>
 
 <style>

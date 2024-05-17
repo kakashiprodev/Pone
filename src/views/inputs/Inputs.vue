@@ -217,7 +217,7 @@
                 selectedValue.facility != null && selectedValue.facility !== ''
               "
               @click="showChooseFacility = true"
-              class="bg-teal-300 text-white border-round m-2 flex items-center justify-center cursor-pointer p-2"
+              class="bg-teal-300 text-white rounded-sm m-2 flex items-center justify-center cursor-pointer p-2"
             >
               {{
                 global.facilitiesDict[selectedValue.facility]?.name ??
@@ -332,7 +332,7 @@
               selectedValue.equivalent !== ''
             "
             @click="showChooseEquivalent = true"
-            class="bg-teal-300 text-white border-round m-2 flex items-center justify-center cursor-pointer p-2"
+            class="bg-teal-300 text-white rounded-sm m-2 flex items-center justify-center cursor-pointer p-2"
           >
             {{
               global.equivalentDict[selectedValue.equivalent]?.specification1 ??
@@ -382,7 +382,7 @@
               selectedValue.facility != null && selectedValue.facility !== ''
             "
             @click="showChooseFacility = true"
-            class="bg-teal-300 text-white border-round m-2 flex items-center justify-center cursor-pointer p-2"
+            class="bg-teal-300 text-white rounded-sm m-2 flex items-center justify-center cursor-pointer p-2"
           >
             {{
               global.facilitiesDict[selectedValue.facility]?.name ??
@@ -747,6 +747,15 @@ if (!global.selectedReport && global.isLoggedIn) {
   console.log('not logged in. skip report check');
 }
 
+// watch global.selectedReport to reload the report
+watch(
+  () => global.selectedReport,
+  async () => {
+    await global.changeReport();
+    await getData();
+  },
+);
+
 const showDialog = ref(false);
 const emptyInput: InputEntry = {
   id: 'new',
@@ -913,7 +922,6 @@ const getData = async () => {
   if (scope3Active.value) {
     scope.push(3);
   }
-  console.log('get data', preSelectedFacility.value);
   data.value = await dataprovider.readUserInputs({
     scope,
     [preSelectedFacility.value != null ? 'facility' : '']:

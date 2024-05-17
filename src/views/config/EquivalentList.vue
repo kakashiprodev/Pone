@@ -234,22 +234,22 @@
       <div v-show="selectedValue.monthlyValues">
         <div class="grid grid-cols-12 mt-1">
           <div
-            class="col-span-3 items-center justify-center bg-teal-100 font-bold text-gray-900 border-round text-center"
+            class="col-span-3 items-center justify-center bg-teal-100 font-bold text-gray-900 rounded-sm text-center"
           >
             {{ 'Jan' }}
           </div>
           <div
-            class="col-span-3 items-center justify-center bg-teal-100 font-bold text-gray-900 border-round text-center"
+            class="col-span-3 items-center justify-center bg-teal-100 font-bold text-gray-900 rounded-sm text-center"
           >
             {{ 'Feb' }}
           </div>
           <div
-            class="col-span-3 items-center justify-center bg-teal-100 font-bold text-gray-900 border-round text-center"
+            class="col-span-3 items-center justify-center bg-teal-100 font-bold text-gray-900 rounded-sm text-center"
           >
             {{ 'Mar' }}
           </div>
           <div
-            class="col-span-3 items-center justify-center bg-teal-100 font-bold text-gray-900 border-round text-center"
+            class="col-span-3 items-center justify-center bg-teal-100 font-bold text-gray-900 rounded-sm text-center"
           >
             {{ 'Apr' }}
           </div>
@@ -290,22 +290,22 @@
         </div>
         <div class="grid grid-cols-12 mt-1">
           <div
-            class="col-span-3 items-center justify-center bg-teal-100 font-bold text-gray-900 border-round text-center"
+            class="col-span-3 items-center justify-center bg-teal-100 font-bold text-gray-900 rounded-sm text-center"
           >
             {{ 'Mai' }}
           </div>
           <div
-            class="col-span-3 items-center justify-center bg-teal-100 font-bold text-gray-900 border-round text-center"
+            class="col-span-3 items-center justify-center bg-teal-100 font-bold text-gray-900 rounded-sm text-center"
           >
             {{ 'Jun' }}
           </div>
           <div
-            class="col-span-3 items-center justify-center bg-teal-100 font-bold text-gray-900 border-round text-center"
+            class="col-span-3 items-center justify-center bg-teal-100 font-bold text-gray-900 rounded-sm text-center"
           >
             {{ 'Jul' }}
           </div>
           <div
-            class="col-span-3 items-center justify-center bg-teal-100 font-bold text-gray-900 border-round text-center"
+            class="col-span-3 items-center justify-center bg-teal-100 font-bold text-gray-900 rounded-sm text-center"
           >
             {{ 'Aug' }}
           </div>
@@ -346,22 +346,22 @@
         </div>
         <div class="grid grid-cols-12 mt-1">
           <div
-            class="col-span-3 items-center justify-center bg-teal-100 font-bold text-gray-900 border-round text-center"
+            class="col-span-3 items-center justify-center bg-teal-100 font-bold text-gray-900 rounded-sm text-center"
           >
             {{ 'Sep' }}
           </div>
           <div
-            class="col-span-3 items-center justify-center bg-teal-100 font-bold text-gray-900 border-round text-center"
+            class="col-span-3 items-center justify-center bg-teal-100 font-bold text-gray-900 rounded-sm text-center"
           >
             {{ 'Okt' }}
           </div>
           <div
-            class="col-span-3 items-center justify-center bg-teal-100 font-bold text-gray-900 border-round text-center"
+            class="col-span-3 items-center justify-center bg-teal-100 font-bold text-gray-900 rounded-sm text-center"
           >
             {{ 'Nov' }}
           </div>
           <div
-            class="col-span-3 items-center justify-center bg-teal-100 font-bold text-gray-900 border-round text-center"
+            class="col-span-3 items-center justify-center bg-teal-100 font-bold text-gray-900 rounded-sm text-center"
           >
             {{ 'Dez' }}
           </div>

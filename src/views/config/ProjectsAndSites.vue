@@ -1,5 +1,5 @@
 <template>
-  <h2>Projekte (/Unternehmen)</h2>
+  <h2>Unternehmen</h2>
   <Card>
     <template #content>
       <ProjectDefinition />

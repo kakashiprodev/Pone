@@ -50,8 +50,6 @@
           class="desktop-submenu-list flex gap-3 items-center m-3"
         >
           <slot name="end"></slot>
-          <DarkModeToggle />
-          <Button icon="fa-solid fa-right-from-bracket" @click="logout" />
         </div>
 
         <!-- Mobile Menu -->
@@ -65,7 +63,7 @@
 
         <div
           v-if="mobile && showEndMenu"
-          class="absolute right-0 bg-slate-50 border-round-xl rounded-md shadow-lg w-full p-3 shadow-3 z-1 flex flex-column gap-2"
+          class="absolute right-0 bg-slate-50 rounded-xl rounded-md shadow-lg w-full p-3 shadow-3 z-1 flex flex-column gap-2"
           :class="{
             'bg-slate-100': colorMode === 'light',
             'bg-slate-900': colorMode !== 'light',
@@ -75,12 +73,6 @@
           <div class="flex justify-end items-center">
             <slot name="before-end"></slot>
             <slot name="end"></slot>
-            <DarkModeToggle />
-            <Button
-              class="ml-3"
-              icon="fa-solid fa-right-from-bracket"
-              @click="logout"
-            />
           </div>
 
           <div class="flex flex-column grow">
@@ -90,22 +82,6 @@
           <div>
             <slot name="submenu"></slot>
           </div>
-
-          <!-- <ul class="m-0 list-none mobile-submenu-list">
-            <li class="flex justify-space-between">
-              <div class="flex">
-                <slot name="before-end"></slot>
-              </div>
-
-              <div>
-                <slot name="end"></slot>
-              </div>
-
-              <DarkModeToggle />
-            </li>
-
-            <slot name="sidebar" />
-          </ul> -->
         </div>
       </div>
     </div>
@@ -133,9 +109,6 @@
 <script setup lang="ts">
 import { ref, Ref, watch, computed, onMounted } from 'vue';
 import { useGlobalStore } from '../../stores/global';
-import DarkModeToggle from './DarkModeToggle.vue';
-import dataProvider from '../../services/dataprovider';
-import { router } from '../../router';
 const $global = useGlobalStore();
 
 const slots = defineSlots<{
@@ -251,11 +224,6 @@ defineExpose({
     showEndMenu.value = false;
   },
 });
-
-const logout = async () => {
-  await dataProvider.logout();
-  router.push('/login');
-};
 </script>
 
 <style lang="scss">

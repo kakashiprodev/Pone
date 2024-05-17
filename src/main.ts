@@ -43,6 +43,10 @@ import Listbox from 'primevue/listbox';
 import Panel from 'primevue/panel';
 import ProgressBar from 'primevue/progressbar';
 import Tag from 'primevue/tag';
+import Chip from 'primevue/chip';
+import Sidebar from 'primevue/sidebar';
+import Avatar from 'primevue/avatar';
+import FileUpload from 'primevue/fileupload';
 
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import './style.css';
@@ -87,6 +91,10 @@ app.component('Listbox', Listbox);
 app.component('Panel', Panel);
 app.component('ProgressBar', ProgressBar);
 app.component('Tag', Tag);
+app.component('Chip', Chip);
+app.component('Sidebar', Sidebar);
+app.component('Avatar', Avatar);
+app.component('FileUpload', FileUpload);
 
 app.directive('tooltip', Tooltip);
 

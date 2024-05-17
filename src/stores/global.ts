@@ -314,6 +314,8 @@ export const useGlobalStore = defineStore('global', {
         await this.addProject({
           id: 'new',
           name: 'Mein erstes Projekt',
+          logo: '',
+          logoId: null,
         });
         this.selectedProject = this.projects[0];
         this.targetOnSiteForProject = [];
@@ -633,7 +635,9 @@ export const useGlobalStore = defineStore('global', {
       if (report) {
         this.selectedReport = report;
       }
+      // get the targets for the selected report
       this.refreshTargets();
+
       // update user settings
       const user = await dataprovider.getUser();
       await dataprovider.updateUser({
