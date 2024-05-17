@@ -8,7 +8,7 @@
       :type="'bar'"
       :data="chartData"
       :options="scopeChartOptions"
-      class="h-30rem"
+      class="h-96"
     />
   </div>
 </template>

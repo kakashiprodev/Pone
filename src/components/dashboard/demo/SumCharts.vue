@@ -23,7 +23,7 @@
         type="bar"
         :data="chartDataScope1"
         :options="scopeChartOptions"
-        class="h-30rem"
+        class="h-96"
       />
     </div>
     <div v-if="chartDataScope2.datasets.length > 0" class="mt-5">
@@ -32,7 +32,7 @@
         type="bar"
         :data="chartDataScope2"
         :options="scopeChartOptions"
-        class="h-30rem"
+        class="h-96"
       />
     </div>
     <div v-if="chartDataScope3.datasets.length > 0" class="mt-5">
@@ -41,7 +41,7 @@
         type="bar"
         :data="chartDataScope3"
         :options="scopeChartOptions"
-        class="h-30rem"
+        class="h-96"
       />
     </div>
   </div>

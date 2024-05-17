@@ -5,7 +5,7 @@
     :type="'line'"
     :data="chartData"
     :options="scopeChartOptions"
-    class="h-30rem"
+    class="h-96"
   />
 </template>
 
