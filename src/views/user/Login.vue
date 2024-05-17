@@ -20,7 +20,7 @@
                 v-model="password"
               />
             </div>
-            <div class="w-full mt-5 flex justify-content-center">
+            <div class="w-full mt-5 flex justify-center">
               <Button
                 @click="login"
                 :loading="loading"
@@ -29,10 +29,10 @@
               />
             </div>
             <!-- Divider -->
-            <div class="w-full mt-5 flex justify-content-center">
+            <div class="w-full mt-5 flex justify-center">
               <Divider class="mt-5" />
             </div>
-            <div class="w-full mt-1 flex justify-content-center">
+            <div class="w-full mt-1 flex justify-center">
               <img
                 src="./../../assets/ms-symbollockup_signin_dark.svg"
                 alt="Microsoft"

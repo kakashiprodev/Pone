@@ -72,15 +72,17 @@
       <template #title> Basisdaten des CO<sub>2</sub>-Berichts </template>
       <template #content>
         <div
-          class="field grid"
+          class="mb-4 grid grid-cols-12"
           v-for="entry in Object.entries(reportSchemaGeneral.object)"
           :key="entry[0]"
         >
           <template v-if="!(entry[0] === 'id') && !(entry[0] === 'site')">
-            <label :for="entry[0]" class="col-12 mb-2 md:col-4 md:mb-0">{{
-              reportTranslations[entry[0]]?.label
-            }}</label>
-            <div class="col-12 md:col-8">
+            <label
+              :for="entry[0]"
+              class="col-span-12 mb-2 md:col-span-4 md:mb-0"
+              >{{ reportTranslations[entry[0]]?.label }}</label
+            >
+            <div class="col-span-12 md:col-span-8">
               <InputText
                 v-if="entry[1].schema === 'string'"
                 :id="entry[0]"
@@ -104,14 +106,16 @@
       <template #title> Ansprechpartner </template>
       <template #content>
         <div
-          class="field grid"
+          class="mb-4 grid grid-cols-12"
           v-for="entry in Object.entries(reportSchemaContact.object)"
           :key="entry[0]"
         >
-          <label :for="entry[0]" class="col-12 mb-2 md:col-4 md:mb-0">{{
-            reportTranslations[entry[0]]?.label
-          }}</label>
-          <div class="col-12 md:col-8">
+          <label
+            :for="entry[0]"
+            class="col-span-12 mb-2 md:col-span-4 md:mb-0"
+            >{{ reportTranslations[entry[0]]?.label }}</label
+          >
+          <div class="col-span-12 md:col-span-8">
             <InputText
               v-if="entry[1].schema === 'string'"
               :id="entry[0]"
@@ -129,14 +133,16 @@
       <template #title> Unternehmenszahlen </template>
       <template #content>
         <div
-          class="field grid"
+          class="mb-4 grid grid-cols-12"
           v-for="entry in Object.entries(reportSchemaYearlyFocus.object)"
           :key="entry[0]"
         >
-          <label :for="entry[0]" class="col-12 mb-2 md:col-4 md:mb-0">{{
-            reportTranslations[entry[0]]?.label
-          }}</label>
-          <div class="col-12 md:col-8">
+          <label
+            :for="entry[0]"
+            class="col-span-12 mb-2 md:col-span-4 md:mb-0"
+            >{{ reportTranslations[entry[0]]?.label }}</label
+          >
+          <div class="col-span-12 md:col-span-8">
             <!-- <InputText v-if="entry[1].schema === 'string'" :id="entry[0]" v-model="reportForm[entry[0]]"
                 class="w-full" /> -->
             <InputNumber

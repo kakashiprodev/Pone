@@ -9,7 +9,7 @@
   <Toolbar class="mb-2">
     <template #start>
       <InputText v-model="filter" placeholder="Filter" class="mr-1" />
-      <span class="flex align-content-center ml-2">
+      <span class="flex content-center ml-2">
         <Checkbox v-model="onlyActive" class="ml-1" :binary="true" />
         <span class="ml-2">Nur aktive Einträge anzeigen</span>
       </span>
@@ -41,7 +41,7 @@
       :readonly="true"
     >
       <template v-slot:toolbar>
-        <span class="ql-formats">
+        <span>
           <span v-show="false"> dummy </span>
         </span>
       </template>
@@ -55,14 +55,14 @@
     modal
     :header="selectedValue.id === 'new' ? 'Anlegen' : 'Bearbeiten'"
     :class="{
-      'w-6': windowWidth > 990,
+      'w-2/4': windowWidth > 990,
       'w-full': windowWidth < 990,
       'h-screen': windowWidth < 990,
     }"
   >
-    <div>
+    <div class="flex flex-col gap-4">
       <!-- Naming -->
-      <div class="field">
+      <div class="flex flex-col gap-2">
         <label for="facility-name">Name</label>
         <InputText
           class="w-full"
@@ -77,7 +77,7 @@
           Der Name der Anlage.
         </InlineMessage>
       </div>
-      <div class="field">
+      <div class="flex flex-col gap-2">
         <label for="facility-manufacturer">Hersteller</label>
         <InputText
           class="w-full"
@@ -92,7 +92,7 @@
           Der Hersteller der Anlage.
         </InlineMessage>
       </div>
-      <div class="field">
+      <div class="flex flex-col gap-2">
         <label for="facility-model">Modell/Typ</label>
         <InputText
           class="w-full"
@@ -108,7 +108,7 @@
         </InlineMessage>
       </div>
 
-      <div class="field">
+      <div class="flex flex-col gap-2">
         <label for="facility-model">Beschreibung</label>
         <Editor
           class="w-full"
@@ -126,7 +126,7 @@
         </InlineMessage>
       </div>
 
-      <div class="field">
+      <div class="flex flex-col gap-2">
         <label for="facility-shutdownDate"
           >Stilllegedatum (wenn Anlage außer Betrieb gesetzt wird)</label
         >
@@ -145,12 +145,13 @@
           nicht mehr berücksichtigt und in der Liste der Anlagen ausgeblendet.
         </InlineMessage>
       </div>
-    </div>
-    <div>
-      <Button
-        :label="selectedValue.id === 'new' ? 'Anlegen' : 'Speichern'"
-        @click="save"
-      />
+
+      <div>
+        <Button
+          :label="selectedValue.id === 'new' ? 'Anlegen' : 'Speichern'"
+          @click="save"
+        />
+      </div>
     </div>
   </Dialog>
 

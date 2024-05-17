@@ -1,5 +1,5 @@
 <template>
-  <div class="dark-mode-toggle flex align-items-center justify-content-end">
+  <div class="dark-mode-toggle flex items-center justify-end">
     <i v-if="colorMode === 'dark'" class="fa-solid fa-moon" />
     <i v-if="colorMode === 'light'" class="fa-solid fa-sun" />
 

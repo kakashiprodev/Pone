@@ -2,7 +2,7 @@
   <h3 class="m-auto text-center mt-5">Eingabe Assistent</h3>
   <div>
     <template v-for="(message, x) in chatMessages">
-      <Card class="w-12 mt-3 m-auto" v-if="x > 0">
+      <Card class="w-full mt-3 m-auto" v-if="x > 0">
         <template #subtitle>
           {{ message.role === 'system' ? 'Assistent' : 'Benutzer' }}
         </template>
@@ -15,7 +15,7 @@
     </template>
   </div>
   <div>
-    <Card class="w-12 mt-3 m-auto">
+    <Card class="w-full mt-3 m-auto">
       <template #content>
         <!-- progress spinner-->
         <div v-if="loading" class="flex justify-center mt-2 mb-2">

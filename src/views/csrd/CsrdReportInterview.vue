@@ -2,13 +2,17 @@
   <div class="border-solid border-b-2 border-gray-200 mb-4 p-2 border-round-lg">
     <h3>Interview basierte Informationserfassung für den CSRD-Bericht.</h3>
   </div>
-  <div class="grid">
+  <div class="grid grid-cols-12">
     <!-- PanelMenu für das vertikale Menü auf der linken Seite -->
-    <PanelMenu :model="items" class="col-4" v-model:expandedKeys="expandedKeys">
+    <PanelMenu
+      :model="items"
+      class="col-span-4"
+      v-model:expandedKeys="expandedKeys"
+    >
       <template #item="{ item }">
         <a
           @click="switchTopic(item)"
-          class="flex align-items-center px-3 py-2 cursor-pointer gap-1"
+          class="flex items-center px-3 py-2 cursor-pointer gap-1"
           :class="{ 'text-green-500': interviewStatus[item.data.id]?.done }"
         >
           <span :class="[item.icon, 'text-primary']" />
@@ -29,7 +33,7 @@
     </PanelMenu>
 
     <!-- Bereich für die Anzeige der Komponenten auf der rechten Seite -->
-    <div class="col-8">
+    <div class="col-span-8">
       <Card v-if="selectedItem && userAnswers[selectedItem.id]" class="mb-3">
         <template #content>
           <p>Bereits gesammelte Themen:</p>

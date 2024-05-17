@@ -9,7 +9,7 @@
     }"
   >
     <div
-      class="flex overflow-hidden w-full h-6rem justify-content-around"
+      class="flex overflow-hidden w-full h-24 justify-content-around"
       style="border-radius: 7px; border: 1px solid rgb(209, 209, 209)"
       :class="{
         lightmode: colorMode === 'light',
@@ -17,43 +17,37 @@
       }"
     >
       <!-- Logo -->
-      <div
-        class="flex-none flex align-items-center justify-content-centerm-1 w-7rem"
-      >
+      <div class="flex-none flex items-center justify-centerm-1 w-28">
         <slot name="logo"></slot>
       </div>
       <!-- AppName. Only visible if Desktop -->
       <div
         v-if="!mobile"
-        class="flex-none flex align-items-center justify-content-center m-1"
+        class="flex-none flex items-center justify-center m-1"
       >
         <slot name="appname"></slot>
       </div>
       <!-- First Items -->
-      <div class="flex-none flex align-items-center justify-content-center m-1">
+      <div class="flex-none flex items-center justify-center m-1">
         <slot name="start"></slot>
       </div>
       <!-- Center Items. Only visible if Desktop -->
       <div
         v-if="!mobile"
-        class="flex-grow-1 flex align-items-center align-items-center justify-content-center m-1"
+        class="grow flex items-center items-center justify-center m-1"
       >
         <slot name="center"></slot>
       </div>
       <!-- Last Items. Only visible if Desktop -->
-      <div
-        class="flex-none flex align-items-center align-items-center justify-content-center m-1"
-      >
+      <div class="flex-none flex items-center items-center justify-center m-1">
         <slot name="before-end"></slot>
       </div>
       <!-- Menu Items. Will be behind a menu if not Desktop -->
-      <div
-        class="flex-none flex align-items-center align-items-center justify-content-center m-1"
-      >
+      <div class="flex-none flex items-center items-center justify-center m-1">
         <!-- Desktop Menu -->
         <div
           v-if="!mobile"
-          class="desktop-submenu-list flex gap-3 align-items-center m-3"
+          class="desktop-submenu-list flex gap-3 items-center m-3"
         >
           <slot name="end"></slot>
           <DarkModeToggle />
@@ -71,14 +65,14 @@
 
         <div
           v-if="mobile && showEndMenu"
-          class="absolute right-0 surface-10 border-round-xl rounded-md shadow-lg w-full p-3 shadow-3 z-1 flex flex-column gap-2"
+          class="absolute right-0 bg-slate-50 border-round-xl rounded-md shadow-lg w-full p-3 shadow-3 z-1 flex flex-column gap-2"
           :class="{
             'bg-white': colorMode === 'light',
-            'surface-100': colorMode !== 'light',
+            'bg-slate-100': colorMode !== 'light',
           }"
           style="top: 5rem; min-height: calc(100vh - 5rem)"
         >
-          <div class="flex justify-content-end align-items-center">
+          <div class="flex justify-end items-center">
             <slot name="before-end"></slot>
             <slot name="end"></slot>
             <DarkModeToggle />
@@ -89,7 +83,7 @@
             />
           </div>
 
-          <div class="flex flex-column flex-grow-1">
+          <div class="flex flex-column grow">
             <slot name="sidebar" />
           </div>
 
@@ -119,7 +113,7 @@
 
   <!-- sidebar and Content -->
   <div
-    class="app-layout__content p-2 flex-grow-1"
+    class="app-layout__content p-2 grow"
     :class="{
       lightmode: colorMode === 'light',
       darkmode: colorMode !== 'light',
@@ -130,7 +124,7 @@
       <slot name="sidebar" />
     </div>
 
-    <div class="flex-grow-1 pl-5 pr-2 pb-2">
+    <div class="grow pl-5 pr-2 pb-2">
       <slot name="content" />
     </div>
   </div>

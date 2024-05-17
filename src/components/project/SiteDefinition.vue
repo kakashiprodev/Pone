@@ -41,9 +41,11 @@
   <div v-if="siteForm" class="mt-2" v-show="showEditEntry">
     <div class="card">
       <!-- <h5>Basisdaten des Standorts</h5> -->
-      <div class="field grid" v-show="false">
-        <label for="id" class="col-12 mb-2 md:col-4 md:mb-0">ID</label>
-        <div class="col-12 md:col-8">
+      <div class="mb-4 grid" v-show="false">
+        <label for="id" class="col-span-12 mb-2 md:col-span-4 md:mb-0"
+          >ID</label
+        >
+        <div class="col-span-12 md:col-span-8">
           <InputText
             id="id"
             class="w-full"
@@ -60,11 +62,11 @@
           Anzeige dient rein Support-Zwecken.
         </InlineMessage>
       </div>
-      <div class="field grid">
-        <label for="name" class="col-12 mb-2 md:col-4 md:mb-0"
+      <div class="mb-4 grid">
+        <label for="name" class="col-span-12 mb-2 md:col-span-4 md:mb-0"
           >Standortname</label
         >
-        <div class="col-12 md:col-8">
+        <div class="col-span-12 md:col-span-8">
           <InputText id="name" class="w-full" v-model="siteForm.name" />
         </div>
         <InlineMessage

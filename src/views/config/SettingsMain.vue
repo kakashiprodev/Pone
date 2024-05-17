@@ -9,12 +9,16 @@
       <template #item="{ item }">
         <router-link
           v-if="!item.onlyAdmin || globalStore.isGlobalAdmin"
-          class="flex align-items-center px-3 py-2 cursor-pointer no-underline text-color"
+          class="flex items-center px-3 py-2 cursor-pointer no-underline text-slate-800"
+          style="color: var(--primary-color)"
           :to="item.to ?? ''"
           :exact-active-class="'active-route'"
         >
-          <span :class="[item.icon, 'text-primary']" />
-          <span :class="['ml-2', { 'font-semibold': item.items }]">
+          <span :class="[item.icon]" style="color: var(--primary-color)" />
+          <span
+            class="text-slate-800"
+            :class="['ml-2', { 'font-semibold': item.items }]"
+          >
             {{ item.label }}
           </span>
         </router-link>

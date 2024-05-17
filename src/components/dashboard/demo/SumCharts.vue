@@ -7,7 +7,7 @@
         type="pie"
         :data="chartData"
         :options="chartOptions"
-        class="w-full md:w-30rem"
+        class="w-full md:w-96"
       />
     </div>
     <div v-else>
@@ -45,7 +45,7 @@
       />
     </div>
   </div>
-  <div v-else class="m-auto mt-5 w-1">
+  <div v-else class="m-auto mt-5 w-1/12">
     <ProgressSpinner />
   </div>
 </template>

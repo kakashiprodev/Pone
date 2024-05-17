@@ -10,11 +10,11 @@
     </template>
 
     <template #start>
-      <h3 class="text-600 ml-5 text-2xl">Sustainability Management</h3>
+      <h3 class="text-slate-600 ml-5 text-2xl">Sustainability Management</h3>
     </template>
 
     <template #end>
-      <ul class="list-none no-underline text-color flex align-items-center">
+      <ul class="list-none no-underline text-color flex items-center">
         <li style="float: left">
           <router-link
             to="/settings/project-reports"
@@ -27,7 +27,7 @@
             >
               <template #default>
                 <i class="fa-solid fa-building mr-2" />
-                <div class="flex flex-column">
+                <div class="flex flex-col">
                   <div class="font-bold">
                     {{ global.selectedProject?.name }}
                   </div>
@@ -42,9 +42,9 @@
         </li>
         <li style="float: left" class="ml-4">
           <div class="flex flex-wrap">
-            <span class="mr-3 text-600"> Zeige Hilfe </span>
+            <span class="mr-3 text-slate-600"> Zeige Hilfe </span>
             <InputSwitch
-              class="flex align-items-center justify-content-center"
+              class="flex items-center justify-center"
               v-model="global.showTooltips"
             />
           </div>
@@ -55,19 +55,20 @@
     <template #sidebar>
       <div>
         <template v-for="item in sidebar">
-          <div class="border-round surface-100 mt-2 pt-1">
+          <div class="border-round bg-slate-100 mt-2 pt-1">
             <h3 class="text-xs px-1 text-500">
               {{ item.header }}
             </h3>
-            <PanelMenu :model="item.items" class="w-1/5 less-padding">
+            <PanelMenu :model="item.items" class="less-padding">
               <template #item="{ item }">
                 <router-link
-                  class="flex align-items-center px-3 py-2 cursor-pointer no-underline text-color"
+                  class="flex items-center px-3 py-2 cursor-pointer no-underline text-slate-600"
                   :to="item.to ?? ''"
                   :exact-active-class="'active-route'"
                 >
                   <span
                     :class="[item.icon, 'text-primary', 'sidebar-item-custom']"
+                    style="color: var(--primary-color)"
                   />
                   <span
                     :class="[
@@ -91,28 +92,28 @@
         <li>
           <a
             href="/#/project-config"
-            class="text-800 flex p-2 border-round align-items-center hover:surface-hover transition-colors transition-duration-150 cursor-pointer"
+            class="text-800 flex p-2 border-round items-center hover:surface-hover transition-colors transition-duration-150 cursor-pointer"
           >
             <i class="fa-solid fa-people-group mr-3"></i>
             <span>Projekte verwalten</span>
           </a>
           <a
             href="/#/equivalents"
-            class="text-800 flex p-2 border-round align-items-center hover:surface-hover transition-colors transition-duration-150 cursor-pointer"
+            class="text-800 flex p-2 border-round items-center hover:surface-hover transition-colors transition-duration-150 cursor-pointer"
           >
             <i class="fa-solid fa-list mr-3"></i>
             <span>Äquivalente verwalten</span>
           </a>
           <a
             href="/#/user"
-            class="text-800 flex p-2 border-round align-items-center hover:surface-hover transition-colors transition-duration-150 cursor-pointer"
+            class="text-800 flex p-2 border-round items-center hover:surface-hover transition-colors transition-duration-150 cursor-pointer"
           >
             <i class="fa-solid fa-user mr-3"></i>
             <span>Benutzerprofil</span>
           </a>
           <a
             @click="logout()"
-            class="text-800 flex p-2 border-round align-items-center hover:surface-hover transition-colors transition-duration-150 cursor-pointer"
+            class="text-800 flex p-2 border-round items-center hover:surface-hover transition-colors transition-duration-150 cursor-pointer"
           >
             <i class="fa-solid fa-right-from-bracket mr-3"></i>
             <span>Ausloggen</span>

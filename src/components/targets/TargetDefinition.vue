@@ -19,12 +19,12 @@
   </div>
 
   <div
-    class="field grid"
+    class="mb-4 grid grid-cols-12"
     v-for="target in global.targetOnSiteForProject"
     :key="target.id"
   >
-    <label :for="target.id" class="col-2 mb-2">Jahr / Prozent</label>
-    <div class="col-10 flex">
+    <label :for="target.id" class="col-span-2 mb-2">Jahr / Prozent</label>
+    <div class="col-span-10">
       <InputNumber
         :useGrouping="false"
         :min="1960"

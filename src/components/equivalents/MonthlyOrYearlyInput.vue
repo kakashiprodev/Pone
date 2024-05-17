@@ -1,6 +1,6 @@
 <template>
-  <div class="grid mt-1">
-    <div class="field flex align-content-center">
+  <div class="grid mt-1 mb-4">
+    <div class="flex content-center">
       <label for="monthly-inputs"> Monatliche Eingaben nötig? </label>
       <Checkbox
         id="monthly-inputs"
@@ -11,30 +11,30 @@
     </div>
   </div>
   <div v-if="innerModelValue.monthlyValues">
-    <div class="grid mt-1">
+    <div class="grid grid-cols-4 mt-1">
       <div
-        class="col-3 align-items-center justify-content-center bg-teal-100 font-bold text-gray-900 border-round text-center"
+        class="items-center justify-center bg-teal-100 font-bold text-gray-900 border-round text-center"
       >
         {{ 'Jan' }}
       </div>
       <div
-        class="col-3 align-items-center justify-content-center bg-teal-100 font-bold text-gray-900 border-round text-center"
+        class="items-center justify-center bg-teal-100 font-bold text-gray-900 border-round text-center"
       >
         {{ 'Feb' }}
       </div>
       <div
-        class="col-3 align-items-center justify-content-center bg-teal-100 font-bold text-gray-900 border-round text-center"
+        class="items-center justify-center bg-teal-100 font-bold text-gray-900 border-round text-center"
       >
         {{ 'Mar' }}
       </div>
       <div
-        class="col-3 align-items-center justify-content-center bg-teal-100 font-bold text-gray-900 border-round text-center"
+        class="items-center justify-center bg-teal-100 font-bold text-gray-900 border-round text-center"
       >
         {{ 'Apr' }}
       </div>
     </div>
-    <div class="grid mt-1">
-      <div class="col-3 small-width-ctm">
+    <div class="grid grid-cols-4 mt-1">
+      <div class="small-width-ctm">
         <InputNumber
           :use-grouping="false"
           v-model="innerModelValue.rawValueJan"
@@ -44,7 +44,7 @@
           :suffix="inputUnit"
         />
       </div>
-      <div class="col-3 small-width-ctm">
+      <div class="small-width-ctm">
         <InputNumber
           :use-grouping="false"
           v-model="innerModelValue.rawValueFeb"
@@ -54,7 +54,7 @@
           :suffix="inputUnit"
         />
       </div>
-      <div class="col-3 small-width-ctm">
+      <div class="small-width-ctm">
         <InputNumber
           :use-grouping="false"
           v-model="innerModelValue.rawValueMar"
@@ -64,7 +64,7 @@
           :suffix="inputUnit"
         />
       </div>
-      <div class="col-3 small-width-ctm">
+      <div class="small-width-ctm">
         <InputNumber
           :use-grouping="false"
           v-model="innerModelValue.rawValueApr"
@@ -75,30 +75,30 @@
         />
       </div>
     </div>
-    <div class="grid mt-1">
+    <div class="grid grid-cols-4 mt-1">
       <div
-        class="col-3 align-items-center justify-content-center bg-teal-100 font-bold text-gray-900 border-round text-center"
+        class="items-center justify-center bg-teal-100 font-bold text-gray-900 border-round text-center"
       >
         {{ 'Mai' }}
       </div>
       <div
-        class="col-3 align-items-center justify-content-center bg-teal-100 font-bold text-gray-900 border-round text-center"
+        class="items-center justify-center bg-teal-100 font-bold text-gray-900 border-round text-center"
       >
         {{ 'Jun' }}
       </div>
       <div
-        class="col-3 align-items-center justify-content-center bg-teal-100 font-bold text-gray-900 border-round text-center"
+        class="items-center justify-center bg-teal-100 font-bold text-gray-900 border-round text-center"
       >
         {{ 'Jul' }}
       </div>
       <div
-        class="col-3 align-items-center justify-content-center bg-teal-100 font-bold text-gray-900 border-round text-center"
+        class="items-center justify-center bg-teal-100 font-bold text-gray-900 border-round text-center"
       >
         {{ 'Aug' }}
       </div>
     </div>
-    <div class="grid mt-1">
-      <div class="col-3 small-width-ctm">
+    <div class="grid grid-cols-4 mt-1">
+      <div class="small-width-ctm">
         <InputNumber
           :use-grouping="false"
           v-model="innerModelValue.rawValueMay"
@@ -108,7 +108,7 @@
           :suffix="inputUnit"
         />
       </div>
-      <div class="col-3 small-width-ctm">
+      <div class="small-width-ctm">
         <InputNumber
           :use-grouping="false"
           v-model="innerModelValue.rawValueJun"
@@ -118,7 +118,7 @@
           :suffix="inputUnit"
         />
       </div>
-      <div class="col-3 small-width-ctm">
+      <div class="small-width-ctm">
         <InputNumber
           :use-grouping="false"
           v-model="innerModelValue.rawValueJul"
@@ -128,7 +128,7 @@
           :suffix="inputUnit"
         />
       </div>
-      <div class="col-3 small-width-ctm">
+      <div class="small-width-ctm">
         <InputNumber
           :use-grouping="false"
           v-model="innerModelValue.rawValueAug"
@@ -139,30 +139,30 @@
         />
       </div>
     </div>
-    <div class="grid mt-1">
+    <div class="grid grid-cols-4 mt-1">
       <div
-        class="col-3 align-items-center justify-content-center bg-teal-100 font-bold text-gray-900 border-round text-center"
+        class="items-center justify-center bg-teal-100 font-bold text-gray-900 border-round text-center"
       >
         {{ 'Sep' }}
       </div>
       <div
-        class="col-3 align-items-center justify-content-center bg-teal-100 font-bold text-gray-900 border-round text-center"
+        class="items-center justify-center bg-teal-100 font-bold text-gray-900 border-round text-center"
       >
         {{ 'Okt' }}
       </div>
       <div
-        class="col-3 align-items-center justify-content-center bg-teal-100 font-bold text-gray-900 border-round text-center"
+        class="items-center justify-center bg-teal-100 font-bold text-gray-900 border-round text-center"
       >
         {{ 'Nov' }}
       </div>
       <div
-        class="col-3 align-items-center justify-content-center bg-teal-100 font-bold text-gray-900 border-round text-center"
+        class="items-center justify-center bg-teal-100 font-bold text-gray-900 border-round text-center"
       >
         {{ 'Dez' }}
       </div>
     </div>
-    <div class="grid mt-1">
-      <div class="col-3 small-width-ctm">
+    <div class="grid grid-cols-4 mt-1">
+      <div class="small-width-ctm">
         <InputNumber
           :use-grouping="false"
           v-model="innerModelValue.rawValueSep"
@@ -172,7 +172,7 @@
           :suffix="inputUnit"
         />
       </div>
-      <div class="col-3 small-width-ctm">
+      <div class="small-width-ctm">
         <InputNumber
           :use-grouping="false"
           v-model="innerModelValue.rawValueOct"
@@ -182,7 +182,7 @@
           :suffix="inputUnit"
         />
       </div>
-      <div class="col-3 small-width-ctm">
+      <div class="small-width-ctm">
         <InputNumber
           :use-grouping="false"
           v-model="innerModelValue.rawValueNov"
@@ -192,7 +192,7 @@
           :suffix="inputUnit"
         />
       </div>
-      <div class="col-3 small-width-ctm">
+      <div class="small-width-ctm">
         <InputNumber
           :use-grouping="false"
           v-model="innerModelValue.rawValueDec"
@@ -203,7 +203,7 @@
         />
       </div>
     </div>
-    <div class="field">
+    <div class="mt-4 flex flex-col gap-2">
       <label for="userinput-rawvalue">
         Summe {{ inputUnit !== '' ? ' in ' + inputUnit : '' }}
       </label>
@@ -220,7 +220,7 @@
     </div>
   </div>
   <div v-else>
-    <div class="field">
+    <div class="flex flex-col gap-2">
       <label for="userinput-rawvalue">
         Eingabewert {{ inputUnit !== '' ? ' in ' + inputUnit : '' }}
       </label>

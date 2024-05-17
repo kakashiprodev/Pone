@@ -15,7 +15,7 @@
       </Dialog>
 
       <template v-if="Object.keys(categorySumDict).length > 0">
-        <div class="flex justify-center">
+        <div class="flex">
           <ApexGaugeWrapper
             v-for="cat in Object.keys(categorySumDict)"
             :key="cat"
@@ -29,7 +29,7 @@
       <DataTable :value="actions" class="mt-5">
         <Column header="Jahr">
           <template #body="{ data }">
-            <span class="flex justify-content-end text-right font-bold">
+            <span class="flex justify-end text-right font-bold">
               <span
                 v-if="
                   data.finishedUntilIs != null && data.finishedUntilIs != ''
@@ -46,7 +46,7 @@
         <Column field="name" header="Name"></Column>
         <Column header="Beschreibung (Ziel)">
           <template #body="{ data }">
-            <div class="flex align-content-center flex-wrap">
+            <div class="flex content-center flex-wrap">
               <span
                 v-html="data.descriptionTargetValue"
                 style="cursor: pointer"
@@ -81,7 +81,7 @@
         </Column>
         <Column header="Menge">
           <template #body="{ data }">
-            <span class="flex justify-content-end text-right">
+            <span class="flex justify-end text-right">
               <nobr v-if="data.progress < 100">
                 {{ toTons(data.targetValueAbsolutPlanned).toLocaleString() }} to
               </nobr>

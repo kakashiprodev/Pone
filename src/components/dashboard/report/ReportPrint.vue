@@ -4,7 +4,6 @@
     <Button
       label="Report erstellen"
       icon="fa-solid fa-print"
-      class="p-button-rounded p-button-success p-button-lg"
       @click="goToReport()"
     />
   </div>
