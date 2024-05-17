@@ -21,7 +21,7 @@
     "@observablehq/plot": "^0.6.13",
     "apexcharts": "^3.46.0",
     "chart.js": "^4.4.0",
-    "openai": "^4.23.0",
+    "openai": "^4.47.1",
     "pinia": "^2.1.6",
     "pocketbase": "^0.18.2",
     "primeflex": "^3.3.1",
