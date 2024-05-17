@@ -399,7 +399,7 @@ export const useGlobalStore = defineStore('global', {
           });
         });
         // reload targets
-        this.refreshTargets();
+        await this.refreshTargets();
 
         copied = targets.length;
       }

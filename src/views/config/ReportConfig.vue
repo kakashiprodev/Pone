@@ -23,6 +23,14 @@
         :disabled="reportForm?.id === 'new'"
         class="ml-1"
       />
+      <Button
+        v-if="global.targetOnSiteForProject.length < 1"
+        icon="fa-solid fa-copy"
+        @click="copyTargetsFromYearBefore()"
+        class="ml-1"
+        v-tooltip="'Ziele aus dem Vorjahr kopieren'"
+      />
+
       <ConfirmDialog />
       <Button
         v-if="global.selectedReport"
@@ -31,13 +39,6 @@
         label="Löschen"
         :disabled="reportForm?.id === 'new'"
         class="ml-1"
-      />
-      <Button
-        v-if="global.targetOnSiteForProject.length < 1"
-        icon="fa-solid fa-copy"
-        @click="copyTargetsFromYearBefore()"
-        class="ml-1"
-        v-tooltip="'Ziele aus dem Vorjahr kopieren'"
       />
 
       <Button
@@ -93,7 +94,9 @@
                 v-if="entry[1].schema === 'number'"
                 :id="entry[0]"
                 v-model="reportForm[entry[0]]"
-                :useGrouping="false"
+                :useGrouping="
+                  reportTranslations[entry[0]]?.numberGrouping ?? false
+                "
                 class="w-full"
               />
             </div>
@@ -149,7 +152,10 @@
               v-if="entry[1].schema === 'number'"
               :id="entry[0]"
               v-model="reportForm[entry[0]]"
-              :useGrouping="false"
+              :useGrouping="
+                reportTranslations[entry[0]]?.numberGrouping ?? false
+              "
+              :suffix="reportTranslations[entry[0]]?.suffix ?? ''"
               class="w-full"
             />
           </div>
@@ -262,6 +268,8 @@ const reportTranslations: {
   [name: string]: {
     label: string;
     category: string;
+    numberGrouping?: boolean;
+    suffix?: string;
   };
 } = {
   id: { label: 'Report-ID', category: 'general' },
@@ -277,8 +285,17 @@ const reportTranslations: {
   contactTelephone: { label: 'Telefon', category: 'contact' },
   contactEmail: { label: 'E-Mail', category: 'contact' },
   contactDomain: { label: 'Abteilung', category: 'contact' },
-  countEmployees: { label: 'Anzahl Mitarbeiter', category: 'yearly-focus' },
-  businessTurnover: { label: 'Jahresumsatz', category: 'yearly-focus' },
+  countEmployees: {
+    label: 'Anzahl Mitarbeiter',
+    category: 'yearly-focus',
+    numberGrouping: true,
+  },
+  businessTurnover: {
+    label: 'Jahresumsatz',
+    category: 'yearly-focus',
+    numberGrouping: true,
+    suffix: '€',
+  },
   baseYear: { label: 'Referenzjahr', category: 'yearly-focus' },
 };
 

@@ -545,7 +545,7 @@
     </Column>
     <Column field="sumValue" header="Menge (Jahr)" sortable>
       <template #body="{ data }">
-        <span class="flex justify-end text-right">
+        <Chip class="flex justify-end text-right">
           {{
             roundStringWithDecimals(
               displayInTons ? toTons(data.sumValue) : data.sumValue,
@@ -553,7 +553,7 @@
             )
           }}
           {{ displayInTons ? ' to' : ' kg' }}
-        </span>
+        </Chip>
       </template>
     </Column>
     <Column field="comment" header="Kommentar"></Column>

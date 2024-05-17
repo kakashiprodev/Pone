@@ -111,7 +111,7 @@
 
     <template #sidebar>
       <div>
-        <template v-for="item in sidebar">
+        <template v-for="item in sidebar.filter((i) => !i.hide)">
           <div
             class="rounded-sm dark:bg-slate-700 mt-2 pt-1"
             :class="{
@@ -272,7 +272,7 @@ const sidebarCsrd = [
     label: 'CSRD Interview',
     icon: 'fa-solid fa-magic',
     to: '/csrd-report-interview',
-    visible: true,
+    visible: global.isGlobalAdmin,
   },
 ];
 
@@ -319,6 +319,7 @@ const sidebar = [
   {
     header: 'Berichtswesen',
     items: sidebarCsrd,
+    hide: !global.isGlobalAdmin,
   },
   {
     header: 'Einstellungen',

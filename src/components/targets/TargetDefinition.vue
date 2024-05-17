@@ -11,61 +11,66 @@
   </InlineMessage>
 
   <!-- head row -->
-  <div class="mt-2 mb-5 w-full">
-    Jahr / CO<sub>2</sub>-Ausstoß in %.<br />
-    100% bedeutet volle Klimeneutralität.<br />
+  <InlineMessage severity="info" class="w-full">
+    Die Eingaben beziehen sich auf das Referenzjahr des Berichts. 100% bedeutet
+    volle Klimeneutralität.<br />
     0% = Keine Einsparung. Verbrauch ist gleich dem des angegebenen Basisjahr
     des Berichts.
-  </div>
+  </InlineMessage>
 
-  <div
-    class="mb-4 grid grid-cols-12"
-    v-for="target in global.targetOnSiteForProject"
-    :key="target.id"
-  >
-    <label :for="target.id" class="col-span-2 mb-2">Jahr / Prozent</label>
-    <div class="col-span-10">
-      <InputNumber
-        :useGrouping="false"
-        :min="1960"
-        :max="2100"
-        :id="target.id"
-        class="mr-2"
-        v-model="target.year"
-      />
-      <InputNumber
-        :useGrouping="false"
-        :min="0"
-        :max="100"
-        :id="target.id"
-        v-model="target.percentage"
-        suffix=" %"
-      />
-      <!-- icon as delete button -->
-      <Button
-        icon="fa-solid fa-save"
-        @click="global.updateTarget(target)"
-        class="ml-1"
-      />
-      <Button
-        icon="fa-solid fa-trash"
-        @click="global.dropTarget(target)"
-        class="ml-1"
-      />
-    </div>
+  <div class="grid justify-items-end">
+    <Button
+      class="mt-5 mb-3"
+      icon="fa-solid fa-plus"
+      @click="
+        global.addTarget({
+          id: 'new',
+          year: 2050,
+          percentage: 0,
+          report: global.selectedReport?.id ?? '',
+        })
+      "
+      label="Neue Abstufung hinzufügen"
+    />
   </div>
-  <Button
-    icon="fa-solid fa-plus"
-    @click="
-      global.addTarget({
-        id: 'new',
-        year: 2050,
-        percentage: 0,
-        report: global.selectedReport?.id ?? '',
-      })
-    "
-    label="Neue Abstufung hinzufügen"
-  />
+  <div class="flex flex-col gap-3">
+    <Card v-for="target in global.targetOnSiteForProject" :key="target.id">
+      <template #content>
+        <div class="mt-4 grid grid-cols-10 items-center justify-items-center">
+          <label :for="target.id" class="col-span-2"> Jahr </label>
+          <InputNumber
+            class="col-span-2"
+            :useGrouping="false"
+            :min="1960"
+            :max="2100"
+            :id="target.id"
+            v-model="target.year"
+          />
+          <label :for="target.id" class="col-span-2">Einsparung in % </label>
+          <InputNumber
+            class="col-span-2"
+            :useGrouping="false"
+            :min="0"
+            :max="100"
+            :id="target.id"
+            v-model="target.percentage"
+            suffix=" %"
+          />
+          <div class="col-span-2 flex gap-1">
+            <!-- icon as delete button -->
+            <Button
+              icon="fa-solid fa-save"
+              @click="global.updateTarget(target)"
+            />
+            <Button
+              icon="fa-solid fa-trash"
+              @click="global.dropTarget(target)"
+            />
+          </div>
+        </div>
+      </template>
+    </Card>
+  </div>
 </template>
 
 <script setup lang="ts">
