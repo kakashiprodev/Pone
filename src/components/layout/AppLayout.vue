@@ -67,8 +67,8 @@
           v-if="mobile && showEndMenu"
           class="absolute right-0 bg-slate-50 border-round-xl rounded-md shadow-lg w-full p-3 shadow-3 z-1 flex flex-column gap-2"
           :class="{
-            'bg-white': colorMode === 'light',
-            'bg-slate-100': colorMode !== 'light',
+            'bg-slate-100': colorMode === 'light',
+            'bg-slate-900': colorMode !== 'light',
           }"
           style="top: 5rem; min-height: calc(100vh - 5rem)"
         >

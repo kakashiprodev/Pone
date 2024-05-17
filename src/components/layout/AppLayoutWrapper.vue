@@ -55,7 +55,13 @@
     <template #sidebar>
       <div>
         <template v-for="item in sidebar">
-          <div class="border-round bg-slate-100 mt-2 pt-1">
+          <div
+            class="border-round dark:bg-slate-700 mt-2 pt-1"
+            :class="{
+              'bg-slate-100': global.theme === 'light',
+              'bg-slate-700': global.theme !== 'light',
+            }"
+          >
             <h3 class="text-xs px-1 text-500">
               {{ item.header }}
             </h3>
