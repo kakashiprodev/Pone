@@ -1,5 +1,6 @@
 <template>
   <DataTable
+    :showGridlines="false"
     v-if="data != null && data.length > 0"
     :value="data"
     class="cst-no-hover"

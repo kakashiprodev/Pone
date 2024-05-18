@@ -26,7 +26,7 @@
         </div>
       </template>
 
-      <DataTable :value="actions" class="mt-5">
+      <DataTable :value="actions" class="mt-5" :showGridlines="false">
         <Column header="Jahr">
           <template #body="{ data }">
             <span class="flex justify-end text-right font-bold">

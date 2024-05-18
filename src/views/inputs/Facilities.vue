@@ -156,9 +156,18 @@
   </Dialog>
 
   <ConfirmPopup></ConfirmPopup>
-  <DataTable v-if="data.length > 0" :value="filteredData" class="cst-no-hover">
+  <DataTable
+    v-if="data.length > 0"
+    :value="filteredData"
+    class="cst-no-hover text-sm"
+    :showGridlines="false"
+  >
     <!-- <Column field="id" header="ID"></Column> -->
-    <Column field="name" header="Name"></Column>
+    <Column field="name" header="Name">
+      <template #body="{ data }">
+        <Chip class="text-sm">{{ data.name }}</Chip>
+      </template>
+    </Column>
     <Column field="manufacturer" header="Hersteller"></Column>
     <Column field="model" header="Modell/Typ"></Column>
     <Column header="Beschreibung">

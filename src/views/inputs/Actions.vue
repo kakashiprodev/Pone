@@ -386,7 +386,8 @@
   <DataTable
     v-if="actions.length > 0"
     :value="filteredActions"
-    class="cst-no-hover"
+    class="cst-no-hover text-sm"
+    :showGridlines="false"
   >
     <Column field="name" header="Name"></Column>
     <Column field="status" header="Status">
@@ -404,16 +405,19 @@
     </Column>
     <!-- <Column field="shortDescription" header="Kurzbeschreibung"></Column>
         <Column field="longDescription" header="Langbeschreibung"></Column> -->
-    <Column field="targetValueAbsolutPlanned" header="Zieleinsparung in kg">
+    <Column field="targetValueAbsolutPlanned" header="Zieleinsparung">
       <template #body="{ data }">
-        <span class="flex justify-end text-right">
-          {{ data.targetValueAbsolutPlanned }}
-        </span>
+        <Chip class="text-sm"
+          >{{ toTons(data.targetValueAbsolutPlanned)
+          }}{{ getGlobalUnit() }}</Chip
+        >
       </template>
     </Column>
     <Column field="responsible" header="Verantwortlich"></Column>
     <Column field="progress" header="Fortschritt">
-      <template #body="{ data }"> {{ data.progress }} % </template>
+      <template #body="{ data }">
+        <Chip class="text-sm">{{ data.progress }}%</Chip>
+      </template>
     </Column>
     <Column field="relevant" header="Relevant">
       <template #body="{ data }">
@@ -472,6 +476,7 @@ import {
   maxValue,
   // nullable,
 } from 'valibot';
+import { toTons, getGlobalUnit } from '@/services/pipes';
 
 const global = useGlobalStore();
 const windowWidth = ref(window.innerWidth);

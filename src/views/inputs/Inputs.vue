@@ -8,6 +8,10 @@
     bearbeiten. Die Eingaben können außerdem als CSV-Datei exportiert werden.
   </InlineMessage>
 
+  <div class="w-full p-3 mb-3">
+    <MeterGroup :value="sumsByCategory" />
+  </div>
+
   <Toolbar class="mb-2">
     <template #start>
       <template v-if="preSelectedScope === 'all'">
@@ -500,9 +504,10 @@
 
   <ConfirmPopup></ConfirmPopup>
   <DataTable
+    :showGridlines="false"
     v-if="global.equivalents.length > 0"
     :value="data"
-    class="cst-no-hover"
+    class="cst-no-hover text-sm"
   >
     <!-- <Column field="id" header="ID"></Column> -->
     <Column
@@ -521,10 +526,10 @@
     <Column field="name" header="Name" sortable></Column>
     <Column field="rawValue" header="Eingabewert" sortable>
       <template #body="{ data }">
-        <span class="flex justify-end text-right">
+        <Chip class="flex justify-end text-right bg-slate-200 text-sm">
           {{ roundStringWithDecimals(data.rawValue, 3) }}
           {{ global.equivalentDict[data.equivalent]?.in ?? 'Reference error' }}
-        </span>
+        </Chip>
       </template>
     </Column>
     <Column field="equivalent" header="Äquivalent" sortable>
@@ -545,7 +550,7 @@
     </Column>
     <Column field="sumValue" header="Menge (Jahr)" sortable>
       <template #body="{ data }">
-        <Chip class="flex justify-end text-right">
+        <Chip class="flex justify-end text-right bg-slate-200 text-sm">
           {{
             roundStringWithDecimals(
               displayInTons ? toTons(data.sumValue) : data.sumValue,
@@ -609,6 +614,8 @@ import {
   boolean,
 } from 'valibot';
 import { roundStringWithDecimals, toTons } from '../../services/pipes';
+import { MeterItem } from 'primevue/metergroup';
+import { getMonochromeColorPalette } from '@/services/colors';
 
 const router = useRouter();
 
@@ -937,6 +944,39 @@ const sumValue = computed(() => {
   return data.value.reduce((acc, item) => {
     return acc + item.sumValue;
   }, 0);
+});
+
+/**
+ * Calculate the relative percentage part for the whole sum by category
+ * Will get the sumValue as whole sum and calculate the percentage part for each category
+ */
+const sumsByCategory = computed(() => {
+  const relativeSums: MeterItem[] = [];
+  // { label: 'Apps', color: '#34d399', value: 16 }
+
+  data.value.forEach((item) => {
+    const index = relativeSums.findIndex((i) => i.label === item.category);
+    if (index === -1) {
+      relativeSums.push({
+        label: item.category ?? '',
+        color: '#34d399',
+        value: item.sumValue,
+        icon: '',
+      });
+    } else {
+      relativeSums[index].value += item.sumValue;
+    }
+  });
+  // then calculate the percentage
+  relativeSums.forEach((item) => {
+    item.value = (item.value / sumValue.value) * 100;
+  });
+  // add colors
+  const colors = getMonochromeColorPalette(relativeSums.length);
+  relativeSums.forEach((item, index) => {
+    item.color = colors[index];
+  });
+  return relativeSums;
 });
 
 // export

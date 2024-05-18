@@ -177,10 +177,7 @@ const renderChart = () => {
         return {
           name: key,
           data: roundArray(
-            toTonsArray(
-              props.data.timeseries[key].map((entry) => entry.sum),
-              globalStore.displayInTons,
-            ),
+            toTonsArray(props.data.timeseries[key].map((entry) => entry.sum)),
           ),
         };
       });

@@ -38,7 +38,11 @@
       'h-screen': windowWidth < 990,
     }"
   >
-    <DataTable class="cst-no-hover mt-3" :value="filteredEquivalents">
+    <DataTable
+      class="cst-no-hover mt-3"
+      :value="filteredEquivalents"
+      :showGridlines="false"
+    >
       <Column field="specification1" header="Name"></Column>
       <Column field="comment" header="Kommentar"></Column>
       <Column field="in" header="Eingang"></Column>

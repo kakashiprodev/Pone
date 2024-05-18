@@ -62,6 +62,7 @@
     </div>
   </div>
   <DataTable
+    :showGridlines="false"
     class="cst-no-hover"
     :value="filteredEquivalents"
     selection-mode="single"

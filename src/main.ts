@@ -47,6 +47,7 @@ import Chip from 'primevue/chip';
 import Sidebar from 'primevue/sidebar';
 import Avatar from 'primevue/avatar';
 import FileUpload from 'primevue/fileupload';
+import MeterGroup from 'primevue/metergroup';
 
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import './style.css';
@@ -95,6 +96,7 @@ app.component('Chip', Chip);
 app.component('Sidebar', Sidebar);
 app.component('Avatar', Avatar);
 app.component('FileUpload', FileUpload);
+app.component('MeterGroup', MeterGroup);
 
 app.directive('tooltip', Tooltip);
 

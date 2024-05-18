@@ -128,10 +128,7 @@ const renderChart = () => {
         return {
           x: key,
           y: round(
-            toTons(
-              sum(props.data.timeseries[key].map((entry) => entry.sum)),
-              globalStore.displayInTons,
-            ),
+            toTons(sum(props.data.timeseries[key].map((entry) => entry.sum))),
           ),
         };
       });
