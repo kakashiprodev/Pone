@@ -216,10 +216,10 @@ const getData = async () => {
     <ReportTimeseriesQuery>{
       projectId: global.selectedProject?.id || '',
       siteIds: props.sites,
-      years: [global.selectedReport?.year ?? -1],
       filter: {
         scope:
           selectedScopes.value.length > 0 ? selectedScopes.value : undefined,
+        years: [global.selectedReport?.year ?? -1],
       },
     },
     'scope',
@@ -229,10 +229,10 @@ const getData = async () => {
     <ReportTimeseriesQuery>{
       projectId: global.selectedProject?.id || '',
       siteIds: props.sites,
-      years: availableYears,
       filter: {
         scope:
           selectedScopes.value.length > 0 ? selectedScopes.value : undefined,
+        years: availableYears,
       },
     },
     'scope',
@@ -263,10 +263,10 @@ const getData = async () => {
     <ReportTimeseriesQuery>{
       projectId: global.selectedProject?.id || '',
       siteIds: props.sites,
-      years: availableYears,
       filter: {
         scope:
           selectedScopes.value.length > 0 ? selectedScopes.value : undefined,
+        years: availableYears,
       },
     },
     'category',

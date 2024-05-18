@@ -327,7 +327,6 @@ const plainDataQuery: ComputedRef<ReportTimeseriesQuery> = computed(() => {
   return {
     projectId: global.selectedProject?.id || '',
     siteIds: selectedSiteIds.value,
-    years: selectedYears.value,
     filter: {
       scope:
         useFilter.value && selectedScopes.value.length > 0
@@ -341,6 +340,7 @@ const plainDataQuery: ComputedRef<ReportTimeseriesQuery> = computed(() => {
         useFilter.value && selectedFacilities.value.length
           ? selectedFacilities.value
           : undefined,
+      years: selectedYears.value,
     },
   };
 });

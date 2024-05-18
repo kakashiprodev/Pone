@@ -152,9 +152,9 @@ const getData = async () => {
     <ReportTimeseriesQuery>{
       projectId: global.selectedProject?.id || '',
       siteIds: props.sites,
-      years: [global.selectedReport?.year ?? -1],
       filter: {
         scope: [props.scope],
+        years: [global.selectedReport?.year ?? -1],
       },
     },
     'category',
@@ -164,9 +164,9 @@ const getData = async () => {
     <ReportTimeseriesQuery>{
       projectId: global.selectedProject?.id || '',
       siteIds: props.sites,
-      years: [global.selectedReport?.year ?? -1],
       filter: {
         scope: [props.scope],
+        years: [global.selectedReport?.year ?? -1],
       },
     },
     'facility',
