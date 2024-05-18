@@ -112,6 +112,8 @@ export const useGlobalStore = defineStore('global', {
       this.isLoading = true;
 
       const user = await dataprovider.getUser();
+      // get user settings
+      this.getUserSettings();
 
       await this.refreshProjects();
       // check the last selected entries if they are still valid

@@ -6,53 +6,48 @@
   </p>
   <Toolbar class="w-full">
     <template #start>
-      <span>Ausgewählter Bericht</span>
-      <Dropdown
-        v-model="global.selectedReport"
-        :options="availableReports"
-        optionLabel="year"
-        placeholder="Select a Report"
-        :disabled="reportForm?.id === 'new'"
-        class="ml-3"
-        @change="global.changeReport()"
-      />
-      <Button
-        icon="fa-solid fa-plus"
-        @click="reportForm = global.getNewReport()"
-        label="Hinzufügen"
-        :disabled="reportForm?.id === 'new'"
-        class="ml-1"
-      />
-      <Button
-        v-if="global.targetOnSiteForProject.length < 1"
-        icon="fa-solid fa-copy"
-        @click="copyTargetsFromYearBefore()"
-        class="ml-1"
-        v-tooltip="'Ziele aus dem Vorjahr kopieren'"
-      />
+      <div class="flex gap-2 items-center">
+        <span>Ausgewählter Bericht</span>
+        <Chip class="text-lg bg-slate-200">
+          {{ global.selectedReport?.year }}
+        </Chip>
+      </div>
+    </template>
+    <template #end>
+      <div class="grow flex gap-1">
+        <Button
+          icon="fa-solid fa-plus"
+          @click="reportForm = global.getNewReport()"
+          label="Hinzufügen"
+          v-show="reportForm?.id !== 'new'"
+        />
+        <Button
+          v-if="global.targetOnSiteForProject.length < 1"
+          icon="fa-solid fa-copy"
+          @click="copyTargetsFromYearBefore()"
+          v-tooltip="'Ziele aus dem Vorjahr kopieren'"
+        />
 
-      <ConfirmDialog />
-      <Button
-        v-if="global.selectedReport"
-        icon="fa-solid fa-trash"
-        @click="confirmDelete(global.selectedReport, $event)"
-        label="Löschen"
-        :disabled="reportForm?.id === 'new'"
-        class="ml-1"
-      />
-
-      <Button
-        class="ml-1"
-        v-if="reportForm"
-        @click="saveReport()"
-        :label="reportForm.id === 'new' ? 'Hinzufügen' : 'Speichern'"
-      />
-      <Button
-        v-if="reportForm?.id === 'new'"
-        class="ml-1"
-        label="Abbrechen"
-        @click="reportForm = global.selectedReport"
-      />
+        <ConfirmDialog />
+        <Button
+          v-if="global.selectedReport"
+          icon="fa-solid fa-trash"
+          @click="confirmDelete(global.selectedReport, $event)"
+          label="Löschen"
+          v-show="reportForm?.id !== 'new'"
+        />
+        <Button
+          v-if="reportForm?.id === 'new'"
+          label="Abbrechen"
+          @click="reportForm = global.selectedReport"
+          severity="warning"
+        />
+        <Button
+          v-if="reportForm"
+          @click="saveReport()"
+          :label="reportForm.id === 'new' ? 'Hinzufügen' : 'Speichern'"
+        />
+      </div>
     </template>
   </Toolbar>
 
@@ -81,6 +76,10 @@
             <label
               :for="entry[0]"
               class="col-span-12 mb-2 md:col-span-4 md:mb-0"
+              :class="{
+                'font-bold text-green-600':
+                  entry[0] === 'year' && reportForm.id === 'new',
+              }"
               >{{ reportTranslations[entry[0]]?.label }}</label
             >
             <div class="col-span-12 md:col-span-8">
@@ -98,6 +97,7 @@
                   reportTranslations[entry[0]]?.numberGrouping ?? false
                 "
                 class="w-full"
+                :variant="'filled'"
               />
             </div>
           </template>
@@ -166,7 +166,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, Ref, watch, computed } from 'vue';
+import { ref, Ref, watch } from 'vue';
 import { useGlobalStore } from '../../stores/global';
 import { useConfirm } from 'primevue/useconfirm';
 import { ReportEntry } from '../../services/types';
@@ -186,11 +186,6 @@ import { error, info } from '../../services/ui/toast';
 
 const global = useGlobalStore();
 const confirm = useConfirm();
-
-const availableReports = computed(() => {
-  // order by year
-  return global.reports.sort((a, b) => a.year - b.year);
-});
 
 const reportForm: Ref<null | ReportEntry> = ref(global.selectedReport);
 // watch for changes in the selected report to update the form
@@ -362,7 +357,7 @@ const saveReport = async () => {
 const init = async () => {
   while (global.isLoading) {
     console.log('waiting for global store to load');
-    await new Promise((resolve) => setTimeout(resolve, 500));
+    await new Promise((resolve) => setTimeout(resolve, 2500));
   }
   if (global.selectedReport) {
     reportForm.value = global.selectedReport;
