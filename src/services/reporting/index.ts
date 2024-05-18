@@ -537,7 +537,6 @@ const littleDataCache: {
 export const getPlainReportData = async (
   query: ReportTimeseriesQuery,
 ): Promise<TimeseriesDataEntry[]> => {
-  console.log('getPlainReportData', query.projectId, query.filter.years);
   // check if the data is still valid. The lease time is 2 minutes to prevent multiple requests
   const needRefresh =
     new Date().getTime() - littleDataCache.lease.getTime() > 120000;
