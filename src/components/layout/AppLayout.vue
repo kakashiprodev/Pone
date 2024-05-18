@@ -217,8 +217,6 @@ const toggleToLight = () => {
   // PV.changeTheme("md-dark-indigo", "md-light-indigo", "theme-toggle", () => { });
 };
 
-$global.getUserSettings();
-
 defineExpose({
   closeSidebar: () => {
     showEndMenu.value = false;

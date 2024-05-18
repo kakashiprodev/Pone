@@ -47,6 +47,11 @@
 
       <Button
         class="mt-5"
+        icon="fa-solid fa-gear"
+        @click="router.push({ name: 'settings' })"
+        label="Einstellungen"
+      />
+      <Button
         icon="fa-solid fa-right-from-bracket"
         @click="logout"
         label="Abmelden"
@@ -299,16 +304,6 @@ const sidebarActions = [
   },
 ];
 
-const sidebarSettings = [
-  {
-    key: 'settings',
-    label: t('global.sidebar.settings'),
-    icon: 'fa-solid fa-gear',
-    to: '/settings',
-    visible: true,
-  },
-];
-
 const sidebar = [
   {
     header: 'Auswertung',
@@ -326,10 +321,6 @@ const sidebar = [
     header: 'Berichtswesen',
     items: sidebarCsrd,
     hide: !global.isGlobalAdmin,
-  },
-  {
-    header: 'Einstellungen',
-    items: sidebarSettings,
   },
 ];
 </script>
