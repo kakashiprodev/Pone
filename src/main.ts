@@ -7,6 +7,7 @@ import PrimeVue from 'primevue/config';
 import ConfirmationService from 'primevue/confirmationservice';
 import Tooltip from 'primevue/tooltip';
 import { useGlobalStore } from './stores/global';
+import { useInputStore } from './stores/inputs';
 
 /* Apex charts */
 // @ts-ignore
@@ -103,3 +104,4 @@ app.directive('tooltip', Tooltip);
 app.mount('#app');
 
 export const globalStore = useGlobalStore();
+export const inputStore = useInputStore();

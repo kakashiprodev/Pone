@@ -267,7 +267,7 @@ const sidebarInputs = [
     label: 'Assistent',
     icon: 'fa-solid fa-magic',
     to: '/assistant',
-    visible: true,
+    visible: global.isGlobalAdmin,
   },
 ];
 
