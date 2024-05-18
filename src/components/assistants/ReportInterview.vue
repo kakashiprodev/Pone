@@ -1,5 +1,5 @@
 <template>
-  <div v-if="!active" class="flex justify-content-center mt-3 mb-3">
+  <div v-if="!active" class="flex justify-center mt-3 mb-3">
     <Button @click="active = true" label="Weiteren Eintrag hinzufügen" />
   </div>
   <div v-else class="w-full">
@@ -27,7 +27,7 @@
         v-if="!isDone"
         v-model="actualUsersInput"
         placeholder="Bitte geben Sie Ihre Antwort stichpunktartig ein. Kurz und prägnant ist hier gefragt."
-        class="w-full mt-3 h-20rem"
+        class="w-full mt-3 h-80"
       />
       <div class="flex mt-3 gap-1" v-if="!isDone">
         <Button

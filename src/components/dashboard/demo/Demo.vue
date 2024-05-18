@@ -109,7 +109,7 @@
     </HorizontalTwoColEntry>
 
     <HorizontalTwoColEntry label="" class="mt-2">
-      <div class="w-full flex justify-content-end">
+      <div class="w-full flex justify-end">
         <Button @click="getData()" label="Let´s get data!" />
       </div>
     </HorizontalTwoColEntry>

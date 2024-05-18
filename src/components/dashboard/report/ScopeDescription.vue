@@ -1,6 +1,10 @@
 <template>
   <Card v-if="scope === 'all'" class="h-full">
-    <template #title>CO<sub>2</sub>-Bilanzierung</template>
+    <template #header>
+      <div class="psm-report-header">
+        <h3>CO<sub>2</sub>-Bilanzierung</h3>
+      </div>
+    </template>
     <template #content>
       <img src="./../../../assets/scopes.png" alt="Scope" style="width: 100%" />
       <p>
@@ -21,7 +25,12 @@
   </Card>
 
   <Card v-if="scope === '1'" class="h-full">
-    <template #title>Scope 1</template>
+    <template #header>
+      <div class="psm-report-header">
+        <h3>Inhalt</h3>
+      </div>
+    </template>
+    <template #title> Scope 1 </template>
     <template #content>
       <p>
         Umfasst Emissionen aus direkten Quellen des Unternehmens. Diese
@@ -32,7 +41,12 @@
   </Card>
 
   <Card v-if="scope === '2'" class="h-full">
-    <template #title>Scope 2</template>
+    <template #header>
+      <div class="psm-report-header">
+        <h3>Inhalt</h3>
+      </div>
+    </template>
+    <template #title> Scope 2 </template>
     <template #content>
       <p>
         Umfasst Emissionen aus indirekten Quellen, die durch die Erzeugung von
@@ -44,7 +58,12 @@
   </Card>
 
   <Card v-if="scope === '3'" class="h-full">
-    <template #title>Scope 3</template>
+    <template #header>
+      <div class="psm-report-header">
+        <h3>Inhalt</h3>
+      </div>
+    </template>
+    <template #title> Scope 3 </template>
     <template #content>
       <p>
         Umfasst alle anderen indirekten Emissionen, die durch Aktivitäten des

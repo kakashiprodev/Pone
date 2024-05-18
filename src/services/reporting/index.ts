@@ -366,7 +366,7 @@ const calculateEquivalentFactorWithSteps = (
     // @ts-ignore
     const monthlyEquivalentFactor: number =
       equivalent[month as keyof EquivalentEntry] != null &&
-        equivalent[month as keyof EquivalentEntry] != ''
+      equivalent[month as keyof EquivalentEntry] != ''
         ? equivalent[month as keyof EquivalentEntry]
         : equivalent.avgValue;
     // @ts-ignore
@@ -499,7 +499,7 @@ const userInputsToDataEntries = (
           ? input.category
           : 'Ohne Zuordnung',
       facility:
-        input.facility && input.facility !== ''
+        input.expand.facility && input.expand.facility.name
           ? input.expand.facility.name
           : 'Ohne Zuordnung',
     };

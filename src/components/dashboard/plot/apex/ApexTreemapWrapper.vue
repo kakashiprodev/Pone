@@ -119,35 +119,36 @@ const sum = (data: number[]) => {
  * render the chart with prop data
  */
 const renderChart = () => {
-  colors.value = getMonochromeColorPalette(
-    Object.keys(props.data.timeseries).length,
-  );
-  if (props.data) {
-    const series = Object.keys(props.data.timeseries).map((key) => {
-      return {
-        x: key,
-        y: round(
-          toTons(
-            sum(props.data.timeseries[key].map((entry) => entry.sum)),
-            globalStore.displayInTons,
+  try {
+    colors.value = getMonochromeColorPalette(
+      Object.keys(props.data.timeseries).length,
+    );
+    if (props.data) {
+      const series = Object.keys(props.data.timeseries).map((key) => {
+        return {
+          x: key,
+          y: round(
+            toTons(sum(props.data.timeseries[key].map((entry) => entry.sum))),
           ),
-        ),
-      };
-    });
-    chartData.value = [
-      {
-        data: series,
-      },
-    ];
+        };
+      });
+      chartData.value = [
+        {
+          data: series,
+        },
+      ];
 
-    categories.value = props.data.timeseries[
-      Object.keys(props.data.timeseries)[0]
-    ].map((entry) => entry.year.toString());
-    if (categories.value.length === 3 && categories.value[0] === '1') {
-      categories.value = ['Scope 1', 'Scope 2', 'Scope 3'];
+      categories.value = props.data.timeseries[
+        Object.keys(props.data.timeseries)[0]
+      ].map((entry) => entry.year.toString());
+      if (categories.value.length === 3 && categories.value[0] === '1') {
+        categories.value = ['Scope 1', 'Scope 2', 'Scope 3'];
+      }
+
+      colors.value = Object.keys(props.data.timeseries);
     }
-
-    colors.value = Object.keys(props.data.timeseries);
+  } catch (e) {
+    console.error('Error rendering chart', e);
   }
 };
 

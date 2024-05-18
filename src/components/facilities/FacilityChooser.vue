@@ -1,5 +1,6 @@
 <template>
   <DataTable
+    :showGridlines="false"
     v-if="data != null && data.length > 0"
     :value="data"
     class="cst-no-hover"
@@ -51,9 +52,10 @@ const data: Ref<FacilityEntry[]> = ref([]);
  */
 const getData = async () => {
   await global.refreshFacilities();
-  data.value = global.facilities.filter(
+  const filtered = global.facilities.filter(
     (f) => f.shutdownDate == null || f.shutdownDate === '',
   );
+  data.value = filtered.sort((a, b) => a.name.localeCompare(b.name));
   if (props.modelValue != null) {
     const entry = global.facilitiesDict[props.modelValue] ?? null;
     if (entry != null) {

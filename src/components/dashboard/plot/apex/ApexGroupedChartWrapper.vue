@@ -154,35 +154,36 @@ const chartOptions: ComputedRef<any> = computed(() => {
  * render the chart with prop data
  */
 const renderChart = () => {
-  if (props.data) {
-    colors.value = getMonochromeColorPalette(
-      Object.keys(props.data.yearlyGrouped).length,
-    );
-    const series = [];
-    const data = props.data.yearlyGrouped;
-    const years = Object.keys(data);
-    categories.value = years;
-    const grouped: any = {};
-    for (const year of years) {
-      const yearData = data[year];
-      for (const group in yearData.grouped) {
-        if (grouped[group]) {
-          grouped[group].push(yearData.grouped[group]);
-        } else {
-          grouped[group] = [yearData.grouped[group]];
+  try {
+    if (props.data) {
+      colors.value = getMonochromeColorPalette(
+        Object.keys(props.data.yearlyGrouped).length,
+      );
+      const series = [];
+      const data = props.data.yearlyGrouped;
+      const years = Object.keys(data);
+      categories.value = years;
+      const grouped: any = {};
+      for (const year of years) {
+        const yearData = data[year];
+        for (const group in yearData.grouped) {
+          if (grouped[group]) {
+            grouped[group].push(yearData.grouped[group]);
+          } else {
+            grouped[group] = [yearData.grouped[group]];
+          }
         }
       }
+      for (const group in grouped) {
+        series.push({
+          name: group,
+          data: roundArray(toTonsArray(grouped[group]), props.decimals),
+        });
+      }
+      chartData.value = series;
     }
-    for (const group in grouped) {
-      series.push({
-        name: group,
-        data: roundArray(
-          toTonsArray(grouped[group], globalStore.displayInTons),
-          props.decimals,
-        ),
-      });
-    }
-    chartData.value = series;
+  } catch (error) {
+    console.error('Error rendering chart', error);
   }
 };
 

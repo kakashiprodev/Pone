@@ -1,5 +1,10 @@
 <template>
   <Card v-if="global.selectedReport" class="h-full">
+    <template #header>
+      <div class="psm-report-header">
+        <h3>Unternehmen</h3>
+      </div>
+    </template>
     <template #content>
       <div class="report-section">
         <h3 class="report-section__heading mb-2">

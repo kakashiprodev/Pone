@@ -113,6 +113,8 @@ export interface ReportEntry {
 export interface ProjectEntry {
   id: string;
   name: string;
+  logo: string; // url to the logo
+  logoId: null | string; // reference on table files
 }
 
 // table "sites"

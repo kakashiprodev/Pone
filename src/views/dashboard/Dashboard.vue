@@ -1,20 +1,6 @@
 <template>
   <!-- <SmartInput :data="demo" /> -->
   <div class="report" v-if="global.selectedReport" style="max-width: 1200px">
-    <Toolbar class="mb-4">
-      <template #start>
-        <span>Ausgewählter Bericht</span>
-        <Dropdown
-          v-if="global.reports && global.selectedReport"
-          v-model="global.selectedReport"
-          :options="global.reports"
-          optionLabel="year"
-          placeholder="Select a Report"
-          class="ml-3"
-          @change="switchReport()"
-        />
-      </template>
-    </Toolbar>
     <TabView v-if="!global.isLoading && !loading">
       <TabPanel header="Bilanzierung">
         <ReportSumYear :sites="[global.selectedSite?.id ?? '']" />
@@ -38,7 +24,7 @@
         <ActionOverview />
       </TabPanel>
 
-      <TabPanel header="Bericht Export">
+      <TabPanel header="Bericht Export" v-if="global.isGlobalAdmin">
         <ReportPrint />
       </TabPanel>
     </TabView>
@@ -52,21 +38,25 @@ import ActionOverview from '../../components/dashboard/actions/ActionOverview.vu
 import ReportPrint from '../../components/dashboard/report/ReportPrint.vue';
 import ForecastChart from '../../components/dashboard/plot/custom/ForecastChart.vue';
 import { useGlobalStore } from '../../stores/global';
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 
 const loading = ref(false);
 const global = useGlobalStore();
 
-const switchReport = async () => {
-  loading.value = true;
-  await global.changeReport();
-  loading.value = false;
-};
+// watch global.selectedReport to reload the report
+watch(
+  () => global.selectedReport,
+  async () => {
+    loading.value = true;
+    await global.changeReport();
+    loading.value = false;
+  },
+);
 </script>
 
 <style scoped>
 .report {
-  width: 90%;
+  width: 100%;
   max-width: 105rem;
   margin: 0 auto;
   margin-top: 2rem;

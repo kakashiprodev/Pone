@@ -1,9 +1,9 @@
 <template>
-  <div class="grid">
-    <div class="col-6">
+  <div class="grid grid-cols-2 gap-2">
+    <div>
       <slot name="left"></slot>
     </div>
-    <div class="col-6">
+    <div>
       <slot name="right"></slot>
     </div>
   </div>

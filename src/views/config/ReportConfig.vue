@@ -4,7 +4,7 @@
     Hier legen Sie die Berichtszeiträume für das ausgewählte Projekt fest. Jeder
     Bericht umfasst ein Jahr.
   </p>
-  <Toolbar>
+  <Toolbar class="w-full">
     <template #start>
       <span>Ausgewählter Bericht</span>
       <Dropdown
@@ -23,6 +23,14 @@
         :disabled="reportForm?.id === 'new'"
         class="ml-1"
       />
+      <Button
+        v-if="global.targetOnSiteForProject.length < 1"
+        icon="fa-solid fa-copy"
+        @click="copyTargetsFromYearBefore()"
+        class="ml-1"
+        v-tooltip="'Ziele aus dem Vorjahr kopieren'"
+      />
+
       <ConfirmDialog />
       <Button
         v-if="global.selectedReport"
@@ -32,12 +40,18 @@
         :disabled="reportForm?.id === 'new'"
         class="ml-1"
       />
+
       <Button
-        v-if="global.targetOnSiteForProject.length < 1"
-        icon="fa-solid fa-copy"
-        @click="copyTargetsFromYearBefore()"
         class="ml-1"
-        v-tooltip="'Ziele aus dem Vorjahr kopieren'"
+        v-if="reportForm"
+        @click="saveReport()"
+        :label="reportForm.id === 'new' ? 'Hinzufügen' : 'Speichern'"
+      />
+      <Button
+        v-if="reportForm?.id === 'new'"
+        class="ml-1"
+        label="Abbrechen"
+        @click="reportForm = global.selectedReport"
       />
     </template>
   </Toolbar>
@@ -59,15 +73,17 @@
       <template #title> Basisdaten des CO<sub>2</sub>-Berichts </template>
       <template #content>
         <div
-          class="field grid"
+          class="mb-4 grid grid-cols-12"
           v-for="entry in Object.entries(reportSchemaGeneral.object)"
           :key="entry[0]"
         >
           <template v-if="!(entry[0] === 'id') && !(entry[0] === 'site')">
-            <label :for="entry[0]" class="col-12 mb-2 md:col-4 md:mb-0">{{
-              reportTranslations[entry[0]]?.label
-            }}</label>
-            <div class="col-12 md:col-8">
+            <label
+              :for="entry[0]"
+              class="col-span-12 mb-2 md:col-span-4 md:mb-0"
+              >{{ reportTranslations[entry[0]]?.label }}</label
+            >
+            <div class="col-span-12 md:col-span-8">
               <InputText
                 v-if="entry[1].schema === 'string'"
                 :id="entry[0]"
@@ -78,7 +94,9 @@
                 v-if="entry[1].schema === 'number'"
                 :id="entry[0]"
                 v-model="reportForm[entry[0]]"
-                :useGrouping="false"
+                :useGrouping="
+                  reportTranslations[entry[0]]?.numberGrouping ?? false
+                "
                 class="w-full"
               />
             </div>
@@ -91,14 +109,16 @@
       <template #title> Ansprechpartner </template>
       <template #content>
         <div
-          class="field grid"
+          class="mb-4 grid grid-cols-12"
           v-for="entry in Object.entries(reportSchemaContact.object)"
           :key="entry[0]"
         >
-          <label :for="entry[0]" class="col-12 mb-2 md:col-4 md:mb-0">{{
-            reportTranslations[entry[0]]?.label
-          }}</label>
-          <div class="col-12 md:col-8">
+          <label
+            :for="entry[0]"
+            class="col-span-12 mb-2 md:col-span-4 md:mb-0"
+            >{{ reportTranslations[entry[0]]?.label }}</label
+          >
+          <div class="col-span-12 md:col-span-8">
             <InputText
               v-if="entry[1].schema === 'string'"
               :id="entry[0]"
@@ -116,42 +136,32 @@
       <template #title> Unternehmenszahlen </template>
       <template #content>
         <div
-          class="field grid"
+          class="mb-4 grid grid-cols-12"
           v-for="entry in Object.entries(reportSchemaYearlyFocus.object)"
           :key="entry[0]"
         >
-          <label :for="entry[0]" class="col-12 mb-2 md:col-4 md:mb-0">{{
-            reportTranslations[entry[0]]?.label
-          }}</label>
-          <div class="col-12 md:col-8">
+          <label
+            :for="entry[0]"
+            class="col-span-12 mb-2 md:col-span-4 md:mb-0"
+            >{{ reportTranslations[entry[0]]?.label }}</label
+          >
+          <div class="col-span-12 md:col-span-8">
             <!-- <InputText v-if="entry[1].schema === 'string'" :id="entry[0]" v-model="reportForm[entry[0]]"
                 class="w-full" /> -->
             <InputNumber
               v-if="entry[1].schema === 'number'"
               :id="entry[0]"
               v-model="reportForm[entry[0]]"
-              :useGrouping="false"
+              :useGrouping="
+                reportTranslations[entry[0]]?.numberGrouping ?? false
+              "
+              :suffix="reportTranslations[entry[0]]?.suffix ?? ''"
               class="w-full"
             />
           </div>
         </div>
       </template>
     </Card>
-
-    <div>
-      <Button
-        class="mt-3"
-        v-if="reportForm"
-        @click="saveReport()"
-        :label="reportForm.id === 'new' ? 'Hinzufügen' : 'Speichern'"
-      />
-      <Button
-        v-if="reportForm.id === 'new'"
-        class="ml-3"
-        label="Abbrechen"
-        @click="reportForm = global.selectedReport"
-      />
-    </div>
   </template>
 </template>
 
@@ -258,6 +268,8 @@ const reportTranslations: {
   [name: string]: {
     label: string;
     category: string;
+    numberGrouping?: boolean;
+    suffix?: string;
   };
 } = {
   id: { label: 'Report-ID', category: 'general' },
@@ -273,8 +285,17 @@ const reportTranslations: {
   contactTelephone: { label: 'Telefon', category: 'contact' },
   contactEmail: { label: 'E-Mail', category: 'contact' },
   contactDomain: { label: 'Abteilung', category: 'contact' },
-  countEmployees: { label: 'Anzahl Mitarbeiter', category: 'yearly-focus' },
-  businessTurnover: { label: 'Jahresumsatz', category: 'yearly-focus' },
+  countEmployees: {
+    label: 'Anzahl Mitarbeiter',
+    category: 'yearly-focus',
+    numberGrouping: true,
+  },
+  businessTurnover: {
+    label: 'Jahresumsatz',
+    category: 'yearly-focus',
+    numberGrouping: true,
+    suffix: '€',
+  },
   baseYear: { label: 'Referenzjahr', category: 'yearly-focus' },
 };
 

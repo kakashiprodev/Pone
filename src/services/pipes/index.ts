@@ -1,6 +1,7 @@
 /**
  * Pipes will be used to transform data in the frontend without hassle
  */
+import { globalStore } from '@/main';
 
 /**
  * round a number to a given number of decimals
@@ -22,17 +23,31 @@ export const roundArray = (
 /**
  * divide by 1000 to get the value in tons
  */
-export const toTons = (value: number, execute = true): number => {
-  if (!execute) return value;
-  return value / 1000;
+export const toTons = (value: number): number => {
+  if (globalStore.displayInTons) {
+    return value / 1000;
+  } else {
+    return value;
+  }
+};
+
+/**
+ * get unit in tons or kg. depending on global settings
+ */
+export const getGlobalUnit = (): string => {
+  if (globalStore.displayInTons) {
+    return 't';
+  } else {
+    return 'kg';
+  }
 };
 
 /**
  * divide by 1000 to get the value in tons as array
  */
-export const toTonsArray = (values: number[], execute = true): number[] => {
-  if (!execute) return values;
-  return values.map((value) => toTons(value, execute));
+export const toTonsArray = (values: number[]): number[] => {
+  if (!globalStore.displayInTons) return values;
+  return values.map((value) => value / 1000);
 };
 
 /**

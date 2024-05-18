@@ -3,17 +3,22 @@
     <!-- PanelMenu für das vertikale Menü auf der linken Seite -->
     <PanelMenu
       :model="items"
-      class="w-1/5 pr-3"
+      class="w-1/7 pr-3"
       v-model:expandedKeys="expandedKeys"
     >
       <template #item="{ item }">
         <router-link
-          class="flex align-items-center px-3 py-2 cursor-pointer no-underline text-color"
+          v-if="!item.onlyAdmin || globalStore.isGlobalAdmin"
+          class="flex items-center px-3 py-2 cursor-pointer no-underline text-slate-800"
+          style="color: var(--primary-color)"
           :to="item.to ?? ''"
           :exact-active-class="'active-route'"
         >
-          <span :class="[item.icon, 'text-primary']" />
-          <span :class="['ml-2', { 'font-semibold': item.items }]">
+          <span :class="[item.icon]" style="color: var(--primary-color)" />
+          <span
+            class="text-slate-800"
+            :class="['ml-2', { 'font-semibold': item.items }]"
+          >
             {{ item.label }}
           </span>
         </router-link>
@@ -21,7 +26,7 @@
     </PanelMenu>
 
     <!-- Bereich für die Anzeige der Komponenten auf der rechten Seite -->
-    <div class="w-4/5">
+    <div class="w-full p-5">
       <router-view :key="route.path" />
     </div>
   </div>
@@ -30,7 +35,10 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { useRoute } from 'vue-router';
+import { useGlobalStore } from '@/stores/global';
+
 const route = useRoute();
+const globalStore = useGlobalStore();
 
 const expandedKeys = ref({
   user: true,
@@ -59,12 +67,14 @@ const items = ref([
         label: '=> Zeige DataEngine Demo',
         icon: 'fa-solid fa-key',
         to: '/demo',
+        onlyAdmin: true,
       },
       {
         key: 'user-demo-data-generator',
         label: '=> Generiere Demo Daten',
         icon: 'fa-solid fa-key',
         to: '/demo-data-generator',
+        onlyAdmin: true,
       },
     ],
   },

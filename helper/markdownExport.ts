@@ -9,10 +9,10 @@ const foldersToInclude = [
   'src/services',
 ];
 
-const rootDir = '.'; // Set the path to your repository
-const outputFile = path.join(rootDir, 'repository_contents.md');
+const rootDir = './../'; // Set the path to your repository
+const outputFile = path.join(rootDir + '/helper', 'repository_contents.md');
 
-async function categorizeFiles() {
+export async function getFullCodeBaseAsMarkdown(writeFile = false) {
   const files = [];
 
   for (const folder of foldersToInclude) {
@@ -37,8 +37,10 @@ async function categorizeFiles() {
     }\n${fileContent}\n\`\`\`\n\n`;
   }
 
-  await fs.writeFile(outputFile, markdownContent);
-  console.log(`Markdown file created at ${outputFile}`);
-}
+  if (writeFile) {
+    await fs.writeFile(outputFile, markdownContent);
+    console.log(`Markdown file created at ${outputFile}`);
+  }
 
-categorizeFiles().catch(console.error);
+  return markdownContent;
+}

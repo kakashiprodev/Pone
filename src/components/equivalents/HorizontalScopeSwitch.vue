@@ -1,7 +1,8 @@
 <template>
-  <div class="field grid">
-    <div class="col flex justify-content-center">
+  <div class="grid grid-cols-3">
+    <div class="flex justify-center p-1">
       <ToggleButton
+        class="w-full"
         v-model="selection['1']"
         on-label="Scope 1"
         off-label="Scope 1"
@@ -9,8 +10,9 @@
         @change="update(1)"
       />
     </div>
-    <div class="col flex justify-content-center">
+    <div class="flex justify-center p-1">
       <ToggleButton
+        class="w-full"
         v-model="selection['2']"
         on-label="Scope 2"
         off-label="Scope 2"
@@ -18,8 +20,9 @@
         @change="update(2)"
       />
     </div>
-    <div class="col flex justify-content-center">
+    <div class="flex justify-center p-1">
       <ToggleButton
+        class="w-full"
         v-model="selection['3']"
         on-label="Scope 3"
         off-label="Scope 3"

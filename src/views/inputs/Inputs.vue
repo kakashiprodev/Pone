@@ -8,6 +8,10 @@
     bearbeiten. Die Eingaben können außerdem als CSV-Datei exportiert werden.
   </InlineMessage>
 
+  <div class="w-full p-3 mb-3">
+    <MeterGroup :value="sumsByCategory" />
+  </div>
+
   <Toolbar class="mb-2">
     <template #start>
       <template v-if="preSelectedScope === 'all'">
@@ -78,7 +82,7 @@
     modal
     header="Äquivalent auswählen"
     :class="{
-      'w-8': windowWidth > 990,
+      'w-3/5': windowWidth > 990,
       'w-full': windowWidth < 990,
       'h-screen': windowWidth < 990,
     }"
@@ -124,7 +128,7 @@
     modal
     header="Anlage auswählen"
     :class="{
-      'w-8': windowWidth > 990,
+      'w-3/5': windowWidth > 990,
       'w-full': windowWidth < 990,
       'h-screen': windowWidth < 990,
     }"
@@ -157,133 +161,141 @@
     header="Komforteingabe"
     id="create-input-comfort"
     v-model:visible="showComfortInput"
-    :class="{ 'w-9': true }"
+    :class="{ 'w-3/4': true }"
     maximizable
   >
-    <!-- step 1 -->
-    <div class="card" v-if="actualComfortStep === 0">
-      <SmartEquivalentList
-        v-model="selectedValue.equivalent"
-        :comfort-mode="true"
-        :rowsPerPage="5"
-        :visible-columns="['source', 'in', 'out', 'fullName', 'avgValue']"
-        :showColumnChooser="false"
-        @change="updateNameAndCategory"
-        :hide-scope-input="preSelectedScope != 'all'"
-        :filter-by="{
-          scope:
-            preSelectedScope === 'all' ? [1] : [parseInt(preSelectedScope)],
-        }"
-      />
-    </div>
+    <div class="flex flex-col gap-4">
+      <!-- step 1 -->
+      <div class="flex flex-col gap-2" v-if="actualComfortStep === 0">
+        <SmartEquivalentList
+          v-model="selectedValue.equivalent"
+          :comfort-mode="true"
+          :rowsPerPage="5"
+          :visible-columns="['source', 'in', 'out', 'fullName', 'avgValue']"
+          :showColumnChooser="false"
+          @change="updateNameAndCategory"
+          :hide-scope-input="preSelectedScope != 'all'"
+          :filter-by="{
+            scope:
+              preSelectedScope === 'all' ? [1] : [parseInt(preSelectedScope)],
+          }"
+        />
+      </div>
 
-    <!-- step 2 -->
-    <div class="card" v-if="actualComfortStep === 1">
-      <div class="field">
-        <label for="userinput-category">Kategorie</label>
-        <InputText
-          class="w-full"
-          v-model="selectedValue.category"
-          id="userinput-category"
-        />
-      </div>
-      <div class="field">
-        <label for="userinput-name">Name</label>
-        <InputText
-          class="w-full"
-          v-model="selectedValue.name"
-          id="userinput-name"
-        />
-      </div>
-      <div class="field">
-        <label for="userinput-comment">Kommentar</label>
-        <InputText
-          class="w-full"
-          v-model="selectedValue.comment"
-          id="userinput-comment"
-        />
-      </div>
-    </div>
-
-    <!-- step 3 -->
-    <div class="card" v-if="actualComfortStep === 2">
-      <p>Soll der Eingabe eine Anlage zugeordnet werden?</p>
-      <div class="field">
-        <label for="userinput-equivalent">Anlage</label>
-        <div>
-          <div
-            v-if="
-              selectedValue.facility != null && selectedValue.facility !== ''
-            "
-            @click="showChooseFacility = true"
-            class="bg-teal-300 text-white border-round m-2 flex align-items-center justify-content-center cursor-pointer p-2"
-          >
-            {{
-              global.facilitiesDict[selectedValue.facility]?.name ??
-              'Reference error'
-            }}
-          </div>
-          <Button v-else label="Auswählen" @click="showChooseFacility = true" />
+      <!-- step 2 -->
+      <div class="flex flex-col gap-4" v-if="actualComfortStep === 1">
+        <div class="flex flex-col gap-2">
+          <label for="userinput-category">Kategorie</label>
+          <InputText
+            class="w-full"
+            v-model="selectedValue.category"
+            id="userinput-category"
+          />
+        </div>
+        <div class="flex flex-col gap-2">
+          <label for="userinput-name">Name</label>
+          <InputText
+            class="w-full"
+            v-model="selectedValue.name"
+            id="userinput-name"
+          />
+        </div>
+        <div class="flex flex-col gap-2">
+          <label for="userinput-comment">Kommentar</label>
+          <InputText
+            class="w-full"
+            v-model="selectedValue.comment"
+            id="userinput-comment"
+          />
         </div>
       </div>
-    </div>
 
-    <!-- step 4 -->
-    <div class="card" v-if="actualComfortStep === 3">
-      <div>
-        <MonthlyOrYearlyInput
-          v-model="selectedValue"
-          :input-unit="choosenEquivalent ? ' ' + choosenEquivalent.in : ''"
+      <!-- step 3 -->
+      <div class="flex flex-col gap-4" v-if="actualComfortStep === 2">
+        <p>Soll der Eingabe eine Anlage zugeordnet werden?</p>
+        <div class="flex flex-col gap-2">
+          <label for="userinput-equivalent">Anlage</label>
+          <div>
+            <div
+              v-if="
+                selectedValue.facility != null && selectedValue.facility !== ''
+              "
+              @click="showChooseFacility = true"
+              class="bg-teal-300 text-white rounded-sm m-2 flex items-center justify-center cursor-pointer p-2"
+            >
+              {{
+                global.facilitiesDict[selectedValue.facility]?.name ??
+                'Reference error'
+              }}
+            </div>
+            <Button
+              v-else
+              label="Auswählen"
+              @click="showChooseFacility = true"
+            />
+          </div>
+        </div>
+      </div>
+
+      <!-- step 4 -->
+      <div class="flex flex-col gap-4" v-if="actualComfortStep === 3">
+        <div>
+          <MonthlyOrYearlyInput
+            v-model="selectedValue"
+            :input-unit="choosenEquivalent ? ' ' + choosenEquivalent.in : ''"
+          />
+        </div>
+        <!-- helping information -->
+        <div
+          class="flex flex-col gap-2"
+          v-if="global.showTooltips && computedSumCalculation !== ''"
+        >
+          <label for="userinput-sum">Berechnungsschritte</label>
+          <p style="white-space: pre-wrap">
+            {{ computedSumCalculation }}
+          </p>
+        </div>
+
+        <div class="flex flex-col gap-2">
+          <label for="userinput-sum">Menge (berechnet)</label>
+          <InputNumber
+            :disabled="true"
+            class="w-full"
+            v-model="scaledSumValue"
+            id="userinput-sum"
+            :use-grouping="true"
+            :min-fraction-digits="0"
+            :max-fraction-digits="3"
+            :suffix="displayInTons ? ' to' : ' kg'"
+          />
+        </div>
+      </div>
+
+      <!-- Step Buttons -->
+      <div class="flex items-center justify-center">
+        <Button
+          :label="'Zurück'"
+          @click="decStep"
+          class="grow mr-1"
+          :disabled="actualComfortStep === 0"
+        />
+        <Button
+          v-if="actualComfortStep < 3"
+          :label="'Weiter'"
+          @click="incStep"
+          class="grow ml-1"
+          :disabled="
+            actualComfortStep === 0 && selectedValue.equivalent == null
+          "
+        />
+        <Button
+          v-else
+          :label="'Anlegen'"
+          @click="save"
+          class="grow ml-1"
+          :disabled="selectedValue.rawValue == null"
         />
       </div>
-      <!-- helping information -->
-      <div
-        class="field"
-        v-if="global.showTooltips && computedSumCalculation !== ''"
-      >
-        <label for="userinput-sum">Berechnungsschritte</label>
-        <p style="white-space: pre-wrap">
-          {{ computedSumCalculation }}
-        </p>
-      </div>
-
-      <div class="field">
-        <label for="userinput-sum">Menge (berechnet)</label>
-        <InputNumber
-          :disabled="true"
-          class="w-full"
-          v-model="scaledSumValue"
-          id="userinput-sum"
-          :use-grouping="true"
-          :min-fraction-digits="0"
-          :max-fraction-digits="3"
-          :suffix="displayInTons ? ' to' : ' kg'"
-        />
-      </div>
-    </div>
-
-    <!-- Step Buttons -->
-    <div class="flex align-items-center justify-content-center">
-      <Button
-        :label="'Zurück'"
-        @click="decStep"
-        class="flex-grow-1 mr-1"
-        :disabled="actualComfortStep === 0"
-      />
-      <Button
-        v-if="actualComfortStep < 3"
-        :label="'Weiter'"
-        @click="incStep"
-        class="flex-grow-1 ml-1"
-        :disabled="actualComfortStep === 0 && selectedValue.equivalent == null"
-      />
-      <Button
-        v-else
-        :label="'Anlegen'"
-        @click="save"
-        class="flex-grow-1 ml-1"
-        :disabled="selectedValue.rawValue == null"
-      />
     </div>
   </Dialog>
 
@@ -293,13 +305,13 @@
     modal
     :header="selectedValue.id === 'new' ? 'Anlegen' : 'Bearbeiten'"
     :class="{
-      'w-6': windowWidth > 990,
+      'w-2/4': windowWidth > 990,
       'w-full': windowWidth < 990,
       'h-screen': windowWidth < 990,
     }"
   >
-    <div>
-      <div class="field">
+    <div class="flex flex-col gap-4">
+      <div class="flex flex-col gap-2">
         <label for="userinput-scope">Scope</label>
         <Dropdown
           class="w-full"
@@ -315,7 +327,7 @@
           Auswahl des Scopes für den die Eingabe gilt.
         </InlineMessage>
       </div>
-      <div class="field">
+      <div class="flex flex-col gap-2">
         <label for="userinput-equivalent">Äquivalent</label>
         <div>
           <div
@@ -324,7 +336,7 @@
               selectedValue.equivalent !== ''
             "
             @click="showChooseEquivalent = true"
-            class="bg-teal-300 text-white border-round m-2 flex align-items-center justify-content-center cursor-pointer p-2"
+            class="bg-teal-300 text-white rounded-sm m-2 flex items-center justify-center cursor-pointer p-2"
           >
             {{
               global.equivalentDict[selectedValue.equivalent]?.specification1 ??
@@ -350,7 +362,7 @@
           }}] CO<sub>2</sub>-Äquivalenten ohne weiteren Faktor.
         </InlineMessage>
       </div>
-      <div class="field">
+      <div class="flex flex-col gap-2">
         <label for="userinput-category">Kategorie</label>
         <InputText
           class="w-full"
@@ -366,7 +378,7 @@
           Sortierbarkeit. Es können beliebige Kategorien angelegt werden.
         </InlineMessage>
       </div>
-      <div class="field">
+      <div class="flex flex-col gap-2">
         <label for="userinput-equivalent">Anlage (optional)</label>
         <div>
           <div
@@ -374,7 +386,7 @@
               selectedValue.facility != null && selectedValue.facility !== ''
             "
             @click="showChooseFacility = true"
-            class="bg-teal-300 text-white border-round m-2 flex align-items-center justify-content-center cursor-pointer p-2"
+            class="bg-teal-300 text-white rounded-sm m-2 flex items-center justify-center cursor-pointer p-2"
           >
             {{
               global.facilitiesDict[selectedValue.facility]?.name ??
@@ -396,7 +408,7 @@
           }}] CO<sub>2</sub>-Äquivalenten ohne weiteren Faktor.
         </InlineMessage>
       </div>
-      <div class="field">
+      <div class="flex flex-col gap-2">
         <label for="userinput-name">Name</label>
         <InputText
           class="w-full"
@@ -412,7 +424,7 @@
           Name angezeigt.
         </InlineMessage>
       </div>
-      <div class="field">
+      <div class="flex flex-col gap-2">
         <label for="userinput-comment">Kommentar</label>
         <InputText
           class="w-full"
@@ -443,7 +455,7 @@
       </div>
       <!-- helping information -->
       <div
-        class="field"
+        class="flex flex-col gap-2"
         v-if="global.showTooltips && computedSumCalculation !== ''"
       >
         <label for="userinput-sum">Berechnungsschritte</label>
@@ -460,7 +472,7 @@
           sein.
         </InlineMessage>
       </div>
-      <div class="field">
+      <div class="flex flex-col gap-2">
         <label for="userinput-sum">Menge (berechnet)</label>
         <InputNumber
           :disabled="true"
@@ -481,20 +493,21 @@
           Äquivalent.
         </InlineMessage>
       </div>
-    </div>
-    <div>
-      <Button
-        :label="selectedValue.id === 'new' ? 'Anlegen' : 'Speichern'"
-        @click="save"
-      />
+      <div>
+        <Button
+          :label="selectedValue.id === 'new' ? 'Anlegen' : 'Speichern'"
+          @click="save"
+        />
+      </div>
     </div>
   </Dialog>
 
   <ConfirmPopup></ConfirmPopup>
   <DataTable
+    :showGridlines="false"
     v-if="global.equivalents.length > 0"
     :value="data"
-    class="cst-no-hover"
+    class="cst-no-hover text-sm"
   >
     <!-- <Column field="id" header="ID"></Column> -->
     <Column
@@ -504,7 +517,7 @@
       v-if="preSelectedScope === 'all'"
     >
       <template #body="{ data }">
-        <span class="flex justify-content-center">
+        <span class="flex justify-center">
           {{ data.scope }}
         </span>
       </template>
@@ -513,10 +526,10 @@
     <Column field="name" header="Name" sortable></Column>
     <Column field="rawValue" header="Eingabewert" sortable>
       <template #body="{ data }">
-        <span class="flex justify-content-end text-right">
+        <Chip class="flex justify-end text-right bg-slate-200 text-sm">
           {{ roundStringWithDecimals(data.rawValue, 3) }}
           {{ global.equivalentDict[data.equivalent]?.in ?? 'Reference error' }}
-        </span>
+        </Chip>
       </template>
     </Column>
     <Column field="equivalent" header="Äquivalent" sortable>
@@ -537,7 +550,7 @@
     </Column>
     <Column field="sumValue" header="Menge (Jahr)" sortable>
       <template #body="{ data }">
-        <span class="flex justify-content-end text-right">
+        <Chip class="flex justify-end text-right bg-slate-200 text-sm">
           {{
             roundStringWithDecimals(
               displayInTons ? toTons(data.sumValue) : data.sumValue,
@@ -545,7 +558,7 @@
             )
           }}
           {{ displayInTons ? ' to' : ' kg' }}
-        </span>
+        </Chip>
       </template>
     </Column>
     <Column field="comment" header="Kommentar"></Column>
@@ -601,6 +614,8 @@ import {
   boolean,
 } from 'valibot';
 import { roundStringWithDecimals, toTons } from '../../services/pipes';
+import { MeterItem } from 'primevue/metergroup';
+import { getMonochromeColorPalette } from '@/services/colors';
 
 const router = useRouter();
 
@@ -738,6 +753,15 @@ if (!global.selectedReport && global.isLoggedIn) {
 } else if (!global.isLoggedIn) {
   console.log('not logged in. skip report check');
 }
+
+// watch global.selectedReport to reload the report
+watch(
+  () => global.selectedReport,
+  async () => {
+    await global.changeReport();
+    await getData();
+  },
+);
 
 const showDialog = ref(false);
 const emptyInput: InputEntry = {
@@ -905,7 +929,6 @@ const getData = async () => {
   if (scope3Active.value) {
     scope.push(3);
   }
-  console.log('get data', preSelectedFacility.value);
   data.value = await dataprovider.readUserInputs({
     scope,
     [preSelectedFacility.value != null ? 'facility' : '']:
@@ -921,6 +944,39 @@ const sumValue = computed(() => {
   return data.value.reduce((acc, item) => {
     return acc + item.sumValue;
   }, 0);
+});
+
+/**
+ * Calculate the relative percentage part for the whole sum by category
+ * Will get the sumValue as whole sum and calculate the percentage part for each category
+ */
+const sumsByCategory = computed(() => {
+  const relativeSums: MeterItem[] = [];
+  // { label: 'Apps', color: '#34d399', value: 16 }
+
+  data.value.forEach((item) => {
+    const index = relativeSums.findIndex((i) => i.label === item.category);
+    if (index === -1) {
+      relativeSums.push({
+        label: item.category ?? '',
+        color: '#34d399',
+        value: item.sumValue,
+        icon: '',
+      });
+    } else {
+      relativeSums[index].value += item.sumValue;
+    }
+  });
+  // then calculate the percentage
+  relativeSums.forEach((item) => {
+    item.value = (item.value / sumValue.value) * 100;
+  });
+  // add colors
+  const colors = getMonochromeColorPalette(relativeSums.length);
+  relativeSums.forEach((item, index) => {
+    item.color = colors[index];
+  });
+  return relativeSums;
 });
 
 // export

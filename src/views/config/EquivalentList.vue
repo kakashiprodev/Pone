@@ -28,13 +28,17 @@
     modal
     header="Wählen Sie einen Faktor"
     :class="{
-      'w-6': windowWidth > 990,
+      'w-3/5': windowWidth > 990,
       'w-full': windowWidth < 990,
       'h-screen': windowWidth < 990,
     }"
   >
-    <DataTable class="cst-no-hover mt-3" :value="filteredEquivalents">
-      <Column field="name" header="Name"></Column>
+    <DataTable
+      class="cst-no-hover mt-3"
+      :value="filteredEquivalents"
+      :showGridlines="false"
+    >
+      <Column field="specification1" header="Name"></Column>
       <Column field="comment" header="Kommentar"></Column>
       <Column field="in" header="Eingang"></Column>
       <Column field="out" header="Ausgang"></Column>
@@ -59,14 +63,14 @@
     modal
     :header="selectedValue.id === 'new' ? 'Anlegen' : 'Bearbeiten'"
     :class="{
-      'w-6': windowWidth > 990,
+      'w-3/5': windowWidth > 990,
       'w-full': windowWidth < 990,
       'h-screen': windowWidth < 990,
     }"
   >
-    <div>
+    <div class="flex flex-col gap-4">
       <!-- Naming -->
-      <div class="field">
+      <div class="flex flex-col gap-2">
         <label for="equivalent-name">Scope*</label>
         <InputNumber
           class="w-full"
@@ -81,7 +85,7 @@
           Zu welchem Scope gehört der Umrechnungsfaktor.
         </InlineMessage>
       </div>
-      <div class="field">
+      <div class="flex flex-col gap-2">
         <label for="equivalent-category">Kategorie*</label>
         <InputText
           class="w-full"
@@ -96,7 +100,7 @@
           Die Kategorie wird für die Filterung verwendet.
         </InlineMessage>
       </div>
-      <div class="field">
+      <div class="flex flex-col gap-2">
         <label for="equivalent-spec1">Spezifikation 1 (Hauptname)*</label>
         <InputText
           class="w-full"
@@ -112,7 +116,7 @@
           angegeben werden, falls Unterscheidungsmerkmale benötigt werden.
         </InlineMessage>
       </div>
-      <div class="field">
+      <div class="flex flex-col gap-2">
         <label for="equivalent-spec2">Spezifikation 2</label>
         <InputText
           class="w-full"
@@ -120,7 +124,7 @@
           id="equivalent-spec2"
         />
       </div>
-      <div class="field">
+      <div class="flex flex-col gap-2">
         <label for="equivalent-spec3">Spezifikation 3</label>
         <InputText
           class="w-full"
@@ -128,7 +132,7 @@
           id="equivalent-spec3"
         />
       </div>
-      <div class="field">
+      <div class="flex flex-col gap-2">
         <label for="equivalent-alt-name">Zusätzlicher Name</label>
         <InputText
           class="w-full"
@@ -144,7 +148,7 @@
           technische Bezeichnung zur besseren Suchbarkeit.
         </InlineMessage>
       </div>
-      <div class="field">
+      <div class="flex flex-col gap-2">
         <label for="equivalent-comment">Kommentar</label>
         <InputText
           class="w-full"
@@ -161,7 +165,7 @@
       </div>
 
       <!-- Technical -->
-      <div class="field">
+      <div class="flex flex-col gap-2">
         <label for="equivalent-unit-in">Einheit Eingang*</label>
         <InputText
           class="w-full"
@@ -177,7 +181,7 @@
           werden.
         </InlineMessage>
       </div>
-      <div class="field">
+      <div class="flex flex-col gap-2">
         <label for="equivalent-unit-out">Einheit Ausgang*</label>
         <InputText
           class="w-full"
@@ -194,7 +198,7 @@
           Ausgangseinheit kg-CO<sub>2</sub> entsprechen.
         </InlineMessage>
       </div>
-      <div class="field">
+      <div class="flex flex-col gap-2">
         <label for="equivalent-source">Quelle*</label>
         <InputText
           class="w-full"
@@ -209,7 +213,7 @@
           Angabe woher der Faktor stammt (Berechnungsgrundlage)
         </InlineMessage>
       </div>
-      <div class="field">
+      <div class="flex flex-col gap-2">
         <label for="equivalent-monthlyValues">Monatliche Eingaben?</label>
         <div>
           <Checkbox
@@ -227,30 +231,30 @@
         </InlineMessage>
       </div>
       <div v-show="selectedValue.monthlyValues">
-        <div class="grid mt-1">
+        <div class="grid grid-cols-12 mt-1">
           <div
-            class="col-3 align-items-center justify-content-center bg-teal-100 font-bold text-gray-900 border-round text-center"
+            class="col-span-3 items-center justify-center bg-teal-100 font-bold text-gray-900 rounded-sm text-center"
           >
             {{ 'Jan' }}
           </div>
           <div
-            class="col-3 align-items-center justify-content-center bg-teal-100 font-bold text-gray-900 border-round text-center"
+            class="col-span-3 items-center justify-center bg-teal-100 font-bold text-gray-900 rounded-sm text-center"
           >
             {{ 'Feb' }}
           </div>
           <div
-            class="col-3 align-items-center justify-content-center bg-teal-100 font-bold text-gray-900 border-round text-center"
+            class="col-span-3 items-center justify-center bg-teal-100 font-bold text-gray-900 rounded-sm text-center"
           >
             {{ 'Mar' }}
           </div>
           <div
-            class="col-3 align-items-center justify-content-center bg-teal-100 font-bold text-gray-900 border-round text-center"
+            class="col-span-3 items-center justify-center bg-teal-100 font-bold text-gray-900 rounded-sm text-center"
           >
             {{ 'Apr' }}
           </div>
         </div>
-        <div class="grid mt-1">
-          <div class="col-3 small-width-ctm">
+        <div class="grid grid-cols-12 mt-1">
+          <div class="col-span-3 small-width-ctm">
             <InputNumber
               :use-grouping="false"
               v-model="selectedValue.jan"
@@ -258,7 +262,7 @@
               :max-fraction-digits="10"
             />
           </div>
-          <div class="col-3 small-width-ctm">
+          <div class="col-span-3 small-width-ctm">
             <InputNumber
               :use-grouping="false"
               v-model="selectedValue.feb"
@@ -266,7 +270,7 @@
               :max-fraction-digits="10"
             />
           </div>
-          <div class="col-3 small-width-ctm">
+          <div class="col-span-3 small-width-ctm">
             <InputNumber
               :use-grouping="false"
               v-model="selectedValue.mar"
@@ -274,7 +278,7 @@
               :max-fraction-digits="10"
             />
           </div>
-          <div class="col-3 small-width-ctm">
+          <div class="col-span-3 small-width-ctm">
             <InputNumber
               :use-grouping="false"
               v-model="selectedValue.apr"
@@ -283,30 +287,30 @@
             />
           </div>
         </div>
-        <div class="grid mt-1">
+        <div class="grid grid-cols-12 mt-1">
           <div
-            class="col-3 align-items-center justify-content-center bg-teal-100 font-bold text-gray-900 border-round text-center"
+            class="col-span-3 items-center justify-center bg-teal-100 font-bold text-gray-900 rounded-sm text-center"
           >
             {{ 'Mai' }}
           </div>
           <div
-            class="col-3 align-items-center justify-content-center bg-teal-100 font-bold text-gray-900 border-round text-center"
+            class="col-span-3 items-center justify-center bg-teal-100 font-bold text-gray-900 rounded-sm text-center"
           >
             {{ 'Jun' }}
           </div>
           <div
-            class="col-3 align-items-center justify-content-center bg-teal-100 font-bold text-gray-900 border-round text-center"
+            class="col-span-3 items-center justify-center bg-teal-100 font-bold text-gray-900 rounded-sm text-center"
           >
             {{ 'Jul' }}
           </div>
           <div
-            class="col-3 align-items-center justify-content-center bg-teal-100 font-bold text-gray-900 border-round text-center"
+            class="col-span-3 items-center justify-center bg-teal-100 font-bold text-gray-900 rounded-sm text-center"
           >
             {{ 'Aug' }}
           </div>
         </div>
-        <div class="grid mt-1">
-          <div class="col-3 small-width-ctm">
+        <div class="grid grid-cols-12 mt-1">
+          <div class="col-span-3 small-width-ctm">
             <InputNumber
               :use-grouping="false"
               v-model="selectedValue.may"
@@ -314,7 +318,7 @@
               :max-fraction-digits="10"
             />
           </div>
-          <div class="col-3 small-width-ctm">
+          <div class="col-span-3 small-width-ctm">
             <InputNumber
               :use-grouping="false"
               v-model="selectedValue.jun"
@@ -322,7 +326,7 @@
               :max-fraction-digits="10"
             />
           </div>
-          <div class="col-3 small-width-ctm">
+          <div class="col-span-3 small-width-ctm">
             <InputNumber
               :use-grouping="false"
               v-model="selectedValue.jul"
@@ -330,7 +334,7 @@
               :max-fraction-digits="10"
             />
           </div>
-          <div class="col-3 small-width-ctm">
+          <div class="col-span-3 small-width-ctm">
             <InputNumber
               :use-grouping="false"
               v-model="selectedValue.aug"
@@ -339,30 +343,30 @@
             />
           </div>
         </div>
-        <div class="grid mt-1">
+        <div class="grid grid-cols-12 mt-1">
           <div
-            class="col-3 align-items-center justify-content-center bg-teal-100 font-bold text-gray-900 border-round text-center"
+            class="col-span-3 items-center justify-center bg-teal-100 font-bold text-gray-900 rounded-sm text-center"
           >
             {{ 'Sep' }}
           </div>
           <div
-            class="col-3 align-items-center justify-content-center bg-teal-100 font-bold text-gray-900 border-round text-center"
+            class="col-span-3 items-center justify-center bg-teal-100 font-bold text-gray-900 rounded-sm text-center"
           >
             {{ 'Okt' }}
           </div>
           <div
-            class="col-3 align-items-center justify-content-center bg-teal-100 font-bold text-gray-900 border-round text-center"
+            class="col-span-3 items-center justify-center bg-teal-100 font-bold text-gray-900 rounded-sm text-center"
           >
             {{ 'Nov' }}
           </div>
           <div
-            class="col-3 align-items-center justify-content-center bg-teal-100 font-bold text-gray-900 border-round text-center"
+            class="col-span-3 items-center justify-center bg-teal-100 font-bold text-gray-900 rounded-sm text-center"
           >
             {{ 'Dez' }}
           </div>
         </div>
-        <div class="grid mt-1">
-          <div class="col-3 small-width-ctm">
+        <div class="grid grid-cols-12 mt-1">
+          <div class="col-span-3 small-width-ctm">
             <InputNumber
               :use-grouping="false"
               v-model="selectedValue.sep"
@@ -370,7 +374,7 @@
               :max-fraction-digits="10"
             />
           </div>
-          <div class="col-3 small-width-ctm">
+          <div class="col-span-3 small-width-ctm">
             <InputNumber
               :use-grouping="false"
               v-model="selectedValue.oct"
@@ -378,7 +382,7 @@
               :max-fraction-digits="10"
             />
           </div>
-          <div class="col-3 small-width-ctm">
+          <div class="col-span-3 small-width-ctm">
             <InputNumber
               :use-grouping="false"
               v-model="selectedValue.nov"
@@ -386,7 +390,7 @@
               :max-fraction-digits="10"
             />
           </div>
-          <div class="col-3 small-width-ctm">
+          <div class="col-span-3 small-width-ctm">
             <InputNumber
               :use-grouping="false"
               v-model="selectedValue.dec"
@@ -396,7 +400,7 @@
           </div>
         </div>
       </div>
-      <div class="field">
+      <div class="flex flex-col gap-2">
         <label for="equivalent-value-year">Faktor (Jahresdurschnitt)*</label>
         <InputNumber
           v-if="!selectedValue.monthlyValues"
@@ -418,12 +422,13 @@
           [Ausgangseinheit-pro-Eingangseinheit]</InlineMessage
         >
       </div>
-      <div class="field">
+      <div class="flex flex-col gap-2">
         <label for="equivalent-parent-selector"
           >Überliegende Berechnung (optional)</label
         >
-        <div>
+        <div class="flex flex-grow">
           <Button
+            class="w-full"
             :label="
               selectedValue.parent
                 ? global.equivalentDict[selectedValue.parent].specification1
@@ -451,7 +456,7 @@
         </InlineMessage>
       </div>
     </div>
-    <div>
+    <div class="mt-5">
       <Button
         :label="selectedValue.id === 'new' ? 'Anlegen' : 'Speichern'"
         @click="save"

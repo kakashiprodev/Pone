@@ -122,37 +122,41 @@ const sum = (data: number[]) => {
  * render the chart with prop data
  */
 const renderChart = () => {
-  if (props.data) {
-    const series: number[] = [];
-    // get sum of all entries for each key in timeseries
-    Object.keys(props.data.timeseries).forEach((key) => {
-      const sumOfKey = sum(
-        props.data.timeseries[key].map((entry) => entry.sum),
+  try {
+    if (props.data) {
+      const series: number[] = [];
+      // get sum of all entries for each key in timeseries
+      Object.keys(props.data.timeseries).forEach((key) => {
+        const sumOfKey = sum(
+          props.data.timeseries[key].map((entry) => entry.sum),
+        );
+        series.push(round(toTons(sumOfKey)));
+      });
+
+      // add colors
+      colors.value = getMonochromeColorPalette(
+        Object.keys(props.data.timeseries).length,
       );
-      series.push(round(toTons(sumOfKey, globalStore.displayInTons)));
-    });
 
-    // add colors
-    colors.value = getMonochromeColorPalette(
-      Object.keys(props.data.timeseries).length,
-    );
+      chartData.value =
+        props.type === 'polarArea' ||
+        props.type === 'pie' ||
+        props.type === 'donut'
+          ? series
+          : [
+              {
+                name: 'Sum',
+                data: series,
+              },
+            ];
 
-    chartData.value =
-      props.type === 'polarArea' ||
-      props.type === 'pie' ||
-      props.type === 'donut'
-        ? series
-        : [
-            {
-              name: 'Sum',
-              data: series,
-            },
-          ];
-
-    categories.value = Object.keys(props.data.timeseries);
-    if (categories.value.length === 3 && categories.value[0] === '1') {
-      categories.value = ['Scope 1', 'Scope 2', 'Scope 3'];
+      categories.value = Object.keys(props.data.timeseries);
+      if (categories.value.length === 3 && categories.value[0] === '1') {
+        categories.value = ['Scope 1', 'Scope 2', 'Scope 3'];
+      }
     }
+  } catch (error) {
+    console.error('Error rendering chart', error);
   }
 };
 

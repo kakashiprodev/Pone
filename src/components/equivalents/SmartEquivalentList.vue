@@ -49,9 +49,9 @@
   </div>
 
   <!-- Column Chooser -->
-  <div class="grid" v-if="showColumnChooser">
-    <div class="col-8"></div>
-    <div class="col-4">
+  <div class="grid grid-cols-12 mt-1" v-if="showColumnChooser">
+    <div class="col-span-8"></div>
+    <div class="col-span-4">
       <MultiSelect
         v-model="_visibleColumns"
         :options="columnsInTable"
@@ -62,6 +62,7 @@
     </div>
   </div>
   <DataTable
+    :showGridlines="false"
     class="cst-no-hover"
     :value="filteredEquivalents"
     selection-mode="single"

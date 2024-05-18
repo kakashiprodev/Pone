@@ -183,6 +183,12 @@ const generateData = async () => {
   const allReports = await getReports();
   const allFacilities = global.facilities;
 
+  if (allFacilities.length === 0) {
+    error('No facilities found');
+    loading.value = false;
+    return;
+  }
+
   for (const report of allReports) {
     for (let x = 0; x < numberOfRecords.value; x++) {
       // get random scope. this can be 1,2,3

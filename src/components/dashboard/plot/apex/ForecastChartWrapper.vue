@@ -16,6 +16,7 @@
 import { computed, defineProps, PropType, ref } from 'vue';
 import { AggregatedReportResult } from '../../../../services/reporting/index';
 import config from '@/config.ts';
+import { numbersFormatter } from '@/services/reporting/forecast.ts';
 
 const props = defineProps({
   label: {
@@ -100,6 +101,16 @@ const chartOptions = ref({
   },
   dataLabels: {
     enabled: false,
+  },
+  yaxis: {
+    labels: {
+      formatter: (value: number) => numbersFormatter(value, 0),
+    },
+  },
+  tooltip: {
+    y: {
+      formatter: (value: number) => numbersFormatter(value, 2),
+    },
   },
 });
 </script>

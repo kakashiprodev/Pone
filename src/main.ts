@@ -39,15 +39,19 @@ import PanelMenu from 'primevue/panelmenu';
 import InputSwitch from 'primevue/inputswitch';
 import Divider from 'primevue/divider';
 import Toast from 'primevue/toast';
-import Chart from 'primevue/chart';
 import ToggleButton from 'primevue/togglebutton';
 import Listbox from 'primevue/listbox';
 import Panel from 'primevue/panel';
 import ProgressBar from 'primevue/progressbar';
 import Tag from 'primevue/tag';
+import Chip from 'primevue/chip';
+import Sidebar from 'primevue/sidebar';
+import Avatar from 'primevue/avatar';
+import FileUpload from 'primevue/fileupload';
+import MeterGroup from 'primevue/metergroup';
 
 import '@fortawesome/fontawesome-free/css/all.min.css';
-import 'primeflex/primeflex.css';
+import './style.css';
 
 const pinia = createPinia();
 
@@ -85,12 +89,16 @@ app.component('PanelMenu', PanelMenu);
 app.component('InputSwitch', InputSwitch);
 app.component('Divider', Divider);
 app.component('Toast', Toast);
-app.component('Chart', Chart);
 app.component('ToggleButton', ToggleButton);
 app.component('Listbox', Listbox);
 app.component('Panel', Panel);
 app.component('ProgressBar', ProgressBar);
 app.component('Tag', Tag);
+app.component('Chip', Chip);
+app.component('Sidebar', Sidebar);
+app.component('Avatar', Avatar);
+app.component('FileUpload', FileUpload);
+app.component('MeterGroup', MeterGroup);
 
 app.directive('tooltip', Tooltip);
 

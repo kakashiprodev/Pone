@@ -3,7 +3,7 @@
   <router-view v-if="!global.isLoading" :key="route.path" />
   <div
     v-else
-    class="m-auto w-1 min-h-screen flex align-items-center justify-content-center"
+    class="m-auto w-1/12 min-h-screen flex items-center justify-center"
   >
     <ProgressSpinner />
   </div>
@@ -44,5 +44,32 @@ Fix for PrimeVue InputNumber problem with width
 */
 .w-full .p-inputnumber-input {
   width: 100%;
+}
+
+/**
+Custom CARD stlye for #header
+*/
+.psm-report-header {
+  /*background-image: linear-gradient(
+    to left top,
+    #00ae97,
+    #0db69f,
+    #17bfa7,
+    #1fc7b0,
+    #26d0b8,
+    #2accb6
+  );*/
+  /*background-image: linear-gradient(to left top, #00ae973d, #008a770f);*/
+  background-color: var(--surface-200) !important;
+  text-align: center;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  padding: 10px;
+}
+
+.psm-report-header h3 {
+  margin: 0;
+  color: #334155;
+  font-size: 0.9rem;
 }
 </style>

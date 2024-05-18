@@ -6,7 +6,7 @@
       :type="'polarArea'"
       :data="chartData"
       :options="scopeChartOptions"
-      class="h-30rem"
+      class="h-96"
     />
   </div>
 </template>
@@ -62,21 +62,28 @@ const scopeChartOptions = {
 };
 
 const renderChart = () => {
-  const labels = Object.keys(props.data.timeseries);
-  const data = {
-    labels,
-    datasets: [
-      {
-        label: 'Sum',
-        data: labels.map((name) =>
-          props.data.timeseries[name].reduce((acc, curr) => acc + curr.sum, 0),
-        ),
-        backgroundColor: 'rgba(54, 162, 235, 0.5)',
-      },
-    ],
-  };
+  try {
+    const labels = Object.keys(props.data.timeseries);
+    const data = {
+      labels,
+      datasets: [
+        {
+          label: 'Sum',
+          data: labels.map((name) =>
+            props.data.timeseries[name].reduce(
+              (acc, curr) => acc + curr.sum,
+              0,
+            ),
+          ),
+          backgroundColor: 'rgba(54, 162, 235, 0.5)',
+        },
+      ],
+    };
 
-  chartData.value = data;
+    chartData.value = data;
+  } catch (error) {
+    console.error('Error rendering chart:', error);
+  }
 };
 
 watch(
