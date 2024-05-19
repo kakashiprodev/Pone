@@ -613,7 +613,7 @@ import {
   nullable,
   boolean,
 } from 'valibot';
-import { roundStringWithDecimals, toTons } from '../../services/pipes';
+import { round, roundStringWithDecimals, toTons } from '../../services/pipes';
 import { MeterItem } from 'primevue/metergroup';
 import { getMonochromeColorPalette } from '@/services/colors';
 import { globalStore, inputStore } from '@/main';
@@ -814,7 +814,7 @@ watch(
       ];
       keys.forEach((key) => {
         // @ts-ignore
-        selectedValue.value[key] = selectedValue.value.rawValue;
+        selectedValue.value[key] = round(selectedValue.value.rawValue / 12, 3);
       });
     }
   },
