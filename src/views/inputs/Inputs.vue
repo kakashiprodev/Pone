@@ -528,7 +528,7 @@
     <Column field="rawValue" header="Eingabewert" sortable>
       <template #body="{ data }">
         <Chip class="flex justify-end text-right bg-slate-200 text-sm">
-          {{ roundStringWithDecimals(data.rawValue, 3) }}
+          {{ roundStringWithDecimals(data.rawValue, 0) }}
           {{
             globalStore.equivalentDict[data.equivalent]?.in ?? 'Reference error'
           }}
@@ -557,7 +557,7 @@
           {{
             roundStringWithDecimals(
               displayInTons ? toTons(data.sumValue) : data.sumValue,
-              3,
+              0,
             )
           }}
           {{ displayInTons ? ' to' : ' kg' }}

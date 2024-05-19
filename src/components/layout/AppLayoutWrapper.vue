@@ -296,6 +296,13 @@ const sidebarActions = [
     to: '/facilities',
     visible: true,
   },
+  {
+    key: 'report-data',
+    label: 'Unternehmen',
+    icon: 'fa-solid fa-building',
+    to: '/report-data',
+    visible: true,
+  },
 ];
 
 const sidebar = [
