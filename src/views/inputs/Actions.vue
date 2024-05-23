@@ -534,24 +534,27 @@ const actionEntrySchema = object({
     minLength(1, 'Name zu kurz'),
     maxLength(255, 'Name zu lang'),
   ]),
-  descriptionBefore: string('Keine Beschreibung angegeben', [
+  description_before: string('Keine Beschreibung angegeben', [
     minLength(1, 'Beschreibung zu kurz'),
     maxLength(4000, 'Beschreibung zu lang'),
   ]),
-  descriptionAfter: string('Keine Beschreibung angegeben', [
+  description_after: string('Keine Beschreibung angegeben', [
     minLength(1, 'Beschreibung zu kurz'),
     maxLength(4000, 'Beschreibung zu lang'),
   ]),
-  targetValueAbsolutPlanned: number('Kein Ziel angegeben', [
+  target_value_absolut_planned: number('Kein Ziel angegeben', [
     minValue(0, 'Ziel muss größer als 0 sein'),
   ]),
-  targetValueAbsolutIs: number('Kein Ziel angegeben', [
+  target_value_absolut_is: number('Kein Ziel angegeben', [
     minValue(0, 'Ziel muss größer als 0 sein'),
   ]),
-  descriptionTargetValue: string('Keine Beschreibung des Zielwerts angegeben', [
-    minLength(1, 'Beschreibung zu kurz'),
-    maxLength(4000, 'Beschreibung zu lang'),
-  ]),
+  description_target_value: string(
+    'Keine Beschreibung des Zielwerts angegeben',
+    [
+      minLength(1, 'Beschreibung zu kurz'),
+      maxLength(4000, 'Beschreibung zu lang'),
+    ],
+  ),
   // finishedUntilPlanned: date('Kein Fertigstellungsdatum angegeben'),
   // finishedUntilIs: nullable(string('Kein Fertigstellungsdatum angegeben')),
 
@@ -559,20 +562,20 @@ const actionEntrySchema = object({
     minLength(1, 'Kategorie zu kurz'),
     maxLength(255, 'Kategorie zu lang'),
   ]),
-  costsPlanned: number('Keine geplanten Kosten angegeben', [
+  costs_planned: number('Keine geplanten Kosten angegeben', [
     minValue(0, 'Kosten müssen größer als 0 sein'),
   ]),
-  costsIs: number('Keine tatsächlichen Kosten angegeben', [
+  costs_is: number('Keine tatsächlichen Kosten angegeben', [
     minValue(0, 'Kosten müssen größer als 0 sein'),
   ]),
   roi: number('Kein ROI angegeben', [
     minValue(0, 'ROI muss größer als 0 sein'),
   ]),
-  descriptionCosts: string('Keine Kostenbeschreibung angegeben', [
+  description_costs: string('Keine Kostenbeschreibung angegeben', [
     minLength(1, 'Beschreibung zu kurz'),
     maxLength(4000, 'Beschreibung zu lang'),
   ]),
-  avoidanceCosts: number('Keine Vermeidungskosten angegeben', [
+  avoidance_costs: number('Keine Vermeidungskosten angegeben', [
     minValue(0, 'Vermeidungskosten müssen größer als 0 sein'),
   ]),
 });

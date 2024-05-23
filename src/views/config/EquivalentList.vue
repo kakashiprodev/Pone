@@ -571,7 +571,7 @@ const equivalentSchema = object({
   ]),
   specification2: nullable(string([maxLength(255, 'Spezifikation 2 zu lang')])),
   specification3: nullable(string([maxLength(255, 'Spezifikation 3 zu lang')])),
-  addName1: nullable(string([maxLength(255, 'Zusatzname zu lang')])),
+  add_name1: nullable(string([maxLength(255, 'Zusatzname zu lang')])),
   comment: nullable(string([maxLength(255, 'Kommentar zu lang')])),
   in: string([
     minLength(1, 'Eingangseinheit zu kurz'),
@@ -585,10 +585,10 @@ const equivalentSchema = object({
     minLength(1, 'Quelle zu kurz'),
     maxLength(255, 'Quelle zu lang'),
   ]),
-  avgValue: number('Es muss ein Faktor angegeben werden.', [
+  avg_value: number('Es muss ein Faktor angegeben werden.', [
     minValue(0, 'Faktor muss größer als 0 sein'),
   ]),
-  monthlyValues: boolean(),
+  monthly_values: boolean(),
   jan: nullable(
     number([minValue(0, 'Faktor für Januar muss größer als 0 sein')]),
   ),

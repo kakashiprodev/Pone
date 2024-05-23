@@ -11,14 +11,13 @@
 
 <script setup lang="ts">
 import DataProvider from './services/dataprovider';
-import { useRoute } from 'vue-router';
 import { useAuthStore } from './stores/auth';
 import { useGlobalStore } from './stores/global';
-import { useRouter } from 'vue-router';
+import { router } from './router';
+import { useRoute } from 'vue-router';
 
 const global = useGlobalStore();
 const auth = useAuthStore();
-const router = useRouter();
 const route = useRoute();
 
 const init = async () => {
@@ -34,7 +33,8 @@ const init = async () => {
 
   if (loggedIn) {
     await global.initializeStore();
-    if (route.name === 'login') {
+    console.log('global initialized', router);
+    if (router.currentRoute.value.path.startsWith('/login')) {
       router.push({ name: 'dashboard' });
     } else {
       console.log('logged in');

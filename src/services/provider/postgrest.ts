@@ -389,7 +389,8 @@ export default class DataProvider {
     }
     const { data, error } = await this.postgrest
       .from('inputs')
-      .select('*,report.site,facility');
+      .select('*,report (*)');
+
     //.filter(filter)
     if (error) throw error;
     return data as any;
