@@ -28,6 +28,8 @@
           year: 2050,
           percentage: 0,
           report: global.selectedReport?.id ?? '',
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
         })
       "
       label="Neue Abstufung hinzufügen"

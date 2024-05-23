@@ -125,7 +125,9 @@ const emptyProject = (): ProjectEntry => {
     id: 'new',
     name: '',
     logo: '',
-    logoId: null,
+    logo_id: null,
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
   };
 };
 
@@ -199,14 +201,14 @@ const uploadImage = async (event: any) => {
   const file = event.files[0];
 
   // check if an logo is already uploaded
-  if (projectForm.value.logoId) {
+  if (projectForm.value.logo_id) {
     // delete old image
-    await dataprovider.deleteImage(projectForm.value.logoId);
+    await dataprovider.deleteImage(projectForm.value.logo_id);
   }
   const data = await dataprovider.uploadImage(file);
   // update project entry with image url
   projectForm.value.logo = data.url;
-  projectForm.value.logoId = data.id;
+  projectForm.value.logo_id = data.id;
   await dataprovider.updateProject(projectForm.value);
 };
 

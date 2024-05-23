@@ -294,7 +294,7 @@
           :label="'Anlegen'"
           @click="save"
           class="grow ml-1"
-          :disabled="selectedValue.rawValue == null"
+          :disabled="selectedValue.raw_value == null"
         />
       </div>
     </div>
@@ -762,25 +762,27 @@ const emptyInput: InputEntry = {
   comment: '',
   report: globalStore.selectedReport?.id ?? '',
   scope: 1,
-  sumValue: 0,
+  sum_value: 0,
   equivalent: null,
   category: null,
   facility: null,
   parent: null,
-  rawValue: null as any,
-  monthlyValues: false,
-  rawValueJan: null as any,
-  rawValueFeb: null as any,
-  rawValueMar: null as any,
-  rawValueApr: null as any,
-  rawValueMay: null as any,
-  rawValueJun: null as any,
-  rawValueJul: null as any,
-  rawValueAug: null as any,
-  rawValueSep: null as any,
-  rawValueOct: null as any,
-  rawValueNov: null as any,
-  rawValueDec: null as any,
+  raw_value: null as any,
+  monthly_values: false,
+  raw_value_jan: null as any,
+  raw_value_feb: null as any,
+  raw_value_mar: null as any,
+  raw_value_apr: null as any,
+  raw_value_may: null as any,
+  raw_value_jun: null as any,
+  raw_value_jul: null as any,
+  raw_value_aug: null as any,
+  raw_value_sep: null as any,
+  raw_value_oct: null as any,
+  raw_value_nov: null as any,
+  raw_value_dec: null as any,
+  created_at: new Date().toISOString(),
+  updated_at: new Date().toISOString(),
 };
 const clone = (input: InputEntry) => {
   const c = JSON.parse(JSON.stringify(input));
@@ -795,22 +797,22 @@ const originalValue: Ref<InputEntry> = ref(emptyInput);
 
 // check selectedValue.rawValue for changes to update the input fields
 watch(
-  () => selectedValue.value.rawValue,
+  () => selectedValue.value.raw_value,
   () => {
-    if (!selectedValue.value.monthlyValues) {
+    if (!selectedValue.value.monthly_values) {
       const keys: (keyof InputEntry)[] = [
-        'rawValueJan',
-        'rawValueFeb',
-        'rawValueMar',
-        'rawValueApr',
-        'rawValueMay',
-        'rawValueJun',
-        'rawValueJul',
-        'rawValueAug',
-        'rawValueSep',
-        'rawValueOct',
-        'rawValueNov',
-        'rawValueDec',
+        'raw_value_jan',
+        'raw_value_feb',
+        'raw_value_mar',
+        'raw_value_apr',
+        'raw_value_may',
+        'raw_value_jun',
+        'raw_value_jul',
+        'raw_value_aug',
+        'raw_value_sep',
+        'raw_value_oct',
+        'raw_value_nov',
+        'raw_value_dec',
       ];
       keys.forEach((key) => {
         // @ts-ignore
@@ -853,8 +855,8 @@ const computedSumCalculation: ComputedRef<string> = computed(() => {
   if (
     selectedValue.value.equivalent != null &&
     selectedValue.value.equivalent !== '' &&
-    selectedValue.value.rawValue != null &&
-    selectedValue.value.rawValue > 0
+    selectedValue.value.raw_value != null &&
+    selectedValue.value.raw_value > 0
   ) {
     return getCalculationSteps(
       selectedValue.value,
@@ -918,7 +920,7 @@ const deleteEntry = async (entry: InputEntry, event: any) => {
 // watch data to caclulate the sum of all sumValues
 const sumValue = computed(() => {
   return data.value.reduce((acc, item) => {
-    return acc + item.sumValue;
+    return acc + item.sum_value;
   }, 0);
 });
 
@@ -936,11 +938,11 @@ const sumsByCategory = computed(() => {
       relativeSums.push({
         label: item.category ?? '',
         color: '#34d399',
-        value: item.sumValue,
+        value: item.sum_value,
         icon: '',
       });
     } else {
-      relativeSums[index].value += item.sumValue;
+      relativeSums[index].value += item.sum_value;
     }
   });
   // then calculate the percentage
@@ -970,8 +972,8 @@ const download = async () => {
         item.comment,
         item.report,
         item.scope,
-        item.sumValue,
-        item.rawValue,
+        item.sum_value,
+        item.raw_value,
         item.equivalent,
         'item.year', // HACK!!!
       ].join(';');

@@ -212,7 +212,7 @@ export const getSumForInput = (
     // @ts-ignore
     const monthlyRawValue = input.monthlyValues
       ? input[key as keyof InputEntry]
-      : input.rawValue / 12;
+      : input.raw_value / 12;
     sum += ((monthlyRawValue as any) ?? 0) * monthlyEquivalentFactor;
   });
   return sum;
@@ -285,19 +285,19 @@ export const getScopeSums = async () => {
     scope1: {
       list: getListOfInputValues(scope1, equivalents),
       sum: scope1.reduce((sum, input) => {
-        return sum + input.sumValue;
+        return sum + input.sum_value;
       }, 0),
     },
     scope2: {
       list: getListOfInputValues(scope2, equivalents),
       sum: scope2.reduce((sum, input) => {
-        return sum + input.sumValue;
+        return sum + input.sum_value;
       }, 0),
     },
     scope3: {
       list: getListOfInputValues(scope3, equivalents),
       sum: scope3.reduce((sum, input) => {
-        return sum + input.sumValue;
+        return sum + input.sum_value;
       }, 0),
     },
   };
@@ -357,7 +357,7 @@ const calculateEquivalentFactorWithSteps = (
   }
   // create a clone that is needed for nested calculations
   const fakeInput: InputEntry = JSON.parse(JSON.stringify(input));
-  fakeInput.rawValue = 0;
+  fakeInput.raw_value = 0;
 
   // Monthly detailed calculation
   steps.push('Berechnungsschritt ' + (steps.length + 1));
@@ -368,15 +368,15 @@ const calculateEquivalentFactorWithSteps = (
       equivalent[month as keyof EquivalentEntry] != null &&
       equivalent[month as keyof EquivalentEntry] != ''
         ? equivalent[month as keyof EquivalentEntry]
-        : equivalent.avgValue;
+        : equivalent.avg_value;
     // @ts-ignore
     const monthlyRawValue: number = input.monthlyValues
       ? input[key as keyof InputEntry]
-      : input.rawValue / 12;
+      : input.raw_value / 12;
     const montlySum = monthlyRawValue * ((monthlyEquivalentFactor as any) ?? 0);
     // @ts-ignore
     fakeInput[key] = montlySum;
-    fakeInput.rawValue += montlySum;
+    fakeInput.raw_value += montlySum;
     steps.push(
       `${month !== 'jan' ? '+ ' : ''} ${roundStringWithDecimals(
         monthlyRawValue,
@@ -492,7 +492,7 @@ const userInputsToDataEntries = (
       report: input.expand.report.id,
       scope: input.scope,
       comment: input.comment,
-      sumValue: input.sumValue,
+      sumValue: input.sum_value,
       equivalent: input.equivalent ?? '',
       category:
         input.category && input.category !== ''
@@ -544,7 +544,10 @@ export const getPlainReportData = async (
   let data: InputEntryWithExpandedReportAndSite[] = [];
   if (needRefresh) {
     // get all data. not filtered by years, because we need to filter it later
-    data = await dataprovider.readUserInputsForProject(query.projectId);
+    data = (await dataprovider.readUserInputsForProject(
+      query.projectId,
+    )) as any; // HACK!!!
+
     littleDataCache.data = data;
     littleDataCache.lease = new Date();
   } else {

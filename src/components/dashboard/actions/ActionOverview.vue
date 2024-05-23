@@ -179,8 +179,8 @@ const getData = async () => {
     // order by date. if "finishedUntilIs" is null or empty then use "finishedUntilPlanned"
     // both can be string, Date or null or ""
     acts.sort((a, b) => {
-      const aDate = a.finishedUntilIs ?? a.finishedUntilPlanned;
-      const bDate = b.finishedUntilIs ?? b.finishedUntilPlanned;
+      const aDate = a.finished_until_is ?? a.finished_until_planned;
+      const bDate = b.finished_until_is ?? b.finished_until_planned;
       if (aDate == null || aDate === '') {
         return 1;
       }
@@ -192,44 +192,44 @@ const getData = async () => {
 
     // calulate sum of all planned target values
     const sumPlanned = acts.reduce(
-      (acc, act) => acc + (act.targetValueAbsolutPlanned ?? 0),
+      (acc, act) => acc + (act.target_value_absolut_planned ?? 0),
       0,
     );
     // calulate sum of all actual target values
     const sumIs = acts.reduce(
-      (acc, act) => acc + (act.targetValueAbsolutIs ?? 0),
+      (acc, act) => acc + (act.target_value_absolut_is ?? 0),
       0,
     );
     const biggerValue = sumPlanned > sumIs ? sumPlanned : sumIs;
 
     // add a precentage value to each action for planned and actual target value
     // also group all entries by category and creat a dictionary with the sum of all planned and actual target values
-    const actsWithPercentage = acts.map((act) => {
+    const actsWithPercentage: ActionWithPercentage[] = acts.map((act) => {
       const plannedPercentage =
-        (act.targetValueAbsolutPlanned / biggerValue) * 100;
-      const isPercentage = (act.targetValueAbsolutIs / biggerValue) * 100;
+        (act.target_value_absolut_planned / biggerValue) * 100;
+      const isPercentage = (act.target_value_absolut_is / biggerValue) * 100;
 
       // add the planned and actual target value to the category dictionary
       if (categorySumDict.value[act.category]) {
         categorySumDict.value[act.category].sumAbsolute +=
           act.progress < 100
-            ? act.targetValueAbsolutPlanned
-            : act.targetValueAbsolutIs;
+            ? act.target_value_absolut_planned
+            : act.target_value_absolut_is;
       } else {
         categorySumDict.value[act.category] = {
           sumAbsolute:
             act.progress < 100
-              ? act.targetValueAbsolutPlanned
-              : act.targetValueAbsolutIs,
+              ? act.target_value_absolut_planned
+              : act.target_value_absolut_is,
           precentagePart: 0,
         };
       }
 
       return {
         ...act,
-        targetValuePlanned: plannedPercentage,
+        target_value_planned: plannedPercentage,
         // relation between the target value ant the real value
-        targetValueIs: isPercentage,
+        target_value_is: isPercentage,
       };
     });
     // console.log('actsWithPercentage', actsWithPercentage);

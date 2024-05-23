@@ -251,7 +251,7 @@ const filterEquivalents = () => {
     }
     // addName1
     if (filter.value.addName1 && filter.value.addName1.length > 0) {
-      if (!filter.value.addName1.includes(equivalent.addName1)) {
+      if (!filter.value.addName1.includes(equivalent.add_name1)) {
         return false;
       }
     }
@@ -289,7 +289,7 @@ const filterEquivalents = () => {
         !equivalent.specification1.toLowerCase().includes(filterNameLower) &&
         !equivalent.specification2.toLowerCase().includes(filterNameLower) &&
         !equivalent.specification3.toLowerCase().includes(filterNameLower) &&
-        !equivalent.addName1.toLowerCase().includes(filterNameLower)
+        !equivalent.add_name1.toLowerCase().includes(filterNameLower)
       ) {
         return false;
       }

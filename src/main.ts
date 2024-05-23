@@ -6,8 +6,8 @@ import ToastService from 'primevue/toastservice';
 import PrimeVue from 'primevue/config';
 import ConfirmationService from 'primevue/confirmationservice';
 import Tooltip from 'primevue/tooltip';
-import { useGlobalStore } from './stores/global';
-import { useInputStore } from './stores/inputs';
+import { GlobalActions, GlobalState, useGlobalStore } from './stores/global';
+import { InputsActions, InputsState, useInputStore } from './stores/inputs';
 
 /* Apex charts */
 // @ts-ignore
@@ -52,56 +52,125 @@ import MeterGroup from 'primevue/metergroup';
 
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import './style.css';
+import { AuthStoreActions, AuthStoreState, useAuthStore } from './stores/auth';
+import keycloakService from './services/provider/keycloak';
+import piniaPluginPersistedstate from 'pinia-plugin-persistedstate';
 
 const pinia = createPinia();
+pinia.use(piniaPluginPersistedstate);
 
-export const app = createApp(App)
-  .use(router)
-  .use(pinia)
-  .use(PrimeVue)
-  .use(ConfirmationService)
-  .use(ToastService)
-  .use(VueApexCharts);
+const AuthStorePlugin = {
+  async install(_: any, option: any) {
+    const store = useAuthStore(option.pinia);
+    // // Global store
+    // app.config.globalProperties.$authStore = store;
+    // Store keycloak user data into store
+    await keycloakService.CallInitStore(store);
+  },
+};
 
-app.component('MultiSelect', MultiSelect);
-app.component('Button', Button);
-app.component('Checkbox', Checkbox);
-app.component('Dropdown', Dropdown);
-app.component('Card', Card);
-app.component('TabView', TabView);
-app.component('TabPanel', TabPanel);
-app.component('InputText', InputText);
-app.component('InputNumber', InputNumber);
-app.component('Textarea', Textarea);
-app.component('ProgressSpinner', ProgressSpinner);
-app.component('Toolbar', Toolbar);
-app.component('ConfirmDialog', ConfirmDialog);
-app.component('DataTable', DataTable);
-app.component('Column', Column);
-app.component('ConfirmPopup', ConfirmPopup);
-app.component('Dialog', Dialog);
-app.component('InlineMessage', InlineMessage);
-app.component('Calendar', Calendar);
-app.component('Editor', Editor);
-app.component('Slider', Slider);
-app.component('PanelMenu', PanelMenu);
-app.component('InputSwitch', InputSwitch);
-app.component('Divider', Divider);
-app.component('Toast', Toast);
-app.component('ToggleButton', ToggleButton);
-app.component('Listbox', Listbox);
-app.component('Panel', Panel);
-app.component('ProgressBar', ProgressBar);
-app.component('Tag', Tag);
-app.component('Chip', Chip);
-app.component('Sidebar', Sidebar);
-app.component('Avatar', Avatar);
-app.component('FileUpload', FileUpload);
-app.component('MeterGroup', MeterGroup);
+export let app: any;
+export let globalStore: GlobalState & GlobalActions;
+export let inputStore: InputsState & InputsActions;
+export let authStore: AuthStoreState & AuthStoreActions;
 
-app.directive('tooltip', Tooltip);
+export let info = (
+  _body: string,
+  _title: string = 'Info',
+  _duration: number,
+) => {};
+export let error = (
+  _body: string,
+  _title: string = 'Error',
+  _duration: number,
+) => {};
+export let warn = (
+  _body: string,
+  _title: string = 'Warning',
+  _duration: number,
+) => {};
 
-app.mount('#app');
+const renderApp = () => {
+  app = createApp(App)
+    .use(pinia)
+    .use(AuthStorePlugin, { pinia })
+    .use(router)
+    .use(PrimeVue)
+    .use(ConfirmationService)
+    .use(ToastService)
+    .use(VueApexCharts)
 
-export const globalStore = useGlobalStore();
-export const inputStore = useInputStore();
+    .component('MultiSelect', MultiSelect)
+    .component('Button', Button)
+    .component('Checkbox', Checkbox)
+    .component('Dropdown', Dropdown)
+    .component('Card', Card)
+    .component('TabView', TabView)
+    .component('TabPanel', TabPanel)
+    .component('InputText', InputText)
+    .component('InputNumber', InputNumber)
+    .component('Textarea', Textarea)
+    .component('ProgressSpinner', ProgressSpinner)
+    .component('Toolbar', Toolbar)
+    .component('ConfirmDialog', ConfirmDialog)
+    .component('DataTable', DataTable)
+    .component('Column', Column)
+    .component('ConfirmPopup', ConfirmPopup)
+    .component('Dialog', Dialog)
+    .component('InlineMessage', InlineMessage)
+    .component('Calendar', Calendar)
+    .component('Editor', Editor)
+    .component('Slider', Slider)
+    .component('PanelMenu', PanelMenu)
+    .component('InputSwitch', InputSwitch)
+    .component('Divider', Divider)
+    .component('Toast', Toast)
+    .component('ToggleButton', ToggleButton)
+    .component('Listbox', Listbox)
+    .component('Panel', Panel)
+    .component('ProgressBar', ProgressBar)
+    .component('Tag', Tag)
+    .component('Chip', Chip)
+    .component('Sidebar', Sidebar)
+    .component('Avatar', Avatar)
+    .component('FileUpload', FileUpload)
+    .component('MeterGroup', MeterGroup)
+
+    .directive('tooltip', Tooltip);
+
+  globalStore = useGlobalStore();
+  inputStore = useInputStore();
+  authStore = useAuthStore();
+
+  console.log(app.config.globalProperties);
+
+  info = (body: string, title: string = 'Info', duration: number): void =>
+    app.config.globalProperties.$toast.add({
+      severity: 'success',
+      summary: title,
+      detail: body,
+      life: duration,
+    });
+
+  error = (body: string, title: string = 'Error', duration: number): void =>
+    app.config.globalProperties.$toast.add({
+      severity: 'error',
+      summary: title,
+      detail: body,
+      life: duration,
+    });
+
+  warn = (body: string, title: string = 'Warning', duration: number): void =>
+    app.config.globalProperties.$toast.add({
+      severity: 'warn',
+      summary: title,
+      detail: body,
+      life: duration,
+    });
+
+  // Mount the app
+  app.mount('#app');
+};
+
+// Call keycloak service to init on render
+keycloakService.CallInit(renderApp);

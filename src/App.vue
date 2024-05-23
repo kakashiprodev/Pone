@@ -1,6 +1,6 @@
 <template>
   <Toast />
-  <router-view v-if="!global.isLoading" :key="route.path" />
+  <router-view v-if="global != null && !global.isLoading" :key="route.path" />
   <div
     v-else
     class="m-auto w-1/12 min-h-screen flex items-center justify-center"
@@ -11,17 +11,27 @@
 
 <script setup lang="ts">
 import DataProvider from './services/dataprovider';
-import { useRouter, useRoute } from 'vue-router';
+import { useRoute } from 'vue-router';
+import { useAuthStore } from './stores/auth';
 import { useGlobalStore } from './stores/global';
+import { useRouter } from 'vue-router';
 
 const global = useGlobalStore();
+const auth = useAuthStore();
 const router = useRouter();
 const route = useRoute();
 
 const init = async () => {
-  console.log('init');
+  console.log('Init App.vue. Waiting for loading to finish...');
+
+  while (!auth || !auth.authenticated) {
+    console.log('waiting for authStore to be initialized');
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+  }
+
   const loggedIn = await DataProvider.checkLogin();
   console.log('loggedIn', loggedIn);
+
   if (loggedIn) {
     await global.initializeStore();
     if (route.name === 'login') {

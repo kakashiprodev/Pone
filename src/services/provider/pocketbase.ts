@@ -264,7 +264,7 @@ export default class DataProvider {
   // CRUD for "inputs"
   async createUserInput(data: InputEntry) {
     // calculate sum
-    data.sumValue = getSumForInput(data, globalStore.equivalentDict);
+    data.sum_value = getSumForInput(data, globalStore.equivalentDict);
     return await this.pb.collection('inputs').create<InputEntry>({
       ...data,
       id: undefined,
@@ -316,7 +316,7 @@ export default class DataProvider {
 
   async updateUserInput(data: InputEntry) {
     // calculate sum
-    data.sumValue = getSumForInput(data, globalStore.equivalentDict);
+    data.sum_value = getSumForInput(data, globalStore.equivalentDict);
     return await this.pb.collection('inputs').update<InputEntry>(data.id, data);
   }
 
@@ -354,9 +354,9 @@ export default class DataProvider {
       });
     // ensure that the date is ISO8601 for each action finishedUntil entry
     res.items.forEach((action: ActionEntry) => {
-      action.finishedUntilIs = ensureDateFormat(action.finishedUntilIs);
-      action.finishedUntilPlanned = ensureDateFormat(
-        action.finishedUntilPlanned,
+      action.finished_until_is = ensureDateFormat(action.finished_until_is);
+      action.finished_until_planned = ensureDateFormat(
+        action.finished_until_planned,
       );
     });
     return res.items;
@@ -425,8 +425,8 @@ export default class DataProvider {
       });
     // ensure that the date is ISO8601 for each facility shutdownDate entry
     res.items.forEach((facility: FacilityEntry) => {
-      if (facility.shutdownDate && facility.shutdownDate !== '') {
-        facility.shutdownDate = new Date(facility.shutdownDate);
+      if (facility.shutdown_date && facility.shutdown_date !== '') {
+        facility.shutdown_date = new Date(facility.shutdown_date);
       }
     });
     return res.items;

@@ -74,7 +74,7 @@
         </InlineMessage>
         <Editor
           class="w-full"
-          v-model="selectedAction.descriptionBefore"
+          v-model="selectedAction.description_before"
           id="action-descriptionBefore"
           editorStyle="height: 80px"
         />
@@ -94,7 +94,7 @@
         </InlineMessage>
         <Editor
           class="w-full"
-          v-model="selectedAction.descriptionAfter"
+          v-model="selectedAction.description_after"
           id="action-descriptionAfter"
           editorStyle="height: 80px"
         />
@@ -115,7 +115,7 @@
         </InlineMessage>
         <InputNumber
           class="w-full"
-          v-model="selectedAction.targetValueAbsolutPlanned"
+          v-model="selectedAction.target_value_absolut_planned"
           id="action-targetValueAbsolutPlanned"
         />
       </div>
@@ -135,7 +135,7 @@
         </InlineMessage>
         <InputNumber
           class="w-full"
-          v-model="selectedAction.targetValueAbsolutIs"
+          v-model="selectedAction.target_value_absolut_is"
           id="action-targetValueAbsolutIs"
         />
       </div>
@@ -154,7 +154,7 @@
         </InlineMessage>
         <Editor
           class="w-full"
-          v-model="selectedAction.descriptionTargetValue"
+          v-model="selectedAction.description_target_value"
           id="action-descriptionTargetValue"
           editorStyle="height: 80px"
         />
@@ -234,7 +234,7 @@
         </InlineMessage>
         <Calendar
           class="w-full"
-          v-model="selectedAction.finishedUntilPlanned"
+          v-model="selectedAction.finished_until_planned"
           id="action-finishedUntilPlanned"
         />
       </div>
@@ -253,7 +253,7 @@
         </InlineMessage>
         <Calendar
           class="w-full"
-          v-model="selectedAction.finishedUntilIs"
+          v-model="selectedAction.finished_until_is"
           id="action-finishedUntilIs"
         />
       </div>
@@ -293,7 +293,7 @@
         </InlineMessage>
         <InputNumber
           class="w-full"
-          v-model="selectedAction.costsPlanned"
+          v-model="selectedAction.costs_planned"
           id="action-costsPlanned"
         />
       </div>
@@ -310,7 +310,7 @@
         </InlineMessage>
         <InputNumber
           class="w-full"
-          v-model="selectedAction.costsIs"
+          v-model="selectedAction.costs_is"
           id="action-costsIs"
         />
       </div>
@@ -348,7 +348,7 @@
         </InlineMessage>
         <Editor
           class="w-full"
-          v-model="selectedAction.descriptionCosts"
+          v-model="selectedAction.description_costs"
           id="action-descriptionCosts"
           editorStyle="height: 80px"
         />
@@ -368,7 +368,7 @@
         </InlineMessage>
         <InputNumber
           class="w-full"
-          v-model="selectedAction.avoidanceCosts"
+          v-model="selectedAction.avoidance_costs"
           id="action-avoidanceCosts"
         />
       </div>
@@ -486,23 +486,25 @@ const emptyAction: ActionEntry = {
   id: 'new',
   site: global.selectedSite?.id ?? '',
   name: '',
-  descriptionBefore: '',
-  descriptionAfter: '',
-  targetValueAbsolutPlanned: 0,
-  targetValueAbsolutIs: 0,
-  descriptionTargetValue: '',
-  finishedUntilPlanned: '',
-  finishedUntilIs: '',
+  description_before: '',
+  description_after: '',
+  target_value_absolut_planned: 0,
+  target_value_absolut_is: 0,
+  description_target_value: '',
+  finished_until_planned: '',
+  finished_until_is: '',
   category: '',
-  costsPlanned: 0,
-  costsIs: 0,
+  costs_planned: 0,
+  costs_is: 0,
   roi: 0,
-  descriptionCosts: '',
-  avoidanceCosts: 0,
+  description_costs: '',
+  avoidance_costs: 0,
   responsible: '',
   status: 'open',
   progress: 0,
   relevant: true,
+  created_at: new Date().toISOString(),
+  updated_at: new Date().toISOString(),
 };
 const clone = (input: ActionEntry) => JSON.parse(JSON.stringify(input));
 const selectedAction = ref(emptyAction);
@@ -611,18 +613,18 @@ const save = async () => {
       const toCreate = clone(selectedAction.value);
       delete toCreate.id;
       const created = await dataprovider.createAction(toCreate);
-      created.finishedUntilPlanned =
-        created.finishedUntilPlanned && created.finishedUntilPlanned !== ''
-          ? new Date(created.finishedUntilPlanned)
+      created.finished_until_planned =
+        created.finished_until_planned && created.finished_until_planned !== ''
+          ? new Date(created.finished_until_planned)
           : null;
       actions.value.push(created);
       showDialog.value = false;
       selectedAction.value = clone(emptyAction);
     } else {
       const updated = await dataprovider.updateAction(selectedAction.value);
-      updated.finishedUntilPlanned =
-        updated.finishedUntilPlanned && updated.finishedUntilPlanned !== ''
-          ? new Date(updated.finishedUntilPlanned)
+      updated.finished_until_planned =
+        updated.finished_until_planned && updated.finished_until_planned !== ''
+          ? new Date(updated.finished_until_planned)
           : null;
       const index = actions.value.findIndex((item) => item.id === updated.id);
       actions.value[index] = updated;
@@ -694,19 +696,19 @@ const download = async () => {
         item.progress,
         item.relevant ? 'Ja' : 'Nein',
         item.site,
-        item.descriptionBefore,
-        item.descriptionAfter,
-        item.targetValueAbsolutPlanned,
-        item.targetValueAbsolutIs,
-        item.descriptionTargetValue,
-        item.finishedUntilPlanned,
-        item.finishedUntilIs,
+        item.description_before,
+        item.description_after,
+        item.target_value_absolut_planned,
+        item.target_value_absolut_is,
+        item.description_target_value,
+        item.finished_until_planned,
+        item.finished_until_is,
         item.category,
-        item.costsPlanned,
-        item.costsIs,
+        item.costs_planned,
+        item.costs_is,
         item.roi,
-        item.descriptionCosts,
-        item.avoidanceCosts,
+        item.description_target_value,
+        item.avoidance_costs,
       ].join(';');
     })
     .join('\r\n');

@@ -141,7 +141,7 @@
         <label for="equivalent-alt-name">Zusätzlicher Name</label>
         <InputText
           class="w-full"
-          v-model="selectedValue.addName1"
+          v-model="selectedValue.add_name1"
           id="equivalent-alt-name"
         />
         <InlineMessage
@@ -222,7 +222,7 @@
         <label for="equivalent-monthlyValues">Monatliche Eingaben?</label>
         <div>
           <Checkbox
-            v-model="selectedValue.monthlyValues"
+            v-model="selectedValue.monthly_values"
             id="equivalent-monthlyValues"
             :binary="true"
           />
@@ -235,7 +235,7 @@
           Jahresmittelwert wird dann autoamtisch errechnet.
         </InlineMessage>
       </div>
-      <div v-show="selectedValue.monthlyValues">
+      <div v-show="selectedValue.monthly_values">
         <div class="grid grid-cols-12 mt-1">
           <div
             class="col-span-3 items-center justify-center bg-teal-100 font-bold text-gray-900 rounded-sm text-center"
@@ -408,16 +408,16 @@
       <div class="flex flex-col gap-2">
         <label for="equivalent-value-year">Faktor (Jahresdurschnitt)*</label>
         <InputNumber
-          v-if="!selectedValue.monthlyValues"
+          v-if="!selectedValue.monthly_values"
           class="w-full"
-          v-model="selectedValue.avgValue"
+          v-model="selectedValue.avg_value"
           id="equivalent-value-year"
           :use-grouping="false"
           :min-fraction-digits="0"
           :max-fraction-digits="10"
         />
         <div v-else>
-          {{ roundString(selectedValue.avgValue) }} (automatisch berechnet)
+          {{ roundString(selectedValue.avg_value) }} (automatisch berechnet)
         </div>
         <InlineMessage
           v-if="global.showTooltips"
@@ -525,7 +525,7 @@ const emptyEquivalent = (): EquivalentEntry => {
   return {
     id: 'new',
     scope: 3,
-    addName1: '',
+    add_name1: '',
     category: 'Benutzereingaben',
     specification1: '',
     specification2: '',
@@ -534,8 +534,8 @@ const emptyEquivalent = (): EquivalentEntry => {
     in: '',
     out: '',
     source: 'Benutzereingabe',
-    avgValue: null as any,
-    monthlyValues: false,
+    avg_value: null as any,
+    monthly_values: false,
     project: global.selectedProject?.id ?? '',
     jan: null,
     feb: null,
@@ -550,6 +550,8 @@ const emptyEquivalent = (): EquivalentEntry => {
     nov: null,
     dec: null,
     parent: null,
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
   };
 };
 
@@ -636,8 +638,8 @@ const selectedValue: Ref<EquivalentEntry> = ref(emptyEquivalent());
 
 // calculate avg value for the year
 watchEffect(() => {
-  if (selectedValue.value.monthlyValues) {
-    selectedValue.value.avgValue =
+  if (selectedValue.value.monthly_values) {
+    selectedValue.value.avg_value =
       Math.round(getAverageEquivalent(selectedValue.value) * 10000) / 10000;
   }
 });
@@ -648,7 +650,7 @@ const save = async () => {
     console.log(JSON.parse(JSON.stringify(selectedValue.value)));
 
     // set all monthly values to null if monthlyValues is false
-    if (!selectedValue.value.monthlyValues) {
+    if (!selectedValue.value.monthly_values) {
       selectedValue.value.jan = 0;
       selectedValue.value.feb = 0;
       selectedValue.value.mar = 0;
