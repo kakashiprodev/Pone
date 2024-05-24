@@ -65,7 +65,7 @@ export const useInputStore = defineStore('inputs', {
         }
         await dataprovider.updateReport({
           ...globalStore.selectedReport,
-          sumEmissions: this.sumEmissions,
+          sum_emissions: this.sumEmissions,
         });
       } catch (error) {
         console.error('Error updating report sum', error);
