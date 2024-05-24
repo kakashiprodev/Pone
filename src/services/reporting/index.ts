@@ -544,7 +544,9 @@ export const getPlainReportData = async (
   let data: InputEntryWithExpandedReportAndSite[] = [];
   if (needRefresh) {
     // get all data. not filtered by years, because we need to filter it later
-    data = await dataprovider.readUserInputsForProject(query.projectId);
+    data = await dataprovider.readUserInputsForProjectExtendFields(
+      query.projectId,
+    );
 
     littleDataCache.data = data;
     littleDataCache.lease = new Date();

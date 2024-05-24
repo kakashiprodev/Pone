@@ -379,6 +379,32 @@ export default class DataProvider {
   async readUserInputsForProject(
     projectId: string,
     years?: number[],
+  ): Promise<InputEntry[]> {
+    if (years) {
+      const { data, error } = await this.postgrest
+        .from('inputs')
+        .select(
+          '*,report_expanded:report(site_expanded:site(project_expanded:project(id)))',
+        )
+        .eq('report.site.project.id', projectId)
+        .in('report.year', years);
+      if (error) throw error;
+      return data as InputEntry[];
+    } else {
+      const { data, error } = await this.postgrest
+        .from('inputs')
+        .select(
+          '*,report_expanded:report(site_expanded:site(project_expanded:project(id)))',
+        )
+        .eq('report.site.project.id', projectId);
+      if (error) throw error;
+      return data as InputEntry[];
+    }
+  }
+
+  async readUserInputsForProjectExtendFields(
+    projectId: string,
+    years?: number[],
   ): Promise<InputEntryWithExpandedReportAndSite[]> {
     let filter = `report.site.project.id.eq.${projectId}`;
     if (years) {
