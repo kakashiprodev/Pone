@@ -137,3 +137,17 @@ export const router = VueRouter.createRouter({
   history: VueRouter.createWebHashHistory(),
   routes,
 });
+
+router.beforeEach((to, _from, next) => {
+  console.log('to', to.fullPath);
+  // check if fullPath is like this '/somepath&somequery'. The & is not allowed in the path after the main route string and must be replaced with ?
+  // check wih regex to be sure not to replace other & characters. So check for slash + text + & ?
+  const pattern = to.fullPath.match(/\/[^&\?]+&/);
+  if (pattern) {
+    const newPath = to.fullPath.replace('&', '?'); // replace first & with ?
+    console.log('newPath', newPath);
+    next(newPath);
+  } else {
+    next();
+  }
+});
