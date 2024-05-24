@@ -59,10 +59,7 @@ export default class DataProvider {
       if (!authStore.user.token || authStore.user.token === '') {
         throw new Error('No token found in store');
       }
-
       // set postgrest client with user token
-      console.log('setting postgrest client with user token');
-
       const { data, error } = await this.postgrest
         .from('users')
         .select('*')
@@ -85,7 +82,6 @@ export default class DataProvider {
 
   async checkLogin(): Promise<boolean> {
     try {
-      console.log('set PG client with user token');
       this.initPostgrestClient();
 
       await this.ensureUserIsExisting();
@@ -234,7 +230,7 @@ export default class DataProvider {
 
   async readReports(siteId?: string): Promise<ReportEntry[]> {
     if (!globalStore.selectedSite && !siteId)
-      throw new Error('No site selected');
+      throw new Error('No site selected in (readReports)');
     const { data, error } = await this.postgrest
       .from('reports')
       .select('*')
@@ -447,18 +443,14 @@ export default class DataProvider {
   }
 
   async readActions(): Promise<ActionEntry[]> {
-    if (!globalStore.selectedSite) throw new Error('No site selected');
+    console.log('globalStore.selectedSite: ', globalStore.selectedSite);
+    if (!globalStore.selectedSite)
+      throw new Error('No site selected in (readActions)');
     const { data, error } = await this.postgrest
       .from('actions')
       .select('*')
       .eq('site', globalStore.selectedSite.id);
     if (error) throw error;
-    data.forEach((action: ActionEntry) => {
-      action.finished_until_is = ensureDateFormat(action.finished_until_is);
-      action.finished_until_planned = ensureDateFormat(
-        action.finished_until_planned,
-      );
-    });
     return data as ActionEntry[];
   }
 
@@ -552,7 +544,8 @@ export default class DataProvider {
   }
 
   async readFacilities(): Promise<FacilityEntry[]> {
-    if (!globalStore.selectedSite) throw new Error('No site selected');
+    if (!globalStore.selectedSite)
+      throw new Error('No site selected in (readFacilities)');
     const { data, error } = await this.postgrest
       .from('facilities')
       .select('*')

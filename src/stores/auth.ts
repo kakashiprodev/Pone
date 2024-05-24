@@ -34,12 +34,10 @@ export const useAuthStore = defineStore('authStore', {
       if (clearData) {
         await this.clearUserData();
       }
-      console.log('Keycloak initialized. set user data to store.');
       this.authenticated = keycloak.authenticated;
       this.user.username = keycloak.idTokenParsed.preferred_username;
       this.user.token = keycloak.token;
       this.user.refToken = keycloak.refreshToken;
-      console.log('User data:', this.user);
     },
     // Logout user
     async logout() {

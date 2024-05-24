@@ -180,7 +180,9 @@ export const useGlobalStore = defineStore('global', {
       }
 
       // then refresh the sites
+      console.log('refresh sites');
       this.sites = await dataprovider.readSitesForProject();
+      console.log('sites', this.sites);
       await this.ensureSiteIsSelected();
 
       if (user.last_selected_site != null && user.last_selected_site !== '') {
@@ -192,7 +194,7 @@ export const useGlobalStore = defineStore('global', {
         if (s) this.selectedSite = s;
       } else {
         // select another site or create a new one
-        console.log('ensure site is selected');
+        console.log('ensure again site is selected');
         await this.ensureSiteIsSelected();
       }
       // then refresh facilities

@@ -206,7 +206,7 @@
 <script setup lang="ts">
 import { FacilityEntry, InputEntry } from '../../services/types';
 import dataprovider from '../../services/dataprovider';
-import { ComputedRef, Ref, computed, ref, watch } from 'vue';
+import { ComputedRef, Ref, computed, ref, watch, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { useGlobalStore } from '../../stores/global';
 import { error, info } from '../../services/ui/toast';
@@ -395,7 +395,13 @@ const getData = async () => {
 /**
  * Init
  */
-getData();
+onMounted(async () => {
+  while (global.isLoading) {
+    console.log('waiting for global store to load');
+    await new Promise((resolve) => setTimeout(resolve, 2500));
+  }
+  await getData();
+});
 </script>
 
 <style>

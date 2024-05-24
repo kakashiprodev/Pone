@@ -210,7 +210,7 @@ export const getSumForInput = (
       month,
     );
     // @ts-ignore
-    const monthlyRawValue = input.monthlyValues
+    const monthlyRawValue = input.monthly_values
       ? input[key as keyof InputEntry]
       : input.raw_value / 12;
     sum += ((monthlyRawValue as any) ?? 0) * monthlyEquivalentFactor;
@@ -264,7 +264,7 @@ const getFullFactorChain = (
   const monthlyValue: number =
     equivalent[month] != null && equivalent[month] != ''
       ? equivalent[month]
-      : equivalent.avgValue;
+      : equivalent.avg_value;
   return monthlyValue * parentFactor;
 };
 

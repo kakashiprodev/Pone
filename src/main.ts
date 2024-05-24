@@ -142,8 +142,6 @@ const renderApp = () => {
   inputStore = useInputStore();
   authStore = useAuthStore();
 
-  console.log(app.config.globalProperties);
-
   info = (body: string, title: string = 'Info', duration: number): void =>
     app.config.globalProperties.$toast.add({
       severity: 'success',

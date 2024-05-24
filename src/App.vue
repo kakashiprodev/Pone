@@ -29,15 +29,14 @@ const init = async () => {
   }
 
   const loggedIn = await DataProvider.checkLogin();
-  console.log('loggedIn', loggedIn);
+  console.log('loggedIn:', loggedIn);
 
   if (loggedIn) {
     await global.initializeStore();
-    console.log('global initialized', router);
     if (router.currentRoute.value.path.startsWith('/login')) {
       router.push({ name: 'dashboard' });
     } else {
-      console.log('logged in');
+      console.log('logged in. skip redirect to login');
     }
   } else {
     global.isLoading = false;

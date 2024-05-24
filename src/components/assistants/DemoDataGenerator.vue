@@ -85,8 +85,8 @@ const selectedYears: Ref<number[]> = ref(availableYears.value);
 const selectedSiteIds: Ref<string[]> = ref(global.sites.map((s) => s.id));
 const selectedProject = computed(() => global.selectedProject);
 const numberOfRecords = ref(10);
-const rangeMin = ref(5000);
-const rangeMax = ref(10000);
+const rangeMin = ref(50000);
+const rangeMax = ref(100000);
 
 // visibility
 const loading = ref(false);
@@ -160,14 +160,15 @@ const getRawInputValueForEquivalent = (
   resultMax: number,
 ) => {
   // make a demo calculation for the rawInputValue with a value of 1
-  const resultingValueFor1 = getSumForInput(
+  let resultingValueFor1 = getSumForInput(
     {
       ...input,
       equivalent: equivalent.id,
-      rawValue: 1,
+      raw_value: 1,
     } as InputEntry,
     global.equivalentDict,
   );
+  if (resultingValueFor1 === 0) resultingValueFor1 = 1;
   // now we know how strong the rawInputValue is multiplied
   // we can calculate the rawInputValue for the given range
   const rawInputValue =
@@ -235,13 +236,16 @@ const generateData = async () => {
         rangeMin.value,
         rangeMax.value,
       );
+      if (input.raw_value == null) {
+        console.error('raw_value is null', input.raw_value);
+      }
       await dataprovider.createUserInput(input);
       reportSum += input.sum_value;
     }
     console.log('Report ' + report.year + ' sum: ' + reportSum);
     await dataprovider.updateReport({
       ...report,
-      sumEmission: reportSum,
+      sum_emission: reportSum,
     });
   }
   info('Daten wurden generiert');

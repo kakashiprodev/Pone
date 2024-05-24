@@ -456,7 +456,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue';
+import { ref, watch, onMounted } from 'vue';
 import { useGlobalStore } from '../../stores/global';
 import { ActionEntry } from '../../services/types';
 import dataprovider from '../../services/dataprovider';
@@ -474,6 +474,8 @@ import {
   boolean,
   // date,
   maxValue,
+  nullable,
+  date,
   // nullable,
 } from 'valibot';
 import { toTons, getGlobalUnit } from '@/services/pipes';
@@ -491,8 +493,8 @@ const emptyAction: ActionEntry = {
   target_value_absolut_planned: 0,
   target_value_absolut_is: 0,
   description_target_value: '',
-  finished_until_planned: '',
-  finished_until_is: '',
+  finished_until_planned: null,
+  finished_until_is: null,
   category: '',
   costs_planned: 0,
   costs_is: 0,
@@ -555,8 +557,8 @@ const actionEntrySchema = object({
       maxLength(4000, 'Beschreibung zu lang'),
     ],
   ),
-  // finishedUntilPlanned: date('Kein Fertigstellungsdatum angegeben'),
-  // finishedUntilIs: nullable(string('Kein Fertigstellungsdatum angegeben')),
+  finished_until_planned: date('Kein Fertigstellungsdatum angegeben'),
+  finished_until_is: nullable(string('Kein Fertigstellungsdatum angegeben')),
 
   category: string('Keine Kategorie angegeben', [
     minLength(1, 'Kategorie zu kurz'),
@@ -680,7 +682,6 @@ const getData = async () => {
     error(e + '');
   }
 };
-getData();
 
 /**
  * Download the data as CSV
@@ -724,4 +725,12 @@ const download = async () => {
   document.body.appendChild(link);
   link.click();
 };
+
+onMounted(async () => {
+  while (global.isLoading) {
+    console.log('waiting for global store to load');
+    await new Promise((resolve) => setTimeout(resolve, 2500));
+  }
+  await getData();
+});
 </script>

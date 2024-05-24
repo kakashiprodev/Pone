@@ -83,9 +83,7 @@
           <template #body="{ data }">
             <span class="flex justify-end text-right">
               <nobr v-if="data.progress < 100">
-                {{
-                  toTons(data.target_value_absolut_planned).toLocaleString()
-                }}
+                {{ toTons(data.target_value_absolut_planned).toLocaleString() }}
                 to
               </nobr>
               <nobr v-else>
@@ -115,7 +113,7 @@
 
 <script setup lang="ts">
 import dataprovider from '../../../services/dataprovider';
-import { ref, Ref } from 'vue';
+import { ref, Ref, onMounted } from 'vue';
 import { ActionEntry, ActionWithPercentage } from '../../../services/types';
 import { useGlobalStore } from '../../../stores/global';
 import { dateToYear, toTons } from '../../../services/pipes/index';
@@ -252,7 +250,13 @@ const getData = async () => {
     console.error(e);
   }
 };
-getData();
+onMounted(async () => {
+  while (global.isLoading) {
+    console.log('waiting for global store to load');
+    await new Promise((resolve) => setTimeout(resolve, 2500));
+  }
+  await getData();
+});
 </script>
 
 <style lang="scss">
