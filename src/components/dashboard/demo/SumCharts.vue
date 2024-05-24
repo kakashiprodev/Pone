@@ -117,7 +117,7 @@ const loadDasboard = async () => {
   // get report
   const report = global.selectedReport;
   if (report) {
-    report.sumEmissions = data.scope1.sum + data.scope2.sum + data.scope3.sum;
+    report.sum_emissions = data.scope1.sum + data.scope2.sum + data.scope3.sum;
     console.log('Updating report', report);
     await dataprovider.updateReport(report);
   }

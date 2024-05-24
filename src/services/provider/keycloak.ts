@@ -18,9 +18,16 @@ let store = null;
  */
 async function init(onInitCallback: any) {
   try {
+    // get the actual route from the first slash on. href is something like "http://localhost:5173/#/dashboard?test=1"
+    // we need to get /#/dashboard until the first & or ? or end of string
+    let pattern = window.location.href.match(/\/#\/[^&\?]+/g);
+    const route = pattern ? pattern[0] : '/#/login?';
+
+    console.log('route', route);
+
     authenticated = await keycloak.init({
       onLoad: 'login-required',
-      redirectUri: window.location.origin + '/#/login',
+      redirectUri: window.location.origin + route,
     });
     onInitCallback();
   } catch (error) {

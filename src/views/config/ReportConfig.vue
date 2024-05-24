@@ -256,7 +256,7 @@ const reportSchemaYearlyFocus = object({
     minValue(1900, 'Bitte ein gültiges Basisjahr angeben'),
     maxValue(2100, 'Bitte ein gültiges Basisjahr angeben'),
   ]),
-  sumEmissions: nullable(number()),
+  sum_emissions: nullable(number()),
 });
 
 const reportTranslations: {
