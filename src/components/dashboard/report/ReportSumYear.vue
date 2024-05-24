@@ -93,7 +93,7 @@
     <Card>
       <template #header>
         <div class="psm-report-header">
-          <h3>Aufteilung der Ursprüunge</h3>
+          <h3>Aufteilung der Ursprünge</h3>
         </div>
       </template>
       <template #content>
