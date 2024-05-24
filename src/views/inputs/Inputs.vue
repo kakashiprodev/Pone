@@ -528,7 +528,7 @@
     <Column field="rawValue" header="Eingabewert" sortable>
       <template #body="{ data }">
         <Chip class="flex justify-end text-right bg-slate-200 text-sm">
-          {{ roundStringWithDecimals(data.rawValue, 0) }}
+          {{ roundStringWithDecimals(data.raw_value, 0) }}
           {{
             globalStore.equivalentDict[data.equivalent]?.in ?? 'Reference error'
           }}
@@ -556,7 +556,7 @@
         <Chip class="flex justify-end text-right bg-slate-200 text-sm">
           {{
             roundStringWithDecimals(
-              displayInTons ? toTons(data.sumValue) : data.sumValue,
+              displayInTons ? toTons(data.sum_value) : data.sum_value,
               0,
             )
           }}
@@ -816,7 +816,7 @@ watch(
       ];
       keys.forEach((key) => {
         // @ts-ignore
-        selectedValue.value[key] = round(selectedValue.value.rawValue / 12, 3);
+        selectedValue.value[key] = round(selectedValue.value.raw_value / 12, 3);
       });
     }
   },

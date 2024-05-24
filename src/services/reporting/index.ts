@@ -203,7 +203,7 @@ export const getSumForInput = (
   let sum = 0;
   months.forEach((month) => {
     // get the equivalent factor for the given month
-    const key = 'rawValue' + month.charAt(0).toUpperCase() + month.slice(1); // e.g. rawValueJan, rawValueFeb, ...
+    const key = 'raw_value_' + month; // e.g. raw_value_jan, ...
     const monthlyEquivalentFactor = getFullFactorChain(
       input.equivalent,
       equivalents,

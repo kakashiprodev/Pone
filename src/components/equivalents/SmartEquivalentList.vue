@@ -108,7 +108,7 @@
     >
     </Column>
     <Column
-      field="addName1"
+      field="add_name1"
       header="Zusatzname"
       v-if="_visibleColumns.includes('addName1')"
       sortable
@@ -133,7 +133,7 @@
       sortable
     ></Column>
     <Column
-      field="avgValue"
+      field="avg_value"
       header="Faktor"
       v-if="_visibleColumns.includes('avgValue')"
     ></Column>

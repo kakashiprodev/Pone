@@ -395,20 +395,20 @@
         {{ statusTranslations[data.status] || '' }}
       </template>
     </Column>
-    <Column field="finishedUntilPlanned" header="Fertigstellungsdatum">
+    <Column field="finished_until_planned" header="Fertigstellungsdatum">
       <template #body="{ data }">
         <!-- formatiertes deutsches Datum -->
-        {{ new Date(data.finishedUntilPlanned).getMonth() + 1 }}/{{
-          new Date(data.finishedUntilPlanned).getFullYear()
+        {{ new Date(data.finished_until_planned).getMonth() + 1 }}/{{
+          new Date(data.finished_until_planned).getFullYear()
         }}
       </template>
     </Column>
     <!-- <Column field="shortDescription" header="Kurzbeschreibung"></Column>
         <Column field="longDescription" header="Langbeschreibung"></Column> -->
-    <Column field="targetValueAbsolutPlanned" header="Zieleinsparung">
+    <Column field="target_value_absolut_planned" header="Zieleinsparung">
       <template #body="{ data }">
         <Chip class="text-sm"
-          >{{ toTons(data.targetValueAbsolutPlanned)
+          >{{ toTons(data.target_value_absolut_planned)
           }}{{ getGlobalUnit() }}</Chip
         >
       </template>

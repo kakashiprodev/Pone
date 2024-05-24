@@ -32,13 +32,13 @@
             <span class="flex justify-end text-right font-bold">
               <span
                 v-if="
-                  data.finishedUntilIs != null && data.finishedUntilIs != ''
+                  data.finished_until_is != null && data.finished_until_is != ''
                 "
               >
-                {{ dateToYear(data.finishedUntilIs) }}
+                {{ dateToYear(data.finished_until_is) }}
               </span>
               <span v-else>
-                {{ dateToYear(data.finishedUntilPlanned) }}
+                {{ dateToYear(data.finished_until_planned) }}
               </span>
             </span>
           </template>
@@ -48,7 +48,7 @@
           <template #body="{ data }">
             <div class="flex content-center flex-wrap">
               <span
-                v-html="data.descriptionTargetValue"
+                v-html="data.description_target_value"
                 style="cursor: pointer"
                 class="hover:text-blue-500"
                 @click="
@@ -65,16 +65,16 @@
             <ProgressBarWithTarget
               v-if="data.progress < 100"
               color="grey"
-              :value="data.targetValuePlanned"
-              :targetValue="data.targetValuePlanned"
+              :value="data.target_value_planned"
+              :targetValue="data.target_value_planned"
             >
             </ProgressBarWithTarget>
 
             <ProgressBarWithTarget
               v-else
               :color="Config.colors.data2"
-              :value="data.targetValueIs"
-              :targetValue="data.targetValuePlanned"
+              :value="data.target_value_is"
+              :targetValue="data.target_value_is"
             >
             </ProgressBarWithTarget>
           </template>
@@ -83,11 +83,14 @@
           <template #body="{ data }">
             <span class="flex justify-end text-right">
               <nobr v-if="data.progress < 100">
-                {{ toTons(data.targetValueAbsolutPlanned).toLocaleString() }} to
+                {{
+                  toTons(data.target_value_absolut_planned).toLocaleString()
+                }}
+                to
               </nobr>
               <nobr v-else>
-                {{ toTons(data.targetValueAbsolutIs) }}/{{
-                  toTons(data.targetValueAbsolutPlanned)
+                {{ toTons(data.target_value_absolut_is) }}/{{
+                  toTons(data.target_value_absolut_planned)
                 }}
                 to
               </nobr>
