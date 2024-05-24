@@ -72,7 +72,11 @@
     :rows="rowsPerPage"
     v-if="true"
   >
-    <Column selectionMode="single" headerStyle="width: 3rem"></Column>
+    <Column
+      selectionMode="single"
+      headerStyle="width: 3rem"
+      v-if="showChooseColumn"
+    ></Column>
     <!-- <Column field="id" header="Id"></Column> -->
     <Column
       field="scope"
@@ -366,6 +370,11 @@ const props = defineProps({
     type: Boolean,
     required: false,
     default: false,
+  },
+  showChooseColumn: {
+    type: Boolean,
+    required: false,
+    default: true,
   },
 });
 if (props.visibleColumns) {

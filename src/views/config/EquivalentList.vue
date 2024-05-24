@@ -493,6 +493,7 @@
     "
     @delete="deleteEquivalent($event.data, $event.event)"
     :refresh="refreshTrigger"
+    :showChooseColumn="false"
   />
 </template>
 
