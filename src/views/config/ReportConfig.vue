@@ -356,8 +356,8 @@ const saveReport = async () => {
 
 const init = async () => {
   while (global.isLoading) {
-    console.log('waiting for global store to load');
-    await new Promise((resolve) => setTimeout(resolve, 2500));
+    // console.log('waiting for global store to load');
+    await new Promise((resolve) => setTimeout(resolve, 500));
   }
   if (global.selectedReport) {
     reportForm.value = global.selectedReport;

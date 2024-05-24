@@ -51,9 +51,9 @@
 import { useRouter } from 'vue-router';
 import DataProvider from '../../services/dataprovider';
 import { Ref, ref } from 'vue';
-import { useGlobalStore } from '../../stores/global';
+// import { useGlobalStore } from '../../stores/global';
 const router = useRouter();
-const global = useGlobalStore();
+// const global = useGlobalStore();
 
 const username: Ref<string> = ref('');
 const password: Ref<string> = ref('');
@@ -64,7 +64,7 @@ const login = async () => {
   const loggedIn = await DataProvider.login(username.value, password.value);
   if (loggedIn) {
     router.push({ name: 'dashboard' });
-    await global.initializeStore();
+    // await global.initializeStore();
   }
   loading.value = false;
 };
@@ -74,7 +74,7 @@ const loginWithMs = async () => {
   const loggedIn = await DataProvider.loginWithMicrosoft();
   if (loggedIn) {
     router.push({ name: 'dashboard' });
-    await global.initializeStore();
+    // await global.initializeStore();
   }
   loading.value = false;
 };

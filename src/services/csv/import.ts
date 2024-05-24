@@ -76,7 +76,7 @@ export const getStringFromFile = async (file: File): Promise<string> => {
       }
     };
     reader.onerror = (e) => {
-      reject(new Error('Error while reading file'));
+      reject(new Error('Error while reading file.' + e));
     };
     reader.readAsText(file);
   });

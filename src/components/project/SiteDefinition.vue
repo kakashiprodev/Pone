@@ -178,7 +178,7 @@ const cancel = () => {
 
 const init = async () => {
   while (global.isLoading) {
-    console.log('waiting for global store to load');
+    // console.log('waiting for global store to load');
     await new Promise((resolve) => setTimeout(resolve, 500));
   }
   console.log('global store loaded');

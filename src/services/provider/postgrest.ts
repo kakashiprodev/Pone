@@ -19,12 +19,6 @@ import { UsersTopicAnswer } from '../csrd-esrs/topics';
 
 const REST_URL = 'http://localhost:5434';
 
-const ensureDateFormat = (date: null | string | Date) => {
-  if (date != null && date !== '') {
-    return new Date(date);
-  } else return null;
-};
-
 export default class DataProvider {
   private postgrest: PostgrestClient;
 
@@ -99,7 +93,6 @@ export default class DataProvider {
       globalStore.isLoggedIn = true;
       globalStore.isGlobalAdmin = data[0].is_global_admin;
       globalStore.displayInTons = data[0].display_in_tons;
-      globalStore.isLoading = false;
       return true;
     } catch (err) {
       console.log('error, checking login: ', err);
