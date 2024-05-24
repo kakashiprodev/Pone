@@ -464,7 +464,6 @@ export default class DataProvider {
   }
 
   async readActions(): Promise<ActionEntry[]> {
-    console.log('globalStore.selectedSite: ', globalStore.selectedSite);
     if (!globalStore.selectedSite)
       throw new Error('No site selected in (readActions)');
     const { data, error } = await this.postgrest

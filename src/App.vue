@@ -24,7 +24,7 @@ const init = async () => {
   console.log('Init App.vue. Waiting for loading to finish...');
 
   while (!auth || !auth.authenticated) {
-    console.log('waiting for authStore to be initialized');
+    // console.log('waiting for authStore to be initialized');
     await new Promise((resolve) => setTimeout(resolve, 1000));
   }
 
