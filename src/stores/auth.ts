@@ -44,7 +44,7 @@ export const useAuthStore = defineStore('authStore', {
     // Logout user
     async logout() {
       try {
-        await KeycloakService.CallLogout('/');
+        KeycloakService.CallLogout('/');
         await this.clearUserData();
       } catch (error) {
         console.error(error);
