@@ -58,8 +58,8 @@ async function initStore(storeInstance: any) {
 /**
  * Logout user
  */
-function logout(url: any) {
-  keycloak.logout({ redirectUri: url });
+function logout(_url: any) {
+  keycloak.logout({ redirectUri: window.location.origin + '/#/login' });
 }
 
 /**

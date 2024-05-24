@@ -112,7 +112,7 @@ export default class DataProvider {
   }
 
   async logout() {
-    // Implement logout functionality here
+    await authStore.logout();
   }
 
   async createProject(data: ProjectEntry): Promise<ProjectEntry> {
