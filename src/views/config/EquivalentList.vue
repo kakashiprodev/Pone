@@ -2,7 +2,11 @@
   <h2>Äquivalente und Faktoren</h2>
   <Toolbar :class="{ 'mb-3': !global.showTooltips }">
     <template #end>
-      <Button icon="fa-solid fa-download" @click="csvDownload" />
+      <Button
+        icon="fa-solid fa-download"
+        @click="csvDownload"
+        :disabled="requestPending"
+      />
       <Button
         icon="fa-solid fa-plus"
         @click="
@@ -10,6 +14,16 @@
           showDialog = true;
         "
         class="ml-2"
+        :disabled="requestPending"
+      />
+      <FileUpload
+        mode="basic"
+        accept="text/*"
+        customUpload
+        @uploader="uploadCsv"
+        :auto="true"
+        class="ml-2"
+        :disabled="requestPending"
       />
     </template>
   </Toolbar>
@@ -503,6 +517,7 @@ import {
 } from 'valibot';
 import { roundString } from '../../services/pipes';
 import SmartEquivalentList from '../../components/equivalents/SmartEquivalentList.vue';
+import { importCsvFile } from '../../services/csv/import';
 
 const windowWidth = ref(window.innerWidth);
 
@@ -790,6 +805,17 @@ const csvDownload = async () => {
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
+};
+
+const requestPending = ref(false);
+const uploadCsv = async (event: any) => {
+  requestPending.value = true;
+  if (!event.files || event.files.length === 0) {
+    return;
+  }
+  const file = event.files[0];
+  await importCsvFile(file);
+  requestPending.value = false;
 };
 </script>
 

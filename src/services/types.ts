@@ -7,7 +7,7 @@ export interface EquivalentEntry {
   specification2: string;
   specification3: string;
   add_name1: string;
-  comment: null | string;
+  comment: string;
   source: string;
   avg_value: number;
   monthly_values: boolean;
