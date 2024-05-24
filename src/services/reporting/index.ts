@@ -572,6 +572,7 @@ export const getGroupedReportData = async (
   groupBy: ReportGroupBy,
 ): Promise<AggregatedReportResult> => {
   const plainData: TimeseriesDataEntry[] = await getPlainReportData(query);
+  console.log('plainData', plainData);
   const result: AggregatedReportResult = {
     stat: {
       sum: 0,

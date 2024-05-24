@@ -397,18 +397,11 @@ export default class DataProvider {
 
   async readUserInputsForProjectExtendFields(
     projectId: string,
-    years?: number[],
   ): Promise<InputEntryWithExpandedReportAndSite[]> {
-    let filter = `report.site.project.id.eq.${projectId}`;
-    if (years) {
-      filter += ` && (${years.map((y) => `report.year.eq.${y}`).join(' || ')})`;
-    }
     const { data, error } = await this.postgrest
       .from('inputs')
-      .select('*,report(*,site(*)),facility(*)');
-    // .filter('report.site.project.id.eq.' + projectId);
-    // .or(`project.eq.${globalStore.selectedProject?.id},project.is.null`);
-    //.filter(filter)
+      .select('*,report(*,site(*,project(id))),facility(*)')
+      .eq('report.site.project.id', projectId);
     if (error) throw error;
     return data as InputEntryWithExpandedReportAndSite[];
   }
