@@ -4,6 +4,7 @@ import {
   EquivalentEntry,
   FacilityEntry,
   InputEntry,
+  InputEntryWithExpandedReportAndSite,
   ProjectEntry,
   ReportEntry,
   SiteEntry,
@@ -378,18 +379,19 @@ export default class DataProvider {
   async readUserInputsForProject(
     projectId: string,
     years?: number[],
-  ): Promise<InputEntry[]> {
+  ): Promise<InputEntryWithExpandedReportAndSite[]> {
     let filter = `report.site.project.id.eq.${projectId}`;
     if (years) {
       filter += ` && (${years.map((y) => `report.year.eq.${y}`).join(' || ')})`;
     }
     const { data, error } = await this.postgrest
       .from('inputs')
-      .select('*,report (*)');
-
+      .select('*,report(*,site(*)),facility(*)');
+    // .filter('report.site.project.id.eq.' + projectId);
+    // .or(`project.eq.${globalStore.selectedProject?.id},project.is.null`);
     //.filter(filter)
     if (error) throw error;
-    return data as any;
+    return data as InputEntryWithExpandedReportAndSite[];
   }
 
   async updateUserInput(data: InputEntry): Promise<InputEntry> {

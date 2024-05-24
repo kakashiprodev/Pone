@@ -62,25 +62,21 @@ export interface InputEntry {
 }
 
 // table "inputs" with expanded report and site
-export interface InputEntryWithExpandedReportAndSite extends InputEntry {
-  expand: {
-    report: {
-      id: string;
-      base_year: number;
-      year: number;
-      site: string; // reference on table sites
-      expand: {
-        site: {
-          id: string;
-          name: string;
-          project: string; // reference on table projects
-        };
-      };
-    };
-    facility: {
+export interface InputEntryWithExpandedReportAndSite
+  extends Omit<InputEntry, 'report' | 'facility' | 'site'> {
+  report: {
+    id: string;
+    base_year: number;
+    year: number;
+    site: {
       id: string;
       name: string;
+      project: string; // reference on table projects
     };
+  };
+  facility: {
+    id: string;
+    name: string;
   };
 }
 

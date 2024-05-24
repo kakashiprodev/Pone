@@ -486,10 +486,10 @@ const userInputsToDataEntries = (
     return {
       id: input.id,
       name: input.name,
-      year: input.expand.report.year,
-      timestamp: input.expand.report.year + '-01-01T00:00:00.000Z',
-      site: input.expand.report.expand.site.name,
-      report: input.expand.report.id,
+      year: input.report.year,
+      timestamp: input.report.year + '-01-01T00:00:00.000Z',
+      site: input.report.site.name,
+      report: input.report.id,
       scope: input.scope,
       comment: input.comment,
       sumValue: input.sum_value,
@@ -499,8 +499,8 @@ const userInputsToDataEntries = (
           ? input.category
           : 'Ohne Zuordnung',
       facility:
-        input.expand.facility && input.expand.facility.name
-          ? input.expand.facility.name
+        input.facility && input.facility.name
+          ? input.facility.name
           : 'Ohne Zuordnung',
     };
   });
@@ -544,9 +544,7 @@ export const getPlainReportData = async (
   let data: InputEntryWithExpandedReportAndSite[] = [];
   if (needRefresh) {
     // get all data. not filtered by years, because we need to filter it later
-    data = (await dataprovider.readUserInputsForProject(
-      query.projectId,
-    )) as any; // HACK!!!
+    data = await dataprovider.readUserInputsForProject(query.projectId);
 
     littleDataCache.data = data;
     littleDataCache.lease = new Date();
