@@ -269,7 +269,7 @@ const sidebarInputs = [
     label: t('global.sidebar.assistant'),
     icon: 'fa-solid fa-magic',
     to: '/assistant',
-    visible: true,
+    visible: global.isGlobalAdmin,
   },
 ];
 
@@ -296,6 +296,13 @@ const sidebarActions = [
     label: t('global.sidebar.facilities'),
     icon: 'fa-solid fa-industry',
     to: '/facilities',
+    visible: true,
+  },
+  {
+    key: 'report-data',
+    label: 'Unternehmen',
+    icon: 'fa-solid fa-building',
+    to: '/report-data',
     visible: true,
   },
 ];

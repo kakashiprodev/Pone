@@ -300,13 +300,15 @@ export default class DataProvider {
     return res.items;
   }
 
-  async readUserInputsForProject(projectId: string, years: number[]) {
+  async readUserInputsForProject(projectId: string, years?: number[]) {
+    let filter = `report.site.project.id = '${projectId}'`;
+    if (years) {
+      filter += ` && (${years.map((y) => `report.year = ${y}`).join(' || ')})`;
+    }
     const res = await this.pb
       .collection('inputs')
       .getList<InputEntryWithExpandedReportAndSite>(1, 500, {
-        filter: `report.site.project.id = '${projectId}' && (${years
-          .map((y) => `report.year = ${y}`)
-          .join(' || ')})`,
+        filter,
         expand: 'report.site,facility',
       });
     return res.items;

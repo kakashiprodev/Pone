@@ -49,7 +49,7 @@ const annotations = computed(() => {
           borderColor: '#454545',
           style: {
             color: '#fff',
-            background: '#454545',
+            background: '#666666',
           },
           text: action.name,
         },
@@ -61,10 +61,8 @@ const annotations = computed(() => {
           x: target.x,
           y: target.y,
           marker: {
-            size: 4,
-            fillColor: '#454545',
-            strokeColor: '#454545',
-            radius: 2,
+            size: 3,
+            radius: 3,
             cssClass: 'apexcharts-custom-class',
           },
         };
@@ -86,9 +84,9 @@ const chartOptions = ref({
   },
   annotations,
   stroke: {
-    width: [0, 4],
+    width: [0, 0],
   },
-  colors: ['#02434f', '#666666'],
+  colors: ['#02434f', '#888888'],
   plotOptions: {
     bar: {
       horizontal: false,

@@ -29,9 +29,8 @@ import dataprovider from '../../../../services/dataprovider';
 import { ref, Ref } from 'vue';
 import { error, warn } from '../../../../services/ui/toast';
 import ForecastChartWrapper from '../../../../components/dashboard/plot/apex/ForecastChartWrapper.vue';
-import { useGlobalStore } from '@/stores/global';
-
-const globalStore = useGlobalStore();
+import { getPlainReportData } from '@/services/reporting';
+import { globalStore } from '@/main';
 
 function prepareAnnotationsData(options: {
   actions: any[];
@@ -142,11 +141,11 @@ const getData = async () => {
 
   const oldValues: OldReportValues[] = [];
   for (const report of reports) {
-    // caluclate the sum of emissions in a report
-    const inputs = await dataprovider.readUserInputsForProject(
-      globalStore.selectedProject?.id ?? '',
-      [report.year],
-    );
+    const inputs = await getPlainReportData({
+      projectId: globalStore.selectedProject?.id ?? '',
+      siteIds: [], // HACK
+      filter: { years: [report.year] },
+    });
     const sum = inputs.reduce((acc, input) => acc + input.sumValue, 0);
 
     if (sum && sum > 0) {

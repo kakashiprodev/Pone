@@ -3,7 +3,11 @@
 
   <ScopeInfoBox v-if="preSelectedScope != 'all'" :scope="preSelectedScope" />
 
-  <InlineMessage severity="info" v-if="global.showTooltips" class="w-full mb-2">
+  <InlineMessage
+    severity="info"
+    v-if="globalStore.showTooltips"
+    class="w-full mb-2"
+  >
     {{ $t('inputs.inlineMsg') }}
   </InlineMessage>
 
@@ -21,7 +25,6 @@
           value="1"
           class="ml-3"
           :binary="true"
-          @change="getData"
         />
         <label class="ml-1" for="scope1Active">1</label>
         <Checkbox
@@ -30,7 +33,6 @@
           value="1"
           class="ml-4"
           :binary="true"
-          @change="getData"
         />
         <label class="ml-1" for="scope2Active">2</label>
         <Checkbox
@@ -39,7 +41,6 @@
           value="1"
           class="ml-4"
           :binary="true"
-          @change="getData"
         />
         <label class="ml-1" for="scope3Active">3</label>
       </template>
@@ -223,7 +224,7 @@
               class="bg-teal-300 text-white rounded-sm m-2 flex items-center justify-center cursor-pointer p-2"
             >
               {{
-                global.facilitiesDict[selectedValue.facility]?.name ??
+                globalStore.facilitiesDict[selectedValue.facility]?.name ??
                 'Reference error'
               }}
             </div>
@@ -247,7 +248,7 @@
         <!-- helping information -->
         <div
           class="flex flex-col gap-2"
-          v-if="global.showTooltips && computedSumCalculation !== ''"
+          v-if="globalStore.showTooltips && computedSumCalculation !== ''"
         >
           <label for="userinput-sum">{{ $t('inputs.calcSteps') }}</label>
           <p style="white-space: pre-wrap">
@@ -321,7 +322,7 @@
           :options="[1, 2, 3]"
         />
         <InlineMessage
-          v-if="global.showTooltips"
+          v-if="globalStore.showTooltips"
           class="w-full mt-1"
           severity="info"
         >
@@ -340,8 +341,8 @@
             class="bg-teal-300 text-white rounded-sm m-2 flex items-center justify-center cursor-pointer p-2"
           >
             {{
-              global.equivalentDict[selectedValue.equivalent]?.specification1 ??
-              'Reference error'
+              globalStore.equivalentDict[selectedValue.equivalent]
+                ?.specification1 ?? 'Reference error'
             }}
           </div>
           <Button
@@ -351,7 +352,7 @@
           />
         </div>
         <InlineMessage
-          v-if="global.showTooltips"
+          v-if="globalStore.showTooltips"
           class="w-full mt-1"
           severity="info"
           v-html="
@@ -370,7 +371,7 @@
           id="userinput-category"
         />
         <InlineMessage
-          v-if="global.showTooltips"
+          v-if="globalStore.showTooltips"
           class="w-full mt-1"
           severity="info"
         >
@@ -390,14 +391,14 @@
             class="bg-teal-300 text-white rounded-sm m-2 flex items-center justify-center cursor-pointer p-2"
           >
             {{
-              global.facilitiesDict[selectedValue.facility]?.name ??
+              globalStore.facilitiesDict[selectedValue.facility]?.name ??
               'Reference error'
             }}
           </div>
           <Button v-else label="Auswählen" @click="showChooseFacility = true" />
         </div>
         <InlineMessage
-          v-if="global.showTooltips"
+          v-if="globalStore.showTooltips"
           class="w-full mt-1"
           severity="info"
         >
@@ -412,7 +413,7 @@
           id="userinput-name"
         />
         <InlineMessage
-          v-if="global.showTooltips"
+          v-if="globalStore.showTooltips"
           class="w-full mt-1"
           severity="info"
           >{{ $t('inputs.nameInline') }}
@@ -426,7 +427,7 @@
           id="userinput-comment"
         />
         <InlineMessage
-          v-if="global.showTooltips"
+          v-if="globalStore.showTooltips"
           class="w-full mt-1"
           severity="info"
         >
@@ -439,7 +440,7 @@
           :input-unit="choosenEquivalent ? ' ' + choosenEquivalent.in : ''"
         />
         <InlineMessage
-          v-if="global.showTooltips"
+          v-if="globalStore.showTooltips"
           class="w-full mt-1"
           severity="info"
           :v-html="$t('inputs.selectedValueInline')"
@@ -448,14 +449,14 @@
       <!-- helping information -->
       <div
         class="flex flex-col gap-2"
-        v-if="global.showTooltips && computedSumCalculation !== ''"
+        v-if="globalStore.showTooltips && computedSumCalculation !== ''"
       >
         <label for="userinput-sum">{{ $t('inputs.calcSteps') }}</label>
         <p style="white-space: pre-wrap">
           {{ computedSumCalculation }}
         </p>
         <InlineMessage
-          v-if="global.showTooltips"
+          v-if="globalStore.showTooltips"
           class="w-full mt-1"
           severity="info"
         >
@@ -475,7 +476,7 @@
           :suffix="displayInTons ? ' to' : ' kg'"
         />
         <InlineMessage
-          v-if="global.showTooltips"
+          v-if="globalStore.showTooltips"
           class="w-full mt-1"
           severity="info"
         >
@@ -494,7 +495,7 @@
   <ConfirmPopup></ConfirmPopup>
   <DataTable
     :showGridlines="false"
-    v-if="global.equivalents.length > 0"
+    v-if="globalStore.equivalents.length > 0"
     :value="data"
     class="cst-no-hover text-sm"
   >
@@ -516,8 +517,10 @@
     <Column field="rawValue" header="Eingabewert" sortable>
       <template #body="{ data }">
         <Chip class="flex justify-end text-right bg-slate-200 text-sm">
-          {{ roundStringWithDecimals(data.rawValue, 3) }}
-          {{ global.equivalentDict[data.equivalent]?.in ?? 'Reference error' }}
+          {{ roundStringWithDecimals(data.rawValue, 0) }}
+          {{
+            globalStore.equivalentDict[data.equivalent]?.in ?? 'Reference error'
+          }}
         </Chip>
       </template>
     </Column>
@@ -525,7 +528,7 @@
       <template #body="{ data }">
         <div v-if="data.equivalent != null && data.equivalent !== ''">
           {{
-            global.equivalentDict[data.equivalent]?.specification1 ??
+            globalStore.equivalentDict[data.equivalent]?.specification1 ??
             'Reference error'
           }}
         </div>
@@ -534,7 +537,7 @@
     </Column>
     <Column field="facility" :header="$t('inputs.table.facility')" sortable>
       <template #body="{ data }">
-        {{ global.facilitiesDict[data.facility]?.name ?? '' }}
+        {{ globalStore.facilitiesDict[data.facility]?.name ?? '' }}
       </template>
     </Column>
     <Column field="sumValue" :header="$t('inputs.table.amountYear')" sortable>
@@ -543,7 +546,7 @@
           {{
             roundStringWithDecimals(
               displayInTons ? toTons(data.sumValue) : data.sumValue,
-              3,
+              0,
             )
           }}
           {{ displayInTons ? ' to' : ' kg' }}
@@ -579,17 +582,14 @@ import FacilityChooser from '../../components/facilities/FacilityChooser.vue';
 import ScopeInfoBox from '../../components/equivalents/ScopeInfoBox.vue';
 import MonthlyOrYearlyInput from '../../components/equivalents/MonthlyOrYearlyInput.vue';
 import { EquivalentEntry, InputEntry } from '../../services/types';
-import dataprovider from '../../services/dataprovider';
-import { Ref, ref, computed, watch, ComputedRef } from 'vue';
+import { Ref, ref, computed, watch, ComputedRef, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
-import { useGlobalStore } from '../../stores/global';
 import { error } from '../../services/ui/toast';
 import { useConfirm } from 'primevue/useconfirm';
 import {
   getSumForInput,
   getCalculationSteps,
 } from '../../services/reporting/index';
-import { useRouter } from 'vue-router';
 import {
   parse,
   string,
@@ -602,11 +602,12 @@ import {
   nullable,
   boolean,
 } from 'valibot';
-import { roundStringWithDecimals, toTons } from '../../services/pipes';
+import { round, roundStringWithDecimals, toTons } from '../../services/pipes';
 import { MeterItem } from 'primevue/metergroup';
 import { getMonochromeColorPalette } from '@/services/colors';
+import { globalStore, inputStore } from '@/main';
 
-const router = useRouter();
+const route = useRoute();
 
 // input validation
 const inputEntrySchema = object({
@@ -642,14 +643,16 @@ const inputEntrySchema = object({
   category: nullable(string([maxLength(255, 'Kategorie zu lang')])),
 });
 
-// toolbar
+// inner state
 const scope1Active = ref(true);
 const scope2Active = ref(true);
 const scope3Active = ref(true);
-
 const windowWidth = ref(window.innerWidth);
+const displayInTons = computed(() => {
+  return globalStore.displayInTons;
+});
 
-// comfort input
+// comfort input stepper
 const showComfortInput = ref(false);
 const actualComfortStep = ref(0);
 const incStep = () => {
@@ -658,23 +661,23 @@ const incStep = () => {
 const decStep = () => {
   actualComfortStep.value--;
 };
-
 watch(
   () => showComfortInput.value,
   () => {
     if (!showComfortInput.value) {
       // reset all on close
-      console.log('reset comfort input');
       actualComfortStep.value = 0;
     }
   },
 );
 
 // get "scope" from route
-const route = useRoute();
 const preSelectedScope = ref('all');
 const preSelectedFacility = ref(null as null | string);
 
+/**
+ * Set the filters depending on the route
+ */
 const setRouteFilter = () => {
   // filter by scope if set
   const scopeParam = route.params.scope; // "1", "2", "3", "all"
@@ -702,23 +705,27 @@ const setRouteFilter = () => {
       : null;
 };
 
-const data: Ref<InputEntry[]> = ref([]);
+// main data
+const data = computed(() => {
+  if (preSelectedScope.value === 'all') {
+    return inputStore.allScopes;
+  } else {
+    return inputStore.allScopes.filter(
+      (item) => item.scope === parseInt(preSelectedScope.value),
+    );
+  }
+});
 
-// on fist loading
-setRouteFilter();
-// on change
+// wait for changes in the route
 watch(route, () => {
-  console.log('route changed');
   setRouteFilter();
-  data.value = [];
-  getData();
 });
 
 // choose equivalent
 const showChooseEquivalent = ref(false);
 const choosenEquivalent: ComputedRef<null | EquivalentEntry> = computed(() => {
   try {
-    return global.equivalentDict[selectedValue.value.equivalent ?? ''];
+    return globalStore.equivalentDict[selectedValue.value.equivalent ?? ''];
   } catch (e) {
     return null;
   }
@@ -727,37 +734,22 @@ const choosenEquivalent: ComputedRef<null | EquivalentEntry> = computed(() => {
 // choose facility
 const showChooseFacility = ref(false);
 
-// edit/new
-const global = useGlobalStore();
-global.refreshEquivalents();
-
-const displayInTons = computed(() => {
-  return global.displayInTons;
-});
-
-// ensure that a report is selected
-if (!global.selectedReport && global.isLoggedIn) {
-  error('Bitte legen Sie einen zunächst einen Bericht an.');
-  router.push({ name: 'reportConfig' });
-} else if (!global.isLoggedIn) {
-  console.log('not logged in. skip report check');
-}
-
-// watch global.selectedReport to reload the report
+// watch globalStore.selectedReport to reload the report
 watch(
-  () => global.selectedReport,
+  () => globalStore.selectedReport,
   async () => {
-    await global.changeReport();
-    await getData();
+    await globalStore.changeReport();
+    await inputStore.readUserInputs();
   },
 );
 
+// new and empty input element
 const showDialog = ref(false);
 const emptyInput: InputEntry = {
   id: 'new',
   name: '',
   comment: '',
-  report: global.selectedReport?.id ?? '',
+  report: globalStore.selectedReport?.id ?? '',
   scope: 1,
   sumValue: 0,
   equivalent: null,
@@ -790,7 +782,7 @@ const clone = (input: InputEntry) => {
 const selectedValue: Ref<InputEntry> = ref(emptyInput);
 const originalValue: Ref<InputEntry> = ref(emptyInput);
 
-// check selectedValue.rawValue for changes
+// check selectedValue.rawValue for changes to update the input fields
 watch(
   () => selectedValue.value.rawValue,
   () => {
@@ -811,7 +803,7 @@ watch(
       ];
       keys.forEach((key) => {
         // @ts-ignore
-        selectedValue.value[key] = selectedValue.value.rawValue;
+        selectedValue.value[key] = round(selectedValue.value.rawValue / 12, 3);
       });
     }
   },
@@ -823,7 +815,8 @@ const updateNameAndCategory = () => {
     selectedValue.value.equivalent != null &&
     selectedValue.value.equivalent !== ''
   ) {
-    const equivalent = global.equivalentDict[selectedValue.value.equivalent];
+    const equivalent =
+      globalStore.equivalentDict[selectedValue.value.equivalent];
     if (equivalent == null) {
       error(
         'Äquivalent wurde im Cache nicht gefunden. Bitte laden Sie die Seite neu.',
@@ -836,16 +829,15 @@ const updateNameAndCategory = () => {
   }
 };
 
+// sum calculation
 const computedSumValue = computed(() => {
-  return getSumForInput(selectedValue.value, global.equivalentDict);
+  return getSumForInput(selectedValue.value, globalStore.equivalentDict);
 });
-
 const scaledSumValue = computed(() => {
   return displayInTons.value
     ? toTons(computedSumValue.value)
     : computedSumValue.value;
 });
-
 const computedSumCalculation: ComputedRef<string> = computed(() => {
   if (
     selectedValue.value.equivalent != null &&
@@ -853,13 +845,18 @@ const computedSumCalculation: ComputedRef<string> = computed(() => {
     selectedValue.value.rawValue != null &&
     selectedValue.value.rawValue > 0
   ) {
-    return getCalculationSteps(selectedValue.value, global.equivalentDict).join(
-      '\n',
-    );
+    return getCalculationSteps(
+      selectedValue.value,
+      globalStore.equivalentDict,
+    ).join('\n');
   } else {
     return '';
   }
 });
+
+/**
+ * Save the input to the database
+ */
 const save = async () => {
   try {
     // validate
@@ -868,7 +865,7 @@ const save = async () => {
     if (selectedValue.value.id === 'new') {
       const toCreate = clone(selectedValue.value);
       delete toCreate.id;
-      const created = await dataprovider.createUserInput(toCreate);
+      const created = await inputStore.addInput(toCreate);
       data.value.push(created);
 
       showDialog.value = false;
@@ -876,7 +873,7 @@ const save = async () => {
 
       selectedValue.value = clone(emptyInput);
     } else {
-      const updated = await dataprovider.updateUserInput(selectedValue.value);
+      const updated = await inputStore.updateInput(selectedValue.value);
       const index = data.value.findIndex((item) => item.id === updated.id);
       data.value[index] = updated;
 
@@ -888,45 +885,24 @@ const save = async () => {
   }
 };
 
+/**
+ * Delete an entry
+ */
 const confirm = useConfirm();
 const deleteEntry = async (entry: InputEntry, event: any) => {
   confirm.require({
     target: event.currentTarget,
-    message: 'Soll der Wert wirklich gelöscht werden?',
+    message: 'Soll das Element wirklich gelöscht werden?',
     icon: 'fa-solid fa-question',
     accept: async () => {
       try {
-        await dataprovider.deleteUserInput(entry.id);
-        const index = data.value.findIndex((item) => item.id === entry.id);
-        data.value.splice(index, 1);
+        await inputStore.dropInput(entry);
       } catch (e) {
         error(e + '');
       }
     },
   });
 };
-
-// get data
-const getData = async () => {
-  const scope: number[] = [];
-  if (scope1Active.value) {
-    scope.push(1);
-  }
-  if (scope2Active.value) {
-    scope.push(2);
-  }
-  if (scope3Active.value) {
-    scope.push(3);
-  }
-  data.value = await dataprovider.readUserInputs({
-    scope,
-    [preSelectedFacility.value != null ? 'facility' : '']:
-      [preSelectedFacility.value] ?? undefined,
-  });
-};
-
-// initial get data
-getData();
 
 // watch data to caclulate the sum of all sumValues
 const sumValue = computed(() => {
@@ -968,7 +944,9 @@ const sumsByCategory = computed(() => {
   return relativeSums;
 });
 
-// export
+/**
+ * Download the data as CSV
+ */
 const download = async () => {
   // export data as CSV and download
   let csv =
@@ -997,6 +975,15 @@ const download = async () => {
   document.body.appendChild(link);
   link.click();
 };
+
+/**
+ * Lifecycle hook
+ */
+onMounted(async () => {
+  setRouteFilter();
+  await globalStore.refreshEquivalents();
+  await inputStore.readUserInputs();
+});
 </script>
 
 <style>

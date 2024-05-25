@@ -95,7 +95,11 @@ export const dateToYear = (date: Date | string): string => {
 
 export const toReadableDate = (date: string | Date | null) => {
   if (date) {
-    return new Date(date).getTime();
+    return new Date(date).toLocaleDateString('de-DE', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+    });
   }
   return '';
 };
