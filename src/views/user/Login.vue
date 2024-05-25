@@ -1,18 +1,18 @@
 <template>
   <div class="login">
-    <h1 class="welcome-text">Willkommen</h1>
+    <h1 class="welcome-text">{{ $t('login.welcome') }}</h1>
     <div>
       <!--login with username and password -->
       <Card>
-        <template #header> Login </template>
+        <template #header> {{ $t('login.login') }} </template>
         <template #content>
           <div class="p-fluid m-auto">
             <div class="p-field">
-              <label for="username">Benutzername</label>
+              <label for="username">{{ $t('login.username') }}</label>
               <InputText class="mt-2" id="username" v-model="username" />
             </div>
             <div class="p-field mt-2">
-              <label for="password">Passwort</label>
+              <label for="password">{{ $t('login.password') }}</label>
               <InputText
                 class="mt-2"
                 id="password"

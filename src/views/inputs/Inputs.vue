@@ -1,11 +1,10 @@
 <template>
-  <h2>Übersicht aller Eingaben</h2>
+  <h2>{{ $t('inputs.heading') }}</h2>
 
   <ScopeInfoBox v-if="preSelectedScope != 'all'" :scope="preSelectedScope" />
 
   <InlineMessage severity="info" v-if="global.showTooltips" class="w-full mb-2">
-    Hier können Sie alle Eingaben für den aktuellen Bericht einsehen und
-    bearbeiten. Die Eingaben können außerdem als CSV-Datei exportiert werden.
+    {{ $t('inputs.inlineMsg') }}
   </InlineMessage>
 
   <div class="w-full p-3 mb-3">
@@ -15,7 +14,7 @@
   <Toolbar class="mb-2">
     <template #start>
       <template v-if="preSelectedScope === 'all'">
-        <label class="ml-2">Zeige Scopes:</label>
+        <label class="ml-2">{{ $t('inputs.showScopes') }}:</label>
         <Checkbox
           id="scope1Active"
           v-model="scope1Active"
@@ -45,7 +44,7 @@
         <label class="ml-1" for="scope3Active">3</label>
       </template>
       <span class="ml-4"
-        >Menge:
+        >{{ $t('inputs.amount') }}:
         {{
           roundStringWithDecimals(
             displayInTons ? toTons(sumValue) : sumValue,
@@ -80,7 +79,7 @@
     id="choose-equivalent"
     v-model:visible="showChooseEquivalent"
     modal
-    header="Äquivalent auswählen"
+    :header="$t('inputs.chooseEquivalent')"
     :class="{
       'w-3/5': windowWidth > 990,
       'w-full': windowWidth < 990,
@@ -96,7 +95,7 @@
     />
     <div class="mt-4">
       <Button
-        label="Ok"
+        :label="$t('inputs.ok')"
         @click="
           showChooseEquivalent = false;
           updateNameAndCategory();
@@ -104,7 +103,7 @@
       />
       <Button
         class="ml-1"
-        label="Auswahl leeren"
+        :label="$t('inputs.resetSelection')"
         @click="
           selectedValue.equivalent = null;
           showChooseEquivalent = false;
@@ -112,7 +111,7 @@
       />
       <Button
         class="ml-1"
-        label="Abbrechen"
+        :label="$t('inputs.cancel')"
         @click="
           selectedValue = originalValue;
           showChooseEquivalent = false;
@@ -135,10 +134,10 @@
   >
     <FacilityChooser v-model="selectedValue.facility" />
     <div class="mt-4">
-      <Button label="Ok" @click="showChooseFacility = false" />
+      <Button :label="$t('inputs.ok')" @click="showChooseFacility = false" />
       <Button
         class="ml-1"
-        label="Auswahl leeren"
+        :label="$t('inputs.resetSelection')"
         @click="
           selectedValue.facility = null;
           showChooseFacility = false;
@@ -146,7 +145,7 @@
       />
       <Button
         class="ml-1"
-        label="Abbrechen"
+        :label="$t('inputs.cancel')"
         @click="
           selectedValue = originalValue;
           showChooseFacility = false;
@@ -158,7 +157,7 @@
   <!-- comfort input -->
   <Dialog
     modal
-    header="Komforteingabe"
+    :header="$t('inputs.comfortInput')"
     id="create-input-comfort"
     v-model:visible="showComfortInput"
     :class="{ 'w-3/4': true }"
@@ -185,7 +184,7 @@
       <!-- step 2 -->
       <div class="flex flex-col gap-4" v-if="actualComfortStep === 1">
         <div class="flex flex-col gap-2">
-          <label for="userinput-category">Kategorie</label>
+          <label for="userinput-category">{{ $t('inputs.category') }}</label>
           <InputText
             class="w-full"
             v-model="selectedValue.category"
@@ -193,7 +192,7 @@
           />
         </div>
         <div class="flex flex-col gap-2">
-          <label for="userinput-name">Name</label>
+          <label for="userinput-name">{{ $t('inputs.name') }}</label>
           <InputText
             class="w-full"
             v-model="selectedValue.name"
@@ -201,7 +200,7 @@
           />
         </div>
         <div class="flex flex-col gap-2">
-          <label for="userinput-comment">Kommentar</label>
+          <label for="userinput-comment">{{ $t('inputs.comment') }}</label>
           <InputText
             class="w-full"
             v-model="selectedValue.comment"
@@ -212,9 +211,9 @@
 
       <!-- step 3 -->
       <div class="flex flex-col gap-4" v-if="actualComfortStep === 2">
-        <p>Soll der Eingabe eine Anlage zugeordnet werden?</p>
+        <p>{{ $t('inputs.assignFacility') }}</p>
         <div class="flex flex-col gap-2">
-          <label for="userinput-equivalent">Anlage</label>
+          <label for="userinput-equivalent">{{ $t('inputs.facility') }}</label>
           <div>
             <div
               v-if="
@@ -230,7 +229,7 @@
             </div>
             <Button
               v-else
-              label="Auswählen"
+              :label="$t('inputs.choose')"
               @click="showChooseFacility = true"
             />
           </div>
@@ -250,14 +249,14 @@
           class="flex flex-col gap-2"
           v-if="global.showTooltips && computedSumCalculation !== ''"
         >
-          <label for="userinput-sum">Berechnungsschritte</label>
+          <label for="userinput-sum">{{ $t('inputs.calcSteps') }}</label>
           <p style="white-space: pre-wrap">
             {{ computedSumCalculation }}
           </p>
         </div>
 
         <div class="flex flex-col gap-2">
-          <label for="userinput-sum">Menge (berechnet)</label>
+          <label for="userinput-sum">{{ $t('inputs.amountCalc') }}</label>
           <InputNumber
             :disabled="true"
             class="w-full"
@@ -274,14 +273,14 @@
       <!-- Step Buttons -->
       <div class="flex items-center justify-center">
         <Button
-          :label="'Zurück'"
+          :label="$t('inputs.stepBack')"
           @click="decStep"
           class="grow mr-1"
           :disabled="actualComfortStep === 0"
         />
         <Button
           v-if="actualComfortStep < 3"
-          :label="'Weiter'"
+          :label="$t('inputs.stepForward')"
           @click="incStep"
           class="grow ml-1"
           :disabled="
@@ -290,7 +289,7 @@
         />
         <Button
           v-else
-          :label="'Anlegen'"
+          :label="$t('inputs.create')"
           @click="save"
           class="grow ml-1"
           :disabled="selectedValue.rawValue == null"
@@ -303,7 +302,9 @@
     id="edit-create-input"
     v-model:visible="showDialog"
     modal
-    :header="selectedValue.id === 'new' ? 'Anlegen' : 'Bearbeiten'"
+    :header="
+      selectedValue.id === 'new' ? $t('inputs.create') : $t('inputs.edit')
+    "
     :class="{
       'w-2/4': windowWidth > 990,
       'w-full': windowWidth < 990,
@@ -312,7 +313,7 @@
   >
     <div class="flex flex-col gap-4">
       <div class="flex flex-col gap-2">
-        <label for="userinput-scope">Scope</label>
+        <label for="userinput-scope">{{ $t('inputs.scope') }}</label>
         <Dropdown
           class="w-full"
           id="userinput-scope"
@@ -324,11 +325,11 @@
           class="w-full mt-1"
           severity="info"
         >
-          Auswahl des Scopes für den die Eingabe gilt.
+          {{ $t('inputs.scopeInline') }}
         </InlineMessage>
       </div>
       <div class="flex flex-col gap-2">
-        <label for="userinput-equivalent">Äquivalent</label>
+        <label for="userinput-equivalent">{{ $t('inputs.equivalent') }}</label>
         <div>
           <div
             v-if="
@@ -345,7 +346,7 @@
           </div>
           <Button
             v-else
-            label="Auswählen"
+            :label="$t('inputs.choose')"
             @click="showChooseEquivalent = true"
           />
         </div>
@@ -353,17 +354,16 @@
           v-if="global.showTooltips"
           class="w-full mt-1"
           severity="info"
+          v-html="
+            $t('inputs.equivalentInline', {
+              units: displayInTons ? ' to' : ' kg',
+            })
+          "
         >
-          Hier kann ein Äquivalent zugeordnet werden. Neue Äquivalente können
-          unter dem Benutzermenü > "Äquivalente verwalten" hinzugefügt werden.
-          Gelistet werden außerdem alle ausgelieferten Äquivalente. Ist kein
-          Äquivalent ausgewählt, ist die Eingabe in [{{
-            displayInTons ? ' to' : ' kg'
-          }}] CO<sub>2</sub>-Äquivalenten ohne weiteren Faktor.
         </InlineMessage>
       </div>
       <div class="flex flex-col gap-2">
-        <label for="userinput-category">Kategorie</label>
+        <label for="userinput-category">{{ $t('inputs.category') }}</label>
         <InputText
           class="w-full"
           v-model="selectedValue.category"
@@ -374,12 +374,13 @@
           class="w-full mt-1"
           severity="info"
         >
-          Die Angabe einer Kategorie dient der späteren Auswertung und besseren
-          Sortierbarkeit. Es können beliebige Kategorien angelegt werden.
+          $t('inputs.categoryInline')
         </InlineMessage>
       </div>
       <div class="flex flex-col gap-2">
-        <label for="userinput-equivalent">Anlage (optional)</label>
+        <label for="userinput-equivalent">{{
+          $t('inputs.facilityOptional')
+        }}</label>
         <div>
           <div
             v-if="
@@ -400,16 +401,11 @@
           class="w-full mt-1"
           severity="info"
         >
-          Hier kann ein Äquivalent zugeordnet werden. Neue Äquivalente können
-          unter dem Benutzermenü > "Äquivalente verwalten" hinzugefügt werden.
-          Gelistet werden außerdem alle ausgelieferten Äquivalente. Ist kein
-          Äquivalent ausgewählt, ist die Eingabe in [{{
-            displayInTons ? ' to' : ' kg'
-          }}] CO<sub>2</sub>-Äquivalenten ohne weiteren Faktor.
+          $t('inputs.facilityInline')
         </InlineMessage>
       </div>
       <div class="flex flex-col gap-2">
-        <label for="userinput-name">Name</label>
+        <label for="userinput-name">{{ $t('inputs.name') }}</label>
         <InputText
           class="w-full"
           v-model="selectedValue.name"
@@ -419,13 +415,11 @@
           v-if="global.showTooltips"
           class="w-full mt-1"
           severity="info"
-        >
-          Bezeichnung der Eingabe. Diese wird in der Liste und im Bericht als
-          Name angezeigt.
+          >{{ $t('inputs.nameInline') }}
         </InlineMessage>
       </div>
       <div class="flex flex-col gap-2">
-        <label for="userinput-comment">Kommentar</label>
+        <label for="userinput-comment">{{ $t('inputs.comment') }}</label>
         <InputText
           class="w-full"
           v-model="selectedValue.comment"
@@ -436,7 +430,7 @@
           class="w-full mt-1"
           severity="info"
         >
-          Eine optionale Beschreibung der Eingabe.
+          {{ $t('inputs.commentInline') }}
         </InlineMessage>
       </div>
       <div>
@@ -448,17 +442,15 @@
           v-if="global.showTooltips"
           class="w-full mt-1"
           severity="info"
-        >
-          Der Eingabewert vor dem Umrechnen in CO<sub>2</sub>-Äquivalente. Wird
-          mit dem Äquivalent verrechnet.
-        </InlineMessage>
+          :v-html="$t('inputs.selectedValueInline')"
+        ></InlineMessage>
       </div>
       <!-- helping information -->
       <div
         class="flex flex-col gap-2"
         v-if="global.showTooltips && computedSumCalculation !== ''"
       >
-        <label for="userinput-sum">Berechnungsschritte</label>
+        <label for="userinput-sum">{{ $t('inputs.calcSteps') }}</label>
         <p style="white-space: pre-wrap">
           {{ computedSumCalculation }}
         </p>
@@ -467,13 +459,11 @@
           class="w-full mt-1"
           severity="info"
         >
-          Hier werden alle Berechnugnsschritte angezeigt, die zur Berechnung der
-          Menge (Jahr) verwendet werden. Dies können z.B. Umrechnungsfaktoren
-          sein.
+          {{ $t('inputs.calcStepsInline') }}
         </InlineMessage>
       </div>
       <div class="flex flex-col gap-2">
-        <label for="userinput-sum">Menge (berechnet)</label>
+        <label for="userinput-sum">{{ $t('inputs.amountCalc') }}</label>
         <InputNumber
           :disabled="true"
           class="w-full"
@@ -489,8 +479,7 @@
           class="w-full mt-1"
           severity="info"
         >
-          Die Berechnung erfolgt automatisch aus dem Eingabewert und dem
-          Äquivalent.
+          {{ $t('inputs.amountCalcInline') }}
         </InlineMessage>
       </div>
       <div>
@@ -512,7 +501,7 @@
     <!-- <Column field="id" header="ID"></Column> -->
     <Column
       field="scope"
-      header="Scope"
+      :header="$t('inputs.table.scope')"
       sortable
       v-if="preSelectedScope === 'all'"
     >
@@ -522,8 +511,8 @@
         </span>
       </template>
     </Column>
-    <Column field="category" header="Kategorie" sortable></Column>
-    <Column field="name" header="Name" sortable></Column>
+    <Column field="category" :header="$t('inputs.table.category')" sortable></Column>
+    <Column field="name" :header="$t('inputs.table.name')" sortable></Column>
     <Column field="rawValue" header="Eingabewert" sortable>
       <template #body="{ data }">
         <Chip class="flex justify-end text-right bg-slate-200 text-sm">
@@ -532,7 +521,7 @@
         </Chip>
       </template>
     </Column>
-    <Column field="equivalent" header="Äquivalent" sortable>
+    <Column field="equivalent" :header="$t('inputs.table.equivalent')" sortable>
       <template #body="{ data }">
         <div v-if="data.equivalent != null && data.equivalent !== ''">
           {{
@@ -543,12 +532,12 @@
         <div v-else></div>
       </template>
     </Column>
-    <Column field="facility" header="Anlage" sortable>
+    <Column field="facility" :header="$t('inputs.table.facility')" sortable>
       <template #body="{ data }">
         {{ global.facilitiesDict[data.facility]?.name ?? '' }}
       </template>
     </Column>
-    <Column field="sumValue" header="Menge (Jahr)" sortable>
+    <Column field="sumValue" :header="$t('inputs.table.amountYear')" sortable>
       <template #body="{ data }">
         <Chip class="flex justify-end text-right bg-slate-200 text-sm">
           {{
@@ -561,7 +550,7 @@
         </Chip>
       </template>
     </Column>
-    <Column field="comment" header="Kommentar"></Column>
+    <Column field="comment" :header="$t('inputs.table.comment')"></Column>
     <Column header="">
       <template #body="{ data }">
         <div class="flex">

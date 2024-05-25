@@ -12,7 +12,7 @@
         <span>{{ global.selectedProject?.name }}</span>
       </Chip>
 
-      <span>Standorte</span>
+      <span>{{ $t('global.sidebar.places') }}</span>
       <Dropdown
         :options="global.sites"
         optionLabel="name"
@@ -163,28 +163,28 @@
             class="text-800 flex p-2 rounded-sm items-center hover:surface-hover transition-colors transition-duration-150 cursor-pointer"
           >
             <i class="fa-solid fa-people-group mr-3"></i>
-            <span>{{ $t("global.manageProjects") }}</span>
+            <span>{{ $t('global.manageProjects') }}</span>
           </a>
           <a
             href="/#/equivalents"
             class="text-800 flex p-2 rounded-sm items-center hover:surface-hover transition-colors transition-duration-150 cursor-pointer"
           >
             <i class="fa-solid fa-list mr-3"></i>
-            <span>{{ $t("global.manageEquivalents") }}</span>
+            <span>{{ $t('global.manageEquivalents') }}</span>
           </a>
           <a
             href="/#/user"
             class="text-800 flex p-2 rounded-sm items-center hover:surface-hover transition-colors transition-duration-150 cursor-pointer"
           >
             <i class="fa-solid fa-user mr-3"></i>
-            <span>{{ $t("global.userProfile") }}</span>
+            <span>{{ $t('global.userProfile') }}</span>
           </a>
           <a
             @click="logout()"
             class="text-800 flex p-2 rounded-sm items-center hover:surface-hover transition-colors transition-duration-150 cursor-pointer"
           >
             <i class="fa-solid fa-right-from-bracket mr-3"></i>
-            <span>{{ $t("global.logout") }}</span>
+            <span>{{ $t('global.logout') }}</span>
           </a>
         </li>
       </ul>
@@ -203,9 +203,9 @@ import { useRouter } from 'vue-router';
 import dataprovider from '../../services/dataprovider';
 import { useRoute } from 'vue-router';
 import { ref, computed } from 'vue';
-import { useI18n } from 'vue-i18n'
+import { useI18n } from 'vue-i18n';
 
-const { t } = useI18n()
+const { t } = useI18n();
 const route = useRoute();
 const router = useRouter();
 const global = useGlobalStore();
@@ -245,34 +245,30 @@ const sidebarAnalysis = [
 const sidebarInputs = [
   {
     key: 'scope-1',
-    label: t('global.sidebar.scope', {scope: '1'}),
+    label: t('global.sidebar.scope', { scope: '1' }),
     icon: 'fa-solid fa-1',
     to: '/inputs/scope/1',
     visible: true,
   },
   {
     key: 'scope-2',
-    label: t('global.sidebar.scope', {scope: '2'}),
+    label: t('global.sidebar.scope', { scope: '2' }),
     icon: 'fa-solid fa-2',
     to: '/inputs/scope/2',
     visible: true,
   },
   {
     key: 'scope-3',
-    label: t('global.sidebar.scope', {scope: '3'}),
+    label: t('global.sidebar.scope', { scope: '3' }),
     icon: 'fa-solid fa-3',
     to: '/inputs/scope/3',
     visible: true,
   },
   {
     key: 'assistant',
-    label: 'Assistent',
+    label: t('global.sidebar.assistant'),
     icon: 'fa-solid fa-magic',
     to: '/assistant',
-    key: 'overview',
-    label: t('global.sidebar.overview'),
-    icon: 'fa-solid fa-list',
-    to: '/inputs',
     visible: true,
   },
 ];
@@ -280,7 +276,7 @@ const sidebarInputs = [
 const sidebarCsrd = [
   {
     key: 'csrd-report-interview',
-    label: 'CSRD Interview',
+    label: t('global.sidebar.csrdReportInterview'),
     icon: 'fa-solid fa-magic',
     to: '/csrd-report-interview',
     visible: global.isGlobalAdmin,
@@ -306,19 +302,19 @@ const sidebarActions = [
 
 const sidebar = [
   {
-    header: 'Auswertung',
+    header: t('global.sidebar.analysis'),
     items: sidebarAnalysis,
   },
   {
-    header: 'Eingabe',
+    header: t('global.sidebar.inputs'),
     items: sidebarInputs,
   },
   {
-    header: 'Zuordnung',
+    header: t('global.sidebar.inputs'),
     items: sidebarActions,
   },
   {
-    header: 'Berichtswesen',
+    header: t('global.sidebar.reporting'),
     items: sidebarCsrd,
     hide: !global.isGlobalAdmin,
   },

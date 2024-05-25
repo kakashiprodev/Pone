@@ -1,17 +1,20 @@
 <template>
-  <h4>Übersicht aller Anlagen</h4>
+  <h4>{{ $t('facilities.heading') }}</h4>
 
   <InlineMessage severity="info" v-if="global.showTooltips" class="w-full mb-2">
-    Hier können Sie alle Ihre Anlagen anlegen, einsehen und bearbeiten. Jede
-    Eingabe kann später einer Anlage zugewiesen werden.
+    {{ $t('facilities.inlineMsg') }}
   </InlineMessage>
 
   <Toolbar class="mb-2">
     <template #start>
-      <InputText v-model="filter" placeholder="Filter" class="mr-1" />
+      <InputText
+        v-model="filter"
+        :placeholder="$t('facilities.filter')"
+        class="mr-1"
+      />
       <span class="flex content-center ml-2">
         <Checkbox v-model="onlyActive" class="ml-1" :binary="true" />
-        <span class="ml-2">Nur aktive Einträge anzeigen</span>
+        <span class="ml-2">{{ $t('facilities.onlyActive') }}</span>
       </span>
     </template>
     <template #end>
@@ -31,7 +34,7 @@
     id="info-dialog"
     v-model:visible="showDescriptionDialog"
     modal
-    header="Beschreibung"
+    :header="$t('facilities.description')"
     style="width: 45%"
   >
     <Editor
@@ -53,7 +56,11 @@
     id="edit-create-input"
     v-model:visible="showDialog"
     modal
-    :header="selectedValue.id === 'new' ? 'Anlegen' : 'Bearbeiten'"
+    :header="
+      selectedValue.id === 'new'
+        ? $t('facilities.create')
+        : $t('facilities.edit')
+    "
     :class="{
       'w-2/4': windowWidth > 990,
       'w-full': windowWidth < 990,
@@ -63,7 +70,7 @@
     <div class="flex flex-col gap-4">
       <!-- Naming -->
       <div class="flex flex-col gap-2">
-        <label for="facility-name">Name</label>
+        <label for="facility-name">{{ $t('facilities.name') }}</label>
         <InputText
           class="w-full"
           v-model="selectedValue.name"
@@ -74,11 +81,13 @@
           class="w-full mt-1"
           severity="info"
         >
-          Der Name der Anlage.
+          {{ $t('facilities.nameInline') }}
         </InlineMessage>
       </div>
       <div class="flex flex-col gap-2">
-        <label for="facility-manufacturer">Hersteller</label>
+        <label for="facility-manufacturer">{{
+          $t('facilities.manufacturer')
+        }}</label>
         <InputText
           class="w-full"
           v-model="selectedValue.manufacturer"
@@ -89,11 +98,11 @@
           class="w-full mt-1"
           severity="info"
         >
-          Der Hersteller der Anlage.
+          {{ $t('facilities.manufacturerInline') }}
         </InlineMessage>
       </div>
       <div class="flex flex-col gap-2">
-        <label for="facility-model">Modell/Typ</label>
+        <label for="facility-model">{{ $t('facilities.model') }}</label>
         <InputText
           class="w-full"
           v-model="selectedValue.model"
@@ -104,12 +113,12 @@
           class="w-full mt-1"
           severity="info"
         >
-          Die Typenbezeichnung der Anlage (Typenschild, Seriennummer, etc.).
+          {{ $t('facilities.modelInline') }}
         </InlineMessage>
       </div>
 
       <div class="flex flex-col gap-2">
-        <label for="facility-model">Beschreibung</label>
+        <label for="facility-model">{{ $t('facilities.description') }}</label>
         <Editor
           class="w-full"
           v-model="selectedValue.description"
@@ -122,14 +131,14 @@
           class="w-full mt-1"
           severity="info"
         >
-          Eine detailierte Beschreibung der Anlage.
+          {{ $t('facilities.descriptionInline') }}
         </InlineMessage>
       </div>
 
       <div class="flex flex-col gap-2">
-        <label for="facility-shutdownDate"
-          >Stilllegedatum (wenn Anlage außer Betrieb gesetzt wird)</label
-        >
+        <label for="facility-shutdownDate">{{
+          $t('facilities.facilityShutdownDate')
+        }}</label>
         <Calendar
           v-model="selectedValue.shutdownDate"
           view="month"
@@ -141,14 +150,17 @@
           class="w-full mt-1"
           severity="info"
         >
-          Wenn dieses Datum gesetzt wird, wird die Anlage in der Auswertung
-          nicht mehr berücksichtigt und in der Liste der Anlagen ausgeblendet.
+          {{ $t('facilities.facilityShutdownDateInline') }}
         </InlineMessage>
       </div>
 
       <div>
         <Button
-          :label="selectedValue.id === 'new' ? 'Anlegen' : 'Speichern'"
+          :label="
+            selectedValue.id === 'new'
+              ? $t('facilities.create')
+              : $t('facilities.save')
+          "
           @click="save"
         />
       </div>
@@ -163,14 +175,17 @@
     :showGridlines="false"
   >
     <!-- <Column field="id" header="ID"></Column> -->
-    <Column field="name" header="Name">
+    <Column field="name" :header="$t('facilities.table.name')">
       <template #body="{ data }">
         <Chip class="text-sm">{{ data.name }}</Chip>
       </template>
     </Column>
-    <Column field="manufacturer" header="Hersteller"></Column>
-    <Column field="model" header="Modell/Typ"></Column>
-    <Column header="Beschreibung">
+    <Column
+      field="manufacturer"
+      :header="$t('facilities.table.manufacturer')"
+    ></Column>
+    <Column field="model" :header="$t('facilities.table.model')"></Column>
+    <Column :header="$t('facilities.table.description')">
       <template #body="{ data }">
         <Button
           icon="fa-solid fa-info-circle"
@@ -249,7 +264,6 @@ const onlyActive = ref(true);
 
 const filterData = () => {
   let filtered = data.value;
-  console.log('filter data');
   if (filter.value !== '') {
     filtered = data.value.filter((item) => {
       return (
@@ -325,7 +339,6 @@ const clone = (objToClone: FacilityEntry) => {
 const save = async () => {
   try {
     // validate
-    console.log(selectedValue.value);
     parse(facilityEntrySchema, selectedValue.value);
 
     if (selectedValue.value.id === 'new') {
