@@ -375,13 +375,13 @@
           class="w-full mt-1"
           severity="info"
         >
-          $t('inputs.categoryInline')
+          {{ $t('inputs.categoryInline') }}
         </InlineMessage>
       </div>
       <div class="flex flex-col gap-2">
-        <label for="userinput-equivalent">{{
-          $t('inputs.facilityOptional')
-        }}</label>
+        <label for="userinput-equivalent">
+          {{ $t('inputs.facilityOptional') }}
+        </label>
         <div>
           <div
             v-if="

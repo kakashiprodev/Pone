@@ -71,7 +71,7 @@
         </div>
         <div class="grid grid-cols-12">
           <label class="col-span-12 md:col-span-4" for="role">{{
-            $t('settings.userSettings.Role')
+            $t('settings.userSettings.role')
           }}</label>
           <InputText
             class="col-span-12 md:col-span-8"

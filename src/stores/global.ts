@@ -67,7 +67,7 @@ export const useGlobalStore = defineStore('global', {
     username: '',
     isGlobalAdmin: false,
     theme: 'light' as 'light' | 'dark',
-    showTooltips: true, //TODO DEV,
+    showTooltips: false,
     displayInTons: true,
     //
     equivalents: [],
