@@ -2,19 +2,17 @@
   <div>
     <p v-if="global.showTooltips">
       <InlineMessage severity="info" class="w-full">
-        Hier können Sie Projekte anlegen und verwalten. Ein Projekt kann mehrere
-        Standorte enthalten. Ein Standort wiederrum enthält beliebig viele
-        Jahresberichte.
+        {{ $t('settings.projectSettings.companiesInline') }}
       </InlineMessage>
     </p>
     <Toolbar>
       <template #start>
-        <span>Ausgewähltes Projekt</span>
+        <span>{{ $t('settings.projectSettings.selectedProject') }}</span>
         <Dropdown
           v-model="global.selectedProject"
           :options="global.projects"
           optionLabel="name"
-          placeholder="Projekt wählen"
+          :placeholder="$t('settings.projectSettings.projectSelectPlaceholder')"
           class="ml-3"
           style="width: 300px"
           :disabled="projectForm?.id === 'new'"
@@ -38,12 +36,12 @@
 
     <div v-if="global.projects.length === 0" class="card mt-2">
       <p>
-        Es sind keine Projekte vorhanden. Bitte legen Sie mind. ein Projekt an.
+        {{ $t('settings.projectSettings.noProjects') }}
       </p>
       <Button
         icon="fa-solid fa-plus"
         @click="projectForm = emptyProject()"
-        label="Projekt anlegen"
+        :label="$t('settings.projectSettings.createProject')"
       />
     </div>
 
@@ -51,7 +49,7 @@
       <div class="mt-5">
         <div class="mb-4 grid grid-cols-12 flex items-center">
           <label for="image" class="col-span-12 mb-2 md:col-span-4 md:mb-0">
-            Logo des Unternehmens
+            {{ $t('settings.projectSettings.logoOfCompany') }}
           </label>
           <div class="flex flex-col gap-2">
             <img
@@ -74,7 +72,7 @@
             for="projectname"
             class="col-span-12 mb-2 md:col-span-4 md:mb-0"
           >
-            Projektname
+            {{ $t('settings.projectSettings.projectName') }}
           </label>
           <div class="col-span-12 md:col-span-8">
             <InputText
@@ -88,9 +86,7 @@
             severity="info"
             class="w-full mt-2"
           >
-            Der Projektname kann der Name der Organisation sein. Der Projektname
-            kann auch Organisation und Standort im Namen enthalten. Die
-            Mindestlänge ist 4 Zeichen.
+            {{ $t('settings.projectSettings.projectNameInline') }}
           </InlineMessage>
         </div>
       </div>
@@ -98,9 +94,13 @@
       <div>
         <Button
           @click="saveProject()"
-          :label="projectForm.id === 'new' ? 'Hinzufügen' : 'Speichern'"
+          :label="
+            projectForm.id === 'new'
+              ? $t('settings.projectSettings.add')
+              : $t('global.save')
+          "
         />
-        <Button class="ml-2" @click="cancel()" label="Abbrechen" />
+        <Button class="ml-2" @click="cancel()" :label="$t('global.cancel')" />
       </div>
     </div>
   </div>

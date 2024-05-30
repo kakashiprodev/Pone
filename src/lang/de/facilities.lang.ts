@@ -28,4 +28,9 @@ export default {
     manufacturer: 'Hersteller',
     model: 'Modell/Typ',
   },
+  facilityChooser: {
+    name: 'Name',
+    manufacturer: 'Hersteller',
+    model: 'Modell/Typ',
+  },
 };

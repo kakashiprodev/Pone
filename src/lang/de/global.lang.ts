@@ -19,4 +19,9 @@ export default {
     assignments: 'Zuordnung',
     reporting: 'Berichtswesen',
   },
+  yes: 'Ja',
+  no: 'Nein',
+  save: 'Speichern',
+  delete: 'Löschen',
+  cancel: 'Abbrechen',
 };

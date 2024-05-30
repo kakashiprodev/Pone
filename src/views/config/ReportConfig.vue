@@ -1,13 +1,12 @@
 <template>
-  <h2>Berichte</h2>
+  <h2>{{ $t('settings.reportSettings.heading') }}</h2>
   <p>
-    Hier legen Sie die Berichtszeiträume für das ausgewählte Projekt fest. Jeder
-    Bericht umfasst ein Jahr.
+    {{ $t('settings.reportSettings.subHeading') }}
   </p>
   <Toolbar class="w-full">
     <template #start>
       <div class="flex gap-2 items-center">
-        <span>Ausgewählter Bericht</span>
+        <span>{{ $t('settings.reportSettings.currentReport') }}</span>
         <Chip class="text-lg bg-slate-200">
           {{ global.selectedReport?.year }}
         </Chip>
@@ -18,14 +17,14 @@
         <Button
           icon="fa-solid fa-plus"
           @click="reportForm = global.getNewReport()"
-          label="Hinzufügen"
+          :label="$t('settings.reportSettings.add')"
           v-show="reportForm?.id !== 'new'"
         />
         <Button
           v-if="global.targetOnSiteForProject.length < 1"
           icon="fa-solid fa-copy"
           @click="copyTargetsFromYearBefore()"
-          v-tooltip="'Ziele aus dem Vorjahr kopieren'"
+          :v-tooltip="$t('settings.reportSettings.copyFromLastYear')"
         />
 
         <ConfirmDialog />
@@ -33,7 +32,7 @@
           v-if="global.selectedReport"
           icon="fa-solid fa-trash"
           @click="confirmDelete(global.selectedReport, $event)"
-          label="Löschen"
+          :label="$t('global.delete')"
           v-show="reportForm?.id !== 'new'"
         />
         <Button
@@ -45,7 +44,11 @@
         <Button
           v-if="reportForm"
           @click="saveReport()"
-          :label="reportForm.id === 'new' ? 'Hinzufügen' : 'Speichern'"
+          :label="
+            reportForm.id === 'new'
+              ? $t('settings.reportSettings.add')
+              : $t('global.save')
+          "
         />
       </div>
     </template>
@@ -53,19 +56,20 @@
 
   <div v-if="global.reports.length === 0" class="card">
     <p>
-      Es sind noch keine Berichte vorhanden. Bitte legen Sie einen neuen Bericht
-      an.
+      {{ $t('settings.reportSettings.noReports') }}
     </p>
     <Button
       icon="fa-solid fa-plus"
       @click="reportForm = global.getNewReport()"
-      label="Bericht anlegen"
+      :label="$t('settings.reportSettings.addReport')"
     />
   </div>
 
   <template v-if="reportForm">
     <Card class="mt-1">
-      <template #title> Basisdaten des CO<sub>2</sub>-Berichts </template>
+      <template #title
+        ><span v-html="$t('settings.reportSettings.title')"
+      /></template>
       <template #content>
         <div
           class="mb-4 grid grid-cols-12"
@@ -106,7 +110,9 @@
     </Card>
 
     <Card class="mt-1">
-      <template #title> Ansprechpartner </template>
+      <template #title>
+        {{ $t('settings.reportSettings.contactName') }}
+      </template>
       <template #content>
         <div
           class="mb-4 grid grid-cols-12"
@@ -133,7 +139,9 @@
     </Card>
 
     <Card class="mt-1">
-      <template #title> Unternehmenszahlen </template>
+      <template #title>
+        {{ $t('settings.reportSettings.companyNumbers') }}
+      </template>
       <template #content>
         <div
           class="mb-4 grid grid-cols-12"
@@ -183,7 +191,9 @@ import {
   nullable,
 } from 'valibot';
 import { error, info } from '../../services/ui/toast';
+import { useI18n } from 'vue-i18n';
 
+const { t } = useI18n();
 const global = useGlobalStore();
 const confirm = useConfirm();
 
@@ -267,37 +277,70 @@ const reportTranslations: {
     suffix?: string;
   };
 } = {
-  id: { label: 'Report-ID', category: 'general' },
-  site: { label: 'Projekt-ID', category: 'general' },
-  year: { label: 'Jahr', category: 'general' },
-  companyName: { label: 'Firmenname', category: 'general' },
-  companyStreet: { label: 'Straße', category: 'general' },
-  companyPostal: { label: 'PLZ', category: 'general' },
-  companyCity: { label: 'Stadt', category: 'general' },
-  companyCountry: { label: 'Land', category: 'general' },
-  companyDomain: { label: 'Branche', category: 'general' },
-  contactName: { label: 'Ansprechpartner', category: 'contact' },
-  contactTelephone: { label: 'Telefon', category: 'contact' },
-  contactEmail: { label: 'E-Mail', category: 'contact' },
-  contactDomain: { label: 'Abteilung', category: 'contact' },
+  id: { label: t('settings.reportSettings.reportId'), category: 'general' },
+  site: { label: t('settings.reportSettings.reportSite'), category: 'general' },
+  year: { label: t('settings.reportSettings.reportYear'), category: 'general' },
+  companyName: {
+    label: t('settings.reportSettings.companyName'),
+    category: 'general',
+  },
+  companyStreet: {
+    label: t('settings.reportSettings.companyStreet'),
+    category: 'general',
+  },
+  companyPostal: {
+    label: t('settings.reportSettings.companyPostal'),
+    category: 'general',
+  },
+  companyCity: {
+    label: t('settings.reportSettings.companyCity'),
+    category: 'general',
+  },
+  companyCountry: {
+    label: t('settings.reportSettings.companyCountry'),
+    category: 'general',
+  },
+  companyDomain: {
+    label: t('settings.reportSettings.companyDomain'),
+    category: 'general',
+  },
+  contactName: {
+    label: t('settings.reportSettings.contactName'),
+    category: 'contact',
+  },
+  contactTelephone: {
+    label: t('settings.reportSettings.contactPhone'),
+    category: 'contact',
+  },
+  contactEmail: {
+    label: t('settings.reportSettings.contactMail'),
+    category: 'contact',
+  },
+  contactDomain: {
+    label: t('settings.reportSettings.contactDepartment'),
+    category: 'contact',
+  },
   countEmployees: {
-    label: 'Anzahl Mitarbeiter',
+    label: t('settings.reportSettings.countEmployees'),
     category: 'yearly-focus',
     numberGrouping: true,
   },
   businessTurnover: {
-    label: 'Jahresumsatz',
+    label: t('settings.reportSettings.yearlyFocus'),
     category: 'yearly-focus',
     numberGrouping: true,
     suffix: '€',
   },
-  baseYear: { label: 'Referenzjahr', category: 'yearly-focus' },
+  baseYear: {
+    label: t('settings.reportSettings.refYear'),
+    category: 'yearly-focus',
+  },
 };
 
 const confirmDelete = async (report: ReportEntry, event: any) => {
   confirm.require({
     target: event.currentTarget,
-    message: 'Soll dieser Zeitraum wirklich gelöscht werden?',
+    message: t('settings.reportSettings.confirmDelete'),
     icon: 'fa-solid fa-question',
     accept: async () => {
       try {
@@ -307,7 +350,7 @@ const confirmDelete = async (report: ReportEntry, event: any) => {
         if (global.selectedReport) {
           reportForm.value = global.selectedReport;
         }
-        info('Bericht wurde erfolgreich gelöscht');
+        info(t('settings.reportSettings.successDelete'));
       } catch (e) {
         error(e + '');
       }

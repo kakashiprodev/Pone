@@ -1,10 +1,14 @@
 <template>
-  <h3 class="m-auto text-center mt-5">Eingabe Assistent</h3>
+  <h3 class="m-auto text-center mt-5">{{ $t('assistant.heading') }}</h3>
   <div>
     <template v-for="(message, x) in chatMessages">
       <Card class="w-full mt-3 m-auto" v-if="x > 0">
         <template #subtitle>
-          {{ message.role === 'system' ? 'Assistent' : 'Benutzer' }}
+          {{
+            message.role === 'system'
+              ? $t('assistant.assistant')
+              : $t('assistant.user')
+          }}
         </template>
         <template #content>
           <p class="m-0">
@@ -37,7 +41,7 @@
           "
           class="mt-4"
         >
-          <label>...Oder sag mir was du gerne eingeben möchtest:</label>
+          <label>{{ $t('assistant.defaultInputLabel') }}</label>
           <Textarea v-model="userInputTextLong" class="w-full mt-2" />
         </div>
         <!-- Special input -->
@@ -61,14 +65,14 @@
         />
         <!-- Abschicken Button-->
         <Button
-          label="Abschicken"
+          :label="$t('assistant.send')"
           @click="chat()"
           class="mt-2 w-full"
           v-show="!loading && !finished"
         />
         <!-- Reset Button-->
         <Button
-          label="Zurücksetzen"
+          :label="$t('assistant.reset')"
           @click="reset()"
           class="mt-2 w-full"
           v-if="finished"
@@ -85,6 +89,9 @@ import { assistentPrompt } from '../../services/prompts';
 import OpenAI from 'openai';
 import { error } from '../../services/ui/toast';
 import { useGlobalStore } from '../../stores/global';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 
 interface Message {
   role: string;
@@ -123,16 +130,15 @@ const chatMessages: Ref<Message[]> = ref([
   { role: 'system', content: assistentPrompt },
   {
     role: 'system',
-    content:
-      'Hallo, ich bin dein persönlicher Eingabe Assistent.\nIch werde dir helfen deine Daten einzugeben.\n\nWas möchtest du eingeben?',
+    content: t('assistant.initialMessage'),
   },
 ]);
 
 const presets: Ref<string[]> = ref([
-  'Ich möchte den Strombezug eingeben.',
-  'Ich habe eine große Anlage die Strom verbraucht.',
-  'Ich möchte den Gasverbrauch eingeben.',
-  'Ich möchte den Heizölverbrauch eingeben.',
+  t('assistant.preset1'),
+  t('assistant.preset2'),
+  t('assistant.preset3'),
+  t('assistant.preset4'),
 ]);
 
 const userInputTextLong: Ref<string> = ref('');
@@ -267,8 +273,7 @@ const reset = () => {
     { role: 'system', content: assistentPrompt },
     {
       role: 'system',
-      content:
-        'Hallo, ich bin dein persönlicher Eingabe Assistent.\nIch werde dir helfen deine Daten einzugeben.\n\nWas möchtest du eingeben?',
+      content: t('assistant.initialMessage'),
     },
   ];
 };

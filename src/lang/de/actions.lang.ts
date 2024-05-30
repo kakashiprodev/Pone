@@ -3,6 +3,8 @@ export default {
   inlineMsg:
     'Hier können Sie alle Maßnahmen für das Projekt einsehen und bearbeiten.',
   active: 'Aktiv',
+  activeInline:
+    'Hier können Sie alle Maßnahmen für das Projekt einsehen und bearbeiten.',
   filter: 'Filter',
   isActionActive:
     'Ist die Maßnahme aktiv und soll in den Berichten angezeigt werden?',
@@ -55,5 +57,29 @@ export default {
     relevant: 'Relevant',
     yes: 'Ja',
     no: 'Nein',
+  },
+  charTable: {
+    is: 'Ist-Zustand',
+    should: 'Soll-Zustand',
+    targetValuePlanned: 'Geplante Einsparung',
+    targetValueIs: 'Tatsächliche Einsparung',
+    year: 'Jahr',
+    targetValues: 'Zielwerte',
+    responsible: 'Verantwortlich',
+    status: 'Status',
+    progress: 'Fortschritt',
+    finishedUntilPlanned: 'Geplantes Fertigstellungsdatum',
+    finishedUntilIs: 'Tatsächliches Fertigstellungsdatum',
+    category: 'Kategorie',
+    costsPlanned: 'Geplante Kosten',
+    costsIs: 'Tatsächliche Kosten',
+    roi: 'ROI (Return on Investment)',
+    descriptionCosts: 'Beschreibung der Kosten',
+    avoidanceCosts: 'Vermeidungskosten',
+  },
+  overviewTab: {
+    heading: 'Geplante Maßnahmen',
+    characteristicsDialogPrefix: 'Steckbrief',
+    roadmap: 'Roadmap',
   },
 };

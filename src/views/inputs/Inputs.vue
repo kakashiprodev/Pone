@@ -512,7 +512,11 @@
         </span>
       </template>
     </Column>
-    <Column field="category" :header="$t('inputs.table.category')" sortable></Column>
+    <Column
+      field="category"
+      :header="$t('inputs.table.category')"
+      sortable
+    ></Column>
     <Column field="name" :header="$t('inputs.table.name')" sortable></Column>
     <Column field="rawValue" header="Eingabewert" sortable>
       <template #body="{ data }">

@@ -1,21 +1,17 @@
 <template>
-  <h2>Klimaziele</h2>
-  <h5 class="mt-5">Klimaziele für den gewählten Bericht definieren.</h5>
+  <h2>{{ $t('settings.targetSettings.heading') }}</h2>
+  <h5 class="mt-5">{{ $t('settings.targetSettings.subHeading') }}</h5>
   <InlineMessage
     v-if="global.showTooltips"
     severity="info"
     class="w-full mt-2 mb-4"
   >
-    Die Definition ist optional. Es kann die schrittweise Reduktion der
-    Treibhausgasemissionen in Schritten eingegeben werden.
+    {{ $t('settings.targetSettings.inlineMsg1') }}
   </InlineMessage>
 
   <!-- head row -->
-  <InlineMessage severity="info" class="w-full">
-    Die Eingaben beziehen sich auf das Referenzjahr des Berichts. 100% bedeutet
-    volle Klimeneutralität.<br />
-    0% = Keine Einsparung. Verbrauch ist gleich dem des angegebenen Basisjahr
-    des Berichts.
+  <InlineMessage severity="info" class="w-full justify-start">
+    <span v-html="$t('settings.targetSettings.inlineMsg2')" />
   </InlineMessage>
 
   <div class="grid justify-items-end">
@@ -30,14 +26,16 @@
           report: global.selectedReport?.id ?? '',
         })
       "
-      label="Neue Abstufung hinzufügen"
+      :label="$t('settings.targetSettings.newStep')"
     />
   </div>
   <div class="flex flex-col gap-3">
     <Card v-for="target in global.targetOnSiteForProject" :key="target.id">
       <template #content>
         <div class="mt-4 grid grid-cols-10 items-center justify-items-center">
-          <label :for="target.id" class="col-span-2"> Jahr </label>
+          <label :for="target.id" class="col-span-2">{{
+            $t('settings.targetSettings.year')
+          }}</label>
           <InputNumber
             class="col-span-2"
             :useGrouping="false"
@@ -46,7 +44,9 @@
             :id="target.id"
             v-model="target.year"
           />
-          <label :for="target.id" class="col-span-2">Einsparung in % </label>
+          <label :for="target.id" class="col-span-2">{{
+            $t('settings.targetSettings.savedPercentage')
+          }}</label>
           <InputNumber
             class="col-span-2"
             :useGrouping="false"
