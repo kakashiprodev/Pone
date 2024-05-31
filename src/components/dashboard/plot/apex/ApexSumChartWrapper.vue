@@ -91,6 +91,11 @@ const chartOptions: ComputedRef<any> = computed(() => {
     },
     xaxis: {
       categories: categories.value,
+      labels: {
+        style: {
+          fontSize: '12px',
+        },
+      },
     },
     plotOptions: {
       [props.type === 'donut' ? 'pie' : '_']: {
