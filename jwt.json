@@ -1,0 +1,23 @@
+{
+    "access_token": "eyJhbGciOiJkaXIiLCJlbmMiOiJBMjU2R0NNIiwiaXNzIjoiaHR0cHM6Ly9zdXN0YWluYWJpbGl0eS1tYW5hZ2VyLmV1LmF1dGgwLmNvbS8ifQ..7Na0Ia2ySFsCdS_4.p4XjTbF12QZQCEMihX5aaVyZBSOiPA3F1kbSNLL3NFNkmJ2nuiYELbw9jy0KqAMf_mPtpHuskvSSNCfgmllMqUZEzXle0ydEyfZ2ZOp_qnKcmYovfCOonC8B037hbjGeFnVAHdaT9Skipv9GQf7HOZbEC3m3aO7csbsufvKCGwcXotGf8EAbhmbJdDh5weHAmZwqJuthF6qG41RYIfIxd5eaGEBahu73U_wodP790bdWKP-o2eUD-l7AySFGFc5tAXtZ4V05xJ1LUeWO8-9__k440rLOHNBzSdN1Rrp1f6GZ571m71CIXVFuHABxOlyXZrad3bpciNjos9M2Y4xh8Ec6uq2Mcw.0iVuiuNSMSdlGZ4mxiqJ2w",
+    "id_token": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6InNzYVRHekZpbVJPMUl6NFBFQWF1WCJ9.eyJuaWNrbmFtZSI6ImJqb2Vybi5lbmRlcnMiLCJuYW1lIjoiYmpvZXJuLmVuZGVyc0BnbWFpbC5jb20iLCJwaWN0dXJlIjoiaHR0cHM6Ly9zLmdyYXZhdGFyLmNvbS9hdmF0YXIvMzc5MWU1MjliMmJkNWFhMzQ3ZjdlNzA4MjgzNTcwOTI_cz00ODAmcj1wZyZkPWh0dHBzJTNBJTJGJTJGY2RuLmF1dGgwLmNvbSUyRmF2YXRhcnMlMkZiai5wbmciLCJ1cGRhdGVkX2F0IjoiMjAyNC0wNi0xM1QxMTowNDozNy42NjZaIiwiZW1haWwiOiJiam9lcm4uZW5kZXJzQGdtYWlsLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJpc3MiOiJodHRwczovL3N1c3RhaW5hYmlsaXR5LW1hbmFnZXIuZXUuYXV0aDAuY29tLyIsImF1ZCI6IndDdmFidEVZc3gxYWlRMHM2MEY0bnA5RE9TMXVtTnA1IiwiaWF0IjoxNzE4Mjc2ODk1LCJleHAiOjE3MTgzMTI4OTUsInN1YiI6ImF1dGgwfDY2NmFiZThhNDU0MTNmOTE0YWE2NzVjMiIsInNpZCI6Im8xQmZSSnFEWWxSQ0txbDRzVHlIQS1na281Wkx1N2JyIiwibm9uY2UiOiJZM1pOUmxSbE4ySk1RVTVsTjA5dGEyeFRUVmRsT0hScmJsVmxTVlJTU0c5a00wcDVURGRKVVc5dFRBPT0ifQ.R4NZwKDyTV_ThVv-6K-jt_4ZEtcps3UwqlAO0ixLLb1caAvxHHD7RQJ3DZXT67xI0inC52McWMzTdMgR6zzac0lHEGXh4ZK3IqBHR2fW-W-U8vZiHF51AcytTxxBHoPNhuMLZ-XcSQyh0fUpELUodOAQxOeLJN3VLkX2XROJISAjUox4q0qZkchC7_6K9riYKoB6yDR_I25NplEpN-Tpc2DfjToBdT3gLGxGESSow4uNWnpaJQgjIZaSTVGf_l8lvwQ_yTwgs2fkFb_gglUMLOfOQF_af3NiZaHdY2tprDYjeDsINPU4Pwjioc2QW7o6LCOo4eXNZgppwxPGhxOLqQ",
+    "scope": "openid profile email",
+    "expires_in": 86400,
+    "token_type": "Bearer"
+}
+
+{
+    "nickname": "bjoern",
+    "name": "bjoernb@domain.com",
+    "picture": "",
+    "updated_at": "2024-06-13T11:04:37.666Z",
+    "email": "bjoernb@domain.com",
+    "email_verified": true,
+    "iss": "https://...",
+    "aud": "...",
+    "iat": 1718277165,
+    "exp": 1718313165,
+    "sub": "...",
+    "sid": "...",
+    "nonce": "..."
+}

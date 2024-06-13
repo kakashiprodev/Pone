@@ -1,4 +1,5 @@
 import * as VueRouter from 'vue-router';
+import { authGuard } from '@auth0/auth0-vue';
 
 const routes = [
   {
@@ -8,6 +9,7 @@ const routes = [
   },
   {
     path: '/',
+    beforeEnter: authGuard,
     component: () => import('../components/layout/AppLayoutWrapper.vue'),
     name: 'home',
     redirect: { name: 'dashboard' },
