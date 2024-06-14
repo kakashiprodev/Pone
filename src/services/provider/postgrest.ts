@@ -17,7 +17,10 @@ import { globalStore, authStore } from '../../main';
 import { getSumForInput } from '../reporting';
 import { UsersTopicAnswer } from '../csrd-esrs/topics';
 
-const REST_URL = 'http://localhost:5434';
+const REST_URL = import.meta.env.VITE_POSTGREST_URL as string;
+if (!REST_URL) {
+  throw new Error('REST URL not found');
+}
 
 export default class DataProvider {
   private postgrest: PostgrestClient;
