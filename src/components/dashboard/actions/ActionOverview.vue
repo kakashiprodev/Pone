@@ -2,12 +2,14 @@
   <Card>
     <template #header>
       <div class="psm-report-header">
-        <h3>Geplante Maßnahmen</h3>
+        <h3>{{ $t('actions.overviewTab.heading') }}</h3>
       </div>
     </template>
     <template #content>
       <Dialog
-        :header="`Steckbrief ${selectedAction?.name}`"
+        :header="`${$t('actions.overviewTab.characteristicsDialogPrefix')} ${
+          selectedAction?.name
+        }`"
         v-model:visible="actionCharacteristicsVisible"
         class="action-overview__dialog"
       >
@@ -102,7 +104,7 @@
   <Card>
     <template #header>
       <div class="psm-report-header">
-        <h3>Roadmap</h3>
+        <h3>{{ $t('actions.overviewTab.roadmap') }}</h3>
       </div>
     </template>
     <template #content>

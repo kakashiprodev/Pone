@@ -36,7 +36,9 @@
 import { ref } from 'vue';
 import { useRoute } from 'vue-router';
 import { useGlobalStore } from '@/stores/global';
+import { useI18n } from 'vue-i18n';
 
+const { t } = useI18n();
 const route = useRoute();
 const globalStore = useGlobalStore();
 
@@ -47,31 +49,31 @@ const expandedKeys = ref({
 const items = ref([
   {
     key: 'user',
-    label: 'Benutzer',
+    label: t('settings.user'),
     icon: 'fa-solid fa-user',
     items: [
       {
         key: 'user-settings',
-        label: 'Profil',
+        label: t('settings.profile'),
         icon: 'fa-solid fa-user-gear',
         to: '/settings/user-settings',
       },
       {
         key: 'user-password',
-        label: 'Passwort ändern',
+        label: t('settings.changePassword'),
         icon: 'fa-solid fa-key',
         to: '/settings/user-password',
       },
       {
         key: 'user-demo',
-        label: '=> Zeige DataEngine Demo',
+        label: t('settings.showDemo'),
         icon: 'fa-solid fa-key',
         to: '/demo',
         onlyAdmin: true,
       },
       {
         key: 'user-demo-data-generator',
-        label: '=> Generiere Demo Daten',
+        label: t('settings.genDemoData'),
         icon: 'fa-solid fa-key',
         to: '/demo-data-generator',
         onlyAdmin: true,
@@ -80,30 +82,30 @@ const items = ref([
   },
   {
     key: 'project',
-    label: 'Aktuelles Projekt',
+    label: t('settings.currentProject'),
     icon: 'fa-solid fa-briefcase',
     items: [
       {
         key: 'project-general',
-        label: 'Projektverwaltung',
+        label: t('settings.projectGeneral'),
         icon: 'fa-solid fa-building',
         to: '/settings/project-general',
       },
       {
         key: 'project-reports',
-        label: 'Berichtszeiträume',
+        label: t('settings.projectReports'),
         icon: 'fa-solid fa-calendar',
         to: '/settings/project-reports',
       },
       {
         key: 'project-targets',
-        label: 'Zieldefinition',
+        label: t('settings.projectTargets'),
         icon: 'fa-solid fa-bullseye',
         to: '/settings/project-targets',
       },
       {
         key: 'project-equivalents',
-        label: 'Äquivalente',
+        label: t('settings.equivalents'),
         icon: 'fa-solid fa-list',
         to: '/settings/project-equivalents',
       },

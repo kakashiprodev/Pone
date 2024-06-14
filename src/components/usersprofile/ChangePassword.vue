@@ -1,7 +1,7 @@
 <template>
   <div v-if="user != null">
     <div class="p-fluid mt-5">
-      <h2>Passwort ändern</h2>
+      <h2>{{ $t('settings.userSettings.changePasswordHeading') }}</h2>
       <div class="p-fluid">
         <Divider />
         <form @prevent="changePassword">
@@ -15,7 +15,9 @@
             />
           </div>
           <div class="p-field mt-2">
-            <label for="password">Altes Passwort</label>
+            <label for="password">{{
+              $t('settings.userSettings.oldPassword')
+            }}</label>
             <InputText
               class="mt-2"
               id="old-password"
@@ -25,7 +27,9 @@
             />
           </div>
           <div class="p-field mt-2">
-            <label for="password">Neues Passwort</label>
+            <label for="password">{{
+              $t('settings.userSettings.newPassword')
+            }}</label>
             <InputText
               class="mt-2"
               id="new-password"
@@ -35,7 +39,9 @@
             />
           </div>
           <div class="p-field mt-2">
-            <label for="password">Passwort wiesderholen</label>
+            <label for="password">{{
+              $t('settings.userSettings.repeatPassword')
+            }}</label>
             <InputText
               class="mt-2"
               id="repeat-password"
@@ -48,7 +54,7 @@
             @click="changePassword"
             :disabled="false"
             class="mt-5"
-            label="Passwort ändern"
+            :label="$t('settings.userSettings.changePassword')"
           />
         </form>
       </div>

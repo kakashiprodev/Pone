@@ -1,6 +1,6 @@
 <template>
   <div v-if="!active" class="flex justify-center mt-3 mb-3">
-    <Button @click="active = true" label="Weiteren Eintrag hinzufügen" />
+    <Button @click="active = true" :label="$t('csrd.addEntry')" />
   </div>
   <div v-else class="w-full">
     <InlineMessage
@@ -8,14 +8,12 @@
       severity="info"
       class="w-full mt-2 mb-4"
     >
-      Ihre Antworten scheinen den Themenbereich vollständig zu beantworten. Sie
-      können optional noch weitere Informationen hinzufügen.
+      {{ $t('csrd.seemsToBeDoneInline') }}
     </InlineMessage>
 
     <div class="text-lg p-1">
       <p v-if="fullSummary.length < 1">
-        Fügen Sie hier eine neue Information/Maßnahme oder Strategie hinzu, die
-        zur folgenden Frage passt:
+        {{ $t('csrd.addInfo') }}
       </p>
       <p v-if="!isDone">
         {{ actualQuestion }}
@@ -26,7 +24,7 @@
       <Textarea
         v-if="!isDone"
         v-model="actualUsersInput"
-        placeholder="Bitte geben Sie Ihre Antwort stichpunktartig ein. Kurz und prägnant ist hier gefragt."
+        :placeholder="$t('csrd.userInputPlaceholder')"
         class="w-full mt-3 h-80"
       />
       <div class="flex mt-3 gap-1" v-if="!isDone">
@@ -45,14 +43,14 @@
           @click="goOnWithInterview()"
           class="w-full"
           :loading="loading"
-          label="Weiter"
+          :label="$t('csrd.next')"
         />
       </div>
     </div>
 
     <div class="p-1 mt-3" v-if="fullSummary.length > 0">
       <div class="mt-3" v-show="isDone">
-        Gesammelte Informationen:
+        {{ $t('csrd.collectedInfo') }}:
         <!-- List of all summaries -->
         <ul>
           <li v-for="summary in fullSummary" :key="summary">{{ summary }}</li>
@@ -60,7 +58,7 @@
       </div>
 
       <div class="flex gap-3">
-        <span>Der Themenpunkte ist hiermit vollständig beantwortet</span>
+        <span>{{ $t('csrd.complete') }}</span>
         <Checkbox v-model="isDone" :binary="true" />
       </div>
 
@@ -68,7 +66,7 @@
         <Button
           :disabled="loading"
           @click="emitResults()"
-          label="Abschicken und Texte generieren"
+          :label="$t('csrd.send')"
           class="w-full"
         />
       </div>

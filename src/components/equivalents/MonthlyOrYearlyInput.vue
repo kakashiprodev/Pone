@@ -1,7 +1,9 @@
 <template>
   <div class="grid mt-1 mb-4">
     <div class="flex content-center">
-      <label for="monthly-inputs"> Monatliche Eingaben nötig? </label>
+      <label for="monthly-inputs">
+        {{ $t('inputs.monthlyInputNecessary') }}?
+      </label>
       <Checkbox
         id="monthly-inputs"
         v-model="innerModelValue.monthly_values"
@@ -15,22 +17,22 @@
       <div
         class="items-center justify-center bg-teal-100 font-bold text-gray-900 rounded-sm text-center"
       >
-        {{ 'Jan' }}
+        {{ $t('equivalents.month.1') }}
       </div>
       <div
         class="items-center justify-center bg-teal-100 font-bold text-gray-900 rounded-sm text-center"
       >
-        {{ 'Feb' }}
+        {{ $t('equivalents.month.2') }}
       </div>
       <div
         class="items-center justify-center bg-teal-100 font-bold text-gray-900 rounded-sm text-center"
       >
-        {{ 'Mar' }}
+        {{ $t('equivalents.month.3') }}
       </div>
       <div
         class="items-center justify-center bg-teal-100 font-bold text-gray-900 rounded-sm text-center"
       >
-        {{ 'Apr' }}
+        {{ $t('equivalents.month.4') }}
       </div>
     </div>
     <div class="grid grid-cols-4 mt-1">
@@ -79,22 +81,22 @@
       <div
         class="items-center justify-center bg-teal-100 font-bold text-gray-900 rounded-sm text-center"
       >
-        {{ 'Mai' }}
+        {{ $t('equivalents.month.5') }}
       </div>
       <div
         class="items-center justify-center bg-teal-100 font-bold text-gray-900 rounded-sm text-center"
       >
-        {{ 'Jun' }}
+        {{ $t('equivalents.month.6') }}
       </div>
       <div
         class="items-center justify-center bg-teal-100 font-bold text-gray-900 rounded-sm text-center"
       >
-        {{ 'Jul' }}
+        {{ $t('equivalents.month.7') }}
       </div>
       <div
         class="items-center justify-center bg-teal-100 font-bold text-gray-900 rounded-sm text-center"
       >
-        {{ 'Aug' }}
+        {{ $t('equivalents.month.8') }}
       </div>
     </div>
     <div class="grid grid-cols-4 mt-1">
@@ -143,22 +145,22 @@
       <div
         class="items-center justify-center bg-teal-100 font-bold text-gray-900 rounded-sm text-center"
       >
-        {{ 'Sep' }}
+        {{ $t('equivalents.month.9') }}
       </div>
       <div
         class="items-center justify-center bg-teal-100 font-bold text-gray-900 rounded-sm text-center"
       >
-        {{ 'Okt' }}
+        {{ $t('equivalents.month.10') }}
       </div>
       <div
         class="items-center justify-center bg-teal-100 font-bold text-gray-900 rounded-sm text-center"
       >
-        {{ 'Nov' }}
+        {{ $t('equivalents.month.11') }}
       </div>
       <div
         class="items-center justify-center bg-teal-100 font-bold text-gray-900 rounded-sm text-center"
       >
-        {{ 'Dez' }}
+        {{ $t('equivalents.month.12') }}
       </div>
     </div>
     <div class="grid grid-cols-4 mt-1">

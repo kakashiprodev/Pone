@@ -1,6 +1,5 @@
 <template>
   <div class="mt-5">
-    <p v-if="chartLoading">Lade Dumbbell Chart...</p>
     <apexchart
       width="100%"
       :height="chartHeight"

@@ -1,10 +1,10 @@
 <template>
   <div class="login">
-    <h1 class="welcome-text">Willkommen</h1>
+    <h1 class="welcome-text">{{ $t('login.welcome') }}</h1>
     <div>
       <!--login with username and password -->
       <Card>
-        <template #header> Login </template>
+        <template #header> {{ $t('login.login') }} </template>
         <template #content>
           <Button label="Login" @click="login" />
         </template>

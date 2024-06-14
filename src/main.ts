@@ -1,6 +1,7 @@
 import { createApp } from 'vue';
 import App from './App.vue';
 import { router } from './router';
+import i18n from '@/i18n.ts';
 import ToastService from 'primevue/toastservice';
 import PrimeVue from 'primevue/config';
 import ConfirmationService from 'primevue/confirmationservice';
@@ -78,6 +79,7 @@ export let warn = (
 const app = createApp(App)
   .use(pinia)
   .use(router)
+  .use(i18n)
   .use(PrimeVue)
   .use(ConfirmationService)
   .use(ToastService)

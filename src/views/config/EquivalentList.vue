@@ -1,5 +1,5 @@
 <template>
-  <h2>Äquivalente und Faktoren</h2>
+  <h2>{{ $t('equivalents.heading') }}</h2>
   <Toolbar :class="{ 'mb-3': !global.showTooltips }">
     <template #end>
       <Button
@@ -33,19 +33,14 @@
     class="w-full mt-3 mb-3"
     severity="info"
   >
-    Hier werden alle Äquivalente angezeigt, die für die Berechnung der
-    CO<sub>2</sub>-Äquivalente verwendet werden können. Die System Einträge
-    können nicht editiert oder gelöscht werden. Überliegende Berechnungen
-    bedeuten, dass der Faktor in Kette mit dem überliegenden Faktor berechnet
-    wird. Hierbei entspricht die Ausgangseinheit des Eingabewertes der
-    Eingangseinheit des überliegenden Faktors.
+    <span v-html="$t('equivalents.helpText')"></span>
   </InlineMessage>
 
   <!-- Dialog to choose the parent equivalent if needed -->
   <Dialog
     v-model:visible="showChooseEquivalent"
     modal
-    header="Wählen Sie einen Faktor"
+    :header="$t('equivalents.choose.heading')"
     :class="{
       'w-3/5': windowWidth > 990,
       'w-full': windowWidth < 990,
@@ -57,10 +52,16 @@
       :value="filteredEquivalents"
       :showGridlines="false"
     >
-      <Column field="specification1" header="Name"></Column>
-      <Column field="comment" header="Kommentar"></Column>
-      <Column field="in" header="Eingang"></Column>
-      <Column field="out" header="Ausgang"></Column>
+      <Column
+        field="specification1"
+        :header="$t('equivalent.choose.name')"
+      ></Column>
+      <Column
+        field="comment"
+        :header="$t('equivalent.choose.comment')"
+      ></Column>
+      <Column field="in" :header="$t('equivalent.choose.in')"></Column>
+      <Column field="out" :header="$t('equivalent.choose.out')"></Column>
       <Column header="">
         <template #body="{ data }">
           <Button
@@ -73,14 +74,21 @@
         </template>
       </Column>
     </DataTable>
-    <Button label="Abbrechen" @click="showChooseEquivalent = false" />
+    <Button
+      :label="$t('equivalent.choose.cancel')"
+      @click="showChooseEquivalent = false"
+    />
   </Dialog>
 
   <!-- Dialog to add a new equivalent -->
   <Dialog
     v-model:visible="showDialog"
     modal
-    :header="selectedValue.id === 'new' ? 'Anlegen' : 'Bearbeiten'"
+    :header="
+      selectedValue.id === 'new'
+        ? $t('equivalents.create')
+        : $t('equivalents.edit')
+    "
     :class="{
       'w-3/5': windowWidth > 990,
       'w-full': windowWidth < 990,
@@ -90,7 +98,7 @@
     <div class="flex flex-col gap-4">
       <!-- Naming -->
       <div class="flex flex-col gap-2">
-        <label for="equivalent-name">Scope*</label>
+        <label for="equivalent-name">{{ $t('equivalents.scope') }}*</label>
         <InputNumber
           class="w-full"
           v-model="selectedValue.scope"
@@ -101,11 +109,13 @@
           class="w-full mt-1"
           severity="info"
         >
-          Zu welchem Scope gehört der Umrechnungsfaktor.
+          {{ $t('equivalents.scopeInline') }}
         </InlineMessage>
       </div>
       <div class="flex flex-col gap-2">
-        <label for="equivalent-category">Kategorie*</label>
+        <label for="equivalent-category"
+          >{{ $t('equivalents.category') }}*</label
+        >
         <InputText
           class="w-full"
           v-model="selectedValue.category"
@@ -116,11 +126,11 @@
           class="w-full mt-1"
           severity="info"
         >
-          Die Kategorie wird für die Filterung verwendet.
+          {{ $t('equivalents.categoryInline') }}
         </InlineMessage>
       </div>
       <div class="flex flex-col gap-2">
-        <label for="equivalent-spec1">Spezifikation 1 (Hauptname)*</label>
+        <label for="equivalent-spec1">{{ $t('equivalents.spec1') }}*</label>
         <InputText
           class="w-full"
           v-model="selectedValue.specification1"
@@ -131,12 +141,11 @@
           class="w-full mt-1"
           severity="info"
         >
-          Dies ist der Hauptname. Es können bis zu drei Spezifikationen
-          angegeben werden, falls Unterscheidungsmerkmale benötigt werden.
+          {{ $t('equivalents.spec1Inline') }}
         </InlineMessage>
       </div>
       <div class="flex flex-col gap-2">
-        <label for="equivalent-spec2">Spezifikation 2</label>
+        <label for="equivalent-spec2">{{ $t('equivalents.spec2') }}</label>
         <InputText
           class="w-full"
           v-model="selectedValue.specification2"
@@ -144,7 +153,7 @@
         />
       </div>
       <div class="flex flex-col gap-2">
-        <label for="equivalent-spec3">Spezifikation 3</label>
+        <label for="equivalent-spec3">{{ $t('equivalents.spec3') }}</label>
         <InputText
           class="w-full"
           v-model="selectedValue.specification3"
@@ -152,7 +161,7 @@
         />
       </div>
       <div class="flex flex-col gap-2">
-        <label for="equivalent-alt-name">Zusätzlicher Name</label>
+        <label for="equivalent-alt-name">{{ $t('equivalents.addName') }}</label>
         <InputText
           class="w-full"
           v-model="selectedValue.add_name1"
@@ -163,12 +172,11 @@
           class="w-full mt-1"
           severity="info"
         >
-          Dies kann z.B. ein chemisches Formelzeichen sein oder eine alternative
-          technische Bezeichnung zur besseren Suchbarkeit.
+          {{ $t('equivalents.addNameInline') }}
         </InlineMessage>
       </div>
       <div class="flex flex-col gap-2">
-        <label for="equivalent-comment">Kommentar</label>
+        <label for="equivalent-comment">{{ $t('equivalents.comment') }}</label>
         <InputText
           class="w-full"
           v-model="selectedValue.comment"
@@ -179,13 +187,13 @@
           class="w-full mt-1"
           severity="info"
         >
-          Eine optionale Bemerkung zur Eingabe.
+          {{ $t('equivalents.commentInline') }}
         </InlineMessage>
       </div>
 
       <!-- Technical -->
       <div class="flex flex-col gap-2">
-        <label for="equivalent-unit-in">Einheit Eingang*</label>
+        <label for="equivalent-unit-in">{{ $t('equivalents.unitIn') }}*</label>
         <InputText
           class="w-full"
           v-model="selectedValue.in"
@@ -196,12 +204,13 @@
           class="w-full mt-1"
           severity="info"
         >
-          Der "Eingang" entspricht der Einheit in der die Werte eingegeben
-          werden.
+          {{ $t('equivalents.unitInInline') }}
         </InlineMessage>
       </div>
       <div class="flex flex-col gap-2">
-        <label for="equivalent-unit-out">Einheit Ausgang*</label>
+        <label for="equivalent-unit-out"
+          >{{ $t('equivalents.unitOut') }}*</label
+        >
         <InputText
           class="w-full"
           v-model="selectedValue.out"
@@ -212,13 +221,11 @@
           class="w-full mt-1"
           severity="info"
         >
-          Der "Ausgang" entspricht der Einheit in die umgerechnet wird. Wenn
-          keine übergeordnete Berechnung verknüpft wird muss(!) Die
-          Ausgangseinheit kg-CO<sub>2</sub> entsprechen.
+          <span v-html="$t('equivalents.unitOutInline')" />
         </InlineMessage>
       </div>
       <div class="flex flex-col gap-2">
-        <label for="equivalent-source">Quelle*</label>
+        <label for="equivalent-source">{{ $t('equivalents.source') }}*</label>
         <InputText
           class="w-full"
           :value="'Benutzereingabe'"
@@ -229,11 +236,13 @@
           class="w-full mt-1"
           severity="info"
         >
-          Angabe woher der Faktor stammt (Berechnungsgrundlage)
+          {{ $t('equivalents.sourceInline') }}
         </InlineMessage>
       </div>
       <div class="flex flex-col gap-2">
-        <label for="equivalent-monthlyValues">Monatliche Eingaben?</label>
+        <label for="equivalent-monthlyValues"
+          >{{ $t('equivalents.monthlyValues') }}?</label
+        >
         <div>
           <Checkbox
             v-model="selectedValue.monthly_values"
@@ -245,8 +254,7 @@
           v-if="global.showTooltips"
           class="w-full mt-1"
           severity="info"
-          >Wenn dies aktiviert wird, können monatliche Eingaben erfolgen. Der
-          Jahresmittelwert wird dann autoamtisch errechnet.
+          >{{ $t('equivalents.monthlyValuesInline') }}
         </InlineMessage>
       </div>
       <div v-show="selectedValue.monthly_values">
@@ -254,22 +262,22 @@
           <div
             class="col-span-3 items-center justify-center bg-teal-100 font-bold text-gray-900 rounded-sm text-center"
           >
-            {{ 'Jan' }}
+            {{ $t('equivalents.month.1') }}
           </div>
           <div
             class="col-span-3 items-center justify-center bg-teal-100 font-bold text-gray-900 rounded-sm text-center"
           >
-            {{ 'Feb' }}
+            {{ $t('equivalents.month.2') }}
           </div>
           <div
             class="col-span-3 items-center justify-center bg-teal-100 font-bold text-gray-900 rounded-sm text-center"
           >
-            {{ 'Mar' }}
+            {{ $t('equivalents.month.3') }}
           </div>
           <div
             class="col-span-3 items-center justify-center bg-teal-100 font-bold text-gray-900 rounded-sm text-center"
           >
-            {{ 'Apr' }}
+            {{ $t('equivalents.month.4') }}
           </div>
         </div>
         <div class="grid grid-cols-12 mt-1">
@@ -310,22 +318,22 @@
           <div
             class="col-span-3 items-center justify-center bg-teal-100 font-bold text-gray-900 rounded-sm text-center"
           >
-            {{ 'Mai' }}
+            {{ $t('equivalents.month.5') }}
           </div>
           <div
             class="col-span-3 items-center justify-center bg-teal-100 font-bold text-gray-900 rounded-sm text-center"
           >
-            {{ 'Jun' }}
+            {{ $t('equivalents.month.6') }}
           </div>
           <div
             class="col-span-3 items-center justify-center bg-teal-100 font-bold text-gray-900 rounded-sm text-center"
           >
-            {{ 'Jul' }}
+            {{ $t('equivalents.month.7') }}
           </div>
           <div
             class="col-span-3 items-center justify-center bg-teal-100 font-bold text-gray-900 rounded-sm text-center"
           >
-            {{ 'Aug' }}
+            {{ $t('equivalents.month.8') }}
           </div>
         </div>
         <div class="grid grid-cols-12 mt-1">
@@ -366,22 +374,22 @@
           <div
             class="col-span-3 items-center justify-center bg-teal-100 font-bold text-gray-900 rounded-sm text-center"
           >
-            {{ 'Sep' }}
+            {{ $t('equivalents.month.9') }}
           </div>
           <div
             class="col-span-3 items-center justify-center bg-teal-100 font-bold text-gray-900 rounded-sm text-center"
           >
-            {{ 'Okt' }}
+            {{ $t('equivalents.month.10') }}
           </div>
           <div
             class="col-span-3 items-center justify-center bg-teal-100 font-bold text-gray-900 rounded-sm text-center"
           >
-            {{ 'Nov' }}
+            {{ $t('equivalents.month.11') }}
           </div>
           <div
             class="col-span-3 items-center justify-center bg-teal-100 font-bold text-gray-900 rounded-sm text-center"
           >
-            {{ 'Dez' }}
+            {{ $t('equivalents.month.12') }}
           </div>
         </div>
         <div class="grid grid-cols-12 mt-1">
@@ -420,7 +428,9 @@
         </div>
       </div>
       <div class="flex flex-col gap-2">
-        <label for="equivalent-value-year">Faktor (Jahresdurschnitt)*</label>
+        <label for="equivalent-value-year"
+          >{{ $t('equivalents.avgValue') }}*</label
+        >
         <InputNumber
           v-if="!selectedValue.monthly_values"
           class="w-full"
@@ -431,27 +441,28 @@
           :max-fraction-digits="10"
         />
         <div v-else>
-          {{ roundString(selectedValue.avg_value) }} (automatisch berechnet)
+          {{ roundString(selectedValue.avg_value) }} ({{
+            $t('equivalents.autoCalc')
+          }})
         </div>
         <InlineMessage
           v-if="global.showTooltips"
           class="w-full mt-1"
           severity="info"
-          >Der Jahresdurchschnittswert als Faktor
-          [Ausgangseinheit-pro-Eingangseinheit]</InlineMessage
+          >{{ $t('equivalents.autoCalcInline') }}</InlineMessage
         >
       </div>
       <div class="flex flex-col gap-2">
-        <label for="equivalent-parent-selector"
-          >Überliegende Berechnung (optional)</label
-        >
+        <label for="equivalent-parent-selector">{{
+          $t('equivalents.wrappingCalcOptional')
+        }}</label>
         <div class="flex flex-grow">
           <Button
             class="w-full"
             :label="
               selectedValue.parent
                 ? global.equivalentDict[selectedValue.parent].specification1
-                : 'Wählen Sie einen Faktor'
+                : $t('equivalents.chooseFactor')
             "
             @click="showChooseEquivalent = true"
           />
@@ -467,17 +478,17 @@
           class="w-full mt-1"
           severity="info"
         >
-          Wenn eine überliegende Berechnung gewählt wird, muss die
-          Ausgangseinheit der überliegenden Berechnung mit der Eingangseinheit
-          dieses Faktors übereinstimmen. In dem Fall wird beim Berechnen der
-          CO<sub>2</sub>-Äquivalete der überliegende Faktor in Kette mit diesem
-          Faktors berechnet.
+          <span v-html="$t('equivalents.wrappingCalcOptionalInline')" />
         </InlineMessage>
       </div>
     </div>
     <div class="mt-5">
       <Button
-        :label="selectedValue.id === 'new' ? 'Anlegen' : 'Speichern'"
+        :label="
+          selectedValue.id === 'new'
+            ? $t('equivalents.create')
+            : $t('equivalents.save')
+        "
         @click="save"
       />
     </div>

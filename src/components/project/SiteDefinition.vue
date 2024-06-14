@@ -4,19 +4,17 @@
     severity="info"
     class="w-full mt-2 mb-4"
   >
-    Pro Projekt können mehrere Standorte definiert werden. Es muss mindestens
-    ein Standort definiert sein. Der erste Standort ist der Hauptstandort und
-    wurde vom System angelegt. Dieser kann jederzeit bearbeitet werden.
+    {{ $t('settings.projectSettings.sitesInline') }}
   </InlineMessage>
 
   <Toolbar>
     <template #start>
-      <span>Ausgewählter Standort</span>
+      <span>{{ $t('settings.projectSettings.selectedSite') }}</span>
       <Dropdown
         v-model="global.selectedSite"
         :options="global.sites"
         optionLabel="name"
-        placeholder="Standort wählen"
+        :placeholder="$t('settings.projectSettings.selectedSitePlaceholder')"
         class="ml-3"
         style="width: 300px"
         :disabled="siteForm?.id === 'new'"
@@ -42,9 +40,9 @@
     <div class="card">
       <!-- <h5>Basisdaten des Standorts</h5> -->
       <div class="mb-4 grid" v-show="false">
-        <label for="id" class="col-span-12 mb-2 md:col-span-4 md:mb-0"
-          >ID</label
-        >
+        <label for="id" class="col-span-12 mb-2 md:col-span-4 md:mb-0">{{
+          $t('settings.projectSettings.siteID')
+        }}</label>
         <div class="col-span-12 md:col-span-8">
           <InputText
             id="id"
@@ -58,14 +56,13 @@
           severity="info"
           class="w-full mt-2"
         >
-          Die ID wird automatisch vergeben und kann nicht geändert werden. Die
-          Anzeige dient rein Support-Zwecken.
+          {{ $t('settings.projectSettings.siteIDInline') }}
         </InlineMessage>
       </div>
       <div class="mb-4 grid">
-        <label for="name" class="col-span-12 mb-2 md:col-span-4 md:mb-0"
-          >Standortname</label
-        >
+        <label for="name" class="col-span-12 mb-2 md:col-span-4 md:mb-0">{{
+          $t('settings.projectSettings.siteName')
+        }}</label>
         <div class="col-span-12 md:col-span-8">
           <InputText id="name" class="w-full" v-model="siteForm.name" />
         </div>
@@ -74,8 +71,7 @@
           severity="info"
           class="w-full mt-2"
         >
-          Der Standortname kann frei bestimmt werden. Die Mindestlänge ist 3
-          Zeichen.
+          {{ $t('settings.projectSettings.siteNameInline') }}
         </InlineMessage>
       </div>
     </div>
@@ -83,9 +79,13 @@
     <div>
       <Button
         @click="saveEntry()"
-        :label="siteForm.id === 'new' ? 'Hinzufügen' : 'Speichern'"
+        :label="
+          siteForm.id === 'new'
+            ? $t('settings.projectSettings.add')
+            : $t('global.save')
+        "
       />
-      <Button class="ml-2" @click="cancel()" label="Abbrechen" />
+      <Button class="ml-2" @click="cancel()" :label="$t('global.cancel')" />
     </div>
   </div>
 </template>

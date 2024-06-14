@@ -1,11 +1,11 @@
 <template>
   <div v-if="user != null">
     <div class="p-fluid mt-5">
-      <h2>Persönliche Einstellungen</h2>
+      <h2>{{ $t('settings.userSettings.heading') }}</h2>
       <div class="p-fluid">
         <div class="grid grid-cols-12 flex items-center">
           <label class="col-span-12 md:col-span-4" for="displayInTons"
-            >Darstellung in Tonnen?</label
+            >{{ $t('settings.userSettings.displayInTons') }}?</label
           >
           <InputSwitch
             id="displayInTons"
@@ -17,12 +17,12 @@
     </div>
 
     <div class="p-fluid mt-5">
-      <h2>Angaben</h2>
+      <h2>{{ $t('settings.userSettings.subHeading') }}</h2>
       <div class="mt-4 flex flex-col gap-3">
         <div class="grid grid-cols-12">
-          <label class="col-span-12 md:col-span-4" for="username"
-            >Benutzername</label
-          >
+          <label class="col-span-12 md:col-span-4" for="username">{{
+            $t('settings.userSettings.userName')
+          }}</label>
           <InputText
             class="col-span-12 md:col-span-8"
             id="username"
@@ -30,7 +30,9 @@
           />
         </div>
         <div class="grid grid-cols-12">
-          <label class="col-span-12 md:col-span-4" for="email">E-Mail</label>
+          <label class="col-span-12 md:col-span-4" for="email">{{
+            $t('settings.userSettings.email')
+          }}</label>
           <InputText
             class="col-span-12 md:col-span-8"
             id="email"
@@ -38,9 +40,9 @@
           />
         </div>
         <div class="grid grid-cols-12">
-          <label class="col-span-12 md:col-span-4" for="firstname"
-            >Vorname</label
-          >
+          <label class="col-span-12 md:col-span-4" for="firstname">{{
+            $t('settings.userSettings.firstName')
+          }}</label>
           <InputText
             class="col-span-12 md:col-span-8"
             id="firstname"
@@ -48,9 +50,9 @@
           />
         </div>
         <div class="grid grid-cols-12">
-          <label class="col-span-12 md:col-span-4" for="surname"
-            >Nachname</label
-          >
+          <label class="col-span-12 md:col-span-4" for="surname">{{
+            $t('settings.userSettings.lastName')
+          }}</label>
           <InputText
             class="col-span-12 md:col-span-8"
             id="surname"
@@ -58,9 +60,9 @@
           />
         </div>
         <div class="grid grid-cols-12">
-          <label class="col-span-12 md:col-span-4" for="department"
-            >Abteilung</label
-          >
+          <label class="col-span-12 md:col-span-4" for="department">{{
+            $t('settings.userSettings.department')
+          }}</label>
           <InputText
             class="col-span-12 md:col-span-8"
             id="department"
@@ -68,7 +70,9 @@
           />
         </div>
         <div class="grid grid-cols-12">
-          <label class="col-span-12 md:col-span-4" for="role">Rolle</label>
+          <label class="col-span-12 md:col-span-4" for="role">{{
+            $t('settings.userSettings.role')
+          }}</label>
           <InputText
             class="col-span-12 md:col-span-8"
             id="role"
@@ -76,9 +80,9 @@
           />
         </div>
         <div class="grid grid-cols-12">
-          <label class="col-span-12 md:col-span-4" for="telephone"
-            >Telefon</label
-          >
+          <label class="col-span-12 md:col-span-4" for="telephone">{{
+            $t('settings.userSettings.phone')
+          }}</label>
           <InputText
             class="col-span-12 md:col-span-8"
             id="telephone"
@@ -90,7 +94,7 @@
           @click="saveUser"
           :disabled="false"
           class="mt-5"
-          label="Speichern"
+          :label="$t('global.save')"
         />
       </div>
     </div>

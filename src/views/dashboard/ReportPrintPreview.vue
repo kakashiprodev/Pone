@@ -1,22 +1,22 @@
 <template>
   <div class="report-page">
     <h3 class="mb-5" style="color: red">
-      DAS IST NUR EINE VORSCHAU UND NICHT DRUCKBAR!
+      {{ $t('reportPreview.preHeading') }}
     </h3>
 
-    <h2>CO<sub>2</sub>-Bilanzierung Gesamt</h2>
+    <h2 v-html="$t('reportPreview.heading')" />
     <ReportSumYear :sites="[global.selectedSite?.id ?? '']" />
 
-    <h2>Scope 1</h2>
+    <h2>{{ $t('reportPreview.scope') }} 1</h2>
     <ReportSumScope :scope="1" :sites="[global.selectedSite?.id ?? '']" />
 
-    <h2>Scope 2</h2>
+    <h2>{{ $t('reportPreview.scope') }} 2</h2>
     <ReportSumScope :scope="2" :sites="[global.selectedSite?.id ?? '']" />
 
-    <h2>Scope 3</h2>
+    <h2>{{ $t('reportPreview.scope') }} 3</h2>
     <ReportSumScope :scope="3" :sites="[global.selectedSite?.id ?? '']" />
 
-    <h2>Maßnahmen</h2>
+    <h2>{{ $t('reportPreview.actions') }}</h2>
     <ActionOverview />
   </div>
 </template>

@@ -1,6 +1,6 @@
 <template>
   <div class="border-solid border-b-2 border-gray-200 mb-4 p-2 rounded-lg">
-    <h3>Interview basierte Informationserfassung für den CSRD-Bericht.</h3>
+    <h3>{{ $t('csrd.heading') }}</h3>
   </div>
   <div class="grid grid-cols-12">
     <!-- PanelMenu für das vertikale Menü auf der linken Seite -->
@@ -36,7 +36,7 @@
     <div class="col-span-8">
       <Card v-if="selectedItem && userAnswers[selectedItem.id]" class="mb-3">
         <template #content>
-          <p>Bereits gesammelte Themen:</p>
+          <p>{{ $t('csrd.sharedTopics') }}:</p>
           <ul class="list-disc list-inside">
             <li v-for="answer in userAnswers[selectedItem.id]">
               <h4>{{ answer.topicHeader }}</h4>
@@ -68,9 +68,7 @@
         <template #content>
           <div class="text-lg p-1">
             <p>
-              Wählen Sie ein Thema aus der linken Liste aus, um die
-              Interview-basierte Informationserfassung zu starten. Sie können
-              auch bereits als abgeschlossen markierte Themen weiter bearbeiten.
+              {{ $t('csrd.helpText') }}
             </p>
           </div>
         </template>
