@@ -39,7 +39,6 @@ h1.welcome-text {
   font-size: 50px;
   font-weight: 700;
   background: -webkit-linear-gradient(#32cbbf, #054351);
-  -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   direction: ltr;
 }

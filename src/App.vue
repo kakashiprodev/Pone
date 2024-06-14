@@ -17,7 +17,6 @@
 import { useAuth0 } from '@auth0/auth0-vue';
 import { useAuthStore } from './stores/auth';
 import { useGlobalStore } from './stores/global';
-import { router } from './router';
 import { useRoute } from 'vue-router';
 import { onMounted } from 'vue';
 const { user, isAuthenticated, idTokenClaims, loginWithRedirect } = useAuth0();
@@ -58,19 +57,9 @@ Fix for PrimeVue InputNumber problem with width
 }
 
 /**
-Custom CARD stlye for #header
+Custom Card stlye for #header
 */
 .psm-report-header {
-  /*background-image: linear-gradient(
-    to left top,
-    #00ae97,
-    #0db69f,
-    #17bfa7,
-    #1fc7b0,
-    #26d0b8,
-    #2accb6
-  );*/
-  /*background-image: linear-gradient(to left top, #00ae973d, #008a770f);*/
   background-color: var(--surface-200) !important;
   text-align: center;
   border-top-left-radius: 10px;

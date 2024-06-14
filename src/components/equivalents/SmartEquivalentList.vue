@@ -71,6 +71,7 @@
     paginator
     :rows="rowsPerPage"
     v-if="true"
+    scrollHeight="300px"
   >
     <Column
       selectionMode="single"

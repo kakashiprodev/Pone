@@ -7,6 +7,7 @@
     :selection-mode="'single'"
     v-model:selection="selectedValue"
     key="id"
+    scrollHeight="300px"
   >
     <Column selectionMode="single" headerStyle="width: 3rem"></Column>
     <Column

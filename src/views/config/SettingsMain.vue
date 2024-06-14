@@ -1,6 +1,6 @@
 <template>
   <div class="flex">
-    <!-- PanelMenu für das vertikale Menü auf der linken Seite -->
+    <!-- PanelMenu Left Side -->
     <PanelMenu
       :model="items"
       class="w-1/7 pr-3"
@@ -25,7 +25,7 @@
       </template>
     </PanelMenu>
 
-    <!-- Bereich für die Anzeige der Komponenten auf der rechten Seite -->
+    <!-- Settings Content -->
     <div class="w-full p-5">
       <router-view :key="route.path" />
     </div>

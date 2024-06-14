@@ -78,7 +78,7 @@
 <script setup lang="ts">
 import { FacilityEntry, InputEntry } from '../../services/types';
 import dataprovider from '../../services/dataprovider';
-import { ComputedRef, Ref, computed, ref, watch, onMounted } from 'vue';
+import { ComputedRef, Ref, computed, ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { useGlobalStore } from '../../stores/global';
 import { error, info } from '../../services/ui/toast';

@@ -221,7 +221,7 @@
                 selectedValue.facility != null && selectedValue.facility !== ''
               "
               @click="showChooseFacility = true"
-              class="bg-teal-300 text-white rounded-sm m-2 flex items-center justify-center cursor-pointer p-2"
+              class="bg-teal-900 text-white rounded-sm m-2 flex items-center justify-center cursor-pointer p-2"
             >
               {{
                 globalStore.facilitiesDict[selectedValue.facility]?.name ??
@@ -313,7 +313,7 @@
     }"
   >
     <div class="flex flex-col gap-4">
-      <div class="flex flex-col gap-2">
+      <div class="flex flex-col gap-2" v-show="preSelectedScope === 'all'">
         <label for="userinput-scope">{{ $t('inputs.scope') }}</label>
         <Dropdown
           class="w-full"
@@ -338,18 +338,20 @@
               selectedValue.equivalent !== ''
             "
             @click="showChooseEquivalent = true"
-            class="bg-teal-300 text-white rounded-sm m-2 flex items-center justify-center cursor-pointer p-2"
+            class="bg-teal-900 text-white rounded-sm m-2 flex items-center justify-center cursor-pointer p-2"
           >
             {{
               globalStore.equivalentDict[selectedValue.equivalent]
                 ?.specification1 ?? 'Reference error'
             }}
           </div>
-          <Button
-            v-else
-            :label="$t('inputs.choose')"
-            @click="showChooseEquivalent = true"
-          />
+          <div class="flex justify-center" v-else>
+            <Button
+              class="w-80"
+              :label="$t('inputs.choose')"
+              @click="showChooseEquivalent = true"
+            />
+          </div>
         </div>
         <InlineMessage
           v-if="globalStore.showTooltips"
@@ -388,14 +390,20 @@
               selectedValue.facility != null && selectedValue.facility !== ''
             "
             @click="showChooseFacility = true"
-            class="bg-teal-300 text-white rounded-sm m-2 flex items-center justify-center cursor-pointer p-2"
+            class="bg-teal-900 text-white rounded-sm m-2 flex items-center justify-center cursor-pointer p-2"
           >
             {{
               globalStore.facilitiesDict[selectedValue.facility]?.name ??
               'Reference error'
             }}
           </div>
-          <Button v-else label="Auswählen" @click="showChooseFacility = true" />
+          <div class="flex justify-center" v-else>
+            <Button
+              class="w-80"
+              label="Auswählen"
+              @click="showChooseFacility = true"
+            />
+          </div>
         </div>
         <InlineMessage
           v-if="globalStore.showTooltips"
@@ -483,8 +491,10 @@
           {{ $t('inputs.amountCalcInline') }}
         </InlineMessage>
       </div>
-      <div>
+      <div class="flex justify-end">
         <Button
+          class="w-64"
+          icon="fa-solid fa-check"
           :label="selectedValue.id === 'new' ? 'Anlegen' : 'Speichern'"
           @click="save"
         />
