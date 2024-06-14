@@ -400,7 +400,9 @@ ALTER TABLE data.media FORCE ROW LEVEL SECURITY;
 
 -- Grant usage and select permissions to the "standard" role that needs to be added to the JWT token from the Auth server
 GRANT USAGE ON SCHEMA data TO standard;
+GRANT USAGE ON SCHEMA data TO admin;
 GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA data TO standard;
+GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA data TO admin;
 
 
 -- Add a function to ensure that a user is in the database
