@@ -103,3 +103,10 @@ export const toReadableDate = (date: string | Date | null) => {
   }
   return '';
 };
+
+export const toChartAxisDate = (date: string | Date | null) => {
+  if (date) {
+    return new Date(date).getTime();
+  }
+  return '';
+};
