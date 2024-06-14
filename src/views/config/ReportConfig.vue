@@ -199,64 +199,64 @@ const reportSchemaGeneral = object({
   id: string(),
   site: string('Es ist kein Standort angegeben.', [
     minLength(4, 'Die Angabe Projekt ist fehlerhaft.'),
-    maxLength(15, 'Die Angabe Projekt ist fehlerhaft.'),
+    maxLength(100, 'Die Angabe Projekt ist fehlerhaft.'),
   ]),
   year: number([
     minValue(1900, 'Es muss ein gültiges Jahr angegeben werden.'),
     maxValue(2100, 'Es muss ein gültiges Jahr angegeben werden.'),
   ]),
-  companyName: string([
+  company_name: string([
     minLength(1, 'Der Firmenname muss zwischen 1 und 255 Zeichen liegen.'),
     maxLength(255, 'Der Firmenname muss zwischen 1 und 255 Zeichen liegen.'),
   ]),
-  companyStreet: string([
+  company_street: string([
     minLength(2, 'Der Straßenname muss zwischen 2 und 255 Zeichen liegen'),
     maxLength(255, 'Der Straßenname muss zwischen 2 und 255 Zeichen liegen'),
   ]),
-  companyPostal: string([
+  company_postal: string([
     minLength(4, 'Die Postleitzahl muss min. 4 Zeichen beinhalten'),
     maxLength(6, 'Die Postleitzahl kann max 5 Zeichen beinhalten'),
   ]),
-  companyCity: string([
+  company_city: string([
     minLength(2, 'Die Stadt muss zwischen 2 und 255 Zeichen lang sein'),
     maxLength(255, 'Die Stadt muss zwischen 2 und 255 Zeichen lang sein'),
   ]),
-  companyCountry: string([
-    minLength(2, 'Das Land muss zwischen 2 und 255 Zeichen lang sein'),
+  company_country: string([
+    minLength(1, 'Das Land muss zwischen 2 und 255 Zeichen lang sein'),
     maxLength(255, 'Das Land muss zwischen 2 und 255 Zeichen lang sein'),
   ]),
-  companyDomain: string([
+  company_domain: string([
     minLength(2, 'Die Branche muss zwischen 2 und 255 Zeichen lang sein'),
     maxLength(255, 'Die Branche muss zwischen 2 und 255 Zeichen lang sein'),
   ]),
 });
 
 const reportSchemaContact = object({
-  contactName: string([
+  contact_name: string([
     minLength(2, 'Der Kontaktname muss zwischen 2 und 255 Zeichen lang sein'),
     maxLength(255, 'Der Kontaktname muss zwischen 2 und 255 Zeichen lang sein'),
   ]),
-  contactTelephone: string([
+  contact_telephone: string([
     minLength(2, 'Die Telefonnummer muss min. 2 Zeichen lang sein'),
     maxLength(255, 'Die Telefonnummer kann max 255 Zeichen lang sein'),
   ]),
-  contactEmail: string([email()]),
-  contactDomain: string([
+  contact_email: string([email()]),
+  contact_domain: string([
     minLength(2, 'Die Abteilung muss zwischen 2 und 255 Zeichen lang sein'),
     maxLength(255, 'Die Abteilung muss zwischen 2 und 255 Zeichen lang sein'),
   ]),
 });
 
 const reportSchemaYearlyFocus = object({
-  countEmployees: number([
+  count_employees: number([
     minValue(1, 'Die Anzahl Mitarbeiter muss min. 1 betragen'),
   ]),
-  businessTurnover: number([minValue(0, 'Der Umsatz muss min. 0 betragen')]),
-  baseYear: number([
+  business_turnover: number([minValue(0, 'Der Umsatz muss min. 0 betragen')]),
+  base_year: number([
     minValue(1900, 'Bitte ein gültiges Basisjahr angeben'),
     maxValue(2100, 'Bitte ein gültiges Basisjahr angeben'),
   ]),
-  sumEmissions: nullable(number()),
+  sum_emissions: nullable(number()),
 });
 
 const reportTranslations: {
@@ -270,28 +270,28 @@ const reportTranslations: {
   id: { label: 'Report-ID', category: 'general' },
   site: { label: 'Projekt-ID', category: 'general' },
   year: { label: 'Jahr', category: 'general' },
-  companyName: { label: 'Firmenname', category: 'general' },
-  companyStreet: { label: 'Straße', category: 'general' },
-  companyPostal: { label: 'PLZ', category: 'general' },
-  companyCity: { label: 'Stadt', category: 'general' },
-  companyCountry: { label: 'Land', category: 'general' },
-  companyDomain: { label: 'Branche', category: 'general' },
-  contactName: { label: 'Ansprechpartner', category: 'contact' },
-  contactTelephone: { label: 'Telefon', category: 'contact' },
-  contactEmail: { label: 'E-Mail', category: 'contact' },
-  contactDomain: { label: 'Abteilung', category: 'contact' },
-  countEmployees: {
+  company_name: { label: 'Firmenname', category: 'general' },
+  company_street: { label: 'Straße', category: 'general' },
+  company_postal: { label: 'PLZ', category: 'general' },
+  company_city: { label: 'Stadt', category: 'general' },
+  company_country: { label: 'Land', category: 'general' },
+  company_domain: { label: 'Branche', category: 'general' },
+  contact_name: { label: 'Ansprechpartner', category: 'contact' },
+  contact_telephone: { label: 'Telefon', category: 'contact' },
+  contact_email: { label: 'E-Mail', category: 'contact' },
+  contact_domain: { label: 'Abteilung', category: 'contact' },
+  count_employees: {
     label: 'Anzahl Mitarbeiter',
     category: 'yearly-focus',
     numberGrouping: true,
   },
-  businessTurnover: {
+  business_turnover: {
     label: 'Jahresumsatz',
     category: 'yearly-focus',
     numberGrouping: true,
     suffix: '€',
   },
-  baseYear: { label: 'Referenzjahr', category: 'yearly-focus' },
+  base_year: { label: 'Referenzjahr', category: 'yearly-focus' },
 };
 
 const confirmDelete = async (report: ReportEntry, event: any) => {
@@ -356,8 +356,8 @@ const saveReport = async () => {
 
 const init = async () => {
   while (global.isLoading) {
-    console.log('waiting for global store to load');
-    await new Promise((resolve) => setTimeout(resolve, 2500));
+    // console.log('waiting for global store to load');
+    await new Promise((resolve) => setTimeout(resolve, 500));
   }
   if (global.selectedReport) {
     reportForm.value = global.selectedReport;

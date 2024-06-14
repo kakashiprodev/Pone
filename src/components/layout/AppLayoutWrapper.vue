@@ -211,6 +211,7 @@ const loading = ref(false);
 const colorMode = computed(() => global.theme);
 
 const logout = async () => {
+  console.log('logout');
   await dataprovider.logout();
   router.push('/login');
 };

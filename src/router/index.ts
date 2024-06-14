@@ -1,4 +1,5 @@
 import * as VueRouter from 'vue-router';
+import { authGuard } from '@auth0/auth0-vue';
 
 const routes = [
   {
@@ -8,6 +9,7 @@ const routes = [
   },
   {
     path: '/',
+    beforeEnter: authGuard,
     component: () => import('../components/layout/AppLayoutWrapper.vue'),
     name: 'home',
     redirect: { name: 'dashboard' },
@@ -136,4 +138,16 @@ const routes = [
 export const router = VueRouter.createRouter({
   history: VueRouter.createWebHashHistory(),
   routes,
+});
+
+router.beforeEach((to, _from, next) => {
+  // check if fullPath is like this '/somepath&somequery'. The & is not allowed in the path after the main route string and must be replaced with ?
+  // check wih regex to be sure not to replace other & characters. So check for slash + text + & ?
+  const pattern = to.fullPath.match(/\/[^&\?]+&/);
+  if (pattern) {
+    const newPath = to.fullPath.replace('&', '?'); // replace first & with ?
+    next(newPath);
+  } else {
+    next();
+  }
 });

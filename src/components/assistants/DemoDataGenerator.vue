@@ -85,8 +85,8 @@ const selectedYears: Ref<number[]> = ref(availableYears.value);
 const selectedSiteIds: Ref<string[]> = ref(global.sites.map((s) => s.id));
 const selectedProject = computed(() => global.selectedProject);
 const numberOfRecords = ref(10);
-const rangeMin = ref(5000);
-const rangeMax = ref(10000);
+const rangeMin = ref(50000);
+const rangeMax = ref(100000);
 
 // visibility
 const loading = ref(false);
@@ -160,14 +160,15 @@ const getRawInputValueForEquivalent = (
   resultMax: number,
 ) => {
   // make a demo calculation for the rawInputValue with a value of 1
-  const resultingValueFor1 = getSumForInput(
+  let resultingValueFor1 = getSumForInput(
     {
       ...input,
       equivalent: equivalent.id,
-      rawValue: 1,
+      raw_value: 1,
     } as InputEntry,
     global.equivalentDict,
   );
+  if (resultingValueFor1 === 0) resultingValueFor1 = 1;
   // now we know how strong the rawInputValue is multiplied
   // we can calculate the rawInputValue for the given range
   const rawInputValue =
@@ -205,41 +206,46 @@ const generateData = async () => {
         name: 'Demo Input ' + x,
         scope: scope,
         comment: 'Demo Comment ' + x,
-        sumValue: 0,
+        sum_value: 0,
         equivalent: e.id,
         report: report.id,
         category: e.category,
         facility,
         parent: null,
-        rawValue: 1,
-        monthlyValues: false,
-        rawValueJan: 1 / 12,
-        rawValueFeb: 1 / 12,
-        rawValueMar: 1 / 12,
-        rawValueApr: 1 / 12,
-        rawValueMay: 1 / 12,
-        rawValueJun: 1 / 12,
-        rawValueJul: 1 / 12,
-        rawValueAug: 1 / 12,
-        rawValueSep: 1 / 12,
-        rawValueOct: 1 / 12,
-        rawValueNov: 1 / 12,
-        rawValueDec: 1 / 12,
+        raw_value: 1,
+        monthly_values: false,
+        raw_value_jan: 1 / 12,
+        raw_value_feb: 1 / 12,
+        raw_value_mar: 1 / 12,
+        raw_value_apr: 1 / 12,
+        raw_value_may: 1 / 12,
+        raw_value_jun: 1 / 12,
+        raw_value_jul: 1 / 12,
+        raw_value_aug: 1 / 12,
+        raw_value_sep: 1 / 12,
+        raw_value_oct: 1 / 12,
+        raw_value_nov: 1 / 12,
+        raw_value_dec: 1 / 12,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
       };
       // calculate the sumValue for the input
-      input.rawValue = getRawInputValueForEquivalent(
+      input.raw_value = getRawInputValueForEquivalent(
         input,
         e,
         rangeMin.value,
         rangeMax.value,
       );
+      if (input.raw_value == null) {
+        console.error('raw_value is null', input.raw_value);
+      }
       await dataprovider.createUserInput(input);
-      reportSum += input.sumValue;
+      reportSum += input.sum_value;
     }
     console.log('Report ' + report.year + ' sum: ' + reportSum);
     await dataprovider.updateReport({
       ...report,
-      sumEmission: reportSum,
+      sum_emission: reportSum,
     });
   }
   info('Daten wurden generiert');

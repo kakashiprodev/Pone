@@ -131,7 +131,7 @@
           >Stilllegedatum (wenn Anlage außer Betrieb gesetzt wird)</label
         >
         <Calendar
-          v-model="selectedValue.shutdownDate"
+          v-model="selectedValue.shutdown_date"
           view="month"
           dateFormat="mm/yy"
           class="w-full"
@@ -206,7 +206,7 @@
 <script setup lang="ts">
 import { FacilityEntry, InputEntry } from '../../services/types';
 import dataprovider from '../../services/dataprovider';
-import { ComputedRef, Ref, computed, ref, watch } from 'vue';
+import { ComputedRef, Ref, computed, ref, watch, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { useGlobalStore } from '../../stores/global';
 import { error, info } from '../../services/ui/toast';
@@ -265,7 +265,7 @@ const filterData = () => {
     if (onlyActive.value === false) {
       return true;
     }
-    return item.shutdownDate == null || item.shutdownDate === '';
+    return item.shutdown_date == null || item.shutdown_date === '';
   });
   filteredData.value = filtered;
 };
@@ -292,7 +292,9 @@ const emptyFacility: FacilityEntry = {
   model: '',
   description: '',
   site: global.selectedSite?.id ?? '',
-  shutdownDate: null,
+  shutdown_date: null,
+  created_at: new Date().toISOString(),
+  updated_at: new Date().toISOString(),
 };
 
 const selectedValue: Ref<FacilityEntry> = ref(emptyFacility);
@@ -332,9 +334,9 @@ const save = async () => {
       const toCreate = clone(selectedValue.value);
       delete toCreate.id;
       const created = await dataprovider.createFacility(toCreate);
-      created.shutdownDate =
-        created.shutdownDate && created.shutdownDate !== ''
-          ? new Date(created.shutdownDate)
+      created.shutdown_date =
+        created.shutdown_date && created.shutdown_date !== ''
+          ? new Date(created.shutdown_date)
           : null;
       // add to global
       global.facilities.push(created);
@@ -344,9 +346,9 @@ const save = async () => {
       selectedValue.value = clone(emptyFacility);
     } else {
       const updated = await dataprovider.updateFacility(selectedValue.value);
-      updated.shutdownDate =
-        updated.shutdownDate && updated.shutdownDate !== ''
-          ? new Date(updated.shutdownDate)
+      updated.shutdown_date =
+        updated.shutdown_date && updated.shutdown_date !== ''
+          ? new Date(updated.shutdown_date)
           : null;
       const index = data.value.findIndex((item) => item.id === updated.id);
       global.facilities[index] = updated;
@@ -393,7 +395,13 @@ const getData = async () => {
 /**
  * Init
  */
-getData();
+onMounted(async () => {
+  while (global.isLoading) {
+    // console.log('waiting for global store to load');
+    await new Promise((resolve) => setTimeout(resolve, 500));
+  }
+  await getData();
+});
 </script>
 
 <style>

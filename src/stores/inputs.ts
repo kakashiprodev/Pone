@@ -3,7 +3,7 @@ import { InputEntry } from './../services/types';
 import dataprovider from './../services/dataprovider';
 import { globalStore } from '@/main';
 
-export interface GlobalState {
+export interface InputsState {
   requestPending: boolean;
   reportId: string | null;
   allScopes: InputEntry[];
@@ -13,8 +13,16 @@ export interface GlobalState {
   sumEmissions: number | null;
 }
 
+export interface InputsActions {
+  readUserInputs: () => Promise<void>;
+  addInput: (input: InputEntry) => Promise<InputEntry>;
+  updateInput: (input: InputEntry) => Promise<InputEntry>;
+  dropInput: (input: InputEntry) => Promise<void>;
+  updateReportSum: (addValue?: number) => Promise<void>;
+}
+
 export const useInputStore = defineStore('inputs', {
-  state: (): GlobalState => ({
+  state: (): InputsState => ({
     reportId: null,
     requestPending: false,
     allScopes: [],
@@ -40,15 +48,15 @@ export const useInputStore = defineStore('inputs', {
         // inital value
         if (this.sumEmissions == null) {
           this.sumEmissions = this.scope1.reduce(
-            (acc, cur) => acc + cur.sumValue,
+            (acc, cur) => acc + cur.sum_value,
             0,
           );
           this.sumEmissions += this.scope2.reduce(
-            (acc, cur) => acc + cur.sumValue,
+            (acc, cur) => acc + cur.sum_value,
             0,
           );
           this.sumEmissions += this.scope3.reduce(
-            (acc, cur) => acc + cur.sumValue,
+            (acc, cur) => acc + cur.sum_value,
             0,
           );
         }
@@ -57,7 +65,7 @@ export const useInputStore = defineStore('inputs', {
         }
         await dataprovider.updateReport({
           ...globalStore.selectedReport,
-          sumEmissions: this.sumEmissions,
+          sum_emissions: this.sumEmissions,
         });
       } catch (error) {
         console.error('Error updating report sum', error);
@@ -117,7 +125,7 @@ export const useInputStore = defineStore('inputs', {
         else if (created.scope === 2) this.scope2.push(created);
         else if (created.scope === 3) this.scope3.push(created);
         // update the sum
-        await this.updateReportSum(created.sumValue);
+        await this.updateReportSum(created.sum_value);
         return created;
       } catch (error) {
         throw error;
@@ -146,7 +154,7 @@ export const useInputStore = defineStore('inputs', {
           obj[index] = updated;
         }
         // update the sum
-        await this.updateReportSum(updated.sumValue - input.sumValue);
+        await this.updateReportSum(updated.sum_value - input.sum_value);
         return updated;
       } catch (error) {
         throw error;
@@ -175,7 +183,7 @@ export const useInputStore = defineStore('inputs', {
           obj.splice(index, 1);
         }
         // update the sum
-        await this.updateReportSum(-input.sumValue);
+        await this.updateReportSum(-input.sum_value);
       } catch (error) {
         throw error;
       } finally {

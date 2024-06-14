@@ -2,7 +2,11 @@
   <h2>Äquivalente und Faktoren</h2>
   <Toolbar :class="{ 'mb-3': !global.showTooltips }">
     <template #end>
-      <Button icon="fa-solid fa-download" @click="csvDownload" />
+      <Button
+        icon="fa-solid fa-download"
+        @click="csvDownload"
+        :disabled="requestPending"
+      />
       <Button
         icon="fa-solid fa-plus"
         @click="
@@ -10,6 +14,16 @@
           showDialog = true;
         "
         class="ml-2"
+        :disabled="requestPending"
+      />
+      <FileUpload
+        mode="basic"
+        accept="text/*"
+        customUpload
+        @uploader="uploadCsv"
+        :auto="true"
+        class="ml-2"
+        :disabled="requestPending"
       />
     </template>
   </Toolbar>
@@ -141,7 +155,7 @@
         <label for="equivalent-alt-name">Zusätzlicher Name</label>
         <InputText
           class="w-full"
-          v-model="selectedValue.addName1"
+          v-model="selectedValue.add_name1"
           id="equivalent-alt-name"
         />
         <InlineMessage
@@ -222,7 +236,7 @@
         <label for="equivalent-monthlyValues">Monatliche Eingaben?</label>
         <div>
           <Checkbox
-            v-model="selectedValue.monthlyValues"
+            v-model="selectedValue.monthly_values"
             id="equivalent-monthlyValues"
             :binary="true"
           />
@@ -235,7 +249,7 @@
           Jahresmittelwert wird dann autoamtisch errechnet.
         </InlineMessage>
       </div>
-      <div v-show="selectedValue.monthlyValues">
+      <div v-show="selectedValue.monthly_values">
         <div class="grid grid-cols-12 mt-1">
           <div
             class="col-span-3 items-center justify-center bg-teal-100 font-bold text-gray-900 rounded-sm text-center"
@@ -408,16 +422,16 @@
       <div class="flex flex-col gap-2">
         <label for="equivalent-value-year">Faktor (Jahresdurschnitt)*</label>
         <InputNumber
-          v-if="!selectedValue.monthlyValues"
+          v-if="!selectedValue.monthly_values"
           class="w-full"
-          v-model="selectedValue.avgValue"
+          v-model="selectedValue.avg_value"
           id="equivalent-value-year"
           :use-grouping="false"
           :min-fraction-digits="0"
           :max-fraction-digits="10"
         />
         <div v-else>
-          {{ roundString(selectedValue.avgValue) }} (automatisch berechnet)
+          {{ roundString(selectedValue.avg_value) }} (automatisch berechnet)
         </div>
         <InlineMessage
           v-if="global.showTooltips"
@@ -479,6 +493,7 @@
     "
     @delete="deleteEquivalent($event.data, $event.event)"
     :refresh="refreshTrigger"
+    :showChooseColumn="false"
   />
 </template>
 
@@ -503,6 +518,7 @@ import {
 } from 'valibot';
 import { roundString } from '../../services/pipes';
 import SmartEquivalentList from '../../components/equivalents/SmartEquivalentList.vue';
+import { importCsvFile } from '../../services/csv/import';
 
 const windowWidth = ref(window.innerWidth);
 
@@ -525,7 +541,7 @@ const emptyEquivalent = (): EquivalentEntry => {
   return {
     id: 'new',
     scope: 3,
-    addName1: '',
+    add_name1: '',
     category: 'Benutzereingaben',
     specification1: '',
     specification2: '',
@@ -534,8 +550,8 @@ const emptyEquivalent = (): EquivalentEntry => {
     in: '',
     out: '',
     source: 'Benutzereingabe',
-    avgValue: null as any,
-    monthlyValues: false,
+    avg_value: null as any,
+    monthly_values: false,
     project: global.selectedProject?.id ?? '',
     jan: null,
     feb: null,
@@ -550,6 +566,8 @@ const emptyEquivalent = (): EquivalentEntry => {
     nov: null,
     dec: null,
     parent: null,
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
   };
 };
 
@@ -569,7 +587,7 @@ const equivalentSchema = object({
   ]),
   specification2: nullable(string([maxLength(255, 'Spezifikation 2 zu lang')])),
   specification3: nullable(string([maxLength(255, 'Spezifikation 3 zu lang')])),
-  addName1: nullable(string([maxLength(255, 'Zusatzname zu lang')])),
+  add_name1: nullable(string([maxLength(255, 'Zusatzname zu lang')])),
   comment: nullable(string([maxLength(255, 'Kommentar zu lang')])),
   in: string([
     minLength(1, 'Eingangseinheit zu kurz'),
@@ -583,10 +601,10 @@ const equivalentSchema = object({
     minLength(1, 'Quelle zu kurz'),
     maxLength(255, 'Quelle zu lang'),
   ]),
-  avgValue: number('Es muss ein Faktor angegeben werden.', [
+  avg_value: number('Es muss ein Faktor angegeben werden.', [
     minValue(0, 'Faktor muss größer als 0 sein'),
   ]),
-  monthlyValues: boolean(),
+  monthly_values: boolean(),
   jan: nullable(
     number([minValue(0, 'Faktor für Januar muss größer als 0 sein')]),
   ),
@@ -636,8 +654,8 @@ const selectedValue: Ref<EquivalentEntry> = ref(emptyEquivalent());
 
 // calculate avg value for the year
 watchEffect(() => {
-  if (selectedValue.value.monthlyValues) {
-    selectedValue.value.avgValue =
+  if (selectedValue.value.monthly_values) {
+    selectedValue.value.avg_value =
       Math.round(getAverageEquivalent(selectedValue.value) * 10000) / 10000;
   }
 });
@@ -648,7 +666,7 @@ const save = async () => {
     console.log(JSON.parse(JSON.stringify(selectedValue.value)));
 
     // set all monthly values to null if monthlyValues is false
-    if (!selectedValue.value.monthlyValues) {
+    if (!selectedValue.value.monthly_values) {
       selectedValue.value.jan = 0;
       selectedValue.value.feb = 0;
       selectedValue.value.mar = 0;
@@ -788,6 +806,17 @@ const csvDownload = async () => {
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
+};
+
+const requestPending = ref(false);
+const uploadCsv = async (event: any) => {
+  requestPending.value = true;
+  if (!event.files || event.files.length === 0) {
+    return;
+  }
+  const file = event.files[0];
+  await importCsvFile(file);
+  requestPending.value = false;
 };
 </script>
 

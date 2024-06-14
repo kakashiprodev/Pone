@@ -23,7 +23,7 @@
         </ProgressBar> -->
         <ProgressBarWithTarget
           :value="data.percentage"
-          :target-value="data.targetValue ?? undefined"
+          :target-value="data.target_value ?? undefined"
           :color="data.color ?? Config.colors.data2"
         >
           {{ round(toTons(data.value)) }}

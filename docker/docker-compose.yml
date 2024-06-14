@@ -1,0 +1,17 @@
+version: '3.8'
+services:
+  postgrest:
+    image: postgrest/postgrest:latest
+    container_name: ${APPNAME}-postgrest   
+    ports:
+      - "5434:3000"
+    environment:
+      PGRST_DB_URI: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/$POSTGRES_DB
+      PGRST_DB_SCHEMA: data
+      # PGRST_DB_ANON_ROLE: web_anon      
+      # PGRST_ROLE_CLAIM_KEY: '.email' => get "role" from the JWT token
+      # Here we will use a static role
+      PGRST_DB_ANON_ROLE: standard            
+      # go to https://xxx.eu.auth0.com/pem to get your public key
+      # then go to https://8gwifi.org/jwkconvertfunctions.jsp to convert it to a java object
+      PGRST_JWT_SECRET: ${POSTGREST_JWT_VALIDATION}
