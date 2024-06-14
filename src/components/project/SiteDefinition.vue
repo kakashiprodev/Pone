@@ -129,6 +129,8 @@ const addEntry = () => {
     id: 'new',
     name: '',
     project: global.selectedProject.id,
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
   };
 };
 
@@ -176,7 +178,7 @@ const cancel = () => {
 
 const init = async () => {
   while (global.isLoading) {
-    console.log('waiting for global store to load');
+    // console.log('waiting for global store to load');
     await new Promise((resolve) => setTimeout(resolve, 500));
   }
   console.log('global store loaded');

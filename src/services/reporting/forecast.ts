@@ -106,13 +106,13 @@ export function calculateEmissions(
       // check if an action exists for the year and the actual pointer month. if not use 0.
       const actionsEffect = actions
         .filter((action) => {
-          if (!action.finishedUntilPlanned || !action.relevant) {
+          if (!action.finished_until_planned || !action.relevant) {
             return false;
           }
-          const date = new Date(action.finishedUntilPlanned);
+          const date = new Date(action.finished_until_planned);
           return date.getFullYear() === year && date.getMonth() === month - 1;
         })
-        .reduce((acc, action) => acc + action.targetValueAbsolutPlanned, 0);
+        .reduce((acc, action) => acc + action.target_value_absolut_planned, 0);
 
       // add this value (part for one month) to the floating subtraction value
       actualSustractionValue += actionsEffect / 12;
@@ -141,13 +141,13 @@ export function calculateEmissions(
     // search again for all actions that are in this year
     const yearlyActionEffect = actions
       .filter((action) => {
-        if (!action.finishedUntilPlanned || !action.relevant) {
+        if (!action.finished_until_planned || !action.relevant) {
           return false;
         }
-        const date = new Date(action.finishedUntilPlanned);
+        const date = new Date(action.finished_until_planned);
         return date.getFullYear() === year;
       })
-      .reduce((acc, action) => acc + action.targetValueAbsolutPlanned, 0);
+      .reduce((acc, action) => acc + action.target_value_absolut_planned, 0);
 
     // actionbases only will be only set if new actions are done in this year
     // but also the first and the last year are needed to draw the graph

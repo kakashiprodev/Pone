@@ -86,10 +86,10 @@ const mapChartData = () => [
         x: action.name,
         y: [
           // if only "planned" or only "Is" is set, this ensures that the single point is displayed correctly
-          toReadableDate(action.finishedUntilPlanned) ||
-            toReadableDate(action.finishedUntilIs),
-          toReadableDate(action.finishedUntilIs) ||
-            toReadableDate(action.finishedUntilPlanned),
+          toReadableDate(action.finished_until_planned) ||
+            toReadableDate(action.finished_until_is),
+          toReadableDate(action.finished_until_is) ||
+            toReadableDate(action.finished_until_planned),
         ],
       };
     }),

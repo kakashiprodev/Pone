@@ -2,22 +2,15 @@
  * A simple toast service for PrimeVue
  * This is also a wrapper to easily use the toast service with a one-liner
  */
-
-import { app } from '../../main';
-
-const STD_LIFETIME = 3000;
+import { info as _info, error as _error, warn as _warn } from './../../main';
+const STD_LIFETIME = 5000;
 
 export function info(
   body: string,
   title: string = 'Info',
   duration: number = STD_LIFETIME,
 ): void {
-  app.config.globalProperties.$toast.add({
-    severity: 'success',
-    summary: title,
-    detail: body,
-    life: duration,
-  });
+  _info(body, title, duration);
 }
 
 export function error(
@@ -25,12 +18,7 @@ export function error(
   title: string = 'Error',
   duration: number = STD_LIFETIME,
 ): void {
-  app.config.globalProperties.$toast.add({
-    severity: 'error',
-    summary: title,
-    detail: body,
-    life: duration,
-  });
+  _error(body, title, duration);
 }
 
 export function warn(
@@ -38,10 +26,5 @@ export function warn(
   title: string = 'Warning',
   duration: number = STD_LIFETIME,
 ): void {
-  app.config.globalProperties.$toast.add({
-    severity: 'warn',
-    summary: title,
-    detail: body,
-    life: duration,
-  });
+  _warn(body, title, duration);
 }

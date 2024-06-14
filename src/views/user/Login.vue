@@ -6,41 +6,7 @@
       <Card>
         <template #header> Login </template>
         <template #content>
-          <div class="p-fluid m-auto">
-            <div class="p-field">
-              <label for="username">Benutzername</label>
-              <InputText class="mt-2" id="username" v-model="username" />
-            </div>
-            <div class="p-field mt-2">
-              <label for="password">Passwort</label>
-              <InputText
-                class="mt-2"
-                id="password"
-                type="password"
-                v-model="password"
-              />
-            </div>
-            <div class="w-full mt-5 flex justify-center">
-              <Button
-                @click="login"
-                :loading="loading"
-                class="mt-5"
-                label="Login"
-              />
-            </div>
-            <!-- Divider -->
-            <div class="w-full mt-5 flex justify-center">
-              <Divider class="mt-5" />
-            </div>
-            <div class="w-full mt-1 flex justify-center">
-              <img
-                src="./../../assets/ms-symbollockup_signin_dark.svg"
-                alt="Microsoft"
-                class="cursor-pointer"
-                @click="loginWithMs()"
-              />
-            </div>
-          </div>
+          <Button label="Login" @click="login" />
         </template>
       </Card>
     </div>
@@ -48,35 +14,12 @@
 </template>
 
 <script setup lang="ts">
-import { useRouter } from 'vue-router';
-import DataProvider from '../../services/dataprovider';
-import { Ref, ref } from 'vue';
-import { useGlobalStore } from '../../stores/global';
-const router = useRouter();
-const global = useGlobalStore();
-
-const username: Ref<string> = ref('');
-const password: Ref<string> = ref('');
-const loading = ref(false);
+import { useAuth0 } from '@auth0/auth0-vue';
+const { loginWithRedirect } = useAuth0();
 
 const login = async () => {
-  loading.value = true;
-  const loggedIn = await DataProvider.login(username.value, password.value);
-  if (loggedIn) {
-    router.push({ name: 'dashboard' });
-    await global.initializeStore();
-  }
-  loading.value = false;
-};
-
-const loginWithMs = async () => {
-  loading.value = true;
-  const loggedIn = await DataProvider.loginWithMicrosoft();
-  if (loggedIn) {
-    router.push({ name: 'dashboard' });
-    await global.initializeStore();
-  }
-  loading.value = false;
+  await loginWithRedirect();
+  console.log('login reached');
 };
 </script>
 
@@ -85,11 +28,6 @@ const loginWithMs = async () => {
   width: 100%;
   padding-left: 20%;
   padding-right: 20%;
-  /* background-image: url(../assets/green-industry-2.webp);
-  opacity: 0.6;
-  background-repeat: no-repeat;
-  background-size: 100%;
-  background-position: bottom; */
   height: 100%;
 }
 

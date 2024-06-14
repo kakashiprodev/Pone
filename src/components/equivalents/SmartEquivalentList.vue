@@ -72,7 +72,11 @@
     :rows="rowsPerPage"
     v-if="true"
   >
-    <Column selectionMode="single" headerStyle="width: 3rem"></Column>
+    <Column
+      selectionMode="single"
+      headerStyle="width: 3rem"
+      v-if="showChooseColumn"
+    ></Column>
     <!-- <Column field="id" header="Id"></Column> -->
     <Column
       field="scope"
@@ -108,7 +112,7 @@
     >
     </Column>
     <Column
-      field="addName1"
+      field="add_name1"
       header="Zusatzname"
       v-if="_visibleColumns.includes('addName1')"
       sortable
@@ -133,7 +137,7 @@
       sortable
     ></Column>
     <Column
-      field="avgValue"
+      field="avg_value"
       header="Faktor"
       v-if="_visibleColumns.includes('avgValue')"
     ></Column>
@@ -251,7 +255,7 @@ const filterEquivalents = () => {
     }
     // addName1
     if (filter.value.addName1 && filter.value.addName1.length > 0) {
-      if (!filter.value.addName1.includes(equivalent.addName1)) {
+      if (!filter.value.addName1.includes(equivalent.add_name1)) {
         return false;
       }
     }
@@ -289,7 +293,7 @@ const filterEquivalents = () => {
         !equivalent.specification1.toLowerCase().includes(filterNameLower) &&
         !equivalent.specification2.toLowerCase().includes(filterNameLower) &&
         !equivalent.specification3.toLowerCase().includes(filterNameLower) &&
-        !equivalent.addName1.toLowerCase().includes(filterNameLower)
+        !equivalent.add_name1.toLowerCase().includes(filterNameLower)
       ) {
         return false;
       }
@@ -366,6 +370,11 @@ const props = defineProps({
     type: Boolean,
     required: false,
     default: false,
+  },
+  showChooseColumn: {
+    type: Boolean,
+    required: false,
+    default: true,
   },
 });
 if (props.visibleColumns) {

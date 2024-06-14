@@ -58,6 +58,48 @@ export interface GlobalState {
   targetOnSiteForProject: TargetEntry[];
 }
 
+export interface GlobalActions {
+  initializeStore: () => Promise<void>;
+  // equivalents
+  refreshEquivalents: (force?: boolean) => Promise<void>;
+  addEquivalent: (equivalent: EquivalentEntry) => Promise<EquivalentEntry>;
+  updateEquivalent: (equivalent: EquivalentEntry) => Promise<EquivalentEntry>;
+  dropEquivalent: (equivalent: EquivalentEntry) => Promise<void>;
+  // projects
+  refreshProjects: (force?: boolean) => Promise<void>;
+  addProject: (project: ProjectEntry) => Promise<ProjectEntry>;
+  updateProject: (project: ProjectEntry) => Promise<ProjectEntry>;
+  dropProject: (project: ProjectEntry) => Promise<void>;
+  changeProject: (project: ProjectEntry) => Promise<void>;
+  // targets
+  refreshTargets: () => Promise<void>;
+  sortTargets: () => void;
+  addTarget: (target: TargetEntry) => Promise<TargetEntry>;
+  updateTarget: (target: TargetEntry) => Promise<TargetEntry>;
+  dropTarget: (target: TargetEntry) => Promise<void>;
+  copyTargets: (fromId: string, toId: string) => Promise<{ copied: number }>;
+  // reports
+  refreshReports: (force?: boolean) => Promise<void>;
+  getNewReport: () => ReportEntry;
+  ensureLatestReport: () => Promise<void>;
+  addReport: (report: ReportEntry) => Promise<ReportEntry>;
+  dropReport: (report: ReportEntry) => Promise<void>;
+  updateReport: (report: ReportEntry) => Promise<ReportEntry>;
+  changeReport: (report?: ReportEntry) => Promise<void>;
+  // sites
+  addSite: (site: SiteEntry) => Promise<SiteEntry>;
+  updateSite: (site: SiteEntry) => Promise<SiteEntry>;
+  dropSite: (site: SiteEntry) => Promise<void>;
+  ensureSiteIsSelected: () => Promise<void>;
+  changeSite: (site: SiteEntry) => Promise<void>;
+  // facilities
+  refreshFacilities: () => Promise<void>;
+  // ui
+  changeTheme: (theme: 'light' | 'dark') => void;
+  saveUserSettings: () => void;
+  getUserSettings: () => void;
+}
+
 export const useGlobalStore = defineStore('global', {
   state: (): GlobalState => ({
     isLoading: true,
@@ -118,16 +160,18 @@ export const useGlobalStore = defineStore('global', {
       await this.refreshProjects();
       // check the last selected entries if they are still valid
       if (
-        user.lastSelectedProject != null &&
-        user.lastSelectedProject !== '' &&
+        user.last_selected_project != null &&
+        user.last_selected_project !== '' &&
         this.projects.length > 0 &&
-        this.projects.find((p) => p.id === user.lastSelectedProject) != null
+        this.projects.find((p) => p.id === user.last_selected_project) != null
       ) {
         console.log(
           'select last selected project with id',
-          user.lastSelectedProject,
+          user.last_selected_project,
         );
-        const p = this.projects.find((p) => p.id === user.lastSelectedProject);
+        const p = this.projects.find(
+          (p) => p.id === user.last_selected_project,
+        );
         if (p) this.selectedProject = p;
       } else {
         // select another project or create a new one
@@ -139,13 +183,15 @@ export const useGlobalStore = defineStore('global', {
       this.sites = await dataprovider.readSitesForProject();
       await this.ensureSiteIsSelected();
 
-      if (user.lastSelectedSite != null && user.lastSelectedSite !== '') {
-        console.log('select last selected site with id', user.lastSelectedSite);
-        const s = this.sites.find((s) => s.id === user.lastSelectedSite);
+      if (user.last_selected_site != null && user.last_selected_site !== '') {
+        console.log(
+          'select last selected site with id',
+          user.last_selected_site,
+        );
+        const s = this.sites.find((s) => s.id === user.last_selected_site);
         if (s) this.selectedSite = s;
       } else {
         // select another site or create a new one
-        console.log('ensure site is selected');
         await this.ensureSiteIsSelected();
       }
       // then refresh facilities
@@ -153,12 +199,15 @@ export const useGlobalStore = defineStore('global', {
 
       // then load reports for the selected project and site
       await this.refreshReports(true);
-      if (user.lastSelectedReport != null && user.lastSelectedReport !== '') {
+      if (
+        user.last_selected_report != null &&
+        user.last_selected_report !== ''
+      ) {
         console.log(
           'select last selected report with id',
-          user.lastSelectedReport,
+          user.last_selected_report,
         );
-        const r = this.reports.find((r) => r.id === user.lastSelectedReport);
+        const r = this.reports.find((r) => r.id === user.last_selected_report);
         if (r) this.selectedReport = r;
       } else {
         // load the latest report
@@ -317,7 +366,9 @@ export const useGlobalStore = defineStore('global', {
           id: 'new',
           name: 'Mein erstes Projekt',
           logo: '',
-          logoId: null,
+          logo_id: null,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
         });
         this.selectedProject = this.projects[0];
         this.targetOnSiteForProject = [];
@@ -435,8 +486,9 @@ export const useGlobalStore = defineStore('global', {
       const user = await dataprovider.getUser();
       await dataprovider.updateUser({
         ...user,
-        projects: [...user.projects, created.id],
       });
+      // the user will be added to the project automatically in the backend
+
       this.projects.push(created);
       return created;
     },
@@ -497,9 +549,9 @@ export const useGlobalStore = defineStore('global', {
       const user = await dataprovider.getUser();
       await dataprovider.updateUser({
         ...user,
-        lastSelectedProject: this.selectedProject?.id ?? '',
-        lastSelectedSite: this.selectedSite?.id ?? '',
-        lastSelectedReport: this.selectedReport?.id ?? '',
+        last_selected_project: this.selectedProject?.id ?? '',
+        last_selected_site: this.selectedSite?.id ?? '',
+        last_selected_report: this.selectedReport?.id ?? '',
       });
     },
 
@@ -519,8 +571,8 @@ export const useGlobalStore = defineStore('global', {
       const user = await dataprovider.getUser();
       await dataprovider.updateUser({
         ...user,
-        lastSelectedSite: this.selectedSite?.id ?? '',
-        lastSelectedReport: this.selectedReport?.id ?? '',
+        last_selected_project: this.selectedSite?.id ?? '',
+        last_selected_report: this.selectedReport?.id ?? '',
       });
     },
 
@@ -550,20 +602,22 @@ export const useGlobalStore = defineStore('global', {
         id: 'new',
         site: this.selectedSite?.id ?? '',
         year: new Date().getFullYear(),
-        companyName: '',
-        companyStreet: '',
-        companyPostal: '',
-        companyCity: '',
-        companyCountry: '',
-        companyDomain: '',
-        contactName: '',
-        contactTelephone: '',
-        contactEmail: '',
-        contactDomain: '',
-        countEmployees: 0,
-        businessTurnover: 0,
-        baseYear: new Date().getFullYear(),
-        sumEmissions: 0,
+        company_name: '',
+        company_street: '',
+        company_postal: '',
+        company_city: '',
+        company_country: '',
+        company_domain: '',
+        contact_name: '',
+        contact_telephone: '',
+        contact_email: '',
+        contact_domain: '',
+        count_employees: 0,
+        business_turnover: 0,
+        base_year: new Date().getFullYear(),
+        sum_emissions: 0,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
       };
       return report;
     },
@@ -644,7 +698,7 @@ export const useGlobalStore = defineStore('global', {
       const user = await dataprovider.getUser();
       await dataprovider.updateUser({
         ...user,
-        lastSelectedReport: this.selectedReport?.id ?? '',
+        last_selected_report: this.selectedReport?.id ?? '',
       });
     },
 
@@ -694,6 +748,8 @@ export const useGlobalStore = defineStore('global', {
           id: 'new',
           name: 'Haupstandort',
           project: this.selectedProject?.id ?? '',
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
         });
         this.selectedSite = this.sites[0];
       } else {

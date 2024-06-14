@@ -8,15 +8,15 @@
     <template #content>
       <div class="report-section">
         <h3 class="report-section__heading mb-2">
-          {{ global.selectedReport.companyName }}
+          {{ global.selectedReport.company_name }}
         </h3>
         <div class="report-section__address mb-4">
           <p>
-            {{ global.selectedReport.companyStreet }},
-            {{ global.selectedReport.companyPostal }}
-            {{ global.selectedReport.companyCity }}
+            {{ global.selectedReport.company_street }},
+            {{ global.selectedReport.company_postal }}
+            {{ global.selectedReport.company_city }}
           </p>
-          <p>{{ global.selectedReport.companyCountry }}</p>
+          <p>{{ global.selectedReport.company_country }}</p>
         </div>
         <p class="report-row">
           <span>Jahr:</span> <span>{{ global.selectedReport.year }}</span>
@@ -24,7 +24,7 @@
 
         <p class="report-row">
           <span>Branche:</span>
-          <span>{{ global.selectedReport.companyDomain }}</span>
+          <span>{{ global.selectedReport.company_domain }}</span>
         </p>
       </div>
 
@@ -33,20 +33,20 @@
         <p class="report-row">
           <span>Name:</span>
           <span
-            ><span>{{ global.selectedReport.contactName }}</span></span
+            ><span>{{ global.selectedReport.contact_name }}</span></span
           >
         </p>
         <p class="report-row">
           <span>Telefon:</span>
-          <span>{{ global.selectedReport.contactTelephone }}</span>
+          <span>{{ global.selectedReport.contact_telephone }}</span>
         </p>
         <p class="report-row">
           <span>E-Mail:</span>
-          <span>{{ global.selectedReport.contactEmail }}</span>
+          <span>{{ global.selectedReport.contact_email }}</span>
         </p>
         <p class="report-row">
           <span>Abteilung:</span>
-          <span>{{ global.selectedReport.contactDomain }}</span>
+          <span>{{ global.selectedReport.contact_domain }}</span>
         </p>
       </div>
 
@@ -54,15 +54,15 @@
         <h3>Unternehmenszahlen</h3>
         <p class="report-row">
           <span>Anzahl Mitarbeiter:</span>
-          <span>{{ global.selectedReport.countEmployees }}</span>
+          <span>{{ global.selectedReport.count_employees }}</span>
         </p>
         <p class="report-row">
           <span>Jahresumsatz:</span>
-          <span>{{ global.selectedReport.businessTurnover }}</span>
+          <span>{{ global.selectedReport.business_turnover }}</span>
         </p>
         <p class="report-row">
           <span>Referenzjahr:</span>
-          <span>{{ global.selectedReport.baseYear }}</span>
+          <span>{{ global.selectedReport.base_year }}</span>
         </p>
       </div>
     </template>
