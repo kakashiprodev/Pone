@@ -1,13 +1,14 @@
 import { createApp } from 'vue';
 import App from './App.vue';
 import { router } from './router';
-import { createPinia } from 'pinia';
 import ToastService from 'primevue/toastservice';
 import PrimeVue from 'primevue/config';
 import ConfirmationService from 'primevue/confirmationservice';
 import Tooltip from 'primevue/tooltip';
-import { GlobalActions, GlobalState, useGlobalStore } from './stores/global';
-import { InputsActions, InputsState, useInputStore } from './stores/inputs';
+import { useGlobalStore } from './stores/global';
+import { useInputStore } from './stores/inputs';
+import { useAuthStore } from './stores/auth';
+import { createPinia } from 'pinia';
 
 // Auth0
 import { createAuth0 } from '@auth0/auth0-vue';
@@ -55,48 +56,27 @@ import MeterGroup from 'primevue/metergroup';
 
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import './style.css';
-import { AuthStoreActions, AuthStoreState, useAuthStore } from './stores/auth';
-import keycloakService from './services/provider/keycloak';
-import piniaPluginPersistedstate from 'pinia-plugin-persistedstate';
 
 const pinia = createPinia();
-pinia.use(piniaPluginPersistedstate);
-
-// const AuthStorePlugin = {
-//   async install(_: any, option: any) {
-//     const store = useAuthStore(option.pinia);
-//     // // Global store
-//     // app.config.globalProperties.$authStore = store;
-//     // Store keycloak user data into store
-//     await keycloakService.CallInitStore(store);
-//   },
-// };
-
-// export let app: any;
-export let globalStore: GlobalState & GlobalActions;
-export let inputStore: InputsState & InputsActions;
-export let authStore: AuthStoreState & AuthStoreActions;
 
 export let info = (
   _body: string,
   _title: string = 'Info',
   _duration: number,
-) => { };
+) => {};
 export let error = (
   _body: string,
   _title: string = 'Error',
   _duration: number,
-) => { };
+) => {};
 export let warn = (
   _body: string,
   _title: string = 'Warning',
   _duration: number,
-) => { };
-
+) => {};
 
 const app = createApp(App)
   .use(pinia)
-  // .use(AuthStorePlugin, { pinia })
   .use(router)
   .use(PrimeVue)
   .use(ConfirmationService)
@@ -108,8 +88,8 @@ const app = createApp(App)
       clientId: import.meta.env.VITE_AUTH0_CLIENT_ID,
       authorizationParams: {
         redirect_uri: import.meta.env.VITE_AUTH0_CALLBACK_URL,
-      }
-    })
+      },
+    }),
   )
 
   .component('MultiSelect', MultiSelect)
@@ -150,9 +130,9 @@ const app = createApp(App)
 
   .directive('tooltip', Tooltip);
 
-globalStore = useGlobalStore();
-inputStore = useInputStore();
-authStore = useAuthStore();
+export const globalStore = useGlobalStore();
+export const inputStore = useInputStore();
+export const authStore = useAuthStore();
 
 info = (body: string, title: string = 'Info', duration: number): void =>
   app.config.globalProperties.$toast.add({

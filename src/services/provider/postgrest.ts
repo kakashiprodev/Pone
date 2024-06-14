@@ -26,7 +26,17 @@ export default class DataProvider {
   private postgrest: PostgrestClient;
 
   constructor() {
-    this.postgrest = new PostgrestClient(REST_URL);
+    this.postgrest = new PostgrestClient(REST_URL, {
+      fetch: (url: any, options: any = {}) => {
+        return fetch(url, {
+          ...options,
+          headers: {
+            ...options.headers,
+            Authorization: `Bearer ${authStore.user.token}`,
+          },
+        });
+      },
+    });
   }
 
   initPostgrestClient() {
@@ -102,10 +112,6 @@ export default class DataProvider {
       globalStore.isLoggedIn = false;
       return false;
     }
-  }
-
-  async logout() {
-    await authStore.logout();
   }
 
   async createProject(data: ProjectEntry): Promise<ProjectEntry> {

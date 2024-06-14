@@ -101,9 +101,6 @@ export interface GlobalActions {
 }
 
 export const useGlobalStore = defineStore('global', {
-  // non persistent store
-  persist: false,
-
   state: (): GlobalState => ({
     isLoading: true,
     isLoggedIn: false,

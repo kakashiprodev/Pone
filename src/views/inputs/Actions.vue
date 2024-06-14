@@ -545,10 +545,10 @@ const actionEntrySchema = object({
     maxLength(4000, 'Beschreibung zu lang'),
   ]),
   target_value_absolut_planned: number('Kein Ziel angegeben', [
-    minValue(0, 'Ziel muss größer als 0 sein'),
+    minValue(-1, 'Ziel muss größer als 0 sein'),
   ]),
   target_value_absolut_is: number('Kein Ziel angegeben', [
-    minValue(0, 'Ziel muss größer als 0 sein'),
+    minValue(-1, 'Ziel muss größer als 0 sein'),
   ]),
   description_target_value: string(
     'Keine Beschreibung des Zielwerts angegeben',
