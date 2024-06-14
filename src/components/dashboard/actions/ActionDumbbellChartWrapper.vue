@@ -15,7 +15,7 @@
 <script setup lang="ts">
 import { ActionWithPercentage } from '@/services/types.ts';
 import { computed, ref } from 'vue';
-import { toChartAxisDate } from '@/services/pipes';
+import { toReadableDate } from '@/services/pipes';
 import config from '@/config';
 
 const CHART_TYPE = 'rangeBar';

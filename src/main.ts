@@ -54,6 +54,7 @@ import Sidebar from 'primevue/sidebar';
 import Avatar from 'primevue/avatar';
 import FileUpload from 'primevue/fileupload';
 import MeterGroup from 'primevue/metergroup';
+import RadioButton from 'primevue/radiobutton';
 
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import './style.css';
@@ -129,6 +130,7 @@ const app = createApp(App)
   .component('Avatar', Avatar)
   .component('FileUpload', FileUpload)
   .component('MeterGroup', MeterGroup)
+  .component('RadioButton', RadioButton)
 
   .directive('tooltip', Tooltip);
 

@@ -58,29 +58,16 @@
       <div class="report-section">
         <h3>{{ $t('report.companyNumbers') }}</h3>
         <p class="report-row">
-          <<<<<<< HEAD
-          <span>Anzahl Mitarbeiter:</span>
+          <span>{{ $t('report.countEmployees') }}:</span>
           <span>{{ global.selectedReport.count_employees }}</span>
         </p>
         <p class="report-row">
-          <span>Jahresumsatz:</span>
+          <span>{{ $t('report.businessTurnover') }}:</span>
           <span>{{ global.selectedReport.business_turnover }}</span>
         </p>
         <p class="report-row">
-          <span>Referenzjahr:</span>
-          <span>{{ global.selectedReport.base_year }}</span>
-          =======
-          <span>{{ $t('report.countEmployees') }}:</span>
-          <span>{{ global.selectedReport.countEmployees }}</span>
-        </p>
-        <p class="report-row">
-          <span>{{ $t('report.businessTurnover') }}:</span>
-          <span>{{ global.selectedReport.businessTurnover }}</span>
-        </p>
-        <p class="report-row">
           <span>{{ $t('report.refYear') }}:</span>
-          <span>{{ global.selectedReport.baseYear }}</span>
-          >>>>>>> feature/add-i18n
+          <span>{{ global.selectedReport.base_year }}</span>
         </p>
       </div>
     </template>

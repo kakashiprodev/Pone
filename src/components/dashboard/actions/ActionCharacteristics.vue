@@ -7,7 +7,7 @@
       <span v-html="action.description_after"></span>
     </Panel>
     <Panel :header="$t('actions.charTable.targetValuePlanned')" class="mb-3">
-      {{ action.targetValueAbsolut_planned }} kg-CO<sub>2</sub>/Jahr
+      {{ action.target_value_absolut_planned }} kg-CO<sub>2</sub>/Jahr
     </Panel>
     <Panel :header="$t('actions.charTable.targetValueIs')" class="mb-3">
       {{ action.target_value_absolut_is }} kg-CO<sub>2</sub>/{{
@@ -19,7 +19,7 @@
       class="mb-3"
       toggleable
     >
-      <span v-html="action.descriptionTargetValue"></span>
+      <span v-html="action.description_target_value"></span>
     </Panel>
     <Panel :header="$t('actions.charTable.responsible')" class="mb-3">
       <span v-html="action.responsible"></span>
@@ -53,10 +53,10 @@
       class="mb-3"
       toggleable
     >
-      <span v-html="action.descriptionCosts.toLocaleString()"></span>
+      <span v-html="action.description_costs.toLocaleString()"></span>
     </Panel>
     <Panel :header="$t('actions.charTable.avoidance_costs')" class="mb-3">
-      {{ action.avoidanceCosts.toLocaleString() }}
+      {{ action.avoidance_costs.toLocaleString() }}
     </Panel>
   </div>
 </template>

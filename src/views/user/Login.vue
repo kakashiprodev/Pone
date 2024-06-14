@@ -1,3 +1,7 @@
+<!--
+  This page is not really used or needed since we use Auth0
+-->
+
 <template>
   <div class="login">
     <h1 class="welcome-text">{{ $t('login.welcome') }}</h1>
