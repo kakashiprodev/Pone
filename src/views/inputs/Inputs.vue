@@ -594,57 +594,38 @@ import {
   getSumForInput,
   getCalculationSteps,
 } from '../../services/reporting/index';
-import {
-  parse,
-  string,
-  object,
-  number,
-  minLength,
-  maxLength,
-  minValue,
-  maxValue,
-  nullable,
-  boolean,
-} from 'valibot';
 import { round, roundStringWithDecimals, toTons } from '../../services/pipes';
 import { MeterItem } from 'primevue/metergroup';
 import { getMonochromeColorPalette } from '@/services/colors';
 import { globalStore, inputStore } from '@/main';
+import * as v from 'valibot';
 
 const route = useRoute();
 
 // input validation
-const inputEntrySchema = object({
-  id: string('Die ID scheint korrupt zu sein.'),
-  name: string([minLength(1, 'Name zu kurz'), maxLength(255, 'Name zu lang')]),
-  scope: number([
-    minValue(1, 'Scope muss zwischen 1 und 3 liegen'),
-    maxValue(3, 'Scope muss zwischen 1 und 3 liegen'),
-  ]),
-  comment: string([maxLength(255, 'Kommentar zu lang')]),
-  raw_value: number('Ein Wert muss angegeben werden.'),
-  parent: nullable(string([maxLength(255, 'Referenz auf parent zu lang')])),
-  monthly_values: boolean('monthlyValues muss ein boolean sein.'),
-  raw_value_jan: number('rawValueJan muss ein number sein.'),
-  raw_value_feb: number('rawValueFeb muss ein number sein.'),
-  raw_value_mar: number('rawValueMar muss ein number sein.'),
-  raw_value_apr: number('rawValueApr muss ein number sein.'),
-  raw_value_may: number('rawValueMay muss ein number sein.'),
-  raw_value_jun: number('rawValueJun muss ein number sein.'),
-  raw_value_jul: number('rawValueJul muss ein number sein.'),
-  raw_value_aug: number('rawValueAug muss ein number sein.'),
-  raw_value_sep: number('rawValueSep muss ein number sein.'),
-  raw_value_oct: number('rawValueOct muss ein number sein.'),
-  raw_value_nov: number('rawValueNov muss ein number sein.'),
-  raw_value_dec: number('rawValueDec muss ein number sein.'),
-  equivalent: nullable(
-    string([maxLength(255, 'Referenz auf equivalents zu lang')]),
-  ),
-  report: string([
-    minLength(1, 'Referenz auf Report ist inkorrekt'),
-    maxLength(255, 'Referenz auf Report ist inkorrekt'),
-  ]),
-  category: nullable(string([maxLength(255, 'Kategorie zu lang')])),
+const inputEntrySchema = v.object({
+  id: v.pipe(v.string(), v.minLength(1), v.maxLength(255)),
+  name: v.pipe(v.string(), v.minLength(1), v.maxLength(255)),
+  scope: v.pipe(v.number(), v.minValue(1), v.maxValue(3)),
+  comment: v.pipe(v.string(), v.maxLength(255)),
+  raw_value: v.pipe(v.number(), v.minValue(0)),
+  parent: v.nullable(v.pipe(v.string(), v.maxLength(255))),
+  monthly_values: v.boolean(),
+  raw_value_jan: v.pipe(v.number(), v.minValue(0)),
+  raw_value_feb: v.pipe(v.number(), v.minValue(0)),
+  raw_value_mar: v.pipe(v.number(), v.minValue(0)),
+  raw_value_apr: v.pipe(v.number(), v.minValue(0)),
+  raw_value_may: v.pipe(v.number(), v.minValue(0)),
+  raw_value_jun: v.pipe(v.number(), v.minValue(0)),
+  raw_value_jul: v.pipe(v.number(), v.minValue(0)),
+  raw_value_aug: v.pipe(v.number(), v.minValue(0)),
+  raw_value_sep: v.pipe(v.number(), v.minValue(0)),
+  raw_value_oct: v.pipe(v.number(), v.minValue(0)),
+  raw_value_nov: v.pipe(v.number(), v.minValue(0)),
+  raw_value_dec: v.pipe(v.number(), v.minValue(0)),
+  equivalent: v.nullable(v.pipe(v.string(), v.maxLength(255))),
+  report: v.pipe(v.string(), v.minLength(1), v.maxLength(255)),
+  category: v.nullable(v.pipe(v.string(), v.maxLength(255))),
 });
 
 // inner state
@@ -866,7 +847,7 @@ const computedSumCalculation: ComputedRef<string> = computed(() => {
 const save = async () => {
   try {
     // validate
-    parse(inputEntrySchema, selectedValue.value);
+    v.parse(inputEntrySchema, selectedValue.value);
 
     if (selectedValue.value.id === 'new') {
       const toCreate = clone(selectedValue.value);

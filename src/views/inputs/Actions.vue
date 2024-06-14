@@ -65,7 +65,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
-import GenericForm from '@/components/actions/GenericForm.vue';
+import GenericForm from '@/components/forms/GenericForm.vue';
 import { useGlobalStore } from '../../stores/global';
 import { ActionEntry } from '../../services/types';
 import dataprovider from '../../services/dataprovider';

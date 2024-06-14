@@ -21,35 +21,13 @@
       <Button
         icon="fa-solid fa-plus"
         @click="
-          selectedValue = clone(emptyFacility);
+          selectedValue = getEmtypFacility(global.selectedSite?.id ?? '');
           showDialog = true;
         "
         class="mr-1"
       />
     </template>
   </Toolbar>
-
-  <!-- Info Dialog for description -->
-  <Dialog
-    id="info-dialog"
-    v-model:visible="showDescriptionDialog"
-    modal
-    :header="$t('facilities.description')"
-    style="width: 45%"
-  >
-    <Editor
-      class="w-full"
-      v-model="selectedValue.description"
-      editorStyle="height: 160px; width: 100%;"
-      :readonly="true"
-    >
-      <template v-slot:toolbar>
-        <span>
-          <span v-show="false"> dummy </span>
-        </span>
-      </template>
-    </Editor>
-  </Dialog>
 
   <!-- edit and new modal dialog -->
   <Dialog
@@ -67,155 +45,34 @@
       'h-screen': windowWidth < 990,
     }"
   >
-    <div class="flex flex-col gap-4">
-      <!-- Naming -->
-      <div class="flex flex-col gap-2">
-        <label for="facility-name">{{ $t('facilities.name') }}</label>
-        <InputText
-          class="w-full"
-          v-model="selectedValue.name"
-          id="facility-name"
-        />
-        <InlineMessage
-          v-if="global.showTooltips"
-          class="w-full mt-1"
-          severity="info"
-        >
-          {{ $t('facilities.nameInline') }}
-        </InlineMessage>
-      </div>
-      <div class="flex flex-col gap-2">
-        <label for="facility-manufacturer">{{
-          $t('facilities.manufacturer')
-        }}</label>
-        <InputText
-          class="w-full"
-          v-model="selectedValue.manufacturer"
-          id="facility-manufacturer"
-        />
-        <InlineMessage
-          v-if="global.showTooltips"
-          class="w-full mt-1"
-          severity="info"
-        >
-          {{ $t('facilities.manufacturerInline') }}
-        </InlineMessage>
-      </div>
-      <div class="flex flex-col gap-2">
-        <label for="facility-model">{{ $t('facilities.model') }}</label>
-        <InputText
-          class="w-full"
-          v-model="selectedValue.model"
-          id="facility-model"
-        />
-        <InlineMessage
-          v-if="global.showTooltips"
-          class="w-full mt-1"
-          severity="info"
-        >
-          {{ $t('facilities.modelInline') }}
-        </InlineMessage>
-      </div>
-
-      <div class="flex flex-col gap-2">
-        <label for="facility-model">{{ $t('facilities.description') }}</label>
-        <Editor
-          class="w-full"
-          v-model="selectedValue.description"
-          id="facility-description"
-          editorStyle="height: 80px"
-          :readonly="false"
-        />
-        <InlineMessage
-          v-if="global.showTooltips"
-          class="w-full mt-1"
-          severity="info"
-        >
-          {{ $t('facilities.descriptionInline') }}
-        </InlineMessage>
-      </div>
-
-      <div class="flex flex-col gap-2">
-        <label for="facility-shutdownDate">{{
-          $t('facilities.facilityShutdownDate')
-        }}</label>
-        <Calendar
-          v-model="selectedValue.shutdown_date"
-          view="month"
-          dateFormat="mm/yy"
-          class="w-full"
-        />
-        <InlineMessage
-          v-if="global.showTooltips"
-          class="w-full mt-1"
-          severity="info"
-        >
-          {{ $t('facilities.facilityShutdownDateInline') }}
-        </InlineMessage>
-      </div>
-
-      <div>
-        <Button
-          :label="
-            selectedValue.id === 'new'
-              ? $t('facilities.create')
-              : $t('facilities.save')
-          "
-          @click="save"
-        />
-      </div>
+    <GenericForm :definition="formEntries" v-model="selectedValue" />
+    <div>
+      <Button
+        :label="
+          selectedValue.id === 'new'
+            ? $t('facilities.create')
+            : $t('facilities.save')
+        "
+        @click="save"
+      />
     </div>
   </Dialog>
 
   <ConfirmPopup></ConfirmPopup>
-  <DataTable
-    v-if="data.length > 0"
-    :value="filteredData"
-    class="cst-no-hover text-sm"
-    :showGridlines="false"
-  >
-    <!-- <Column field="id" header="ID"></Column> -->
-    <Column field="name" :header="$t('facilities.table.name')">
-      <template #body="{ data }">
-        <Chip class="text-sm">{{ data.name }}</Chip>
-      </template>
-    </Column>
-    <Column
-      field="manufacturer"
-      :header="$t('facilities.table.manufacturer')"
-    ></Column>
-    <Column field="model" :header="$t('facilities.table.model')"></Column>
-    <Column :header="$t('facilities.table.description')">
-      <template #body="{ data }">
-        <Button
-          icon="fa-solid fa-info-circle"
-          @click="showDescription(data)"
-        ></Button>
-      </template>
-    </Column>
-
-    <Column header="">
-      <template #body="{ data }">
-        <div class="flex">
-          <Button icon="fa-solid fa-table-list" @click="openFacility(data)" />
-          <Button
-            icon="fa-solid fa-edit"
-            class="ml-1"
-            @click="
-              selectedValue = data;
-              originalValue = clone(data);
-              showDialog = true;
-            "
-          />
-          <Button
-            icon="fa-solid fa-trash"
-            class="ml-1"
-            @click="deleteEntry(data, $event)"
-          />
-        </div>
-      </template>
-    </Column>
-  </DataTable>
+  <FacilityList
+    :facilities="data"
+    :filter="filter"
+    :showOnlyActive="onlyActive"
+    v-model:triggerRefresh="triggerRefresh"
+    @delete="deleteEntry"
+    @edit="
+      (data: FacilityEntry) => {
+        selectedValue = data;
+        originalValue = clone(data);
+        showDialog = true;
+      }
+    "
+  />
 </template>
 
 <script setup lang="ts">
@@ -226,8 +83,14 @@ import { useRouter } from 'vue-router';
 import { useGlobalStore } from '../../stores/global';
 import { error, info } from '../../services/ui/toast';
 import { useConfirm } from 'primevue/useconfirm';
-// import { getSumForInput, getCalculationSteps } from "./../services/reporting";
-import { parse, string, object, minLength, maxLength } from 'valibot';
+import * as v from 'valibot';
+import { useI18n } from 'vue-i18n';
+import { getEmtypFacility } from '@/factory/facility';
+import GenericForm from '@/components/forms/GenericForm.vue';
+import { GenericFormEntry } from '@/services/types/form';
+import FacilityList from '@/components/facilities/FacilityList.vue';
+
+const { t } = useI18n();
 
 // load global references
 const router = useRouter();
@@ -243,92 +106,57 @@ if (!global.selectedReport && global.isLoggedIn) {
 }
 
 // input validation
-const facilityEntrySchema = object({
-  id: string('Die ID scheint korrupt zu sein.'),
-  name: string([minLength(1, 'Name zu kurz'), maxLength(255, 'Name zu lang')]),
-  manufacturer: string([
-    minLength(1, 'Hersteller zu kurz'),
-    maxLength(255, 'Hersteller zu lang'),
-  ]),
-  model: string([maxLength(255, 'Modell zu lang')]),
-  description: string([maxLength(255, 'Beschreibung ist zu lang')]),
+const facilityEntrySchema = v.object({
+  id: v.pipe(v.string(), v.minLength(1), v.maxLength(255)),
+  name: v.pipe(v.string(), v.minLength(1), v.maxLength(255)),
+  manufacturer: v.pipe(v.string(), v.minLength(1), v.maxLength(255)),
+  model: v.pipe(v.string(), v.maxLength(255)),
+  description: v.pipe(v.string(), v.maxLength(255)),
 });
+
+const formEntries: GenericFormEntry[] = [
+  {
+    label: t('facilities.name') + '*',
+    key: 'name',
+    type: 'text',
+    required: true,
+    validation: v.pick(facilityEntrySchema, ['name']),
+  },
+  {
+    label: t('facilities.manufacturer') + '*',
+    key: 'manufacturer',
+    type: 'text',
+    required: true,
+    validation: v.pick(facilityEntrySchema, ['manufacturer']),
+  },
+  {
+    label: t('facilities.model'),
+    key: 'model',
+    type: 'text',
+    validation: v.pick(facilityEntrySchema, ['model']),
+  },
+  {
+    label: t('facilities.description'),
+    key: 'description',
+    type: 'textarea',
+    validation: v.pick(facilityEntrySchema, ['description']),
+  },
+];
 
 // main data for table
 const data: ComputedRef<FacilityEntry[]> = computed(() => global.facilities);
-const filteredData: Ref<FacilityEntry[]> = ref([]);
-
-// filter data
 const filter = ref('');
 const onlyActive = ref(true);
-
-const filterData = () => {
-  let filtered = data.value;
-  if (filter.value !== '') {
-    filtered = data.value.filter((item) => {
-      return (
-        item.name.toLowerCase().includes(filter.value.toLowerCase()) ||
-        item.manufacturer.toLowerCase().includes(filter.value.toLowerCase()) ||
-        item.model?.toLowerCase().includes(filter.value.toLowerCase()) ||
-        item.description?.toLowerCase().includes(filter.value.toLowerCase())
-      );
-    });
-  }
-  // filter for active
-  filtered = filtered.filter((item) => {
-    if (onlyActive.value === false) {
-      return true;
-    }
-    return item.shutdown_date == null || item.shutdown_date === '';
-  });
-  filteredData.value = filtered;
-};
-watch(
-  () => filter.value,
-  () => {
-    filterData();
-  },
-);
-watch(
-  () => onlyActive.value,
-  () => {
-    filterData();
-  },
-);
 
 // new and edit dialog
 const showDialog = ref(false);
 
-const emptyFacility: FacilityEntry = {
-  id: 'new',
-  name: '',
-  manufacturer: '',
-  model: '',
-  description: '',
-  site: global.selectedSite?.id ?? '',
-  shutdown_date: null,
-  created_at: new Date().toISOString(),
-  updated_at: new Date().toISOString(),
-};
-
-const selectedValue: Ref<FacilityEntry> = ref(emptyFacility);
-const originalValue: Ref<FacilityEntry> = ref(emptyFacility);
-
-/**
- * Open facility inputs
- */
-const openFacility = (data: FacilityEntry) => {
-  router.push({ name: 'inputs-facility', params: { facility: data.id } });
-};
-
-/**
- * show info dialog
- */
-const showDescriptionDialog = ref(false);
-const showDescription = (data: FacilityEntry) => {
-  selectedValue.value = data;
-  showDescriptionDialog.value = true;
-};
+const selectedValue: Ref<FacilityEntry> = ref(
+  getEmtypFacility(global.selectedSite?.id ?? ''),
+);
+const originalValue: Ref<FacilityEntry> = ref(
+  getEmtypFacility(global.selectedSite?.id ?? ''),
+);
 
 /**
  * Save an entry
@@ -338,10 +166,11 @@ const clone = (objToClone: FacilityEntry) => {
   return c;
 };
 
+const triggerRefresh = ref(false);
 const save = async () => {
   try {
     // validate
-    parse(facilityEntrySchema, selectedValue.value);
+    v.parse(facilityEntrySchema, selectedValue.value);
 
     if (selectedValue.value.id === 'new') {
       const toCreate = clone(selectedValue.value);
@@ -353,10 +182,8 @@ const save = async () => {
           : null;
       // add to global
       global.facilities.push(created);
-      filterData();
-
       showDialog.value = false;
-      selectedValue.value = clone(emptyFacility);
+      selectedValue.value = getEmtypFacility(global.selectedSite?.id ?? '');
     } else {
       const updated = await dataprovider.updateFacility(selectedValue.value);
       updated.shutdown_date =
@@ -368,6 +195,7 @@ const save = async () => {
 
       showDialog.value = false;
     }
+    triggerRefresh.value = true;
   } catch (e) {
     error((e + '').replace('ValiError: ', ''));
   }
@@ -388,8 +216,8 @@ const deleteEntry = async (entry: InputEntry, event: any) => {
         const index = data.value.findIndex((item) => item.id === entry.id);
         // remove from global
         global.facilities.splice(index, 1);
-        filterData();
         info('Anlage wurde gelöscht');
+        triggerRefresh.value = true;
       } catch (e) {
         error(e + '');
       }
@@ -402,7 +230,6 @@ const deleteEntry = async (entry: InputEntry, event: any) => {
  */
 const getData = async () => {
   await global.refreshFacilities();
-  filterData();
 };
 
 /**
@@ -410,15 +237,8 @@ const getData = async () => {
  */
 onMounted(async () => {
   while (global.isLoading) {
-    // console.log('waiting for global store to load');
     await new Promise((resolve) => setTimeout(resolve, 500));
   }
   await getData();
 });
 </script>
-
-<style>
-.cst-no-hover > * > * > .p-datatable-tbody > tr:focus {
-  outline: none !important;
-}
-</style>

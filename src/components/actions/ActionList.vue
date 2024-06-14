@@ -78,6 +78,7 @@ import { getGlobalUnit, toTons } from '@/services/pipes';
 const props = defineProps<{
   actions: ActionEntry[];
   filter: string;
+  triggerRefresh: boolean;
 }>();
 watch(
   () => props.actions,
@@ -91,15 +92,27 @@ watch(
     filterData();
   },
 );
+watch(
+  () => props.triggerRefresh,
+  () => {
+    filterData();
+    emit('update:triggerRefresh', false);
+  },
+);
 
-const emit = defineEmits(['delete', 'edit', 'copy', 'update:globalFilter']);
+const emit = defineEmits([
+  'delete',
+  'edit',
+  'copy',
+  'update:globalFilter',
+  'update:triggerRefresh',
+]);
 
 /**
  * Filtered action list
  */
 const filteredActions = ref<ActionEntry[]>([]);
 const filterData = () => {
-  console.log(props.actions.length, props.filter, props.actions);
   let filtered = props.actions;
   if (props.filter && props.filter !== '') {
     filtered = props.actions.filter((item) => {
