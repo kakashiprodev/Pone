@@ -2,13 +2,13 @@
   <div v-if="true">
     <FormLine
       v-if="!comfortMode && !categoriesFilteredByScope && !hideScopeInput"
-      label="Filter auf Scope"
+      :label="$t('equivalents.filterScope')"
     >
       <MultiSelect v-model="filter.scope" :options="[1, 2, 3]" class="w-full" />
     </FormLine>
     <HorizontalScopeSwitch v-else-if="!hideScopeInput" v-model="filter.scope" />
 
-    <FormLine v-if="!comfortMode" label="Filter auf Kategorie">
+    <FormLine v-if="!comfortMode" :label="$t('equivalents.filterCat')">
       <MultiSelect
         v-model="filter.category"
         :options="filteredCategories"
@@ -23,15 +23,15 @@
       listStyle="max-height:250px"
     />
 
-    <FormLine label="Name">
+    <FormLine :label="$t('equivalents.name')">
       <InputText
         v-model="filter.text"
-        placeholder="Allgemeiner Textfiler auf alle Namen und Spezifikationen"
+        :placeholder="$t('equivalents.namePlaceholder')"
         class="w-full"
       />
     </FormLine>
 
-    <FormLine label="Quelle" v-if="comfortMode">
+    <FormLine :label="$t('equivalents.source')" v-if="comfortMode">
       <MultiSelect
         v-model="filter.source"
         :options="global.equivalentFilters.source.all"
@@ -39,7 +39,7 @@
       />
     </FormLine>
 
-    <FormLine label="Einheit" v-if="comfortMode">
+    <FormLine :label="$t('equivalents.unit')" v-if="comfortMode">
       <MultiSelect
         v-model="filter.in"
         :options="global.equivalentFilters.unit.all"
@@ -49,9 +49,9 @@
   </div>
 
   <!-- Column Chooser -->
-  <div class="grid" v-if="showColumnChooser">
-    <div class="col-8"></div>
-    <div class="col-4">
+  <div class="grid grid-cols-12 mt-1" v-if="showColumnChooser">
+    <div class="col-span-8"></div>
+    <div class="col-span-4">
       <MultiSelect
         v-model="_visibleColumns"
         :options="columnsInTable"
@@ -62,6 +62,7 @@
     </div>
   </div>
   <DataTable
+    :showGridlines="false"
     class="cst-no-hover"
     :value="filteredEquivalents"
     selection-mode="single"
@@ -75,44 +76,48 @@
     <!-- <Column field="id" header="Id"></Column> -->
     <Column
       field="scope"
-      header="Scope"
+      :header="$t('equivalents.table.scope')"
       v-if="_visibleColumns.includes('scope')"
       sortable
     ></Column>
     <Column
       field="category"
-      header="Kategorie"
+      :header="$t('equivalents.table.category')"
       v-if="_visibleColumns.includes('category')"
       sortable
     ></Column>
     <Column
       field="specification1"
-      header="Spezifikation 1"
+      :header="$t('equivalents.table.spec1')"
       v-if="_visibleColumns.includes('specification1')"
       sortable
     >
     </Column>
     <Column
       field="specification2"
-      header="Spezifikation 2"
+      :header="$t('equivalents.table.spec2')"
       v-if="_visibleColumns.includes('specification2')"
       sortable
     >
     </Column>
     <Column
       field="specification3"
-      header="Spezifikation 3"
+      :header="$t('equivalents.table.spec3')"
       v-if="_visibleColumns.includes('specification3')"
       sortable
     >
     </Column>
     <Column
       field="addName1"
-      header="Zusatzname"
+      :header="$t('equivalents.table.addName')"
       v-if="_visibleColumns.includes('addName1')"
       sortable
     ></Column>
-    <Column header="Name" v-if="_visibleColumns.includes('fullName')" sortable>
+    <Column
+      :header="$t('equivalents.table.name')"
+      v-if="_visibleColumns.includes('fullName')"
+      sortable
+    >
       <template #body="{ data }">
         <span>
           {{ data.specification1 }}
@@ -127,37 +132,39 @@
     </Column>
     <Column
       field="in"
-      header="Eingabe Einheit"
+      :header="$t('equivalents.table.inputUnit')"
       v-if="_visibleColumns.includes('in')"
       sortable
     ></Column>
     <Column
       field="avgValue"
-      header="Faktor"
+      :header="$t('equivalents.table.factor')"
       v-if="_visibleColumns.includes('avgValue')"
     ></Column>
     <Column
       field="out"
-      header="Ausgabe Einheit"
+      :header="$t('equivalents.table.outputUnit')"
       v-if="_visibleColumns.includes('out')"
       sortable
     ></Column>
 
     <Column
       field="source"
-      header="Quelle"
+      :header="$t('equivalents.table.source')"
       v-if="_visibleColumns.includes('source')"
       sortable
     ></Column>
     <Column
       field="parent"
-      header="Verkettet?"
+      :header="$t('equivalents.table.parent') + '?'"
       v-if="_visibleColumns.includes('parent')"
       sortable
     >
       <template #body="{ data }">
         <span>{{
-          data.parent != null && data.parent !== '' ? 'Ja' : 'Nein'
+          data.parent != null && data.parent !== ''
+            ? $t('global.yes')
+            : $t('global.no')
         }}</span>
       </template>
     </Column>
@@ -188,8 +195,11 @@ import { PropType, Ref, ref, watch } from 'vue';
 import { EquivalentEntry } from '../../services/types';
 import FormLine from './FormLine.vue';
 import HorizontalScopeSwitch from './HorizontalScopeSwitch.vue';
+import { useI18n } from 'vue-i18n';
 
 // import { Equivalent } from './../services/types';
+
+const { t } = useI18n();
 
 const global = useGlobalStore();
 global.refreshEquivalents();
@@ -308,18 +318,18 @@ watch(
 // visible columns
 const _visibleColumns: Ref<string[]> = ref([]);
 const columnsInTable = [
-  { value: 'scope', label: 'Scope' },
-  { value: 'category', label: 'Kategorie' },
-  { value: 'fullName', label: 'Name' }, // calculated column
-  { value: 'specification1', label: 'Spezifikation 1' },
-  { value: 'specification2', label: 'Spezifikation 2' },
-  { value: 'specification3', label: 'Spezifikation 3' },
-  { value: 'addName1', label: 'Zusatzname' },
-  { value: 'source', label: 'Quelle' },
-  { value: 'parent', label: 'Verkettete Berechnung' },
-  { value: 'in', label: 'Einheit Eingabe' },
-  { value: 'out', label: 'Einheit Ausgabe' },
-  { value: 'avgValue', label: 'Faktor (Jahresdurchschnitt)' },
+  { value: 'scope', label: t('equivalents.table.scope') },
+  { value: 'category', label: t('equivalents.table.category') },
+  { value: 'fullName', label: t('equivalents.table.name') }, // calculated column
+  { value: 'specification1', label: t('equivalents.table.spec1') },
+  { value: 'specification2', label: t('equivalents.table.spec2') },
+  { value: 'specification3', label: t('equivalents.table.spec3') },
+  { value: 'addName1', label: t('equivalents.table.addName') },
+  { value: 'source', label: t('equivalents.table.source') },
+  { value: 'parent', label: t('equivalents.table.parentLong') },
+  { value: 'in', label: t('equivalents.table.inputUnit') },
+  { value: 'out', label: t('equivalents.table.outputUnit') },
+  { value: 'avgValue', label: t('equivalents.table.factorYear') },
 ];
 // set the filter if it is passed as prop
 const props = defineProps({

@@ -2,19 +2,17 @@
   <div>
     <p v-if="global.showTooltips">
       <InlineMessage severity="info" class="w-full">
-        Hier können Sie Projekte anlegen und verwalten. Ein Projekt kann mehrere
-        Standorte enthalten. Ein Standort wiederrum enthält beliebig viele
-        Jahresberichte.
+        {{ $t('settings.projectSettings.companiesInline') }}
       </InlineMessage>
     </p>
     <Toolbar>
       <template #start>
-        <span>Ausgewähltes Projekt</span>
+        <span>{{ $t('settings.projectSettings.selectedProject') }}</span>
         <Dropdown
           v-model="global.selectedProject"
           :options="global.projects"
           optionLabel="name"
-          placeholder="Projekt wählen"
+          :placeholder="$t('settings.projectSettings.projectSelectPlaceholder')"
           class="ml-3"
           style="width: 300px"
           :disabled="projectForm?.id === 'new'"
@@ -38,42 +36,45 @@
 
     <div v-if="global.projects.length === 0" class="card mt-2">
       <p>
-        Es sind keine Projekte vorhanden. Bitte legen Sie mind. ein Projekt an.
+        {{ $t('settings.projectSettings.noProjects') }}
       </p>
       <Button
         icon="fa-solid fa-plus"
         @click="projectForm = emptyProject()"
-        label="Projekt anlegen"
+        :label="$t('settings.projectSettings.createProject')"
       />
     </div>
 
     <div v-if="projectForm" class="mt-2" v-show="showEditEntry">
-      <div class="card">
-        <!-- <h5>Basisdaten des Projekts</h5> -->
-        <div class="field grid" v-show="false">
-          <label for="id" class="col-12 mb-2 md:col-4 md:mb-0">ID</label>
-          <div class="col-12 md:col-8">
-            <InputText
-              id="id"
-              class="w-full"
-              disabled="true"
-              v-model="projectForm.id"
+      <div class="mt-5">
+        <div class="mb-4 grid grid-cols-12 flex items-center">
+          <label for="image" class="col-span-12 mb-2 md:col-span-4 md:mb-0">
+            {{ $t('settings.projectSettings.logoOfCompany') }}
+          </label>
+          <div class="flex flex-col gap-2">
+            <img
+              v-if="projectForm.logo && projectForm.logo !== ''"
+              :src="projectForm.logo"
+              class="w-24 h-24 rounded-lg object-scale-down"
+            />
+            <FileUpload
+              mode="basic"
+              accept="image/*"
+              customUpload
+              @uploader="uploadImage"
+              :auto="true"
             />
           </div>
-          <InlineMessage
-            v-if="global.showTooltips"
-            severity="info"
-            class="w-full mt-2"
-          >
-            Die ID wird automatisch vergeben und kann nicht geändert werden. Die
-            Anzeige dient rein Support-Zwecken.
-          </InlineMessage>
         </div>
-        <div class="field grid">
-          <label for="projectname" class="col-12 mb-2 md:col-4 md:mb-0"
-            >Projektname</label
+
+        <div class="mb-4 grid grid-cols-12 flex items-center">
+          <label
+            for="projectname"
+            class="col-span-12 mb-2 md:col-span-4 md:mb-0"
           >
-          <div class="col-12 md:col-8">
+            {{ $t('settings.projectSettings.projectName') }}
+          </label>
+          <div class="col-span-12 md:col-span-8">
             <InputText
               id="projectname"
               class="w-full"
@@ -85,9 +86,7 @@
             severity="info"
             class="w-full mt-2"
           >
-            Der Projektname kann der Name der Organisation sein. Der Projektname
-            kann auch Organisation und Standort im Namen enthalten. Die
-            Mindestlänge ist 4 Zeichen.
+            {{ $t('settings.projectSettings.projectNameInline') }}
           </InlineMessage>
         </div>
       </div>
@@ -95,9 +94,13 @@
       <div>
         <Button
           @click="saveProject()"
-          :label="projectForm.id === 'new' ? 'Hinzufügen' : 'Speichern'"
+          :label="
+            projectForm.id === 'new'
+              ? $t('settings.projectSettings.add')
+              : $t('global.save')
+          "
         />
-        <Button class="ml-2" @click="cancel()" label="Abbrechen" />
+        <Button class="ml-2" @click="cancel()" :label="$t('global.cancel')" />
       </div>
     </div>
   </div>
@@ -110,6 +113,7 @@ import { useConfirm } from 'primevue/useconfirm';
 import { ProjectEntry } from '../../services/types';
 import { minLength, maxLength, object, string, parse } from 'valibot';
 import { error, info } from '../../services/ui/toast';
+import dataprovider from '@/services/dataprovider';
 
 const global = useGlobalStore();
 const confirm = useConfirm();
@@ -120,6 +124,8 @@ const emptyProject = (): ProjectEntry => {
   return {
     id: 'new',
     name: '',
+    logo: '',
+    logoId: null,
   };
 };
 
@@ -184,6 +190,24 @@ const saveProject = async () => {
     error(e + '');
   }
   showEditEntry.value = false;
+};
+
+const uploadImage = async (event: any) => {
+  if (!projectForm.value) {
+    return;
+  }
+  const file = event.files[0];
+
+  // check if an logo is already uploaded
+  if (projectForm.value.logoId) {
+    // delete old image
+    await dataprovider.deleteImage(projectForm.value.logoId);
+  }
+  const data = await dataprovider.uploadImage(file);
+  // update project entry with image url
+  projectForm.value.logo = data.url;
+  projectForm.value.logoId = data.id;
+  await dataprovider.updateProject(projectForm.value);
 };
 
 const cancel = () => {

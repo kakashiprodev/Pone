@@ -1424,6 +1424,41 @@
         "options": {}
     },
     {
+        "id": "jn8ryqtsn7ibs39",
+        "name": "media",
+        "type": "base",
+        "system": false,
+        "schema": [
+            {
+                "system": false,
+                "id": "3amlrkre",
+                "name": "image",
+                "type": "file",
+                "required": true,
+                "presentable": false,
+                "unique": false,
+                "options": {
+                    "mimeTypes": [
+                        "image/jpeg",
+                        "image/png",
+                        "image/webp"
+                    ],
+                    "thumbs": [],
+                    "maxSelect": 1,
+                    "maxSize": 1048576,
+                    "protected": false
+                }
+            }
+        ],
+        "indexes": [],
+        "listRule": "@request.auth.id != \"\"",
+        "viewRule": "@request.auth.id != \"\"",
+        "createRule": "@request.auth.id != \"\"",
+        "updateRule": "@request.auth.id != \"\"",
+        "deleteRule": "@request.auth.id != \"\"",
+        "options": {}
+    },
+    {
         "id": "61iwwi03fob8tyg",
         "name": "projects",
         "type": "base",
@@ -1441,6 +1476,36 @@
                     "min": null,
                     "max": null,
                     "pattern": ""
+                }
+            },
+            {
+                "system": false,
+                "id": "vm6nf9zf",
+                "name": "logo",
+                "type": "text",
+                "required": false,
+                "presentable": false,
+                "unique": false,
+                "options": {
+                    "min": null,
+                    "max": null,
+                    "pattern": ""
+                }
+            },
+            {
+                "system": false,
+                "id": "aboqi911",
+                "name": "logoId",
+                "type": "relation",
+                "required": false,
+                "presentable": false,
+                "unique": false,
+                "options": {
+                    "collectionId": "jn8ryqtsn7ibs39",
+                    "cascadeDelete": false,
+                    "minSelect": null,
+                    "maxSelect": 1,
+                    "displayFields": null
                 }
             }
         ],

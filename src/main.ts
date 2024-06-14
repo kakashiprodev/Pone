@@ -2,11 +2,13 @@ import { createApp } from 'vue';
 import App from './App.vue';
 import { router } from './router';
 import { createPinia } from 'pinia';
+import i18n from '@/i18n.ts';
 import ToastService from 'primevue/toastservice';
 import PrimeVue from 'primevue/config';
 import ConfirmationService from 'primevue/confirmationservice';
 import Tooltip from 'primevue/tooltip';
 import { useGlobalStore } from './stores/global';
+import { useInputStore } from './stores/inputs';
 
 /* Apex charts */
 // @ts-ignore
@@ -38,21 +40,26 @@ import PanelMenu from 'primevue/panelmenu';
 import InputSwitch from 'primevue/inputswitch';
 import Divider from 'primevue/divider';
 import Toast from 'primevue/toast';
-import Chart from 'primevue/chart';
 import ToggleButton from 'primevue/togglebutton';
 import Listbox from 'primevue/listbox';
 import Panel from 'primevue/panel';
 import ProgressBar from 'primevue/progressbar';
 import Tag from 'primevue/tag';
+import Chip from 'primevue/chip';
+import Sidebar from 'primevue/sidebar';
+import Avatar from 'primevue/avatar';
+import FileUpload from 'primevue/fileupload';
+import MeterGroup from 'primevue/metergroup';
 
 import '@fortawesome/fontawesome-free/css/all.min.css';
-import 'primeflex/primeflex.css';
+import './style.css';
 
 const pinia = createPinia();
 
 export const app = createApp(App)
   .use(router)
   .use(pinia)
+  .use(i18n)
   .use(PrimeVue)
   .use(ConfirmationService)
   .use(ToastService)
@@ -83,15 +90,20 @@ app.component('PanelMenu', PanelMenu);
 app.component('InputSwitch', InputSwitch);
 app.component('Divider', Divider);
 app.component('Toast', Toast);
-app.component('Chart', Chart);
 app.component('ToggleButton', ToggleButton);
 app.component('Listbox', Listbox);
 app.component('Panel', Panel);
 app.component('ProgressBar', ProgressBar);
 app.component('Tag', Tag);
+app.component('Chip', Chip);
+app.component('Sidebar', Sidebar);
+app.component('Avatar', Avatar);
+app.component('FileUpload', FileUpload);
+app.component('MeterGroup', MeterGroup);
 
 app.directive('tooltip', Tooltip);
 
 app.mount('#app');
 
 export const globalStore = useGlobalStore();
+export const inputStore = useInputStore();

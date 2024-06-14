@@ -112,6 +112,8 @@ export const useGlobalStore = defineStore('global', {
       this.isLoading = true;
 
       const user = await dataprovider.getUser();
+      // get user settings
+      this.getUserSettings();
 
       await this.refreshProjects();
       // check the last selected entries if they are still valid
@@ -314,6 +316,8 @@ export const useGlobalStore = defineStore('global', {
         await this.addProject({
           id: 'new',
           name: 'Mein erstes Projekt',
+          logo: '',
+          logoId: null,
         });
         this.selectedProject = this.projects[0];
         this.targetOnSiteForProject = [];
@@ -397,7 +401,7 @@ export const useGlobalStore = defineStore('global', {
           });
         });
         // reload targets
-        this.refreshTargets();
+        await this.refreshTargets();
 
         copied = targets.length;
       }
@@ -633,7 +637,9 @@ export const useGlobalStore = defineStore('global', {
       if (report) {
         this.selectedReport = report;
       }
+      // get the targets for the selected report
       this.refreshTargets();
+
       // update user settings
       const user = await dataprovider.getUser();
       await dataprovider.updateUser({

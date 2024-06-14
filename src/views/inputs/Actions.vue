@@ -1,12 +1,16 @@
 <template>
-  <h4>Übersicht aller Maßnahmen</h4>
+  <h4>{{ $t('actions.overview') }}</h4>
   <InlineMessage severity="info" v-if="global.showTooltips" class="w-full mb-2">
-    Hier können Sie alle Maßnahmen für das Projekt einsehen und bearbeiten.
+    {{ $t('actions.inlineMsg') }}
   </InlineMessage>
 
   <Toolbar class="mb-2">
     <template #start>
-      <InputText v-model="filter" placeholder="Filter" class="mr-1" />
+      <InputText
+        v-model="filter"
+        :placeholder="$t('actions.filter')"
+        class="mr-1"
+      />
     </template>
     <template #end>
       <Button icon="fa-solid fa-plus" @click="addNew()" class="mr-1" />
@@ -20,361 +24,380 @@
     modal
     :header="selectedAction.id === 'new' ? 'Anlegen' : 'Bearbeiten'"
     :class="{
-      'w-8': windowWidth > 990,
+      'w-3/5': windowWidth > 990,
       'w-full': windowWidth < 990,
       'h-screen': windowWidth < 990,
     }"
   >
-    <!-- Relevant (Aktiv?) -->
-    <div class="field">
-      <label for="action-relevant" class="w-full">Aktiv?</label>
-      <InlineMessage
-        severity="info"
-        v-if="global.showTooltips"
-        class="w-full mb-2"
-      >
-        Ist die Maßnahme aktiv und soll in den Berichten angezeigt werden?
-      </InlineMessage>
-      <Checkbox
-        v-model="selectedAction.relevant"
-        id="action-relevant"
-        :binary="true"
-      />
-    </div>
+    <div class="flex flex-col gap-4">
+      <!-- Relevant (Aktiv?) -->
+      <div class="flex flex-col gap-2">
+        <label for="action-relevant" class="w-full"
+          >{{ $t('actions.active') }}?</label
+        >
+        <InlineMessage
+          severity="info"
+          v-if="global.showTooltips"
+          class="w-full mb-2"
+        >
+          {{ $t('actions.activeInline') }}
+        </InlineMessage>
+        <Checkbox
+          v-model="selectedAction.relevant"
+          id="action-relevant"
+          :binary="true"
+        />
+      </div>
 
-    <!-- Name -->
-    <div class="field">
-      <label for="action-name" class="w-full">Name*</label>
-      <InlineMessage
-        severity="info"
-        v-if="global.showTooltips"
-        class="w-full mb-2"
-      >
-        Der Name der Maßnahme für die Übersicht und Diagramme.
-      </InlineMessage>
-      <InputText
-        class="w-full"
-        v-model="selectedAction.name"
-        id="action-name"
-      />
-    </div>
+      <!-- Name -->
+      <div class="flex flex-col gap-2">
+        <label for="action-name" class="w-full"
+          >{{ $t('actions.name') }}*</label
+        >
+        <InlineMessage
+          severity="info"
+          v-if="global.showTooltips"
+          class="w-full mb-2"
+        >
+          {{ $t('actions.nameInline') }}
+        </InlineMessage>
+        <InputText
+          class="w-full"
+          v-model="selectedAction.name"
+          id="action-name"
+        />
+      </div>
 
-    <!-- Description Before -->
-    <div class="field">
-      <label class="w-full" for="action-descriptionBefore"
-        >Beschreibung (vorher)*</label
-      >
-      <InlineMessage
-        severity="info"
-        v-if="global.showTooltips"
-        class="w-full mb-2"
-      >
-        Eine Kurzbeschreibung für das Berichtswesen.
-      </InlineMessage>
-      <Editor
-        class="w-full"
-        v-model="selectedAction.descriptionBefore"
-        id="action-descriptionBefore"
-        editorStyle="height: 80px"
-      />
-    </div>
+      <!-- Description Before -->
+      <div class="flex flex-col gap-2">
+        <label class="w-full" for="action-descriptionBefore"
+          >{{ $t('actions.descriptionBefore') }}*</label
+        >
+        <InlineMessage
+          severity="info"
+          v-if="global.showTooltips"
+          class="w-full mb-2"
+        >
+          {{ $t('actions.descriptionBeforeInline') }}
+        </InlineMessage>
+        <Editor
+          class="w-full"
+          v-model="selectedAction.descriptionBefore"
+          id="action-descriptionBefore"
+          editorStyle="height: 80px"
+        />
+      </div>
 
-    <!-- Description After -->
-    <div class="field">
-      <label for="action-descriptionAfter" class="w-full"
-        >Beschreibung (nachher)</label
-      >
-      <InlineMessage
-        severity="info"
-        v-if="global.showTooltips"
-        class="w-full mb-2"
-      >
-        Eine Kurzbeschreibung für das Berichtswesen.
-      </InlineMessage>
-      <Editor
-        class="w-full"
-        v-model="selectedAction.descriptionAfter"
-        id="action-descriptionAfter"
-        editorStyle="height: 80px"
-      />
-    </div>
+      <!-- Description After -->
+      <div class="flex flex-col gap-2">
+        <label for="action-descriptionAfter" class="w-full">{{
+          $t('actions.descriptionAfter')
+        }}</label>
+        <InlineMessage
+          severity="info"
+          v-if="global.showTooltips"
+          class="w-full mb-2"
+        >
+          {{ $t('actions.descriptionAfterInline') }}
+        </InlineMessage>
+        <Editor
+          class="w-full"
+          v-model="selectedAction.descriptionAfter"
+          id="action-descriptionAfter"
+          editorStyle="height: 80px"
+        />
+      </div>
 
-    <!-- Target Value Absolute Planned -->
-    <div class="field">
-      <label for="action-targetValueAbsolutPlanned" class="w-full"
-        >Geplante Einsparung in kg CO<sub>2</sub>*</label
-      >
-      <InlineMessage
-        severity="info"
-        v-if="global.showTooltips"
-        class="w-full mb-2"
-      >
-        Die angestrebte Einsparung der Maßnahe in kg CO<sub>2</sub>
-        Äquivalenten.
-      </InlineMessage>
-      <InputNumber
-        class="w-full"
-        v-model="selectedAction.targetValueAbsolutPlanned"
-        id="action-targetValueAbsolutPlanned"
-      />
-    </div>
+      <!-- Target Value Absolute Planned -->
+      <div class="flex flex-col gap-2">
+        <label
+          for="action-targetValueAbsolutPlanned"
+          class="w-full"
+          v-html="$t('actions.targetValuePlanned') + '*'"
+        ></label>
+        <InlineMessage
+          severity="info"
+          v-if="global.showTooltips"
+          class="w-full mb-2"
+          v-html="$t('actions.targetValuePlannedInline')"
+        ></InlineMessage>
+        <InputNumber
+          class="w-full"
+          v-model="selectedAction.targetValueAbsolutPlanned"
+          id="action-targetValueAbsolutPlanned"
+        />
+      </div>
 
-    <!-- Target Value Absolute Is -->
-    <div class="field">
-      <label for="action-targetValueAbsolutIs" class="w-full"
-        >Tatsächliche Einsparung in kg CO<sub>2</sub></label
-      >
-      <InlineMessage
-        severity="info"
-        v-if="global.showTooltips"
-        class="w-full mb-2"
-      >
-        Die tatsächliche Einsparung der Maßnahe in lg CO<sub>2</sub>
-        Äquivalenten.
-      </InlineMessage>
-      <InputNumber
-        class="w-full"
-        v-model="selectedAction.targetValueAbsolutIs"
-        id="action-targetValueAbsolutIs"
-      />
-    </div>
+      <!-- Target Value Absolute Is -->
+      <div class="flex flex-col gap-2">
+        <label
+          for="action-targetValueAbsolutIs"
+          class="w-full"
+          v-html="$t('actions.targetValueIs')"
+        ></label>
+        <InlineMessage
+          severity="info"
+          v-if="global.showTooltips"
+          class="w-full mb-2"
+          v-html="$t('actions.targetValueIsInline')"
+        >
+        </InlineMessage>
+        <InputNumber
+          class="w-full"
+          v-model="selectedAction.targetValueAbsolutIs"
+          id="action-targetValueAbsolutIs"
+        />
+      </div>
 
-    <!-- Description Target Value -->
-    <div class="field">
-      <label for="action-descriptionTargetValue" class="w-full"
-        >Beschreibung der Zielwerte</label
-      >
-      <InlineMessage
-        severity="info"
-        v-if="global.showTooltips"
-        class="w-full mb-2"
-      >
-        Beschreibung wie die Zielwerte erreicht werden sollen.
-      </InlineMessage>
-      <Editor
-        class="w-full"
-        v-model="selectedAction.descriptionTargetValue"
-        id="action-descriptionTargetValue"
-        editorStyle="height: 80px"
-      />
-    </div>
+      <!-- Description Target Value -->
+      <div class="flex flex-col gap-2">
+        <label for="action-descriptionTargetValue" class="w-full">{{
+          $t('actions.targetValueDescription')
+        }}</label>
+        <InlineMessage
+          severity="info"
+          v-if="global.showTooltips"
+          class="w-full mb-2"
+        >
+          {{ $t('actions.targetValueDescriptionInline') }}
+        </InlineMessage>
+        <Editor
+          class="w-full"
+          v-model="selectedAction.descriptionTargetValue"
+          id="action-descriptionTargetValue"
+          editorStyle="height: 80px"
+        />
+      </div>
 
-    <!-- Responsible -->
-    <div class="field">
-      <label for="action-responsible" class="w-full">Verantwortlich</label>
-      <InlineMessage
-        severity="info"
-        v-if="global.showTooltips"
-        class="w-full mb-2"
-      >
-        Wer ist für die Maßnahme verantwortlich?
-      </InlineMessage>
-      <InputText
-        class="w-full"
-        v-model="selectedAction.responsible"
-        id="action-responsible"
-      />
-    </div>
+      <!-- Responsible -->
+      <div class="flex flex-col gap-2">
+        <label for="action-responsible" class="w-full">{{
+          $t('actions.responsible')
+        }}</label>
+        <InlineMessage
+          severity="info"
+          v-if="global.showTooltips"
+          class="w-full mb-2"
+        >
+          {{ $t('actions.responsibleInline') }}
+        </InlineMessage>
+        <InputText
+          class="w-full"
+          v-model="selectedAction.responsible"
+          id="action-responsible"
+        />
+      </div>
 
-    <!-- Status -->
-    <div class="field">
-      <label class="w-full" for="action-status">Status</label>
-      <InlineMessage
-        severity="info"
-        v-if="global.showTooltips"
-        class="w-full mb-2"
-      >
-        Der aktuelle Status der Maßnahme.
-      </InlineMessage>
-      <Dropdown
-        id="action-status"
-        v-model="selectedAction.status"
-        class="w-full"
-        :options="
-          Object.keys(statusTranslations).map((key) => ({
-            label: statusTranslations[key],
-            value: key,
-          }))
-        "
-        option-label="label"
-        option-value="value"
-      />
-    </div>
+      <!-- Status -->
+      <div class="flex flex-col gap-2">
+        <label class="w-full" for="action-status">{{
+          $t('actions.status')
+        }}</label>
+        <InlineMessage
+          severity="info"
+          v-if="global.showTooltips"
+          class="w-full mb-2"
+        >
+          {{ $t('actions.statusInline') }}
+        </InlineMessage>
+        <Dropdown
+          id="action-status"
+          v-model="selectedAction.status"
+          class="w-full"
+          :options="
+            Object.keys(statusTranslations).map((key) => ({
+              label: statusTranslations[key],
+              value: key,
+            }))
+          "
+          option-label="label"
+          option-value="value"
+        />
+      </div>
 
-    <!-- Progress -->
-    <div class="field">
-      <label class="w-full" for="action-progress">Fortschritt</label>
-      <InlineMessage
-        severity="info"
-        v-if="global.showTooltips"
-        class="w-full mb-2"
-      >
-        Der aktuelle Fortschritt der Maßnahme in %. (0-100)
-      </InlineMessage>
-      <Slider
-        id="action-progress"
-        v-model="selectedAction.progress"
-        class="w-full mb-3"
-        :step="5"
-      />
-    </div>
+      <!-- Progress -->
+      <div class="flex flex-col gap-2">
+        <label class="w-full" for="action-progress">{{
+          $t('actions.progress')
+        }}</label>
+        <InlineMessage
+          severity="info"
+          v-if="global.showTooltips"
+          class="w-full mb-2"
+        >
+          {{ $t('actions.progressInline') }}
+        </InlineMessage>
+        <Slider
+          id="action-progress"
+          v-model="selectedAction.progress"
+          class="w-full mb-3"
+          :step="5"
+        />
+      </div>
 
-    <!-- Finished Until Planned -->
-    <div class="field">
-      <label class="w-full" for="action-finishedUntilPlanned"
-        >Geplantes Fertigstellungsdatum</label
-      >
-      <InlineMessage
-        severity="info"
-        v-if="global.showTooltips"
-        class="w-full mb-2"
-      >
-        Das geplante Fertigstellungsdatum der Maßnahme.
-      </InlineMessage>
-      <Calendar
-        class="w-full"
-        v-model="selectedAction.finishedUntilPlanned"
-        id="action-finishedUntilPlanned"
-      />
-    </div>
+      <!-- Finished Until Planned -->
+      <div class="flex flex-col gap-2">
+        <label class="w-full" for="action-finishedUntilPlanned">{{
+          $t('actions.finishedUntilPlanned')
+        }}</label>
+        <InlineMessage
+          severity="info"
+          v-if="global.showTooltips"
+          class="w-full mb-2"
+        >
+          {{ $t('actions.finishedUntilPlannedInline') }}
+        </InlineMessage>
+        <Calendar
+          class="w-full"
+          v-model="selectedAction.finishedUntilPlanned"
+          id="action-finishedUntilPlanned"
+        />
+      </div>
 
-    <!-- Finished Until Is -->
-    <div class="field">
-      <label class="w-full" for="action-finishedUntilIs"
-        >Tatsächliches Fertigstellungsdatum</label
-      >
-      <InlineMessage
-        severity="info"
-        v-if="global.showTooltips"
-        class="w-full mb-2"
-      >
-        Das tatsächliche Fertigstellungsdatum der Maßnahme.
-      </InlineMessage>
-      <Calendar
-        class="w-full"
-        v-model="selectedAction.finishedUntilIs"
-        id="action-finishedUntilIs"
-      />
-    </div>
+      <!-- Finished Until Is -->
+      <div class="flex flex-col gap-2">
+        <label class="w-full" for="action-finishedUntilIs">{{
+          $t('actions.finishedUntilIs')
+        }}</label>
+        <InlineMessage
+          severity="info"
+          v-if="global.showTooltips"
+          class="w-full mb-2"
+        >
+          {{ $t('actions.finishedUntilIsInline') }}
+        </InlineMessage>
+        <Calendar
+          class="w-full"
+          v-model="selectedAction.finishedUntilIs"
+          id="action-finishedUntilIs"
+        />
+      </div>
 
-    <!-- Category -->
-    <div class="field">
-      <label class="w-full" for="action-category">Kategorie</label>
-      <InlineMessage
-        severity="info"
-        v-if="global.showTooltips"
-        class="w-full mb-2"
-      >
-        In welche Kategorie fällt die Maßnahme?
-      </InlineMessage>
-      <Dropdown
-        class="w-full"
-        v-model="selectedAction.category"
-        id="action-category"
-        :options="[
-          'Steigerung der Energieeffizienz',
-          'Ausbau erneuerbare Energien',
-          'Organisatorische Maßnahme',
-          'Kompensation',
-        ]"
-      />
-    </div>
+      <!-- Category -->
+      <div class="flex flex-col gap-2">
+        <label class="w-full" for="action-category">{{
+          $t('actions.category')
+        }}</label>
+        <InlineMessage
+          severity="info"
+          v-if="global.showTooltips"
+          class="w-full mb-2"
+        >
+          {{ $t('actions.categoryInline') }}
+        </InlineMessage>
+        <Dropdown
+          class="w-full"
+          v-model="selectedAction.category"
+          id="action-category"
+          :options="[
+            'Steigerung der Energieeffizienz',
+            'Ausbau erneuerbare Energien',
+            'Organisatorische Maßnahme',
+            'Kompensation',
+          ]"
+        />
+      </div>
 
-    <!-- Costs Planned -->
-    <div class="field">
-      <label class="w-full" for="action-costsPlanned">Geplante Kosten</label>
-      <InlineMessage
-        severity="info"
-        v-if="global.showTooltips"
-        class="w-full mb-2"
-      >
-        Eine Einschätzung der geplanten Kosten.
-      </InlineMessage>
-      <InputNumber
-        class="w-full"
-        v-model="selectedAction.costsPlanned"
-        id="action-costsPlanned"
-      />
-    </div>
+      <!-- Costs Planned -->
+      <div class="flex flex-col gap-2">
+        <label class="w-full" for="action-costsPlanned">{{
+          $t('actions.costsPlanned')
+        }}</label>
+        <InlineMessage
+          severity="info"
+          v-if="global.showTooltips"
+          class="w-full mb-2"
+        >
+          {{ $t('actions.costsPlannedInline') }}
+        </InlineMessage>
+        <InputNumber
+          class="w-full"
+          v-model="selectedAction.costsPlanned"
+          id="action-costsPlanned"
+        />
+      </div>
 
-    <!-- Costs Is -->
-    <div class="field">
-      <label class="w-full" for="action-costsIs">Tatsächliche Kosten</label>
-      <InlineMessage
-        severity="info"
-        v-if="global.showTooltips"
-        class="w-full mb-2"
-      >
-        Die tatsächlichen Kosten der Maßnahme.
-      </InlineMessage>
-      <InputNumber
-        class="w-full"
-        v-model="selectedAction.costsIs"
-        id="action-costsIs"
-      />
-    </div>
+      <!-- Costs Is -->
+      <div class="flex flex-col gap-2">
+        <label class="w-full" for="action-costsIs">{{
+          $t('actions.costsIs')
+        }}</label>
+        <InlineMessage
+          severity="info"
+          v-if="global.showTooltips"
+          class="w-full mb-2"
+        >
+          {{ $t('actions.costsIsInline') }}
+        </InlineMessage>
+        <InputNumber
+          class="w-full"
+          v-model="selectedAction.costsIs"
+          id="action-costsIs"
+        />
+      </div>
 
-    <!-- ROI -->
-    <div class="field">
-      <label class="w-full" for="action-roi">ROI (Return on Investment)</label>
-      <InlineMessage
-        severity="info"
-        v-if="global.showTooltips"
-        class="w-full mb-2"
-      >
-        Der Return on Investment der Maßnahme.
-      </InlineMessage>
-      <InputNumber
-        class="w-full"
-        v-model="selectedAction.roi"
-        id="action-roi"
-      />
-    </div>
+      <!-- ROI -->
+      <div class="flex flex-col gap-2">
+        <label class="w-full" for="action-roi">{{ $t('actions.roi') }}</label>
+        <InlineMessage
+          severity="info"
+          v-if="global.showTooltips"
+          class="w-full mb-2"
+        >
+          {{ $t('actions.roiInline') }}
+        </InlineMessage>
+        <InputNumber
+          class="w-full"
+          v-model="selectedAction.roi"
+          id="action-roi"
+        />
+      </div>
 
-    <!-- Description Costs -->
-    <div class="field">
-      <label class="w-full" for="action-descriptionCosts"
-        >Beschreibung der Kosten*</label
-      >
-      <InlineMessage
-        severity="info"
-        v-if="global.showTooltips"
-        class="w-full mb-2"
-      >
-        Wie setzen sich die Kosten zusammen?
-      </InlineMessage>
-      <Editor
-        class="w-full"
-        v-model="selectedAction.descriptionCosts"
-        id="action-descriptionCosts"
-        editorStyle="height: 80px"
-      />
-    </div>
+      <!-- Description Costs -->
+      <div class="flex flex-col gap-2">
+        <label class="w-full" for="action-descriptionCosts"
+          >{{ $t('actions.descriptionCosts') }}*</label
+        >
+        <InlineMessage
+          severity="info"
+          v-if="global.showTooltips"
+          class="w-full mb-2"
+        >
+          {{ $t('actions.descriptionCostsInline') }}
+        </InlineMessage>
+        <Editor
+          class="w-full"
+          v-model="selectedAction.descriptionCosts"
+          id="action-descriptionCosts"
+          editorStyle="height: 80px"
+        />
+      </div>
 
-    <!-- Avoidance Costs -->
-    <div class="field">
-      <label class="w-full" for="action-avoidanceCosts"
-        >Vermeidungskosten</label
-      >
-      <InlineMessage
-        severity="info"
-        v-if="global.showTooltips"
-        class="w-full mb-2"
-      >
-        Wie viel Kosten werden durch die Maßnahme vermieden?
-      </InlineMessage>
-      <InputNumber
-        class="w-full"
-        v-model="selectedAction.avoidanceCosts"
-        id="action-avoidanceCosts"
-      />
-    </div>
+      <!-- Avoidance Costs -->
+      <div class="flex flex-col gap-2">
+        <label class="w-full" for="action-avoidanceCosts">{{
+          $t('actions.avoidanceCosts')
+        }}</label>
+        <InlineMessage
+          severity="info"
+          v-if="global.showTooltips"
+          class="w-full mb-2"
+        >
+          {{ $t('actions.avoidanceCostsInline') }}
+        </InlineMessage>
+        <InputNumber
+          class="w-full"
+          v-model="selectedAction.avoidanceCosts"
+          id="action-avoidanceCosts"
+        />
+      </div>
 
-    <div>
-      <Button
-        :label="selectedAction.id === 'new' ? 'Anlegen' : 'Speichern'"
-        @click="save"
-      />
+      <div>
+        <Button
+          :label="selectedAction.id === 'new' ? 'Anlegen' : 'Speichern'"
+          @click="save"
+        />
+      </div>
     </div>
   </Dialog>
 
@@ -382,15 +405,19 @@
   <DataTable
     v-if="actions.length > 0"
     :value="filteredActions"
-    class="cst-no-hover"
+    class="cst-no-hover text-sm"
+    :showGridlines="false"
   >
-    <Column field="name" header="Name"></Column>
-    <Column field="status" header="Status">
+    <Column field="name" :header="$t('actions.table.name')"></Column>
+    <Column field="status" :header="$t('actions.table.status')">
       <template #body="{ data }">
         {{ statusTranslations[data.status] || '' }}
       </template>
     </Column>
-    <Column field="finishedUntilPlanned" header="Fertigstellungsdatum">
+    <Column
+      field="finishedUntilPlanned"
+      :header="$t('actions.table.finishedUntilPlanned')"
+    >
       <template #body="{ data }">
         <!-- formatiertes deutsches Datum -->
         {{ new Date(data.finishedUntilPlanned).getMonth() + 1 }}/{{
@@ -400,20 +427,29 @@
     </Column>
     <!-- <Column field="shortDescription" header="Kurzbeschreibung"></Column>
         <Column field="longDescription" header="Langbeschreibung"></Column> -->
-    <Column field="targetValueAbsolutPlanned" header="Zieleinsparung in kg">
+    <Column
+      field="targetValueAbsolutPlanned"
+      :header="$t('actions.table.targetValueAbsolutePlanned')"
+    >
       <template #body="{ data }">
-        <span class="flex justify-content-end text-right">
-          {{ data.targetValueAbsolutPlanned }}
-        </span>
+        <Chip class="text-sm"
+          >{{ toTons(data.targetValueAbsolutPlanned)
+          }}{{ getGlobalUnit() }}</Chip
+        >
       </template>
     </Column>
-    <Column field="responsible" header="Verantwortlich"></Column>
-    <Column field="progress" header="Fortschritt">
-      <template #body="{ data }"> {{ data.progress }} % </template>
-    </Column>
-    <Column field="relevant" header="Relevant">
+    <Column
+      field="responsible"
+      :header="$t('actions.table.responsible')"
+    ></Column>
+    <Column field="progress" :header="$t('actions.table.progress')">
       <template #body="{ data }">
-        {{ data.relevant ? 'Ja' : 'Nein' }}
+        <Chip class="text-sm">{{ data.progress }}%</Chip>
+      </template>
+    </Column>
+    <Column field="relevant" :header="$t('actions.table.relevant')">
+      <template #body="{ data }">
+        {{ data.relevant ? $t('actions.table.yes') : $t('actions.table.no') }}
       </template>
     </Column>
     <Column header="">
@@ -468,6 +504,7 @@ import {
   maxValue,
   // nullable,
 } from 'valibot';
+import { toTons, getGlobalUnit } from '@/services/pipes';
 
 const global = useGlobalStore();
 const windowWidth = ref(window.innerWidth);

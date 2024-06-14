@@ -409,11 +409,11 @@ export type ReportGroupBy = 'scope' | 'category' | 'facility';
 export interface ReportTimeseriesQuery {
   projectId: string;
   siteIds: string[]; // filter by sites
-  years: number[];
   filter: {
     scope?: number[];
     category?: string[];
     facility?: string[];
+    years: number[];
   };
 }
 
@@ -499,7 +499,7 @@ const userInputsToDataEntries = (
           ? input.category
           : 'Ohne Zuordnung',
       facility:
-        input.facility && input.facility !== ''
+        input.expand.facility && input.expand.facility.name
           ? input.expand.facility.name
           : 'Ohne Zuordnung',
     };
@@ -517,7 +517,8 @@ const filterDataEntries = (
     return (
       (!filter.scope || filter.scope.includes(entry.scope)) &&
       (!filter.category || filter.category.includes(entry.category)) &&
-      (!filter.facility || filter.facility.includes(entry.facility))
+      (!filter.facility || filter.facility.includes(entry.facility)) &&
+      filter.years.includes(entry.year)
     );
   });
 };
@@ -526,15 +527,36 @@ const filterDataEntries = (
  * Get plain timeseries for the given query for all years
  * If a site has no data for a year, it will be skipped
  */
+const littleDataCache: {
+  lease: Date;
+  data: InputEntryWithExpandedReportAndSite[];
+} = {
+  lease: new Date('1970-01-01'),
+  data: [],
+};
 export const getPlainReportData = async (
   query: ReportTimeseriesQuery,
 ): Promise<TimeseriesDataEntry[]> => {
-  const data = await dataprovider.readUserInputsForProject(
-    query.projectId,
-    query.years,
-  );
+  // check if the data is still valid. The lease time is 2 minutes to prevent multiple requests
+  const needRefresh =
+    new Date().getTime() - littleDataCache.lease.getTime() > 120000;
+
+  let data: InputEntryWithExpandedReportAndSite[] = [];
+  if (needRefresh) {
+    // get all data. not filtered by years, because we need to filter it later
+    data = await dataprovider.readUserInputsForProject(query.projectId);
+    littleDataCache.data = data;
+    littleDataCache.lease = new Date();
+  } else {
+    data = littleDataCache.data;
+  }
+
   // map to simpler data entry
-  return filterDataEntries(userInputsToDataEntries(data), query.filter);
+  const filtered = filterDataEntries(
+    userInputsToDataEntries(data),
+    query.filter,
+  );
+  return filtered;
 };
 
 /**
@@ -556,7 +578,7 @@ export const getGroupedReportData = async (
     },
   };
   // Order Years from low to high
-  const orderedYears = query.years.sort((a, b) => a - b);
+  const orderedYears = query.filter.years.sort((a, b) => a - b);
 
   // First get all possible values for the groupBy key
   const groupByValues = new Set<string>();
@@ -625,7 +647,7 @@ export const getYearlyGroupedReportData = async (
   };
 
   // Order Years from low to high
-  const orderedYears = query.years.sort((a, b) => a - b);
+  const orderedYears = query.filter.years.sort((a, b) => a - b);
 
   // First get all possible values for the groupBy key
   const groupByValues = new Set<string>();

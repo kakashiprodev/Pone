@@ -1,4 +1,64 @@
 <template>
+  <Sidebar v-model:visible="showSidebar" position="right">
+    <div class="flex flex-col gap-3 w-full mt-3 rounded-xl bg-slate-100 p-3">
+      <Chip :label="global.selectedSite?.name" class="bg-slate-200">
+        <img
+          v-if="
+            global.selectedProject?.logo && global.selectedProject.logo !== ''
+          "
+          :src="global.selectedProject.logo"
+          class="rounded-lg object-scale-down"
+        />
+        <span>{{ global.selectedProject?.name }}</span>
+      </Chip>
+
+      <span>{{ $t('global.sidebar.places') }}</span>
+      <Dropdown
+        :options="global.sites"
+        optionLabel="name"
+        v-model="global.selectedSite"
+        @change="switchReport()"
+      />
+    </div>
+
+    <div class="flex flex-col gap-3 w-full mt-5 rounded-xl bg-slate-100 p-3">
+      <span class="text-sm font-bold">{{ global.username }}</span>
+
+      <div class="flex flex-col gap-2 mt-5 w-full">
+        <div class="flex flex-col gap-4">
+          <div class="flex justify-items-end gap-2">
+            <i v-if="colorMode === 'dark'" class="fa-solid fa-moon" />
+            <i v-if="colorMode === 'light'" class="fa-solid fa-sun" />
+            <span class="grow">Dark/Light Mode</span>
+            <InputSwitch
+              v-model="global.theme"
+              :true-value="'dark'"
+              :false-value="'light'"
+            />
+          </div>
+
+          <div class="flex justify-items-end gap-2">
+            <i class="fa-solid fa-question-circle" />
+            <span class="grow">Zeige Hilfe</span>
+            <InputSwitch v-model="global.showTooltips" />
+          </div>
+        </div>
+      </div>
+
+      <Button
+        class="mt-5"
+        icon="fa-solid fa-gear"
+        @click="router.push({ name: 'settings' })"
+        label="Einstellungen"
+      />
+      <Button
+        icon="fa-solid fa-right-from-bracket"
+        @click="logout"
+        label="Abmelden"
+      />
+    </div>
+  </Sidebar>
+
   <AppLayout>
     <template #logo>
       <img
@@ -10,64 +70,73 @@
     </template>
 
     <template #start>
-      <h3 class="text-600 ml-5 text-2xl">Sustainability Management</h3>
+      <h3 class="text-slate-600 ml-5 text-2xl">Sustainability Management</h3>
     </template>
 
     <template #end>
-      <ul class="list-none no-underline text-color flex align-items-center">
-        <li style="float: left">
+      <ul class="list-none no-underline text-color flex items-center">
+        <li>
+          <Dropdown
+            v-show="global.reports.length > 0"
+            :options="global.reports.sort((a, b) => b.year - a.year)"
+            optionLabel="year"
+            v-model="global.selectedReport"
+            @change="switchReport()"
+          />
+        </li>
+
+        <li class="ml-2">
           <router-link
             to="/settings/project-reports"
             :exact-active-class="'active-route'"
           >
-            <Button
-              v-show="global.selectedProject"
-              class="button-custom"
-              severity="secondary"
-            >
-              <template #default>
-                <i class="fa-solid fa-building mr-2" />
-                <div class="flex flex-column">
-                  <div class="font-bold">
-                    {{ global.selectedProject?.name }}
-                  </div>
-                  <div>
-                    {{ global.selectedSite?.name }}:
-                    {{ global.selectedReport?.year }}
-                  </div>
-                </div>
-              </template>
-            </Button>
+            <Chip :label="global.selectedSite?.name">
+              <img
+                v-if="
+                  global.selectedProject?.logo &&
+                  global.selectedProject.logo !== ''
+                "
+                :src="global.selectedProject.logo"
+                class="rounded-lg object-scale-down"
+              />
+              <span>{{ global.selectedProject?.name }}</span>
+            </Chip>
           </router-link>
         </li>
-        <li style="float: left" class="ml-4">
-          <div class="flex flex-wrap">
-            <span class="mr-3 text-600"> Zeige Hilfe </span>
-            <InputSwitch
-              class="flex align-items-center justify-content-center"
-              v-model="global.showTooltips"
-            />
-          </div>
+
+        <li class="ml-4">
+          <Button
+            icon="fa-solid fa-bars"
+            @click="showSidebar = !showSidebar"
+            class="bg-slate-400 text-slate-1 border-slate-400"
+          />
         </li>
       </ul>
     </template>
 
     <template #sidebar>
       <div>
-        <template v-for="item in sidebar">
-          <div class="border-round surface-100 mt-2 pt-1">
+        <template v-for="item in sidebar.filter((i) => !i.hide)">
+          <div
+            class="rounded-sm dark:bg-slate-700 mt-2 pt-1"
+            :class="{
+              'bg-slate-100': global.theme === 'light',
+              'bg-slate-700': global.theme !== 'light',
+            }"
+          >
             <h3 class="text-xs px-1 text-500">
               {{ item.header }}
             </h3>
-            <PanelMenu :model="item.items" class="w-1/5 less-padding">
+            <PanelMenu :model="item.items" class="less-padding">
               <template #item="{ item }">
                 <router-link
-                  class="flex align-items-center px-3 py-2 cursor-pointer no-underline text-color"
+                  class="flex items-center px-3 py-2 cursor-pointer no-underline text-slate-600"
                   :to="item.to ?? ''"
                   :exact-active-class="'active-route'"
                 >
                   <span
                     :class="[item.icon, 'text-primary', 'sidebar-item-custom']"
+                    style="color: var(--primary-color)"
                   />
                   <span
                     :class="[
@@ -91,31 +160,31 @@
         <li>
           <a
             href="/#/project-config"
-            class="text-800 flex p-2 border-round align-items-center hover:surface-hover transition-colors transition-duration-150 cursor-pointer"
+            class="text-800 flex p-2 rounded-sm items-center hover:surface-hover transition-colors transition-duration-150 cursor-pointer"
           >
             <i class="fa-solid fa-people-group mr-3"></i>
-            <span>Projekte verwalten</span>
+            <span>{{ $t('global.manageProjects') }}</span>
           </a>
           <a
             href="/#/equivalents"
-            class="text-800 flex p-2 border-round align-items-center hover:surface-hover transition-colors transition-duration-150 cursor-pointer"
+            class="text-800 flex p-2 rounded-sm items-center hover:surface-hover transition-colors transition-duration-150 cursor-pointer"
           >
             <i class="fa-solid fa-list mr-3"></i>
-            <span>Äquivalente verwalten</span>
+            <span>{{ $t('global.manageEquivalents') }}</span>
           </a>
           <a
             href="/#/user"
-            class="text-800 flex p-2 border-round align-items-center hover:surface-hover transition-colors transition-duration-150 cursor-pointer"
+            class="text-800 flex p-2 rounded-sm items-center hover:surface-hover transition-colors transition-duration-150 cursor-pointer"
           >
             <i class="fa-solid fa-user mr-3"></i>
-            <span>Benutzerprofil</span>
+            <span>{{ $t('global.userProfile') }}</span>
           </a>
           <a
             @click="logout()"
-            class="text-800 flex p-2 border-round align-items-center hover:surface-hover transition-colors transition-duration-150 cursor-pointer"
+            class="text-800 flex p-2 rounded-sm items-center hover:surface-hover transition-colors transition-duration-150 cursor-pointer"
           >
             <i class="fa-solid fa-right-from-bracket mr-3"></i>
-            <span>Ausloggen</span>
+            <span>{{ $t('global.logout') }}</span>
           </a>
         </li>
       </ul>
@@ -133,15 +202,33 @@ import { useGlobalStore } from '../../stores/global';
 import { useRouter } from 'vue-router';
 import dataprovider from '../../services/dataprovider';
 import { useRoute } from 'vue-router';
+import { ref, computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 
+const { t } = useI18n();
 const route = useRoute();
 const router = useRouter();
 const global = useGlobalStore();
+const loading = ref(false);
+const colorMode = computed(() => global.theme);
+
+const logout = async () => {
+  await dataprovider.logout();
+  router.push('/login');
+};
+
+const switchReport = async () => {
+  loading.value = true;
+  await global.changeReport();
+  loading.value = false;
+};
+
+const showSidebar = ref(false);
 
 const sidebarAnalysis = [
   {
     key: 'dashboard',
-    label: 'Dashboard',
+    label: t('global.sidebar.dashboard'),
     icon: 'fa-solid fa-chart-line',
     to: '/dashboard',
     visible: true,
@@ -158,98 +245,87 @@ const sidebarAnalysis = [
 const sidebarInputs = [
   {
     key: 'scope-1',
-    label: 'Scope 1',
+    label: t('global.sidebar.scope', { scope: '1' }),
     icon: 'fa-solid fa-1',
     to: '/inputs/scope/1',
     visible: true,
   },
   {
     key: 'scope-2',
-    label: 'Scope 2',
+    label: t('global.sidebar.scope', { scope: '2' }),
     icon: 'fa-solid fa-2',
     to: '/inputs/scope/2',
     visible: true,
   },
   {
     key: 'scope-3',
-    label: 'Scope 3',
+    label: t('global.sidebar.scope', { scope: '3' }),
     icon: 'fa-solid fa-3',
     to: '/inputs/scope/3',
     visible: true,
   },
   {
     key: 'assistant',
-    label: 'Assistent',
+    label: t('global.sidebar.assistant'),
     icon: 'fa-solid fa-magic',
     to: '/assistant',
-    visible: true,
+    visible: global.isGlobalAdmin,
   },
 ];
 
 const sidebarCsrd = [
   {
     key: 'csrd-report-interview',
-    label: 'CSRD Interview',
+    label: t('global.sidebar.csrdReportInterview'),
     icon: 'fa-solid fa-magic',
     to: '/csrd-report-interview',
-    visible: true,
+    visible: global.isGlobalAdmin,
   },
 ];
 
 const sidebarActions = [
   {
     key: 'actions',
-    label: 'Maßnahmen',
+    label: t('global.sidebar.actions'),
     icon: 'fa-solid fa-list-check',
     to: '/actions',
     visible: true,
   },
   {
     key: 'facilities',
-    label: 'Anlagen',
+    label: t('global.sidebar.facilities'),
     icon: 'fa-solid fa-industry',
     to: '/facilities',
     visible: true,
   },
-];
-
-const sidebarSettings = [
   {
-    key: 'settings',
-    label: 'Einstellungen',
-    icon: 'fa-solid fa-gear',
-    to: '/settings',
+    key: 'report-data',
+    label: 'Unternehmen',
+    icon: 'fa-solid fa-building',
+    to: '/report-data',
     visible: true,
   },
 ];
 
 const sidebar = [
   {
-    header: 'Auswertung',
+    header: t('global.sidebar.analysis'),
     items: sidebarAnalysis,
   },
   {
-    header: 'Eingabe',
+    header: t('global.sidebar.inputs'),
     items: sidebarInputs,
   },
   {
-    header: 'Zuordnung',
+    header: t('global.sidebar.inputs'),
     items: sidebarActions,
   },
   {
-    header: 'Berichtswesen',
+    header: t('global.sidebar.reporting'),
     items: sidebarCsrd,
-  },
-  {
-    header: 'Einstellungen',
-    items: sidebarSettings,
+    hide: !global.isGlobalAdmin,
   },
 ];
-
-const logout = async () => {
-  await dataprovider.logout();
-  router.push('/login');
-};
 </script>
 
 <style>

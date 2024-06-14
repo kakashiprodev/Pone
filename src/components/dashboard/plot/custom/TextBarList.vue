@@ -2,7 +2,7 @@
   <h4 v-if="label">
     {{ label }}
   </h4>
-  <DataTable class="cst-no-hover" :value="innerData">
+  <DataTable class="cst-no-hover" :value="innerData" :showGridlines="false">
     <Column field="name" :header="header[0]"></Column>
     <Column field="status" :header="header[1]" v-if="showStatusColumn">
       <template #body="{ data }">
@@ -26,7 +26,7 @@
           :target-value="data.targetValue ?? undefined"
           :color="data.color ?? Config.colors.data2"
         >
-          {{ round(toTons(data.value, globalStore.displayInTons)) }}
+          {{ round(toTons(data.value)) }}
           {{ globalStore.displayInTons ? ' to' : ' kg' }}
         </ProgressBarWithTarget>
       </template>

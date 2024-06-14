@@ -1,10 +1,12 @@
 <template>
   <div v-if="user != null">
     <div class="p-fluid mt-5">
-      <h2>Persönliche Einstellungen</h2>
+      <h2>{{ $t('settings.userSettings.heading') }}</h2>
       <div class="p-fluid">
-        <div class="p-field mt-2 flex align-items-center">
-          <label for="displayInTons">Darstellung in Tonnen?</label>
+        <div class="grid grid-cols-12 flex items-center">
+          <label class="col-span-12 md:col-span-4" for="displayInTons"
+            >{{ $t('settings.userSettings.displayInTons') }}?</label
+          >
           <InputSwitch
             id="displayInTons"
             class="ml-2"
@@ -15,42 +17,84 @@
     </div>
 
     <div class="p-fluid mt-5">
-      <h2>Angaben</h2>
-      <div class="p-fluid">
-        <div class="p-field">
-          <label for="username">Benutzername</label>
-          <InputText class="mt-2" id="username" v-model="global.username" />
+      <h2>{{ $t('settings.userSettings.subHeading') }}</h2>
+      <div class="mt-4 flex flex-col gap-3">
+        <div class="grid grid-cols-12">
+          <label class="col-span-12 md:col-span-4" for="username">{{
+            $t('settings.userSettings.userName')
+          }}</label>
+          <InputText
+            class="col-span-12 md:col-span-8"
+            id="username"
+            v-model="global.username"
+          />
         </div>
-        <div class="p-field mt-2">
-          <label for="email">E-Mail</label>
-          <InputText class="mt-2" id="email" v-model="user.email" />
+        <div class="grid grid-cols-12">
+          <label class="col-span-12 md:col-span-4" for="email">{{
+            $t('settings.userSettings.email')
+          }}</label>
+          <InputText
+            class="col-span-12 md:col-span-8"
+            id="email"
+            v-model="user.email"
+          />
         </div>
-        <div class="p-field mt-2">
-          <label for="firstname">Vorname</label>
-          <InputText class="mt-2" id="firstname" v-model="user.firstname" />
+        <div class="grid grid-cols-12">
+          <label class="col-span-12 md:col-span-4" for="firstname">{{
+            $t('settings.userSettings.firstName')
+          }}</label>
+          <InputText
+            class="col-span-12 md:col-span-8"
+            id="firstname"
+            v-model="user.firstname"
+          />
         </div>
-        <div class="p-field mt-2">
-          <label for="surname">Nachname</label>
-          <InputText class="mt-2" id="surname" v-model="user.surname" />
+        <div class="grid grid-cols-12">
+          <label class="col-span-12 md:col-span-4" for="surname">{{
+            $t('settings.userSettings.lastName')
+          }}</label>
+          <InputText
+            class="col-span-12 md:col-span-8"
+            id="surname"
+            v-model="user.surname"
+          />
         </div>
-        <div class="p-field mt-2">
-          <label for="department">Abteilung</label>
-          <InputText class="mt-2" id="department" v-model="user.department" />
+        <div class="grid grid-cols-12">
+          <label class="col-span-12 md:col-span-4" for="department">{{
+            $t('settings.userSettings.department')
+          }}</label>
+          <InputText
+            class="col-span-12 md:col-span-8"
+            id="department"
+            v-model="user.department"
+          />
         </div>
-        <div class="p-field mt-2">
-          <label for="role">Rolle</label>
-          <InputText class="mt-2" id="role" v-model="user.role" />
+        <div class="grid grid-cols-12">
+          <label class="col-span-12 md:col-span-4" for="role">{{
+            $t('settings.userSettings.role')
+          }}</label>
+          <InputText
+            class="col-span-12 md:col-span-8"
+            id="role"
+            v-model="user.role"
+          />
         </div>
-        <div class="p-field mt-2">
-          <label for="telephone">Telefon</label>
-          <InputText class="mt-2" id="telephone" v-model="user.telephone" />
+        <div class="grid grid-cols-12">
+          <label class="col-span-12 md:col-span-4" for="telephone">{{
+            $t('settings.userSettings.phone')
+          }}</label>
+          <InputText
+            class="col-span-12 md:col-span-8"
+            id="telephone"
+            v-model="user.telephone"
+          />
         </div>
 
         <Button
           @click="saveUser"
           :disabled="false"
           class="mt-5"
-          label="Speichern"
+          :label="$t('global.save')"
         />
       </div>
     </div>

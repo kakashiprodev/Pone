@@ -184,15 +184,20 @@ const generateData = async () => {
   const allFacilities = global.facilities;
 
   for (const report of allReports) {
+    let reportSum = 0;
+
     for (let x = 0; x < numberOfRecords.value; x++) {
       // get random scope. this can be 1,2,3
       const scope = Math.floor(Math.random() * 3) + 1;
 
       // if scope is 3 we need to reference a random facility
-      const facility =
-        scope === 3
-          ? allFacilities[Math.floor(Math.random() * allFacilities.length)].id
-          : null;
+      let facility = null;
+      if (allFacilities.length > 0) {
+        facility =
+          scope === 3
+            ? allFacilities[Math.floor(Math.random() * allFacilities.length)].id
+            : null;
+      }
 
       const e = getRandomEquivalentByScope(scope);
       const input: InputEntry = {
@@ -229,7 +234,13 @@ const generateData = async () => {
         rangeMax.value,
       );
       await dataprovider.createUserInput(input);
+      reportSum += input.sumValue;
     }
+    console.log('Report ' + report.year + ' sum: ' + reportSum);
+    await dataprovider.updateReport({
+      ...report,
+      sumEmission: reportSum,
+    });
   }
   info('Daten wurden generiert');
   loading.value = false;

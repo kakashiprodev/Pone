@@ -7,7 +7,7 @@
         type="pie"
         :data="chartData"
         :options="chartOptions"
-        class="w-full md:w-30rem"
+        class="w-full md:w-96"
       />
     </div>
     <div v-else>
@@ -23,7 +23,7 @@
         type="bar"
         :data="chartDataScope1"
         :options="scopeChartOptions"
-        class="h-30rem"
+        class="h-96"
       />
     </div>
     <div v-if="chartDataScope2.datasets.length > 0" class="mt-5">
@@ -32,7 +32,7 @@
         type="bar"
         :data="chartDataScope2"
         :options="scopeChartOptions"
-        class="h-30rem"
+        class="h-96"
       />
     </div>
     <div v-if="chartDataScope3.datasets.length > 0" class="mt-5">
@@ -41,11 +41,11 @@
         type="bar"
         :data="chartDataScope3"
         :options="scopeChartOptions"
-        class="h-30rem"
+        class="h-96"
       />
     </div>
   </div>
-  <div v-else class="m-auto mt-5 w-1">
+  <div v-else class="m-auto mt-5 w-1/12">
     <ProgressSpinner />
   </div>
 </template>
@@ -118,6 +118,7 @@ const loadDasboard = async () => {
   const report = global.selectedReport;
   if (report) {
     report.sumEmissions = data.scope1.sum + data.scope2.sum + data.scope3.sum;
+    console.log('Updating report', report);
     await dataprovider.updateReport(report);
   }
 

@@ -1,44 +1,33 @@
 <template>
   <!-- <SmartInput :data="demo" /> -->
   <div class="report" v-if="global.selectedReport" style="max-width: 1200px">
-    <Toolbar class="mb-4">
-      <template #start>
-        <span>Ausgewählter Bericht</span>
-        <Dropdown
-          v-if="global.reports && global.selectedReport"
-          v-model="global.selectedReport"
-          :options="global.reports"
-          optionLabel="year"
-          placeholder="Select a Report"
-          class="ml-3"
-          @change="switchReport()"
-        />
-      </template>
-    </Toolbar>
     <TabView v-if="!global.isLoading && !loading">
-      <TabPanel header="Bilanzierung">
+      <TabPanel :header="$t('dashboard.reportSumYear')">
         <ReportSumYear :sites="[global.selectedSite?.id ?? '']" />
       </TabPanel>
 
-      <TabPanel header="Scope 1">
+      <TabPanel :header="$t('dashboard.scope', { scope: '1' })">
         <ReportSumScope :scope="1" :sites="[global.selectedSite?.id ?? '']" />
       </TabPanel>
-      <TabPanel header="Scope 2">
+      <TabPanel :header="$t('dashboard.scope', { scope: '2' })">
         <ReportSumScope :scope="2" :sites="[global.selectedSite?.id ?? '']" />
       </TabPanel>
-      <TabPanel header="Scope 3">
+      <TabPanel :header="$t('dashboard.scope', { scope: '3' })">
         <ReportSumScope :scope="3" :sites="[global.selectedSite?.id ?? '']" />
       </TabPanel>
 
-      <TabPanel header="Soll/Ist-Vergleich">
+      <TabPanel :header="$t('dashboard.comparison')">
         <ForecastChart />
       </TabPanel>
 
-      <TabPanel header="Maßnahmen und Ziele">
+      <TabPanel :header="$t('dashboard.actionsAndTargets')">
         <ActionOverview />
       </TabPanel>
 
-      <TabPanel header="Bericht Export" v-if="global.isGlobalAdmin">
+      <TabPanel
+        :header="$t('dashboard.reportExport')"
+        v-if="global.isGlobalAdmin"
+      >
         <ReportPrint />
       </TabPanel>
     </TabView>
@@ -52,16 +41,20 @@ import ActionOverview from '../../components/dashboard/actions/ActionOverview.vu
 import ReportPrint from '../../components/dashboard/report/ReportPrint.vue';
 import ForecastChart from '../../components/dashboard/plot/custom/ForecastChart.vue';
 import { useGlobalStore } from '../../stores/global';
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 
 const loading = ref(false);
 const global = useGlobalStore();
 
-const switchReport = async () => {
-  loading.value = true;
-  await global.changeReport();
-  loading.value = false;
-};
+// watch global.selectedReport to reload the report
+watch(
+  () => global.selectedReport,
+  async () => {
+    loading.value = true;
+    await global.changeReport();
+    loading.value = false;
+  },
+);
 </script>
 
 <style scoped>

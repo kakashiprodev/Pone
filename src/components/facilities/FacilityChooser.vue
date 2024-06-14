@@ -1,5 +1,6 @@
 <template>
   <DataTable
+    :showGridlines="false"
     v-if="data != null && data.length > 0"
     :value="data"
     class="cst-no-hover"
@@ -8,9 +9,18 @@
     key="id"
   >
     <Column selectionMode="single" headerStyle="width: 3rem"></Column>
-    <Column field="name" header="Name"></Column>
-    <Column field="manufacturer" header="Hersteller"></Column>
-    <Column field="model" header="Modell/Typ"></Column>
+    <Column
+      field="name"
+      :header="$t('facilities.facilityChooser.name')"
+    ></Column>
+    <Column
+      field="manufacturer"
+      :header="$t('facilities.facilityChooser.manufacturer')"
+    ></Column>
+    <Column
+      field="model"
+      :header="$t('facilities.facilityChooser.model')"
+    ></Column>
   </DataTable>
 </template>
 

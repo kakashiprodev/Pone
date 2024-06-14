@@ -130,7 +130,7 @@ const renderChart = () => {
         const sumOfKey = sum(
           props.data.timeseries[key].map((entry) => entry.sum),
         );
-        series.push(round(toTons(sumOfKey, globalStore.displayInTons)));
+        series.push(round(toTons(sumOfKey)));
       });
 
       // add colors

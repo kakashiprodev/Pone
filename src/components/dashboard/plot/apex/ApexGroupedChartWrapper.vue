@@ -177,10 +177,7 @@ const renderChart = () => {
       for (const group in grouped) {
         series.push({
           name: group,
-          data: roundArray(
-            toTonsArray(grouped[group], globalStore.displayInTons),
-            props.decimals,
-          ),
+          data: roundArray(toTonsArray(grouped[group]), props.decimals),
         });
       }
       chartData.value = series;

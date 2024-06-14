@@ -1,5 +1,5 @@
 <template>
-  <div class="m-auto w-9">
+  <div class="m-auto w-3/4">
     <AiAssistent />
   </div>
 </template>

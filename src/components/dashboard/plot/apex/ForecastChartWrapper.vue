@@ -15,7 +15,6 @@
 <script setup lang="ts">
 import { computed, defineProps, PropType, ref } from 'vue';
 import { AggregatedReportResult } from '../../../../services/reporting/index';
-import config from '@/config.ts';
 import { numbersFormatter } from '@/services/reporting/forecast.ts';
 
 const props = defineProps({
@@ -45,12 +44,12 @@ const annotations = computed(() => {
       return {
         x: action.x,
         strokeDashArray: 0,
-        borderColor: config.colors.data5,
+        borderColor: '#454545',
         label: {
-          borderColor: config.colors.data5,
+          borderColor: '#454545',
           style: {
             color: '#fff',
-            background: config.colors.data5,
+            background: '#666666',
           },
           text: action.name,
         },
@@ -62,10 +61,8 @@ const annotations = computed(() => {
           x: target.x,
           y: target.y,
           marker: {
-            size: 4,
-            fillColor: config.colors.data7,
-            strokeColor: config.colors.data7,
-            radius: 2,
+            size: 3,
+            radius: 3,
             cssClass: 'apexcharts-custom-class',
           },
         };
@@ -87,8 +84,9 @@ const chartOptions = ref({
   },
   annotations,
   stroke: {
-    width: [0, 4],
+    width: [0, 0],
   },
+  colors: ['#02434f', '#888888'],
   plotOptions: {
     bar: {
       horizontal: false,

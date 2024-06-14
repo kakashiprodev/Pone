@@ -109,7 +109,7 @@
     </HorizontalTwoColEntry>
 
     <HorizontalTwoColEntry label="" class="mt-2">
-      <div class="w-full flex justify-content-end">
+      <div class="w-full flex justify-end">
         <Button @click="getData()" label="Let´s get data!" />
       </div>
     </HorizontalTwoColEntry>
@@ -327,7 +327,6 @@ const plainDataQuery: ComputedRef<ReportTimeseriesQuery> = computed(() => {
   return {
     projectId: global.selectedProject?.id || '',
     siteIds: selectedSiteIds.value,
-    years: selectedYears.value,
     filter: {
       scope:
         useFilter.value && selectedScopes.value.length > 0
@@ -341,6 +340,7 @@ const plainDataQuery: ComputedRef<ReportTimeseriesQuery> = computed(() => {
         useFilter.value && selectedFacilities.value.length
           ? selectedFacilities.value
           : undefined,
+      years: selectedYears.value,
     },
   };
 });

@@ -300,13 +300,15 @@ export default class DataProvider {
     return res.items;
   }
 
-  async readUserInputsForProject(projectId: string, years: number[]) {
+  async readUserInputsForProject(projectId: string, years?: number[]) {
+    let filter = `report.site.project.id = '${projectId}'`;
+    if (years) {
+      filter += ` && (${years.map((y) => `report.year = ${y}`).join(' || ')})`;
+    }
     const res = await this.pb
       .collection('inputs')
       .getList<InputEntryWithExpandedReportAndSite>(1, 500, {
-        filter: `report.site.project.id = '${projectId}' && (${years
-          .map((y) => `report.year = ${y}`)
-          .join(' || ')})`,
+        filter,
         expand: 'report.site,facility',
       });
     return res.items;
@@ -464,5 +466,37 @@ export default class DataProvider {
 
   async deleteCsrdTopic(id: string) {
     return await this.pb.collection('csrdtopics').delete(id);
+  }
+
+  async uploadImage(file: File) {
+    const formData = new FormData();
+    formData.append('image', file);
+    const createdRecord = await this.pb.collection('media').create(formData);
+    const url = this.pb.files.getUrl(createdRecord, createdRecord.image);
+    return {
+      id: createdRecord.id,
+      url,
+    };
+  }
+
+  async updateImage(id: string, file: File) {
+    const formData = new FormData();
+    formData.append('image', file);
+    const updatedRecord = await this.pb
+      .collection('media')
+      .update(id, formData);
+    const url = this.pb.files.getUrl(updatedRecord, updatedRecord.image);
+    return url;
+  }
+
+  async getImageUrl(id: string) {
+    const record = await this.pb.collection('media').getOne(id);
+    if (!record) return '';
+    const url = this.pb.files.getUrl(record, record.image);
+    return url;
+  }
+
+  async deleteImage(id: string) {
+    return await this.pb.collection('media').delete(id);
   }
 }

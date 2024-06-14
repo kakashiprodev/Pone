@@ -8,7 +8,7 @@
       <Card>
         <template #header>
           <div class="psm-report-header">
-            <h3>CO&#8322; Emissionen, aufgeteilt nach Scope</h3>
+            <h3 v-html="$t('report.sumYear.headingScope')" />
           </div>
         </template>
         <template #content>
@@ -38,11 +38,11 @@
       :value="[
         {
           year: 2019,
-          status: 'Gesamt: 1000t',
+          status: $t('report.sumYear.total') + ': 1000t',
         },
         {
           year: 2020,
-          status: 'Gesamt: 1000t',
+          status: $t('report.sumYear.') + ': 1000t',
         },
       ]"
     >
@@ -70,7 +70,7 @@
     <Card>
       <template #header>
         <div class="psm-report-header">
-          <h3>Mengen der letzten Berichtsjahre</h3>
+          <h3>{{ $t('report.sumYear.amountLastYears') }}</h3>
         </div>
       </template>
       <template #content>
@@ -79,7 +79,11 @@
             v-if="yearlyList"
             :data="yearlyList"
             :show-status-column="false"
-            :header="['Jahr', 'Status', 'Menge']"
+            :header="[
+              $t('report.sumYear.year'),
+              $t('report.sumYear.status'),
+              $t('report.sumYear.amount'),
+            ]"
             :use-maximum-as-reference="true"
           />
         </div>
@@ -93,7 +97,7 @@
     <Card>
       <template #header>
         <div class="psm-report-header">
-          <h3>Aufteilung der Ursprüunge</h3>
+          <h3>{{ $t('report.sumYear.divisionOrigins') }}</h3>
         </div>
       </template>
       <template #content>
@@ -115,7 +119,7 @@
       <Card>
         <template #header>
           <div class="psm-report-header">
-            <h3>CO&#8322; Emissionen, aufgeteilt nach Scope und Jahr</h3>
+            <h3 v-html="$t('report.sumYear.headingScopeYear')" />
           </div>
         </template>
         <template #content>
@@ -135,7 +139,7 @@
       <Card>
         <template #header>
           <div class="psm-report-header">
-            <h3>CO&#8322; Emissionen, aktueller Berichtszeitraum</h3>
+            <h3 v-html="$t('report.sumYear.headingReportTime')" />
           </div>
         </template>
         <template #content>
@@ -216,10 +220,10 @@ const getData = async () => {
     <ReportTimeseriesQuery>{
       projectId: global.selectedProject?.id || '',
       siteIds: props.sites,
-      years: [global.selectedReport?.year ?? -1],
       filter: {
         scope:
           selectedScopes.value.length > 0 ? selectedScopes.value : undefined,
+        years: [global.selectedReport?.year ?? -1],
       },
     },
     'scope',
@@ -229,10 +233,10 @@ const getData = async () => {
     <ReportTimeseriesQuery>{
       projectId: global.selectedProject?.id || '',
       siteIds: props.sites,
-      years: availableYears,
       filter: {
         scope:
           selectedScopes.value.length > 0 ? selectedScopes.value : undefined,
+        years: availableYears,
       },
     },
     'scope',
@@ -263,10 +267,10 @@ const getData = async () => {
     <ReportTimeseriesQuery>{
       projectId: global.selectedProject?.id || '',
       siteIds: props.sites,
-      years: availableYears,
       filter: {
         scope:
           selectedScopes.value.length > 0 ? selectedScopes.value : undefined,
+        years: availableYears,
       },
     },
     'category',

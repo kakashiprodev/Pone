@@ -8,7 +8,7 @@
       <Card>
         <template #header>
           <div class="psm-report-header">
-            <h3>CO&#8322; Emissionen, aufgeteilt nach Scope</h3>
+            <h3 v-html="$t('report.sumScope.headingScope')" />
           </div>
         </template>
         <template #content>
@@ -30,7 +30,7 @@
     <Card>
       <template #header>
         <div class="psm-report-header">
-          <h3>CO&#8322; Emissionen, aufgeteilt nach Scope</h3>
+          <h3 v-html="$t('report.sumScope.headingScope')" />
         </div>
       </template>
       <template #content>
@@ -50,14 +50,18 @@
     <Card>
       <template #header>
         <div class="psm-report-header">
-          <h3>CO&#8322; Emissionen, aufgeteilt nach Anlage</h3>
+          <h3 v-html="$t('report.sumScope.headingFacility')" />
         </div>
       </template>
       <template #content>
         <div class="report-chart-wrapper">
           <TextBarList
             :data="facilityList"
-            :header="['Anlagenname', 'Aktiv/Inaktiv', 'CO&#8322; Emissionen']"
+            :header="[
+              $t('report.sumScope.facilityName'),
+              $t('report.sumScope.activeInactive'),
+              $t('report.sumScope.co2emissions'),
+            ]"
             :use-maximum-as-reference="true"
           />
         </div>
@@ -72,7 +76,7 @@
       <Card>
         <template #header>
           <div class="psm-report-header">
-            <h3>CO&#8322; Emissionen, aufgeteilt nach Anlage</h3>
+            <h3 v-html="$t('report.sumScope.headingFacility')" />
           </div>
         </template>
         <template #content>
@@ -89,7 +93,7 @@
       <Card>
         <template #header>
           <div class="psm-report-header">
-            <h3>CO&#8322; Emissionen, aufgeteilt nach Kategorie</h3>
+            <h3 v-html="$t('report.sumScope.headingCategory')" />
           </div>
         </template>
         <template #content>
@@ -152,9 +156,9 @@ const getData = async () => {
     <ReportTimeseriesQuery>{
       projectId: global.selectedProject?.id || '',
       siteIds: props.sites,
-      years: [global.selectedReport?.year ?? -1],
       filter: {
         scope: [props.scope],
+        years: [global.selectedReport?.year ?? -1],
       },
     },
     'category',
@@ -164,9 +168,9 @@ const getData = async () => {
     <ReportTimeseriesQuery>{
       projectId: global.selectedProject?.id || '',
       siteIds: props.sites,
-      years: [global.selectedReport?.year ?? -1],
       filter: {
         scope: [props.scope],
+        years: [global.selectedReport?.year ?? -1],
       },
     },
     'facility',

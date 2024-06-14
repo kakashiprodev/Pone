@@ -3,7 +3,7 @@
   <router-view v-if="!global.isLoading" :key="route.path" />
   <div
     v-else
-    class="m-auto w-1 min-h-screen flex align-items-center justify-content-center"
+    class="m-auto w-1/12 min-h-screen flex items-center justify-center"
   >
     <ProgressSpinner />
   </div>
