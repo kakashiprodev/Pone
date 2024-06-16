@@ -319,7 +319,6 @@ const setRouteFilter = () => {
       ? facilityParam
       : null;
 
-  console.log('setRouteFilter', preSelectedScope.value);
   triggerRefresh.value = true;
 };
 
