@@ -165,17 +165,17 @@ export const useGlobalStore = defineStore('global', {
         this.projects.length > 0 &&
         this.projects.find((p) => p.id === user.last_selected_project) != null
       ) {
-        console.log(
-          'select last selected project with id',
-          user.last_selected_project,
-        );
+        // console.log(
+        //   'select last selected project with id',
+        //   user.last_selected_project,
+        // );
         const p = this.projects.find(
           (p) => p.id === user.last_selected_project,
         );
         if (p) this.selectedProject = p;
       } else {
         // select another project or create a new one
-        console.log('ensure project is selected');
+        // console.log('ensure project is selected');
         await this.ensureProjectIsSelected();
       }
 
@@ -203,10 +203,10 @@ export const useGlobalStore = defineStore('global', {
         user.last_selected_report != null &&
         user.last_selected_report !== ''
       ) {
-        console.log(
-          'select last selected report with id',
-          user.last_selected_report,
-        );
+        // console.log(
+        //   'select last selected report with id',
+        //   user.last_selected_report,
+        // );
         const r = this.reports.find((r) => r.id === user.last_selected_report);
         if (r) this.selectedReport = r;
       } else {

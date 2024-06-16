@@ -49,13 +49,13 @@
       {{ action.roi }}
     </Panel>
     <Panel
-      :header="$t('actions.charTable.description_costs')"
+      :header="$t('actions.charTable.descriptionCosts')"
       class="mb-3"
       toggleable
     >
       <span v-html="action.description_costs.toLocaleString()"></span>
     </Panel>
-    <Panel :header="$t('actions.charTable.avoidance_costs')" class="mb-3">
+    <Panel :header="$t('actions.charTable.avoidanceCosts')" class="mb-3">
       {{ action.avoidance_costs.toLocaleString() }}
     </Panel>
   </div>

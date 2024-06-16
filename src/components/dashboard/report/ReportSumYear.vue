@@ -285,7 +285,6 @@ onMounted(() => {
     availableYears.push(thisYear);
     thisYear--;
   }
-  console.log('availableYears', availableYears);
   getData();
 });
 </script>
