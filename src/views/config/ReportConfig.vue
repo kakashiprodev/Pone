@@ -5,7 +5,7 @@
   </p>
   <Toolbar class="w-full">
     <template #start>
-      <div class="flex gap-2 items-center">
+      <div class="flex gap-2 items-center" v-show="reportForm?.id !== 'new'">
         <span>{{ $t('settings.reportSettings.currentReport') }}</span>
         <Chip class="text-lg bg-slate-200">
           {{ global.selectedReport?.year }}
@@ -21,7 +21,9 @@
           v-show="reportForm?.id !== 'new'"
         />
         <Button
-          v-if="global.targetOnSiteForProject.length < 1"
+          v-if="
+            global.targetOnSiteForProject.length < 1 && reportForm?.id !== 'new'
+          "
           icon="fa-solid fa-copy"
           @click="copyTargetsFromYearBefore()"
           :v-tooltip="$t('settings.reportSettings.copyFromLastYear')"
@@ -71,41 +73,7 @@
         ><span v-html="$t('settings.reportSettings.title')"
       /></template>
       <template #content>
-        <div
-          class="mb-4 grid grid-cols-12"
-          v-for="entry in Object.entries(reportSchemaGeneral.object)"
-          :key="entry[0]"
-        >
-          <template v-if="!(entry[0] === 'id') && !(entry[0] === 'site')">
-            <label
-              :for="entry[0]"
-              class="col-span-12 mb-2 md:col-span-4 md:mb-0"
-              :class="{
-                'font-bold text-green-600':
-                  entry[0] === 'year' && reportForm.id === 'new',
-              }"
-              >{{ reportTranslations[entry[0]]?.label }}</label
-            >
-            <div class="col-span-12 md:col-span-8">
-              <InputText
-                v-if="entry[1].schema === 'string'"
-                :id="entry[0]"
-                v-model="reportForm[entry[0]]"
-                class="w-full"
-              />
-              <InputNumber
-                v-if="entry[1].schema === 'number'"
-                :id="entry[0]"
-                v-model="reportForm[entry[0]]"
-                :useGrouping="
-                  reportTranslations[entry[0]]?.numberGrouping ?? false
-                "
-                class="w-full"
-                :variant="'filled'"
-              />
-            </div>
-          </template>
-        </div>
+        <GenericForm :definition="formEntriesGeneral" v-model="reportForm" />
       </template>
     </Card>
 
@@ -114,27 +82,7 @@
         {{ $t('settings.reportSettings.contactName') }}
       </template>
       <template #content>
-        <div
-          class="mb-4 grid grid-cols-12"
-          v-for="entry in Object.entries(reportSchemaContact.object)"
-          :key="entry[0]"
-        >
-          <label
-            :for="entry[0]"
-            class="col-span-12 mb-2 md:col-span-4 md:mb-0"
-            >{{ reportTranslations[entry[0]]?.label }}</label
-          >
-          <div class="col-span-12 md:col-span-8">
-            <InputText
-              v-if="entry[1].schema === 'string'"
-              :id="entry[0]"
-              v-model="reportForm[entry[0]]"
-              class="w-full"
-            />
-            <!-- <InputNumber v-if="entry[1].schema === 'number'" :id="entry[0]" v-model="reportForm[entry[0]]"
-                :useGrouping="false" class="w-full" /> -->
-          </div>
-        </div>
+        <GenericForm :definition="formEntriesContact" v-model="reportForm" />
       </template>
     </Card>
 
@@ -143,31 +91,10 @@
         {{ $t('settings.reportSettings.companyNumbers') }}
       </template>
       <template #content>
-        <div
-          class="mb-4 grid grid-cols-12"
-          v-for="entry in Object.entries(reportSchemaYearlyFocus.object)"
-          :key="entry[0]"
-        >
-          <label
-            :for="entry[0]"
-            class="col-span-12 mb-2 md:col-span-4 md:mb-0"
-            >{{ reportTranslations[entry[0]]?.label }}</label
-          >
-          <div class="col-span-12 md:col-span-8">
-            <!-- <InputText v-if="entry[1].schema === 'string'" :id="entry[0]" v-model="reportForm[entry[0]]"
-                class="w-full" /> -->
-            <InputNumber
-              v-if="entry[1].schema === 'number'"
-              :id="entry[0]"
-              v-model="reportForm[entry[0]]"
-              :useGrouping="
-                reportTranslations[entry[0]]?.numberGrouping ?? false
-              "
-              :suffix="reportTranslations[entry[0]]?.suffix ?? ''"
-              class="w-full"
-            />
-          </div>
-        </div>
+        <GenericForm
+          :definition="formEntriesYearlyFocus"
+          v-model="reportForm"
+        />
       </template>
     </Card>
   </template>
@@ -178,20 +105,11 @@ import { ref, Ref, watch } from 'vue';
 import { useGlobalStore } from '../../stores/global';
 import { useConfirm } from 'primevue/useconfirm';
 import { ReportEntry } from '../../services/types';
-import {
-  minLength,
-  maxLength,
-  object,
-  string,
-  number,
-  minValue,
-  maxValue,
-  email,
-  parse,
-  nullable,
-} from 'valibot';
+import * as v from 'valibot';
 import { error, info } from '../../services/ui/toast';
 import { useI18n } from 'vue-i18n';
+import GenericForm from '@/components/forms/GenericForm.vue';
+import { GenericFormEntry } from '@/services/types/form';
 
 const { t } = useI18n();
 const global = useGlobalStore();
@@ -205,135 +123,152 @@ watch(
     reportForm.value = global.selectedReport;
   },
 );
-const reportSchemaGeneral = object({
-  id: string(),
-  site: string('Es ist kein Standort angegeben.', [
-    minLength(4, 'Die Angabe Projekt ist fehlerhaft.'),
-    maxLength(100, 'Die Angabe Projekt ist fehlerhaft.'),
-  ]),
-  year: number([
-    minValue(1900, 'Es muss ein gültiges Jahr angegeben werden.'),
-    maxValue(2100, 'Es muss ein gültiges Jahr angegeben werden.'),
-  ]),
-  company_name: string([
-    minLength(1, 'Der Firmenname muss zwischen 1 und 255 Zeichen liegen.'),
-    maxLength(255, 'Der Firmenname muss zwischen 1 und 255 Zeichen liegen.'),
-  ]),
-  company_street: string([
-    minLength(2, 'Der Straßenname muss zwischen 2 und 255 Zeichen liegen'),
-    maxLength(255, 'Der Straßenname muss zwischen 2 und 255 Zeichen liegen'),
-  ]),
-  company_postal: string([
-    minLength(4, 'Die Postleitzahl muss min. 4 Zeichen beinhalten'),
-    maxLength(6, 'Die Postleitzahl kann max 5 Zeichen beinhalten'),
-  ]),
-  company_city: string([
-    minLength(2, 'Die Stadt muss zwischen 2 und 255 Zeichen lang sein'),
-    maxLength(255, 'Die Stadt muss zwischen 2 und 255 Zeichen lang sein'),
-  ]),
-  company_country: string([
-    minLength(1, 'Das Land muss zwischen 2 und 255 Zeichen lang sein'),
-    maxLength(255, 'Das Land muss zwischen 2 und 255 Zeichen lang sein'),
-  ]),
-  company_domain: string([
-    minLength(2, 'Die Branche muss zwischen 2 und 255 Zeichen lang sein'),
-    maxLength(255, 'Die Branche muss zwischen 2 und 255 Zeichen lang sein'),
-  ]),
+
+const reportSchemaGeneral = v.object({
+  id: v.string(),
+  site: v.pipe(v.string(), v.minLength(4), v.maxLength(100)),
+  year: v.pipe(v.number(), v.minValue(1900), v.maxValue(2100)),
+  company_name: v.pipe(v.string(), v.minLength(1), v.maxLength(255)),
+  company_street: v.pipe(v.string(), v.minLength(2), v.maxLength(255)),
+  company_postal: v.pipe(v.string(), v.minLength(4), v.maxLength(6)),
+  company_city: v.pipe(v.string(), v.minLength(2), v.maxLength(255)),
+  company_country: v.pipe(v.string(), v.minLength(2), v.maxLength(255)),
+  company_domain: v.pipe(v.string(), v.minLength(2), v.maxLength(255)),
 });
 
-const reportSchemaContact = object({
-  contact_name: string([
-    minLength(2, 'Der Kontaktname muss zwischen 2 und 255 Zeichen lang sein'),
-    maxLength(255, 'Der Kontaktname muss zwischen 2 und 255 Zeichen lang sein'),
-  ]),
-  contact_telephone: string([
-    minLength(2, 'Die Telefonnummer muss min. 2 Zeichen lang sein'),
-    maxLength(255, 'Die Telefonnummer kann max 255 Zeichen lang sein'),
-  ]),
-  contact_email: string([email()]),
-  contact_domain: string([
-    minLength(2, 'Die Abteilung muss zwischen 2 und 255 Zeichen lang sein'),
-    maxLength(255, 'Die Abteilung muss zwischen 2 und 255 Zeichen lang sein'),
-  ]),
+const reportSchemaContact = v.object({
+  contact_name: v.pipe(v.string(), v.minLength(2), v.maxLength(255)),
+  contact_telephone: v.pipe(v.string(), v.minLength(2), v.maxLength(255)),
+  contact_email: v.pipe(v.string(), v.email()),
+  contact_domain: v.pipe(v.string(), v.minLength(2), v.maxLength(255)),
 });
 
-const reportSchemaYearlyFocus = object({
-  count_employees: number([
-    minValue(1, 'Die Anzahl Mitarbeiter muss min. 1 betragen'),
-  ]),
-  business_turnover: number([minValue(0, 'Der Umsatz muss min. 0 betragen')]),
-  base_year: number([
-    minValue(1900, 'Bitte ein gültiges Basisjahr angeben'),
-    maxValue(2100, 'Bitte ein gültiges Basisjahr angeben'),
-  ]),
-  sum_emissions: nullable(number()),
+const reportSchemaYearlyFocus = v.object({
+  count_employees: v.pipe(v.number(), v.minValue(1)),
+  business_turnover: v.pipe(v.number(), v.minValue(0)),
+  base_year: v.pipe(v.number(), v.minValue(1900), v.maxValue(2100)),
+  sum_emissions: v.nullable(v.number()),
 });
 
-const reportTranslations: {
-  [name: string]: {
-    label: string;
-    category: string;
-    numberGrouping?: boolean;
-    suffix?: string;
-  };
-} = {
-  id: { label: t('settings.reportSettings.reportId'), category: 'general' },
-  site: { label: t('settings.reportSettings.reportSite'), category: 'general' },
-  year: { label: t('settings.reportSettings.reportYear'), category: 'general' },
-  company_name: {
-    label: t('settings.reportSettings.companyName'),
-    category: 'general',
+const formEntriesGeneral: GenericFormEntry[] = [
+  {
+    label: t('settings.reportSettings.reportYear') + '*',
+    key: 'year',
+    type: 'number',
+    required: true,
+    validation: v.pick(reportSchemaGeneral, ['year']),
+    settings: {
+      min: 1900,
+      max: 2100,
+      thousandSeparator: false,
+    },
   },
-  company_street: {
-    label: t('settings.reportSettings.companyStreet'),
-    category: 'general',
+  {
+    label: t('settings.reportSettings.companyName') + '*',
+    key: 'company_name',
+    type: 'text',
+    required: true,
+    validation: v.pick(reportSchemaGeneral, ['company_name']),
   },
-  company_postal: {
-    label: t('settings.reportSettings.companyPostal'),
-    category: 'general',
+  {
+    label: t('settings.reportSettings.companyStreet') + '*',
+    key: 'company_street',
+    type: 'text',
+    required: true,
+    validation: v.pick(reportSchemaGeneral, ['company_street']),
   },
-  company_city: {
-    label: t('settings.reportSettings.companyCity'),
-    category: 'general',
+  {
+    label: t('settings.reportSettings.companyPostal') + '*',
+    key: 'company_postal',
+    type: 'text',
+    required: true,
+    validation: v.pick(reportSchemaGeneral, ['company_postal']),
   },
-  company_country: {
-    label: t('settings.reportSettings.companyCountry'),
-    category: 'general',
+  {
+    label: t('settings.reportSettings.companyCity') + '*',
+    key: 'company_city',
+    type: 'text',
+    required: true,
+    validation: v.pick(reportSchemaGeneral, ['company_city']),
   },
-  company_domain: {
-    label: t('settings.reportSettings.companyDomain'),
-    category: 'general',
+  {
+    label: t('settings.reportSettings.companyCountry') + '*',
+    key: 'company_country',
+    type: 'text',
+    required: true,
+    validation: v.pick(reportSchemaGeneral, ['company_country']),
   },
-  contact_name: {
-    label: t('settings.reportSettings.contactName'),
-    category: 'contact',
+  {
+    label: t('settings.reportSettings.companyDomain') + '*',
+    key: 'company_domain',
+    type: 'text',
+    required: true,
+    validation: v.pick(reportSchemaGeneral, ['company_domain']),
   },
-  contact_telephone: {
-    label: t('settings.reportSettings.contactPhone'),
-    category: 'contact',
-  },
-  contact_email: {
-    label: t('settings.reportSettings.contactMail'),
-    category: 'contact',
-  },
-  contact_domain: {
-    label: t('settings.reportSettings.contactDepartment'),
-    category: 'contact',
-  },
-  count_employees: {
-    label: t('settings.reportSettings.countEmployees'),
-    category: 'yearly-focus',
-    numberGrouping: true,
-  },
-  business_turnover: {
-    label: t('settings.reportSettings.yearlyFocus'),
-    category: 'yearly-focus',
-    numberGrouping: true,
-    suffix: '€',
-  },
-  base_year: { label: 'Referenzjahr', category: 'yearly-focus' },
-};
+];
 
+const formEntriesContact: GenericFormEntry[] = [
+  {
+    label: t('settings.userSettings.name') + '*',
+    key: 'contact_name',
+    type: 'text',
+    required: true,
+    validation: v.pick(reportSchemaContact, ['contact_name']),
+  },
+  {
+    label: t('settings.userSettings.phone') + '*',
+    key: 'contact_telephone',
+    type: 'text',
+    required: true,
+    validation: v.pick(reportSchemaContact, ['contact_telephone']),
+  },
+  {
+    label: t('settings.userSettings.email') + '*',
+    key: 'contact_email',
+    type: 'text',
+    required: true,
+    validation: v.pick(reportSchemaContact, ['contact_email']),
+  },
+  {
+    label: t('settings.userSettings.department') + '*',
+    key: 'contact_domain',
+    type: 'text',
+    required: true,
+    validation: v.pick(reportSchemaContact, ['contact_domain']),
+  },
+];
+
+const formEntriesYearlyFocus: GenericFormEntry[] = [
+  {
+    label: t('settings.reportSettings.countEmployees') + '*',
+    key: 'count_employees',
+    type: 'number',
+    required: true,
+    validation: v.pick(reportSchemaYearlyFocus, ['count_employees']),
+  },
+  {
+    label: t('settings.reportSettings.yearlyFocus') + '*',
+    key: 'business_turnover',
+    type: 'number',
+    required: true,
+    settings: {
+      suffix: '€',
+    },
+    validation: v.pick(reportSchemaYearlyFocus, ['business_turnover']),
+  },
+  {
+    label: t('settings.reportSettings.refYear') + '*',
+    key: 'base_year',
+    type: 'number',
+    settings: { thousandSeparator: false },
+    required: true,
+    validation: v.pick(reportSchemaYearlyFocus, ['base_year']),
+  },
+];
+
+/**
+ * Confirm the deletion of a report
+ */
 const confirmDelete = async (report: ReportEntry, event: any) => {
   confirm.require({
     target: event.currentTarget,
@@ -355,6 +290,9 @@ const confirmDelete = async (report: ReportEntry, event: any) => {
   });
 };
 
+/**
+ * Copy all targets from the year before to the current report
+ */
 const copyTargetsFromYearBefore = async () => {
   if (reportForm.value != null) {
     const yearBefore = reportForm.value.year - 1;
@@ -373,14 +311,17 @@ const copyTargetsFromYearBefore = async () => {
   }
 };
 
+/**
+ * Save the report to the database
+ */
 const saveReport = async () => {
   if (!reportForm.value) {
     return;
   }
   try {
-    parse(reportSchemaGeneral, reportForm.value);
-    parse(reportSchemaContact, reportForm.value);
-    parse(reportSchemaYearlyFocus, reportForm.value);
+    v.parse(reportSchemaGeneral, reportForm.value);
+    v.parse(reportSchemaContact, reportForm.value);
+    v.parse(reportSchemaYearlyFocus, reportForm.value);
     if (reportForm.value.id === 'new') {
       reportForm.value = await global.addReport(reportForm.value);
       // if the report was added then copy all report targets to the new report. This will be the year before

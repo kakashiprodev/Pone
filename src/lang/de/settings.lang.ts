@@ -10,6 +10,7 @@ export default {
   projectTargets: 'Zieldefinition',
   equivalents: 'Äquivalente',
   userSettings: {
+    name: 'Name',
     heading: 'Persönliche Einstellungen',
     displayInTons: 'Darstellung in Tonnen',
     subHeading: 'Angaben',

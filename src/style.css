@@ -1,3 +1,27 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/*
+Fix for PrimeVue InputNumber problem with width
+*/
+.w-full .p-inputnumber-input {
+  width: 100%;
+}
+
+/**
+  Custom Card stlye for #header
+  */
+.psm-report-header {
+  background-color: var(--surface-200) !important;
+  text-align: center;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  padding: 10px;
+}
+
+.psm-report-header h3 {
+  margin: 0;
+  color: #334155;
+  font-size: 0.9rem;
+}

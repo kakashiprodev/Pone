@@ -1,6 +1,9 @@
 import statusTranslations from '../statusTranslations';
 import { ActionEntry } from '../types';
 
+/**
+ * Exports the given actions as CSV file
+ */
 export const getActionsAsCsv = async (actions: ActionEntry[]) => {
   // export data as CSV and download
   let csv =

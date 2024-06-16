@@ -49,13 +49,11 @@ const routes = [
             path: 'scope/:scope',
             component: () => import('../views/inputs/Inputs.vue'),
             name: 'inputs-scope',
-            // params: { scope: null },
           },
           {
             path: 'facility/:facility',
             component: () => import('../views/inputs/Inputs.vue'),
             name: 'inputs-facility',
-            // params: { facility: null },
           },
         ],
       },
@@ -64,11 +62,6 @@ const routes = [
         component: () => import('../views/config/EquivalentList.vue'),
         name: 'equivalents',
       },
-      // {
-      //   path: '/report-config/',
-      //   component: () => import('../views/config/ReportConfig.vue'),
-      //   name: 'reportConfig',
-      // },
       {
         path: 'assistant/',
         component: () => import('../views/inputs/AiAssistentInput.vue'),
@@ -80,7 +73,7 @@ const routes = [
         name: 'csrd-report-interview',
       },
       {
-        path: 'settings', // :category?
+        path: 'settings',
         component: () => import('../views/config/SettingsMain.vue'),
         name: 'settings',
         redirect: { name: 'user-settings' },

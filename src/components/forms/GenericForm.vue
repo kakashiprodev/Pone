@@ -39,6 +39,10 @@
           v-model="model[entry.key]"
           :id="`field-${entry.key}`"
           :invalid="!validated[entry.key].valid"
+          :suffix="entry.settings?.suffix ?? ''"
+          :use-grouping="entry.settings?.thousandSeparator ?? true"
+          :min="entry.settings?.min ?? undefined"
+          :max="entry.settings?.max ?? undefined"
           pt:root:class="border-red-600"
           v-tooltip.bottom="{
             value: !validated[entry.key].valid
