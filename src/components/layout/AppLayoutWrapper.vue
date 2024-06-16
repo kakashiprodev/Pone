@@ -53,7 +53,7 @@
       />
       <Button
         icon="fa-solid fa-right-from-bracket"
-        @click="logout"
+        @click="logoutApp"
         label="Abmelden"
       />
     </div>
@@ -86,10 +86,7 @@
         </li>
 
         <li class="ml-2">
-          <router-link
-            to="/settings/project-reports"
-            :exact-active-class="'active-route'"
-          >
+          <router-link to="/report-data" :exact-active-class="'active-route'">
             <Chip :label="global.selectedSite?.name">
               <img
                 v-if="
@@ -180,7 +177,7 @@
             <span>{{ $t('global.userProfile') }}</span>
           </a>
           <a
-            @click="logout()"
+            @click="logoutApp()"
             class="text-800 flex p-2 rounded-sm items-center hover:surface-hover transition-colors transition-duration-150 cursor-pointer"
           >
             <i class="fa-solid fa-right-from-bracket mr-3"></i>
@@ -200,11 +197,12 @@
 import AppLayout from './AppLayout.vue';
 import { useGlobalStore } from '../../stores/global';
 import { useRouter } from 'vue-router';
-import dataprovider from '../../services/dataprovider';
 import { useRoute } from 'vue-router';
 import { ref, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { useAuth0 } from '@auth0/auth0-vue';
 
+const { logout } = useAuth0();
 const { t } = useI18n();
 const route = useRoute();
 const router = useRouter();
@@ -212,10 +210,9 @@ const global = useGlobalStore();
 const loading = ref(false);
 const colorMode = computed(() => global.theme);
 
-const logout = async () => {
+const logoutApp = async () => {
   console.log('logout');
-  await dataprovider.logout();
-  router.push('/login');
+  await logout();
 };
 
 const switchReport = async () => {

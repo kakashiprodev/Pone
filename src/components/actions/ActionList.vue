@@ -78,7 +78,7 @@ import { getGlobalUnit, toTons } from '@/services/pipes';
 const props = defineProps<{
   actions: ActionEntry[];
   filter: string;
-  triggerRefresh: boolean;
+  triggerRefresh?: boolean;
 }>();
 watch(
   () => props.actions,

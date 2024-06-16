@@ -39,19 +39,19 @@ interface TextAreaFormEntry extends GenericFormEntryBase {
 interface SelectFormEntry extends GenericFormEntryBase {
   type: 'select';
   options: any[];
-  optionsKey: string;
-  optionsLabel: string;
-}
-
-interface CheckboxFormEntry extends GenericFormEntryBase {
-  type: 'checkbox';
+  optionsKey?: string;
+  optionsLabel?: string;
 }
 
 interface RadioFormEntry extends GenericFormEntryBase {
   type: 'radio';
   options: any[];
-  optionsKey: string;
-  optionsLabel: string;
+  optionsKey?: string;
+  optionsLabel?: string;
+}
+
+interface CheckboxFormEntry extends GenericFormEntryBase {
+  type: 'checkbox';
 }
 
 interface PasswordFormEntry extends GenericFormEntryBase {
