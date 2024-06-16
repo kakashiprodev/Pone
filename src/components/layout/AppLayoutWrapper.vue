@@ -1,7 +1,19 @@
 <template>
   <Sidebar v-model:visible="showSidebar" position="right">
-    <div class="flex flex-col gap-3 w-full mt-3 rounded-xl bg-slate-100 p-3">
-      <Chip :label="global.selectedSite?.name" class="bg-slate-200">
+    <div
+      class="flex flex-col gap-3 w-full mt-3 rounded-xl p-3"
+      :class="{
+        'bg-slate-100': global.theme === 'light',
+        'bg-stone-900': global.theme !== 'light',
+      }"
+    >
+      <Chip
+        :label="global.selectedSite?.name"
+        :class="{
+          'bg-slate-200': global.theme === 'light',
+          'bg-stone-700': global.theme !== 'light',
+        }"
+      >
         <img
           v-if="
             global.selectedProject?.logo && global.selectedProject.logo !== ''
@@ -21,7 +33,13 @@
       />
     </div>
 
-    <div class="flex flex-col gap-3 w-full mt-5 rounded-xl bg-slate-100 p-3">
+    <div
+      class="flex flex-col gap-3 w-full mt-5 rounded-xl p-3"
+      :class="{
+        'bg-slate-100': global.theme === 'light',
+        'bg-stone-900': global.theme !== 'light',
+      }"
+    >
       <span class="text-sm font-bold">{{ global.username }}</span>
 
       <div class="flex flex-col gap-2 mt-5 w-full">
@@ -70,7 +88,15 @@
     </template>
 
     <template #start>
-      <h3 class="text-slate-600 ml-5 text-2xl">Sustainability Management</h3>
+      <h3
+        class="ml-5 text-2xl"
+        :class="{
+          'text-slate-600': global.theme === 'light',
+          'text-stone-200': global.theme !== 'light',
+        }"
+      >
+        Sustainability Management
+      </h3>
     </template>
 
     <template #end>
@@ -115,10 +141,10 @@
       <div>
         <template v-for="item in sidebar.filter((i) => !i.hide)">
           <div
-            class="rounded-sm dark:bg-slate-700 mt-2 pt-1"
+            class="rounded-sm mt-2 pt-1 category-item"
             :class="{
               'bg-slate-100': global.theme === 'light',
-              'bg-slate-700': global.theme !== 'light',
+              'bg-stone-900': global.theme !== 'light',
             }"
           >
             <h3 class="text-xs px-1 text-500">
@@ -127,7 +153,11 @@
             <PanelMenu :model="item.items" class="less-padding">
               <template #item="{ item }">
                 <router-link
-                  class="flex items-center px-3 py-2 cursor-pointer no-underline text-slate-600"
+                  class="flex items-center px-3 py-2 cursor-pointer no-underline"
+                  :class="{
+                    'text-white': global.theme !== 'light',
+                    'text-slate-600': global.theme === 'light',
+                  }"
                   :to="item.to ?? ''"
                   :exact-active-class="'active-route'"
                 >
@@ -370,5 +400,17 @@ const sidebar = [
 
 .active-route .button-custom {
   border: 2px solid #888888;
+}
+
+.dark .category-item {
+  background-color: rgb(45 45 45);
+}
+
+a.category-item-color {
+  color: black;
+}
+
+.dark a.category-item-color {
+  color: white;
 }
 </style>

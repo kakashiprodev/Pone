@@ -20,8 +20,16 @@ Fix for PrimeVue InputNumber problem with width
   padding: 10px;
 }
 
+.darkmode .psm-report-header {
+  background-color: var(--surface-100) !important;
+}
+
 .psm-report-header h3 {
   margin: 0;
   color: #334155;
   font-size: 0.9rem;
+}
+
+.darkmode .psm-report-header h3 {
+  color: white;
 }

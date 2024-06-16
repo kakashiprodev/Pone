@@ -7,7 +7,7 @@
     <template #start>
       <div class="flex gap-2 items-center" v-show="reportForm?.id !== 'new'">
         <span>{{ $t('settings.reportSettings.currentReport') }}</span>
-        <Chip class="text-lg bg-slate-200">
+        <Chip class="text-lg">
           {{ global.selectedReport?.year }}
         </Chip>
       </div>

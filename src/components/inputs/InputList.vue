@@ -26,7 +26,7 @@
     <Column field="name" :header="$t('inputs.table.name')" sortable></Column>
     <Column field="rawValue" header="Eingabewert" sortable>
       <template #body="{ data }">
-        <Chip class="flex justify-end text-right bg-slate-200 text-sm">
+        <Chip class="flex justify-end text-right text-sm">
           {{ roundStringWithDecimals(data.raw_value, 0) }}
           {{ globalStore.equivalentDict[data.equivalent]?.in ?? '' }}
         </Chip>
@@ -49,7 +49,7 @@
     </Column>
     <Column field="sumValue" :header="$t('inputs.table.amountYear')" sortable>
       <template #body="{ data }">
-        <Chip class="flex justify-end text-right bg-slate-200 text-sm">
+        <Chip class="flex justify-end text-right text-sm">
           {{
             roundStringWithDecimals(
               globalStore.displayInTons
