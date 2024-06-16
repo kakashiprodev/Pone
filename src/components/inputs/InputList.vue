@@ -107,7 +107,6 @@ watch(props, () => {
 watch(
   () => props.triggerRefresh,
   () => {
-    console.log('triggerRefresh changed');
     filterData();
   },
 );
@@ -124,7 +123,6 @@ const filterData = () => {
     return;
   }
   filterRunning = true;
-  console.log('filterData');
   let filtered = props.inputs;
   if (props.filter && props.filter !== '') {
     filtered = props.inputs.filter((item) => {

@@ -303,6 +303,13 @@ const sidebarActions = [
     to: '/report-data',
     visible: true,
   },
+  {
+    key: 'report-targets',
+    label: 'Ziele',
+    icon: 'fa-solid fa-bullseye',
+    to: '/report-targets',
+    visible: true,
+  },
 ];
 
 const sidebar = [

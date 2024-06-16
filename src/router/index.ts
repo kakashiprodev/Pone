@@ -118,6 +118,11 @@ const routes = [
         component: () => import('../views/config/ReportConfig.vue'),
         name: 'report-data',
       },
+      {
+        path: 'report-targets',
+        component: () => import('../components/targets/TargetDefinition.vue'),
+        name: 'report-targets',
+      },
     ],
   },
   // other main routes

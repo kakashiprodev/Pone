@@ -8,7 +8,7 @@
     >
       <template #item="{ item }">
         <router-link
-          v-if="!item.onlyAdmin || globalStore.isGlobalAdmin"
+          v-if="!item.onlyAdmin || userDebugMode"
           class="flex items-center px-3 py-2 cursor-pointer no-underline text-slate-800"
           style="color: var(--primary-color)"
           :to="item.to ?? ''"
@@ -33,7 +33,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import { useRoute } from 'vue-router';
 import { useGlobalStore } from '@/stores/global';
 import { useI18n } from 'vue-i18n';
@@ -112,6 +112,12 @@ const items = ref([
     ],
   },
 ]);
+
+const userDebugMode = computed(() => {
+  // check if "?debug=true" is in the URL
+  let url = new URL(window.location.href);
+  return url.href.indexOf('?debug=true') > -1 || globalStore.isGlobalAdmin;
+});
 </script>
 
 <style scoped>
