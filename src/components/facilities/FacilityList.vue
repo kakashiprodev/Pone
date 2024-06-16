@@ -104,6 +104,12 @@ watch(
     emit('update:triggerRefresh', false);
   },
 );
+watch(
+  () => props.showOnlyActive,
+  () => {
+    filterData();
+  },
+);
 
 /**
  * filter the table by a global string filter

@@ -46,7 +46,7 @@
     }"
   >
     <GenericForm :definition="formEntries" v-model="selectedValue" />
-    <div>
+    <div class="mt-3">
       <Button
         :label="
           selectedValue.id === 'new'
@@ -59,6 +59,7 @@
   </Dialog>
 
   <ConfirmPopup></ConfirmPopup>
+
   <FacilityList
     :facilities="data"
     :filter="filter"
@@ -112,6 +113,7 @@ const facilityEntrySchema = v.object({
   manufacturer: v.pipe(v.string(), v.minLength(1), v.maxLength(255)),
   model: v.pipe(v.string(), v.maxLength(255)),
   description: v.pipe(v.string(), v.maxLength(255)),
+  shutdown_date: v.nullable(v.date()),
 });
 
 const formEntries: GenericFormEntry[] = [
@@ -140,6 +142,12 @@ const formEntries: GenericFormEntry[] = [
     key: 'description',
     type: 'textarea',
     validation: v.pick(facilityEntrySchema, ['description']),
+  },
+  {
+    label: t('facilities.facilityShutdownDate'),
+    key: 'shutdown_date',
+    type: 'date',
+    validation: v.pick(facilityEntrySchema, ['shutdown_date']),
   },
 ];
 
