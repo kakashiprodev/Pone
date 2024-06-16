@@ -245,7 +245,7 @@ const generateData = async () => {
     console.log('Report ' + report.year + ' sum: ' + reportSum);
     await dataprovider.updateReport({
       ...report,
-      sum_emission: reportSum,
+      sum_emissions: reportSum,
     });
   }
   info('Daten wurden generiert');
