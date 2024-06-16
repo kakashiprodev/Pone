@@ -104,6 +104,10 @@ const chartOptions: ComputedRef<any> = computed(() => {
         },
       },
     },
+    legend: {
+      show: true,
+      position: 'bottom',
+    },
     labels: categories.value,
     colors: colors.value,
     tooltip: {
