@@ -3,7 +3,7 @@
     {{ label }}
   </h4>
   <DataTable class="cst-no-hover" :value="innerData" :showGridlines="false">
-    <Column field="name" :header="header[0]"></Column>
+    <Column field="name" :header="header[0]"> </Column>
     <Column field="status" :header="header[1]" v-if="showStatusColumn">
       <template #body="{ data }">
         <div
@@ -16,7 +16,10 @@
         ></div>
       </template>
     </Column>
-    <Column field="value" :header="header[2]">
+    <Column field="value">
+      <template #header>
+        <span v-html="header[2]"></span>
+      </template>
       <template #body="{ data }">
         <!-- <ProgressBar :value="data.percentage" v-if="!data.targetValue">
           {{ round(toTons(data.value, globalStore.displayInTons)) }}

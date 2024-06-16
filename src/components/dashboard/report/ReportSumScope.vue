@@ -25,8 +25,10 @@
   </HorizontalTwoColLayout>
   <ReportSpacer />
 
-  <!-- ZEILE -->
-  <HorizontalOneColLayout>
+  <!-- ZEILE. Show radar chart only if at least 3 categories are inside the report -->
+  <HorizontalOneColLayout
+    v-if="sumGroupedByCategory && Object.keys(sumGroupedByCategory).length > 2"
+  >
     <Card>
       <template #header>
         <div class="psm-report-header">
