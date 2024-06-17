@@ -40,7 +40,7 @@
       </p>
       <Button
         icon="fa-solid fa-plus"
-        @click="projectForm = emptyProject()"
+        @click="projectForm = getEmptyProject()"
         :label="$t('settings.projectSettings.createProject')"
       />
     </div>
@@ -53,8 +53,8 @@
           </label>
           <div class="flex flex-col gap-2">
             <img
-              v-if="projectForm.logo && projectForm.logo !== ''"
-              :src="projectForm.logo"
+              v-if="logoUrl !== ''"
+              :src="logoUrl"
               class="w-24 h-24 rounded-lg object-scale-down"
             />
             <FileUpload
@@ -107,29 +107,19 @@
 </template>
 
 <script setup lang="ts">
-import { ref, Ref, computed, ComputedRef, watch } from 'vue';
+import { ref, Ref, computed, ComputedRef, watch, onMounted } from 'vue';
 import { useGlobalStore } from '../../stores/global';
 import { useConfirm } from 'primevue/useconfirm';
 import { ProjectEntry } from '../../services/types';
-import { minLength, maxLength, object, string, parse } from 'valibot';
+import * as v from 'valibot';
 import { error, info } from '../../services/ui/toast';
 import dataprovider from '@/services/dataprovider';
+import { getEmptyProject } from '@/factory/project';
 
 const global = useGlobalStore();
 const confirm = useConfirm();
 
 const showEditEntry = ref(false);
-
-const emptyProject = (): ProjectEntry => {
-  return {
-    id: 'new',
-    name: '',
-    logo: '',
-    logo_id: null,
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString(),
-  };
-};
 
 const selectedProject: ComputedRef<null | ProjectEntry> = computed(() => {
   return global.selectedProject;
@@ -146,15 +136,14 @@ watch(selectedProject, async (newValue) => {
 });
 
 const projectForm: Ref<null | ProjectEntry> = ref(selectedProject.value);
-const projectSchema = object({
-  id: string([minLength(1)]),
-  name: string([minLength(4), maxLength(255)]),
-  // targetYear: number(),
+const projectSchema = v.object({
+  id: v.nullable(v.pipe(v.string(), v.minLength(1))),
+  name: v.pipe(v.string(), v.minLength(1)),
 });
 
 const addProject = () => {
   showEditEntry.value = true;
-  projectForm.value = emptyProject();
+  projectForm.value = getEmptyProject();
 };
 
 const confirmDelete = async (project: ProjectEntry, event: any) => {
@@ -178,11 +167,11 @@ const saveProject = async () => {
     return;
   }
   try {
-    parse(projectSchema, projectForm.value);
+    v.parse(projectSchema, projectForm.value);
     if (projectForm.value.id === 'new') {
       projectForm.value = await global.addProject(projectForm.value);
       global.selectedProject = projectForm.value;
-      projectForm.value = selectedProject.value ?? emptyProject();
+      projectForm.value = selectedProject.value ?? getEmptyProject();
       info('Projekt wurde hinzugefügt');
     } else {
       projectForm.value = await global.updateProject(projectForm.value);
@@ -200,16 +189,17 @@ const uploadImage = async (event: any) => {
   }
   const file = event.files[0];
 
-  // check if an logo is already uploaded
+  if (!file) {
+    return;
+  }
+
+  // delete old image if necessary
   if (projectForm.value.logo_id) {
-    // delete old image
     await dataprovider.deleteImage(projectForm.value.logo_id);
   }
-  const data = await dataprovider.uploadImage(file);
-  // update project entry with image url
-  projectForm.value.logo = data.url;
-  projectForm.value.logo_id = data.id;
-  await dataprovider.updateProject(projectForm.value);
+  const uploadedMediaEntry = await dataprovider.uploadImage(file);
+  projectForm.value.logo_id = uploadedMediaEntry.id;
+  await global.updateProject(projectForm.value);
 };
 
 const cancel = () => {
@@ -217,13 +207,21 @@ const cancel = () => {
   projectForm.value = global.selectedProject;
 };
 
+const logoUrl = computed(() => {
+  if (!projectForm.value) {
+    return '';
+  }
+  return `${dataprovider.getRestUrl()}/rpc/get_media_image?id=${
+    projectForm.value.logo_id
+  }`;
+});
+
 const init = async () => {
   while (global.isLoading) {
-    // console.log('waiting for global store to load');
     await new Promise((resolve) => setTimeout(resolve, 500));
   }
-  console.log('global store loaded');
-  projectForm.value = selectedProject.value ?? emptyProject();
+  projectForm.value = selectedProject.value ?? getEmptyProject();
 };
-init();
+
+onMounted(init);
 </script>

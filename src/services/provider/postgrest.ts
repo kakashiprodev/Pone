@@ -640,22 +640,28 @@ export default class DataProvider {
     return data;
   }
 
-  async uploadImage(_file: File) {
-    // Implement image upload using Supabase storage or other suitable method
-    return { id: '', url: '' };
+  async uploadImage(file: File) {
+    const r = await fetch(REST_URL + '/rpc/upload_media_image', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/octet-stream',
+        Authorization: `Bearer ${authStore.user.token}`,
+        Accept: 'application/json',
+      },
+      body: file,
+    });
+    const j: { id: string } = await r.json();
+    return j;
   }
 
-  async updateImage(_id: string, _file: File) {
-    // Implement image update using Supabase storage or other suitable method
-    return '';
+  async deleteImage(id: string) {
+    console.log('delete image', id);
+    const { error } = await this.postgrest.from('media').delete().eq('id', id);
+    if (error) throw error;
+    return true;
   }
 
-  async getImageUrl(_id: string) {
-    // Implement getting image URL using Supabase storage or other suitable method
-    return '';
-  }
-
-  async deleteImage(_id: string) {
-    // Implement image deletion using Supabase storage or other suitable method
+  getRestUrl() {
+    return REST_URL;
   }
 }

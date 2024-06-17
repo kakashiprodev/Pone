@@ -15,10 +15,8 @@
         }"
       >
         <img
-          v-if="
-            global.selectedProject?.logo && global.selectedProject.logo !== ''
-          "
-          :src="global.selectedProject.logo"
+          v-if="logoUrl !== ''"
+          :src="logoUrl"
           class="rounded-lg object-scale-down"
         />
         <span>{{ global.selectedProject?.name }}</span>
@@ -115,11 +113,8 @@
           <router-link to="/report-data" :exact-active-class="'active-route'">
             <Chip :label="global.selectedSite?.name">
               <img
-                v-if="
-                  global.selectedProject?.logo &&
-                  global.selectedProject.logo !== ''
-                "
-                :src="global.selectedProject.logo"
+                v-if="logoUrl !== ''"
+                :src="logoUrl"
                 class="rounded-lg object-scale-down"
               />
               <span>{{ global.selectedProject?.name }}</span>
@@ -231,6 +226,7 @@ import { useRoute } from 'vue-router';
 import { ref, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useAuth0 } from '@auth0/auth0-vue';
+import dataprovider from '@/services/dataprovider';
 
 const { logout } = useAuth0();
 const { t } = useI18n();
@@ -361,6 +357,19 @@ const sidebar = [
     hide: !global.isGlobalAdmin,
   },
 ];
+
+const logoUrl = computed(() => {
+  if (
+    global.selectedProject?.logo_id != null &&
+    global.selectedProject?.logo_id !== ''
+  ) {
+    return `${dataprovider.getRestUrl()}/rpc/get_media_image?id=${
+      global.selectedProject.logo_id
+    }`;
+  } else {
+    return '';
+  }
+});
 </script>
 
 <style>
