@@ -55,6 +55,8 @@ import Avatar from 'primevue/avatar';
 import FileUpload from 'primevue/fileupload';
 import MeterGroup from 'primevue/metergroup';
 import RadioButton from 'primevue/radiobutton';
+import Stepper from 'primevue/stepper';
+import StepperPanel from 'primevue/stepperpanel';
 
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import './style.css';
@@ -131,6 +133,8 @@ const app = createApp(App)
   .component('FileUpload', FileUpload)
   .component('MeterGroup', MeterGroup)
   .component('RadioButton', RadioButton)
+  .component('Stepper', Stepper)
+  .component('StepperPanel', StepperPanel)
 
   .directive('tooltip', Tooltip);
 

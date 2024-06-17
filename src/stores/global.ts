@@ -364,7 +364,7 @@ export const useGlobalStore = defineStore('global', {
         );
         await this.addProject({
           id: 'new',
-          name: 'Mein erstes Projekt',
+          name: 'Ihr Firmenname',
           logo: '',
           logo_id: null,
           created_at: new Date().toISOString(),

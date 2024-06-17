@@ -109,6 +109,12 @@ const items = ref([
         icon: 'fa-solid fa-list',
         to: '/settings/project-equivalents',
       },
+      {
+        key: 'project-onboarding',
+        label: t('settings.wizard'),
+        icon: 'fa-solid fa-hat-wizard',
+        to: '/onboarding-wizard',
+      },
     ],
   },
 ]);

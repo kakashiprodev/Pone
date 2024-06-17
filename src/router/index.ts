@@ -97,7 +97,7 @@ const routes = [
           },
           {
             path: 'project-reports',
-            component: () => import('../views/config/ReportConfig.vue'),
+            component: () => import('../views/config/ReportConfigPage.vue'),
             name: 'project-reports',
           },
           {
@@ -115,13 +115,18 @@ const routes = [
       },
       {
         path: 'report-data',
-        component: () => import('../views/config/ReportConfig.vue'),
+        component: () => import('../views/config/ReportConfigPage.vue'),
         name: 'report-data',
       },
       {
         path: 'report-targets',
         component: () => import('../components/targets/TargetDefinition.vue'),
         name: 'report-targets',
+      },
+      {
+        path: 'onboarding-wizard',
+        component: () => import('../views/user/Onboarding.vue'),
+        name: 'onboarding-wizard',
       },
     ],
   },

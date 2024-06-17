@@ -11,6 +11,7 @@ import equivalents from './equivalents.lang.ts';
 import assistant from './assistant.lang.ts';
 import csrd from './csrd.lang.ts';
 import settings from './settings.lang.ts';
+import onboarding from './onboarding.lang.ts';
 
 export default {
   global,
@@ -26,4 +27,5 @@ export default {
   assistant,
   csrd,
   settings,
+  onboarding,
 };

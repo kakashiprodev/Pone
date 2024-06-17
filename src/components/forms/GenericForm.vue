@@ -163,28 +163,6 @@ import * as v from 'valibot';
 
 const global = useGlobalStore();
 
-// interface GenericFormEntry {
-//   label: string;
-//   key: string;
-//   type:
-//     | 'text'
-//     | 'number'
-//     | 'date'
-//     | 'time'
-//     | 'datetime'
-//     | 'textarea'
-//     | 'select'
-//     | 'checkbox'
-//     | 'radio'
-//     | 'password'
-//     | 'slider';
-//   options?: any[];
-//   optionsKey?: string;
-//   optionsLabel?: string;
-//   required?: boolean;
-//   tooltip?: string;
-// }
-
 const props = defineProps<{
   definition: GenericFormEntry[];
   modelValue: { [key: string]: any };
