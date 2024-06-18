@@ -39,7 +39,7 @@
 
 <script setup lang="ts">
 import { PropType, ref, onMounted, watch } from 'vue';
-import { round, toTons } from '../../../../services/pipes/index';
+import { round, toTons } from '../../../../services/helper/index';
 import { useGlobalStore } from '../../../../stores/global';
 import ProgressBarWithTarget from './ProgressBarWithTarget.vue';
 import Config from '../../../../config';

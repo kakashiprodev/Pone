@@ -15,7 +15,7 @@
 <script setup lang="ts">
 import { ActionWithPercentage } from '@/services/types.ts';
 import { computed, ref } from 'vue';
-import { toReadableDate } from '@/services/pipes';
+import { toChartAxisDate } from '@/services/helper';
 import config from '@/config';
 
 const CHART_TYPE = 'rangeBar';
@@ -98,10 +98,10 @@ const mapChartData = () => [
         x: action.name,
         y: [
           // if only "planned" or only "Is" is set, this ensures that the single point is displayed correctly
-          toReadableDate(action.finished_until_planned) ||
-            toReadableDate(action.finished_until_is),
-          toReadableDate(action.finished_until_is) ||
-            toReadableDate(action.finished_until_planned),
+          toChartAxisDate(action.finished_until_planned) ||
+            toChartAxisDate(action.finished_until_is),
+          toChartAxisDate(action.finished_until_is) ||
+            toChartAxisDate(action.finished_until_planned),
         ],
       };
     }),
@@ -111,6 +111,7 @@ const mapChartData = () => [
 // no reactivity necessary here. If it becomes necessary,
 // use a watcher and trigger a rerender of the <apexchart> component
 let chartData = mapChartData();
+console.log(chartData);
 
 // necessary to calc the min and max date, otherwise apexcharts cuts of the max dates
 const calcMinAndMaxValues = (

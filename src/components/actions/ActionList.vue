@@ -73,7 +73,7 @@
 import { ref, watch, defineEmits } from 'vue';
 import { ActionEntry } from '@/services/types';
 import statusTranslations from '@/services/statusTranslations';
-import { getGlobalUnit, toTons } from '@/services/pipes';
+import { getGlobalUnit, toTons } from '@/services/helper';
 
 const props = defineProps<{
   actions: ActionEntry[];

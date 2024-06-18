@@ -515,7 +515,7 @@ import { Ref, ref, watchEffect, computed } from 'vue';
 import { EquivalentEntry } from '../../services/types';
 import { error, info } from '../../services/ui/toast';
 import { useConfirm } from 'primevue/useconfirm';
-import { roundString } from '../../services/pipes';
+import { roundString } from '../../services/helper';
 import SmartEquivalentList from '../../components/equivalents/SmartEquivalentList.vue';
 import { importCsvFile } from '../../services/csv/import';
 import * as v from 'valibot';

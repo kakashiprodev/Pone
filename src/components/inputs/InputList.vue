@@ -86,7 +86,7 @@
 import { useGlobalStore } from '@/stores/global';
 import { ref, watch, defineEmits } from 'vue';
 import { InputEntry } from '@/services/types';
-import { roundStringWithDecimals, toTons } from '@/services/pipes';
+import { roundStringWithDecimals, toTons } from '@/services/helper';
 
 const globalStore = useGlobalStore();
 

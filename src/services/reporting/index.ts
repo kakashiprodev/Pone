@@ -11,7 +11,7 @@ import {
   InputEntry,
   InputEntryWithExpandedReportAndSite,
 } from '../types';
-import { roundStringWithDecimals } from '../pipes/index';
+import { roundStringWithDecimals } from '../helper/index';
 
 type monthsShort =
   | 'jan'
@@ -366,7 +366,7 @@ const calculateEquivalentFactorWithSteps = (
     // @ts-ignore
     const monthlyEquivalentFactor: number =
       equivalent[month as keyof EquivalentEntry] != null &&
-      equivalent[month as keyof EquivalentEntry] != ''
+        equivalent[month as keyof EquivalentEntry] != ''
         ? equivalent[month as keyof EquivalentEntry]
         : equivalent.avg_value;
     // @ts-ignore
