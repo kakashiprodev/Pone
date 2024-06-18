@@ -136,7 +136,7 @@ const annotations: Ref<{
 const getData = async () => {
   // get report data
   const targets = await dataprovider.readTargets();
-  const actions = await dataprovider.readActions();
+  const actions = await dataprovider.readActions(true); // get all actions with values in "to"
   const reports = await dataprovider.readReports();
 
   const oldValues: OldReportValues[] = [];
@@ -145,6 +145,7 @@ const getData = async () => {
       projectId: globalStore.selectedProject?.id ?? '',
       siteIds: [], // HACK
       filter: { years: [report.year] },
+      scaling: 0.001, // get values in "to"
     });
     const sum = inputs.reduce((acc, input) => acc + input.sumValue, 0);
 

@@ -415,6 +415,7 @@ export interface ReportTimeseriesQuery {
     facility?: string[];
     years: number[];
   };
+  scaling?: number; // scale all values by this factor?
 }
 
 // simpler data entry for the report
@@ -552,6 +553,14 @@ export const getPlainReportData = async (
     littleDataCache.lease = new Date();
   } else {
     data = littleDataCache.data;
+  }
+
+  // scale all values by the given factor if needed
+  if (query.scaling && query.scaling !== 1) {
+    data = data.map((entry) => {
+      entry.sum_value = entry.sum_value * query.scaling!;
+      return entry;
+    });
   }
 
   // map to simpler data entry
