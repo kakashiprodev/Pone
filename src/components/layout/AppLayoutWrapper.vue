@@ -142,10 +142,23 @@
               'bg-stone-900': global.theme !== 'light',
             }"
           >
-            <h3 class="text-xs px-1 text-500">
-              {{ item.header }}
-            </h3>
-            <PanelMenu :model="item.items" class="less-padding">
+            <div
+              @click="toggleMenu(item.key)"
+              class="cursor-pointer block"
+              :class="{ 'h-8': !sidebarItemsVisible[item.key] }"
+            >
+              <h3 class="text-xs px-3 text-500 flex justify-between">
+                <span>
+                  {{ item.header }}
+                </span>
+                <i class="fa-solid fa-chevron-down" />
+              </h3>
+            </div>
+            <PanelMenu
+              :model="item.items"
+              class="less-padding"
+              v-show="sidebarItemsVisible[item.key]"
+            >
               <template #item="{ item }">
                 <router-link
                   class="flex items-center px-3 py-2 cursor-pointer no-underline"
@@ -340,23 +353,38 @@ const sidebarActions = [
 
 const sidebar = [
   {
+    key: 'analysis',
     header: t('global.sidebar.analysis'),
     items: sidebarAnalysis,
   },
   {
+    key: 'inputs',
     header: t('global.sidebar.inputs'),
     items: sidebarInputs,
   },
   {
-    header: t('global.sidebar.inputs'),
+    key: 'actions',
+    header: t('global.sidebar.reportSettings'),
     items: sidebarActions,
   },
   {
+    key: 'csrd',
     header: t('global.sidebar.reporting'),
     items: sidebarCsrd,
     hide: !global.isGlobalAdmin,
   },
 ];
+
+const sidebarItemsVisible = ref(<{ [key: string]: boolean }>{
+  analysis: true,
+  inputs: true,
+  actions: true,
+  csrd: true,
+});
+
+const toggleMenu = (key: string) => {
+  sidebarItemsVisible.value[key] = !sidebarItemsVisible.value[key];
+};
 
 const logoUrl = computed(() => {
   if (
