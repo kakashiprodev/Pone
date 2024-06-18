@@ -64,7 +64,7 @@
               $t('report.sumScope.activeInactive'),
               $t('report.sumScope.co2emissions'),
             ]"
-            :use-maximum-as-reference="true"
+            :use-maximum-as-reference="false"
           />
         </div>
       </template>
