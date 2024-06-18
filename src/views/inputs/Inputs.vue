@@ -449,8 +449,7 @@ const save = async () => {
     if (selectedValue.value.id === 'new') {
       const toCreate = clone(selectedValue.value);
       delete toCreate.id;
-      const created = await inputStore.addInput(toCreate);
-      data.value.push(created);
+      await inputStore.addInput(toCreate);
 
       showDialog.value = false;
       showComfortInput.value = false;
