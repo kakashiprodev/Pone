@@ -256,7 +256,6 @@ const loading = ref(false);
 const colorMode = computed(() => global.theme);
 
 const logoutApp = async () => {
-  console.log('logout');
   await logout();
 };
 

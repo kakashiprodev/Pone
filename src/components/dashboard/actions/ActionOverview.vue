@@ -235,7 +235,6 @@ const getData = async () => {
         target_value_is: isPercentage,
       };
     });
-    // console.log('actsWithPercentage', actsWithPercentage);
 
     // calculate the percentage part of each category.
     const sum = Object.values(categorySumDict.value).reduce(
@@ -254,7 +253,6 @@ const getData = async () => {
 };
 onMounted(async () => {
   while (global.isLoading) {
-    // console.log('waiting for global store to load');
     await new Promise((resolve) => setTimeout(resolve, 500));
   }
   await getData();

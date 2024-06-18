@@ -45,8 +45,6 @@ const selectedValue: Ref<null | FacilityEntry> = ref(null);
 watch(
   () => selectedValue.value,
   () => {
-    console.log('selectedValue changed');
-    console.log(selectedValue.value);
     if (selectedValue.value == null) {
       return;
     }

@@ -85,7 +85,6 @@ export function calculateEmissions(
   for (let year = startYear; year <= endYear; year++) {
     // check if a real value exists for the year. if not use the reference value
     const yearValue: number = emissions.get(year) ?? referenceValue;
-    // console.log('Jahr: ' + year + ' Wert: ' + yearValue);
 
     // check if a target in [%] exists for the year. if not use 0[%]
     const target = targets.find((t) => t.year === year);
@@ -116,11 +115,6 @@ export function calculateEmissions(
 
       // add this value (part for one month) to the floating subtraction value
       actualSustractionValue += actionsEffect / 12;
-      // debug
-      // if (actionsEffect > 0) {
-      //     console.log('Jahr: ' + year + ', Monat: ' + month + ' Ab jetzt spart eine Maßnahme: ' + actionsEffect);
-      // }
-      // console.log('Gesamteinsparung aktuell: ' + actualSustractionValue);
 
       // calculate the real value for the month minus the comulated actions
       const withActions = referenceValuePerMonth - actualSustractionValue;
@@ -176,7 +170,6 @@ export function calculateEmissions(
       realValueWithActionsInterpolated,
       targetValueInterpolated,
     };
-    // console.log(yearResult);
     yearlyResults.push(yearResult);
   }
 

@@ -230,9 +230,7 @@ const filter: Ref<EquivalentFilter> = ref({});
 
 // funtion to filter the table by all filter criteria arrays
 const filterEquivalents = () => {
-  // console.log('filterEquivalents', filter.value);
   filteredEquivalents.value = global.equivalents.filter((equivalent) => {
-    // console.log('equivalent', equivalent);
     // scope
     if (filter.value.scope && filter.value.scope.length > 0) {
       if (!filter.value.scope.includes(equivalent.scope)) {
@@ -314,7 +312,6 @@ const filterEquivalents = () => {
 watch(
   () => filter,
   () => {
-    console.log('filter changed');
     filterEquivalents();
   },
   { deep: true },
@@ -393,23 +390,19 @@ if (props.visibleColumns) {
   _visibleColumns.value = ['scope', 'category', 'source', 'in', 'fullName'];
 }
 if (props.filterBy) {
-  console.log('set filter by parent', props.filterBy);
   filter.value = props.filterBy;
 } else {
-  console.log('set filter by default');
   filter.value = {
     scope: [1, 2, 3],
   };
 }
 if (props.categoriesFilteredByScope) {
-  console.log('set categoriesFilteredByScope', props.categoriesFilteredByScope);
   filter.value.scope = [parseInt(props.categoriesFilteredByScope)];
 }
 
 const filteredCategories = ref<string[]>([]);
 const updateFilteredCategories = () => {
   const all: any = global.equivalentFilters.category;
-  console.log('updateFilteredCategories');
   if (props.categoriesFilteredByScope || props.comfortMode) {
     const scope =
       'scope' +
@@ -436,7 +429,6 @@ watch(
 const selection: Ref<null | EquivalentEntry> = ref(null);
 
 if (props.modelValue) {
-  console.log('set selection by prop', props.modelValue);
   const id = props.modelValue;
   const equivalent = global.equivalents.find(
     (equivalent) => equivalent.id === id,
@@ -457,7 +449,6 @@ const emits = defineEmits([
 ]);
 watch(selection, (value) => {
   if (value) {
-    console.log('selection changed', value);
     emits('update:modelValue', value.id);
     emits('update:selected', value);
     emits('change', true);
@@ -476,7 +467,6 @@ const forwardDelete = (data: EquivalentEntry, event: any) => {
 watch(
   () => props.refresh,
   () => {
-    console.log('refresh trigger');
     filterEquivalents();
   },
 );

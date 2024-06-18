@@ -655,7 +655,6 @@ export default class DataProvider {
   }
 
   async deleteImage(id: string) {
-    console.log('delete image', id);
     const { error } = await this.postgrest.from('media').delete().eq('id', id);
     if (error) throw error;
     return true;

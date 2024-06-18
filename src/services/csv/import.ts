@@ -111,10 +111,8 @@ export const importCsvFile = async (file: File): Promise<void> => {
     // replace parent id´s in all entries
     for (const e of sortedEntries) {
       if (e.parent === entry.id) {
-        console.log('Replace parent', e.id, entry.id, newEntry.id);
         e.parent = newEntry.id;
       }
     }
   }
-  console.log(sortedEntries);
 };

@@ -646,8 +646,6 @@ watchEffect(() => {
 const save = async () => {
   // validate inputs
   try {
-    console.log(JSON.parse(JSON.stringify(selectedValue.value)));
-
     // set all monthly values to null if monthlyValues is false
     if (!selectedValue.value.monthly_values) {
       selectedValue.value.jan = 0;

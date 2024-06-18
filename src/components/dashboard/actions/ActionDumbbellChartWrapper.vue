@@ -111,7 +111,6 @@ const mapChartData = () => [
 // no reactivity necessary here. If it becomes necessary,
 // use a watcher and trigger a rerender of the <apexchart> component
 let chartData = mapChartData();
-console.log(chartData);
 
 // necessary to calc the min and max date, otherwise apexcharts cuts of the max dates
 const calcMinAndMaxValues = (

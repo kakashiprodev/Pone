@@ -120,12 +120,6 @@ const deleteDataForReports = async (event: any) => {
       const allReports = await getReports();
       try {
         for (const report of allReports) {
-          console.log(
-            'Deleting data for report: ' +
-              report.year +
-              ' for site ' +
-              report.site,
-          );
           await dataprovider.deleteAllUserInputsForReport(report.id);
         }
         info('Daten wurden gelöscht');
@@ -242,7 +236,6 @@ const generateData = async () => {
       await dataprovider.createUserInput(input);
       reportSum += input.sum_value;
     }
-    console.log('Report ' + report.year + ' sum: ' + reportSum);
     await dataprovider.updateReport({
       ...report,
       sum_emissions: reportSum,

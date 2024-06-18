@@ -23,7 +23,6 @@ const { loginWithRedirect } = useAuth0();
 
 const login = async () => {
   await loginWithRedirect();
-  console.log('login reached');
 };
 </script>
 
