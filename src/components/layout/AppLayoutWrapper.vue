@@ -154,37 +154,43 @@
                 <i class="fa-solid fa-chevron-down" />
               </h3>
             </div>
-            <PanelMenu
-              :model="item.items"
-              class="less-padding"
-              v-show="sidebarItemsVisible[item.key]"
-            >
-              <template #item="{ item }">
-                <router-link
-                  class="flex items-center px-3 py-2 cursor-pointer no-underline"
-                  :class="{
-                    'text-white': global.theme !== 'light',
-                    'text-slate-600': global.theme === 'light',
-                  }"
-                  :to="item.to ?? ''"
-                  :exact-active-class="'active-route'"
-                >
-                  <span
-                    :class="[item.icon, 'text-primary', 'sidebar-item-custom']"
-                    style="color: var(--primary-color)"
-                  />
-                  <span
-                    :class="[
-                      'ml-2',
-                      { 'font-semibold': item.items },
-                      'sidebar-item-custom',
-                    ]"
+            <Transition>
+              <PanelMenu
+                :model="item.items"
+                class="less-padding"
+                v-if="sidebarItemsVisible[item.key]"
+              >
+                <template #item="{ item }">
+                  <router-link
+                    class="flex items-center px-3 py-2 cursor-pointer no-underline"
+                    :class="{
+                      'text-white': global.theme !== 'light',
+                      'text-slate-600': global.theme === 'light',
+                    }"
+                    :to="item.to ?? ''"
+                    :exact-active-class="'active-route'"
                   >
-                    {{ item.label }}
-                  </span>
-                </router-link>
-              </template>
-            </PanelMenu>
+                    <span
+                      :class="[
+                        item.icon,
+                        'text-primary',
+                        'sidebar-item-custom',
+                      ]"
+                      style="color: var(--primary-color)"
+                    />
+                    <span
+                      :class="[
+                        'ml-2',
+                        { 'font-semibold': item.items },
+                        'sidebar-item-custom',
+                      ]"
+                    >
+                      {{ item.label }}
+                    </span>
+                  </router-link>
+                </template>
+              </PanelMenu>
+            </Transition>
           </div>
         </template>
       </div>
@@ -399,6 +405,18 @@ const logoUrl = computed(() => {
   }
 });
 </script>
+
+<style scoped>
+.v-enter-active,
+.v-leave-active {
+  transition: opacity 0.2s;
+}
+
+.v-enter-from,
+.v-leave-to {
+  opacity: 0;
+}
+</style>
 
 <style>
 .less-padding > .p-panelmenu-panel {
