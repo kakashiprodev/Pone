@@ -1,20 +1,10 @@
 <template>
-  <h2>{{ $t('settings.targetSettings.heading') }}</h2>
-  <h5 class="mt-5">{{ $t('settings.targetSettings.subHeading') }}</h5>
-  <InlineMessage
-    v-if="global.showTooltips"
-    severity="info"
-    class="w-full mt-2 mb-4"
-  >
-    {{ $t('settings.targetSettings.inlineMsg1') }}
-  </InlineMessage>
-
   <!-- head row -->
   <InlineMessage severity="info" class="w-full justify-start">
     <span v-html="$t('settings.targetSettings.inlineMsg2')" />
   </InlineMessage>
 
-  <div class="grid justify-items-end">
+  <div class="grid justify-items-end max-w-[800px] m-auto">
     <Button
       class="mt-5 mb-3"
       icon="fa-solid fa-plus"
@@ -31,34 +21,40 @@
       :label="$t('settings.targetSettings.newStep')"
     />
   </div>
-  <div class="flex flex-col gap-3">
+  <div class="flex flex-col gap-3 max-w-[800px] m-auto">
     <Card v-for="target in global.targetOnSiteForProject" :key="target.id">
       <template #content>
         <div class="mt-4 grid grid-cols-10 items-center justify-items-center">
-          <label :for="target.id" class="col-span-2">{{
-            $t('settings.targetSettings.year')
-          }}</label>
-          <InputNumber
-            class="col-span-2"
-            :useGrouping="false"
-            :min="1960"
-            :max="2100"
-            :id="target.id"
-            v-model="target.year"
-          />
-          <label :for="target.id" class="col-span-2">{{
-            $t('settings.targetSettings.savedPercentage')
-          }}</label>
-          <InputNumber
-            class="col-span-2"
-            :useGrouping="false"
-            :min="0"
-            :max="100"
-            :id="target.id"
-            v-model="target.percentage"
-            suffix=" %"
-          />
-          <div class="col-span-2 flex gap-1">
+          <div class="col-span-4 grid grid-cols-1">
+            <label :for="target.id">{{
+              $t('settings.targetSettings.year')
+            }}</label>
+            <InputNumber
+              class="col-span-2"
+              :useGrouping="false"
+              :min="1960"
+              :max="2100"
+              :id="target.id"
+              v-model="target.year"
+            />
+          </div>
+
+          <div class="col-span-4 grid grid-cols-1">
+            <label :for="target.id">{{
+              $t('settings.targetSettings.savedPercentage')
+            }}</label>
+            <InputNumber
+              class="col-span-2"
+              :useGrouping="false"
+              :min="0"
+              :max="100"
+              :id="target.id"
+              v-model="target.percentage"
+              suffix=" %"
+            />
+          </div>
+
+          <div class="col-span-2 flex space-x-1">
             <!-- icon as delete button -->
             <Button
               icon="fa-solid fa-save"
@@ -67,6 +63,7 @@
             <Button
               icon="fa-solid fa-trash"
               @click="global.dropTarget(target)"
+              severity="warning"
             />
           </div>
         </div>
