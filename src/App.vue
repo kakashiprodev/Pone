@@ -39,7 +39,11 @@ const init = async () => {
     auth.user.username = user.value?.nickname ?? user.value?.email ?? '';
     auth.user.token = idTokenClaims.value?.__raw ?? '';
   } else {
-    await loginWithRedirect();
+    await loginWithRedirect({
+      authorizationParams: {
+        redirect_uri: import.meta.env.VITE_AUTH0_CALLBACK_URL,
+      },
+    });
   }
 
   const i = await global.initializeStore();
