@@ -8,7 +8,6 @@ import {
   TargetEntry,
 } from './../services/types';
 import dataprovider from './../services/dataprovider';
-import { info } from '../services/ui/toast';
 
 // simple hack to get the equivalent entries as a dict without the store
 // should be changed in the future
