@@ -92,6 +92,7 @@ export default class DataProvider {
     try {
       this.initPostgrestClient();
 
+      console.log('ensureUserIsExisting');
       await this.ensureUserIsExisting();
 
       const { data, error } = await this.postgrest
@@ -476,7 +477,8 @@ export default class DataProvider {
 
     if (getValuesInTons) {
       data.forEach((action) => {
-        action.target_value_absolut_planned = action.target_value_absolut_planned / 1000;
+        action.target_value_absolut_planned =
+          action.target_value_absolut_planned / 1000;
         action.target_value_absolut_is = action.target_value_absolut_is / 1000;
       });
     }

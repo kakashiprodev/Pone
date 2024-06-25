@@ -153,11 +153,14 @@ export const useGlobalStore = defineStore('global', {
       console.log('initializeStore');
       this.isLoading = true;
 
+      console.log('get user data');
+      await dataprovider.ensureUserIsExisting();
       const user = await dataprovider.getUser();
       // get user settings
       this.getUserSettings();
 
       await this.refreshProjects();
+      let projectHadToBeCreated = false;
       // check the last selected entries if they are still valid
       if (
         user.last_selected_project != null &&
@@ -171,7 +174,8 @@ export const useGlobalStore = defineStore('global', {
         if (p) this.selectedProject = p;
       } else {
         // select another project or create a new one
-        await this.ensureProjectIsSelected();
+        projectHadToBeCreated = (await this.ensureProjectIsSelected())
+          .projectHadToBeCreated;
       }
 
       // then refresh the sites
@@ -210,7 +214,15 @@ export const useGlobalStore = defineStore('global', {
       await this.refreshEquivalents(true);
       await this.refreshTargets();
 
+      if (projectHadToBeCreated) {
+        console.log('projectHadToBeCreated');
+      }
+
       this.isLoading = false;
+
+      return {
+        redirect: projectHadToBeCreated ? 'onboarding-wizard' : undefined,
+      };
     },
 
     // *************************************************************
@@ -349,10 +361,11 @@ export const useGlobalStore = defineStore('global', {
     async ensureProjectIsSelected() {
       // if a user has NO projects, he can not use the app
       // so we need to create one here
+
+      let projectHadToBeCreated = false;
+
       if (this.projects.length === 0) {
-        info(
-          'Es wurde kein Projekt gefunden. Ein neues Projekt wird automatisch angelegt.',
-        );
+        console.log('no projects found. create a new one');
         await this.addProject({
           id: 'new',
           name: 'Ihr Firmenname',
@@ -361,12 +374,15 @@ export const useGlobalStore = defineStore('global', {
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString(),
         });
+        projectHadToBeCreated = true;
         this.selectedProject = this.projects[0];
         this.targetOnSiteForProject = [];
       } else {
         // select the first project
         this.selectedProject = this.projects[0];
       }
+
+      return { projectHadToBeCreated };
     },
 
     /**
@@ -732,9 +748,7 @@ export const useGlobalStore = defineStore('global', {
      */
     async ensureSiteIsSelected() {
       if (this.sites.length === 0) {
-        info(
-          'Es wurde kein angelegter Standort für das Projekt gefunden. Der erste Standort wird automatisch angelegt.',
-        );
+        console.log('no sites found. create a new one');
         await this.addSite({
           id: 'new',
           name: 'Haupstandort',

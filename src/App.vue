@@ -18,12 +18,14 @@ import { useAuth0 } from '@auth0/auth0-vue';
 import { useAuthStore } from './stores/auth';
 import { useGlobalStore } from './stores/global';
 import { useRoute } from 'vue-router';
+import { useRouter } from 'vue-router';
 import { onMounted } from 'vue';
 const { user, isAuthenticated, idTokenClaims, loginWithRedirect } = useAuth0();
 
 const global = useGlobalStore();
 const auth = useAuthStore();
 const route = useRoute();
+const router = useRouter();
 
 const init = async () => {
   console.log('Init App.vue. Waiting for loading to finish...');
@@ -40,7 +42,11 @@ const init = async () => {
     await loginWithRedirect();
   }
 
-  await global.initializeStore();
+  const i = await global.initializeStore();
+  if (i.redirect) {
+    console.log('Redirecting to', i.redirect);
+    await router.push({ name: i.redirect });
+  }
 };
 
 onMounted(() => {
