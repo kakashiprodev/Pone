@@ -72,7 +72,7 @@ CREATE TABLE data.projects (
 -- Create the user_projects table
 CREATE TABLE data.user_projects (
     user_id TEXT REFERENCES data.users(id),
-    project_id UUID REFERENCES data.projects(id),
+    project_id UUID REFERENCES data.projects(id) ON DELETE CASCADE,
     PRIMARY KEY (user_id, project_id)
 );
 
@@ -132,8 +132,8 @@ SITES AND REPORTS
 -- Create the sites table
 CREATE TABLE data.sites (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    name TEXT,
-    project UUID REFERENCES data.projects(id),
+    name TEXT,    
+    project UUID REFERENCES data.projects(id) ON DELETE CASCADE, -- will be dropped automatically if the project is deleted
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
@@ -154,7 +154,7 @@ CREATE POLICY sites_admin_policy ON data.sites FOR ALL TO admin
 -- Create the reports table
 CREATE TABLE data.reports (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    site UUID REFERENCES data.sites(id) NOT NULL,
+    site UUID REFERENCES data.sites(id) NOT NULL ON DELETE CASCADE,
     year NUMERIC NOT NULL CHECK (year >= 1901 AND year <= 2500),
     company_name TEXT NOT NULL DEFAULT '',
     company_street TEXT NOT NULL DEFAULT '',
