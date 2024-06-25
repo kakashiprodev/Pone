@@ -37,20 +37,20 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, Ref, watch } from 'vue';
+import { computed, onMounted, watch } from 'vue';
 import { ReportEntry } from '../../services/types';
 import * as v from 'valibot';
 import { useI18n } from 'vue-i18n';
 import GenericForm from '@/components/forms/GenericForm.vue';
 import { GenericFormEntry } from '@/services/types/form';
 import { error } from '@/services/ui/toast';
-import { debounce } from '@/services/pipes';
+import { debounce } from '@/services/helper';
 
 const { t } = useI18n();
 
 const emit = defineEmits(['update:modelValue', 'save', 'formIsValid']);
 const props = defineProps<{
-  modelValue: Ref<ReportEntry>;
+  modelValue: ReportEntry;
   showSaveButton: boolean;
 }>();
 const reportForm = computed({

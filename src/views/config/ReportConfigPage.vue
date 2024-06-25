@@ -72,6 +72,7 @@
   <!-- Config -->
   <ReportSettings
     v-if="reportForm"
+    :showSaveButton="false"
     v-model="reportForm"
     @save="saveReport"
     @form-is-valid="reportFormIsValid = $event"
@@ -79,7 +80,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, Ref, watch } from 'vue';
+import { ref, watch, Ref } from 'vue';
 import { useGlobalStore } from '../../stores/global';
 import { useConfirm } from 'primevue/useconfirm';
 import { ReportEntry } from '../../services/types';
@@ -169,7 +170,6 @@ const saveReport = async () => {
 
 const init = async () => {
   while (global.isLoading) {
-    // console.log('waiting for global store to load');
     await new Promise((resolve) => setTimeout(resolve, 500));
   }
   if (global.selectedReport) {

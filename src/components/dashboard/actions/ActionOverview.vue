@@ -118,7 +118,7 @@ import dataprovider from '../../../services/dataprovider';
 import { ref, Ref, onMounted } from 'vue';
 import { ActionEntry, ActionWithPercentage } from '../../../services/types';
 import { useGlobalStore } from '../../../stores/global';
-import { dateToYear, toTons } from '../../../services/pipes/index';
+import { dateToYear, toTons } from '../../../services/helper/index';
 import ProgressBarWithTarget from '../../dashboard/plot/custom/ProgressBarWithTarget.vue';
 import ActionCharacteristics from './ActionCharacteristics.vue';
 import ApexGaugeWrapper from '../../dashboard/plot/apex/ApexGaugeWrapper.vue';
@@ -235,7 +235,6 @@ const getData = async () => {
         target_value_is: isPercentage,
       };
     });
-    // console.log('actsWithPercentage', actsWithPercentage);
 
     // calculate the percentage part of each category.
     const sum = Object.values(categorySumDict.value).reduce(
@@ -254,7 +253,6 @@ const getData = async () => {
 };
 onMounted(async () => {
   while (global.isLoading) {
-    // console.log('waiting for global store to load');
     await new Promise((resolve) => setTimeout(resolve, 500));
   }
   await getData();

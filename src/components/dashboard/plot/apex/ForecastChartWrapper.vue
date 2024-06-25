@@ -109,7 +109,7 @@ const chartOptions = ref({
   },
   yaxis: {
     labels: {
-      formatter: (value: number) => numbersFormatter(value, 0),
+      formatter: (value: number) => numbersFormatter(value, 0) + ' to',
       style: {
         fontSize: '12px',
       },
@@ -117,7 +117,7 @@ const chartOptions = ref({
   },
   tooltip: {
     y: {
-      formatter: (value: number) => numbersFormatter(value, 2),
+      formatter: (value: number) => numbersFormatter(value, 0) + ' to',
     },
   },
 });

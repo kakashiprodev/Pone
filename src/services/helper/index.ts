@@ -122,3 +122,7 @@ export function debounce(func: Function, wait: number) {
     timeout = setTimeout(later, wait);
   };
 }
+
+export const numberToGroupedString = (value: number): string => {
+  return value.toLocaleString('de-DE');
+};

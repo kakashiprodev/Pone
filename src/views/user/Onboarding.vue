@@ -1,7 +1,7 @@
 <template>
   <div class="p-5">
     <Stepper>
-      <StepperPanel :header="$t('onboarding.step1')">
+      <StepperPanel :header="$t('onboarding.step_company')">
         <template #content="{ nextCallback }">
           <div class="p-32">
             <p class="p-5 text-center text-xl">
@@ -36,7 +36,8 @@
           </div>
         </template>
       </StepperPanel>
-      <StepperPanel :header="$t('onboarding.step2')">
+
+      <StepperPanel :header="$t('onboarding.step_report')">
         <template #content="{ prevCallback, nextCallback }">
           <div class="p-5">
             <ReportSettings
@@ -73,7 +74,37 @@
           </div>
         </template>
       </StepperPanel>
-      <StepperPanel :header="$t('onboarding.step3')">
+
+      <StepperPanel :header="$t('onboarding.step_targets')">
+        <template #content="{ prevCallback }">
+          <div class="p-5">
+            <p>
+              {{ $t('onboarding.targets') }}
+            </p>
+            <TargetDefinition />
+          </div>
+          <div class="flex pt-4 justify-between">
+            <Button
+              :label="$t('inputs.stepBack')"
+              severity="secondary"
+              icon="pi pi-arrow-left"
+              @click="prevCallback"
+            />
+            <Button
+              :label="$t('inputs.stepForward')"
+              icon="pi pi-arrow-right"
+              iconPos="right"
+              @click="
+                () => {
+                  router.push({ name: 'inputs' });
+                }
+              "
+            />
+          </div>
+        </template>
+      </StepperPanel>
+
+      <StepperPanel :header="$t('onboarding.step_done')">
         <template #content="{ prevCallback }">
           <div class="p-5">
             <p>
@@ -111,6 +142,7 @@ import { useRouter } from 'vue-router';
 import ReportSettings from '@/components/reports/ReportSettings.vue';
 import { ReportEntry } from '@/services/types';
 import { Ref, ref } from 'vue';
+import TargetDefinition from '@/components/targets/TargetDefinition.vue';
 
 const router = useRouter();
 const global = useGlobalStore();

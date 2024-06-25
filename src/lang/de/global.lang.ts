@@ -9,6 +9,7 @@ export default {
     scope: 'Scope {scope}',
     overview: 'Gesamtübersicht',
     actions: 'Maßnahmen',
+    reportSettings: 'Berichtseinstellungen',
     facilities: 'Anlagen',
     assistant: 'Assistent',
     csrdReportInterview: 'CSRD Interview',

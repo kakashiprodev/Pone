@@ -102,8 +102,7 @@ const routes = [
           },
           {
             path: 'project-targets',
-            component: () =>
-              import('../components/targets/TargetDefinition.vue'),
+            component: () => import('../views/config/TargetConfigPage.vue'),
             name: 'project-targets',
           },
           {
@@ -120,7 +119,7 @@ const routes = [
       },
       {
         path: 'report-targets',
-        component: () => import('../components/targets/TargetDefinition.vue'),
+        component: () => import('../views/config/TargetConfigPage.vue'),
         name: 'report-targets',
       },
       {

@@ -132,7 +132,7 @@
 </template>
 
 <script setup lang="ts">
-import { toTons } from '@/services/pipes';
+import { toTons } from '@/services/helper';
 import MonthlyOrYearlyInput from '../equivalents/MonthlyOrYearlyInput.vue';
 import { getCalculationSteps, getSumForInput } from '@/services/reporting';
 import { EquivalentEntry, InputEntry } from '@/services/types';

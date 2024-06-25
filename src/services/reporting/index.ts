@@ -11,7 +11,7 @@ import {
   InputEntry,
   InputEntryWithExpandedReportAndSite,
 } from '../types';
-import { roundStringWithDecimals } from '../pipes/index';
+import { roundStringWithDecimals } from '../helper/index';
 
 type monthsShort =
   | 'jan'
@@ -366,7 +366,7 @@ const calculateEquivalentFactorWithSteps = (
     // @ts-ignore
     const monthlyEquivalentFactor: number =
       equivalent[month as keyof EquivalentEntry] != null &&
-      equivalent[month as keyof EquivalentEntry] != ''
+        equivalent[month as keyof EquivalentEntry] != ''
         ? equivalent[month as keyof EquivalentEntry]
         : equivalent.avg_value;
     // @ts-ignore
@@ -415,6 +415,7 @@ export interface ReportTimeseriesQuery {
     facility?: string[];
     years: number[];
   };
+  scaling?: number; // scale all values by this factor?
 }
 
 // simpler data entry for the report
@@ -554,6 +555,14 @@ export const getPlainReportData = async (
     data = littleDataCache.data;
   }
 
+  // scale all values by the given factor if needed
+  if (query.scaling && query.scaling !== 1) {
+    data = data.map((entry) => {
+      entry.sum_value = entry.sum_value * query.scaling!;
+      return entry;
+    });
+  }
+
   // map to simpler data entry
   const filtered = filterDataEntries(
     userInputsToDataEntries(data),
@@ -572,8 +581,6 @@ export const getGroupedReportData = async (
   groupBy: ReportGroupBy,
 ): Promise<AggregatedReportResult> => {
   const plainData: TimeseriesDataEntry[] = await getPlainReportData(query);
-  // console.log('query', query);
-  // console.log('plainData', plainData);
   const result: AggregatedReportResult = {
     stat: {
       sum: 0,

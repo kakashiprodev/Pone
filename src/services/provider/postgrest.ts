@@ -465,7 +465,7 @@ export default class DataProvider {
     return data as ActionEntry;
   }
 
-  async readActions(): Promise<ActionEntry[]> {
+  async readActions(getValuesInTons = false): Promise<ActionEntry[]> {
     if (!globalStore.selectedSite)
       throw new Error('No site selected in (readActions)');
     const { data, error } = await this.postgrest
@@ -473,6 +473,13 @@ export default class DataProvider {
       .select('*')
       .eq('site', globalStore.selectedSite.id);
     if (error) throw error;
+
+    if (getValuesInTons) {
+      data.forEach((action) => {
+        action.target_value_absolut_planned = action.target_value_absolut_planned / 1000;
+        action.target_value_absolut_is = action.target_value_absolut_is / 1000;
+      });
+    }
     return data as ActionEntry[];
   }
 
@@ -655,7 +662,6 @@ export default class DataProvider {
   }
 
   async deleteImage(id: string) {
-    console.log('delete image', id);
     const { error } = await this.postgrest.from('media').delete().eq('id', id);
     if (error) throw error;
     return true;

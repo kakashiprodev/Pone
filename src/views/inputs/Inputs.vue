@@ -235,7 +235,7 @@ import { Ref, ref, computed, watch, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import { error } from '../../services/ui/toast';
 import { useConfirm } from 'primevue/useconfirm';
-import { round, roundStringWithDecimals, toTons } from '../../services/pipes';
+import { round, roundStringWithDecimals, toTons } from '../../services/helper';
 import { MeterItem } from 'primevue/metergroup';
 import { getMonochromeColorPalette } from '@/services/colors';
 import { globalStore, inputStore } from '@/main';
@@ -449,8 +449,7 @@ const save = async () => {
     if (selectedValue.value.id === 'new') {
       const toCreate = clone(selectedValue.value);
       delete toCreate.id;
-      const created = await inputStore.addInput(toCreate);
-      data.value.push(created);
+      await inputStore.addInput(toCreate);
 
       showDialog.value = false;
       showComfortInput.value = false;

@@ -18,11 +18,16 @@
         </span>
       </template>
     </Column>
-    <Column
-      field="category"
-      :header="$t('inputs.table.category')"
-      sortable
-    ></Column>
+    <Column field="category" :header="$t('inputs.table.category')" sortable>
+      <template #body="{ data }">
+        <Chip
+          class="flex text-sm text-white"
+          :style="'background-color: ' + categoryColorList[data.category]"
+        >
+          {{ data.category }}
+        </Chip>
+      </template>
+    </Column>
     <Column field="name" :header="$t('inputs.table.name')" sortable></Column>
     <Column field="rawValue" header="Eingabewert" sortable>
       <template #body="{ data }">
@@ -86,7 +91,9 @@
 import { useGlobalStore } from '@/stores/global';
 import { ref, watch, defineEmits } from 'vue';
 import { InputEntry } from '@/services/types';
-import { roundStringWithDecimals, toTons } from '@/services/pipes';
+import { roundStringWithDecimals, toTons } from '@/services/helper';
+import { computed } from 'vue';
+import { getMonochromeColorPalette } from '@/services/colors';
 
 const globalStore = useGlobalStore();
 
@@ -112,6 +119,22 @@ watch(
 );
 
 const emit = defineEmits(['delete', 'edit', 'copy', 'update:triggerRefresh']);
+
+/**
+ * get colors for the categories
+ */
+const activeCategories = ref(<string[]>[]);
+// { [category: string]: string; // color }
+const categoryColorList = computed(() => {
+  const colors = getMonochromeColorPalette(activeCategories.value.length);
+  let colorList: { [category: string]: string } = {};
+  let i = 0;
+  for (const category of activeCategories.value) {
+    colorList[category] = colors[i];
+    i++;
+  }
+  return colorList;
+});
 
 /**
  * Filtered action list
@@ -142,6 +165,15 @@ const filterData = () => {
       );
     });
   }
+
+  // count categories
+  activeCategories.value = [];
+  for (const item of filtered) {
+    if (!activeCategories.value.includes(item.category ?? '')) {
+      activeCategories.value.push(item.category ?? '');
+    }
+  }
+  // return the filtered list
   filteredActions.value = filtered;
   filterRunning = false;
 };

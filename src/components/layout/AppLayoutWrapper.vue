@@ -142,36 +142,55 @@
               'bg-stone-900': global.theme !== 'light',
             }"
           >
-            <h3 class="text-xs px-1 text-500">
-              {{ item.header }}
-            </h3>
-            <PanelMenu :model="item.items" class="less-padding">
-              <template #item="{ item }">
-                <router-link
-                  class="flex items-center px-3 py-2 cursor-pointer no-underline"
-                  :class="{
-                    'text-white': global.theme !== 'light',
-                    'text-slate-600': global.theme === 'light',
-                  }"
-                  :to="item.to ?? ''"
-                  :exact-active-class="'active-route'"
-                >
-                  <span
-                    :class="[item.icon, 'text-primary', 'sidebar-item-custom']"
-                    style="color: var(--primary-color)"
-                  />
-                  <span
-                    :class="[
-                      'ml-2',
-                      { 'font-semibold': item.items },
-                      'sidebar-item-custom',
-                    ]"
+            <div
+              @click="toggleMenu(item.key)"
+              class="cursor-pointer block"
+              :class="{ 'h-8': !sidebarItemsVisible[item.key] }"
+            >
+              <h3 class="text-xs px-3 text-500 flex justify-between">
+                <span>
+                  {{ item.header }}
+                </span>
+                <i class="fa-solid fa-chevron-down" />
+              </h3>
+            </div>
+            <Transition>
+              <PanelMenu
+                :model="item.items"
+                class="less-padding"
+                v-if="sidebarItemsVisible[item.key]"
+              >
+                <template #item="{ item }">
+                  <router-link
+                    class="flex items-center px-3 py-2 cursor-pointer no-underline"
+                    :class="{
+                      'text-white': global.theme !== 'light',
+                      'text-slate-600': global.theme === 'light',
+                    }"
+                    :to="item.to ?? ''"
+                    :exact-active-class="'active-route'"
                   >
-                    {{ item.label }}
-                  </span>
-                </router-link>
-              </template>
-            </PanelMenu>
+                    <span
+                      :class="[
+                        item.icon,
+                        'text-primary',
+                        'sidebar-item-custom',
+                      ]"
+                      style="color: var(--primary-color)"
+                    />
+                    <span
+                      :class="[
+                        'ml-2',
+                        { 'font-semibold': item.items },
+                        'sidebar-item-custom',
+                      ]"
+                    >
+                      {{ item.label }}
+                    </span>
+                  </router-link>
+                </template>
+              </PanelMenu>
+            </Transition>
           </div>
         </template>
       </div>
@@ -237,7 +256,6 @@ const loading = ref(false);
 const colorMode = computed(() => global.theme);
 
 const logoutApp = async () => {
-  console.log('logout');
   await logout();
 };
 
@@ -340,23 +358,38 @@ const sidebarActions = [
 
 const sidebar = [
   {
+    key: 'analysis',
     header: t('global.sidebar.analysis'),
     items: sidebarAnalysis,
   },
   {
+    key: 'inputs',
     header: t('global.sidebar.inputs'),
     items: sidebarInputs,
   },
   {
-    header: t('global.sidebar.inputs'),
+    key: 'actions',
+    header: t('global.sidebar.reportSettings'),
     items: sidebarActions,
   },
   {
+    key: 'csrd',
     header: t('global.sidebar.reporting'),
     items: sidebarCsrd,
     hide: !global.isGlobalAdmin,
   },
 ];
+
+const sidebarItemsVisible = ref(<{ [key: string]: boolean }>{
+  analysis: true,
+  inputs: true,
+  actions: true,
+  csrd: true,
+});
+
+const toggleMenu = (key: string) => {
+  sidebarItemsVisible.value[key] = !sidebarItemsVisible.value[key];
+};
 
 const logoUrl = computed(() => {
   if (
@@ -371,6 +404,18 @@ const logoUrl = computed(() => {
   }
 });
 </script>
+
+<style scoped>
+.v-enter-active,
+.v-leave-active {
+  transition: opacity 0.2s;
+}
+
+.v-enter-from,
+.v-leave-to {
+  opacity: 0;
+}
+</style>
 
 <style>
 .less-padding > .p-panelmenu-panel {
