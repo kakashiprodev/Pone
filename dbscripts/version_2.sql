@@ -1,4 +1,5 @@
 
+create domain data."image/webp" as bytea;
 
 CREATE FUNCTION data.upload_media_image(bytea) RETURNS json AS $$
 DECLARE
@@ -10,11 +11,6 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-
-create domain data."image/webp" as bytea;
-
-create or replace function data.get_media_image(id uuid) returns "image/webp" as $$
+create or replace function data.get_media_image(id uuid) returns data."image/webp" as $$
   select image from data.media where id = get_media_image.id;
 $$ language sql;
-
-
