@@ -205,12 +205,13 @@ export const useGlobalStore = defineStore('global', {
         const r = this.reports.find((r) => r.id === user.last_selected_report);
         if (r) this.selectedReport = r;
       } else {
-        // load the latest report
+        this.selectedReport = null;
+      }
+
+      if (!this.selectedReport) {
         console.log('load latest report');
         await this.ensureLatestReport();
       }
-
-      await this.ensureLatestReport();
       await this.refreshEquivalents(true);
       await this.refreshTargets();
 
