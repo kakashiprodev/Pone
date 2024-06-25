@@ -2,7 +2,11 @@
   <h2>{{ $t('equivalents.heading') }}</h2>
   <Toolbar :class="{ 'mb-3': !global.showTooltips }">
     <template #end>
-      <Button icon="fa-solid fa-download" @click="csvDownload" />
+      <Button
+        icon="fa-solid fa-download"
+        @click="csvDownload"
+        :disabled="requestPending"
+      />
       <Button
         icon="fa-solid fa-plus"
         @click="
@@ -10,6 +14,16 @@
           showDialog = true;
         "
         class="ml-2"
+        :disabled="requestPending"
+      />
+      <FileUpload
+        mode="basic"
+        accept="text/*"
+        customUpload
+        @uploader="uploadCsv"
+        :auto="true"
+        class="ml-2"
+        :disabled="requestPending"
       />
     </template>
   </Toolbar>
@@ -150,7 +164,7 @@
         <label for="equivalent-alt-name">{{ $t('equivalents.addName') }}</label>
         <InputText
           class="w-full"
-          v-model="selectedValue.addName1"
+          v-model="selectedValue.add_name1"
           id="equivalent-alt-name"
         />
         <InlineMessage
@@ -231,7 +245,7 @@
         >
         <div>
           <Checkbox
-            v-model="selectedValue.monthlyValues"
+            v-model="selectedValue.monthly_values"
             id="equivalent-monthlyValues"
             :binary="true"
           />
@@ -243,7 +257,7 @@
           >{{ $t('equivalents.monthlyValuesInline') }}
         </InlineMessage>
       </div>
-      <div v-show="selectedValue.monthlyValues">
+      <div v-show="selectedValue.monthly_values">
         <div class="grid grid-cols-12 mt-1">
           <div
             class="col-span-3 items-center justify-center bg-teal-100 font-bold text-gray-900 rounded-sm text-center"
@@ -418,16 +432,16 @@
           >{{ $t('equivalents.avgValue') }}*</label
         >
         <InputNumber
-          v-if="!selectedValue.monthlyValues"
+          v-if="!selectedValue.monthly_values"
           class="w-full"
-          v-model="selectedValue.avgValue"
+          v-model="selectedValue.avg_value"
           id="equivalent-value-year"
           :use-grouping="false"
           :min-fraction-digits="0"
           :max-fraction-digits="10"
         />
         <div v-else>
-          {{ roundString(selectedValue.avgValue) }} ({{
+          {{ roundString(selectedValue.avg_value) }} ({{
             $t('equivalents.autoCalc')
           }})
         </div>
@@ -490,6 +504,7 @@
     "
     @delete="deleteEquivalent($event.data, $event.event)"
     :refresh="refreshTrigger"
+    :showChooseColumn="false"
   />
 </template>
 
@@ -500,20 +515,10 @@ import { Ref, ref, watchEffect, computed } from 'vue';
 import { EquivalentEntry } from '../../services/types';
 import { error, info } from '../../services/ui/toast';
 import { useConfirm } from 'primevue/useconfirm';
-import {
-  parse,
-  string,
-  object,
-  number,
-  boolean,
-  minLength,
-  maxLength,
-  minValue,
-  maxValue,
-  nullable,
-} from 'valibot';
-import { roundString } from '../../services/pipes';
+import { roundString } from '../../services/helper';
 import SmartEquivalentList from '../../components/equivalents/SmartEquivalentList.vue';
+import { importCsvFile } from '../../services/csv/import';
+import * as v from 'valibot';
 
 const windowWidth = ref(window.innerWidth);
 
@@ -536,7 +541,7 @@ const emptyEquivalent = (): EquivalentEntry => {
   return {
     id: 'new',
     scope: 3,
-    addName1: '',
+    add_name1: '',
     category: 'Benutzereingaben',
     specification1: '',
     specification2: '',
@@ -545,8 +550,8 @@ const emptyEquivalent = (): EquivalentEntry => {
     in: '',
     out: '',
     source: 'Benutzereingabe',
-    avgValue: null as any,
-    monthlyValues: false,
+    avg_value: null as any,
+    monthly_values: false,
     project: global.selectedProject?.id ?? '',
     jan: null,
     feb: null,
@@ -561,94 +566,79 @@ const emptyEquivalent = (): EquivalentEntry => {
     nov: null,
     dec: null,
     parent: null,
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
   };
 };
 
-const equivalentSchema = object({
-  id: string([minLength(3, 'ID zu kurz'), maxLength(255, 'ID zu lang')]),
-  category: string([
-    minLength(3, 'Kategorie zu kurz'),
-    maxLength(255, 'Kategorie zu lang'),
-  ]),
-  scope: number([
-    minValue(1, 'Scope muss zwischen 1 und 3 liegen'),
-    maxValue(3, 'Scope muss zwischen 1 und 3 liegen'),
-  ]),
-  specification1: string([
-    minLength(1, 'Spezifikation 1 zu kurz'),
-    maxLength(255, 'Spezifikation 1 zu lang'),
-  ]),
-  specification2: nullable(string([maxLength(255, 'Spezifikation 2 zu lang')])),
-  specification3: nullable(string([maxLength(255, 'Spezifikation 3 zu lang')])),
-  addName1: nullable(string([maxLength(255, 'Zusatzname zu lang')])),
-  comment: nullable(string([maxLength(255, 'Kommentar zu lang')])),
-  in: string([
-    minLength(1, 'Eingangseinheit zu kurz'),
-    maxLength(10, 'Eingangseinheit zu lang'),
-  ]),
-  out: string([
-    minLength(1, 'Ausgangseinheit zu kurz'),
-    maxLength(10, 'Ausgangseinheit zu lang'),
-  ]),
-  source: string([
-    minLength(1, 'Quelle zu kurz'),
-    maxLength(255, 'Quelle zu lang'),
-  ]),
-  avgValue: number('Es muss ein Faktor angegeben werden.', [
-    minValue(0, 'Faktor muss größer als 0 sein'),
-  ]),
-  monthlyValues: boolean(),
-  jan: nullable(
-    number([minValue(0, 'Faktor für Januar muss größer als 0 sein')]),
-  ),
-  feb: nullable(
-    number([minValue(0, 'Faktor für Februar muss größer als 0 sein')]),
-  ),
-  mar: nullable(
-    number([minValue(0, 'Faktor für März muss größer als 0 sein')]),
-  ),
-  apr: nullable(
-    number([minValue(0, 'Faktor für April muss größer als 0 sein')]),
-  ),
-  may: nullable(number([minValue(0, 'Faktor für Mai muss größer als 0 sein')])),
-  jun: nullable(
-    number([minValue(0, 'Faktor für Juni muss größer als 0 sein')]),
-  ),
-  jul: nullable(
-    number([minValue(0, 'Faktor für Juli muss größer als 0 sein')]),
-  ),
-  aug: nullable(
-    number([minValue(0, 'Faktor für August muss größer als 0 sein')]),
-  ),
-  sep: nullable(
-    number([minValue(0, 'Faktor für September muss größer als 0 sein')]),
-  ),
-  oct: nullable(
-    number([minValue(0, 'Faktor für Oktober muss größer als 0 sein')]),
-  ),
-  nov: nullable(
-    number([minValue(0, 'Faktor für November muss größer als 0 sein')]),
-  ),
-  dec: nullable(
-    number([minValue(0, 'Faktor für Dezember muss größer als 0 sein')]),
-  ),
-  parent: nullable(
-    string([maxLength(255, 'ID für überliegendes Äquivalent zu kurz')]),
-  ),
-  project: nullable(
-    string([
-      minLength(3, 'ID für Projekt zu kurz'),
-      maxLength(255, 'ID für Projekt zu kurz'),
-    ]),
-  ),
+const equivalentSchema = v.object({
+  id: v.pipe(v.string(), v.minLength(3), v.maxLength(255)),
+  category: v.pipe(v.string(), v.minLength(3), v.maxLength(255)),
+  scope: v.pipe(v.number(), v.minValue(1), v.maxValue(3)),
+  specification1: v.pipe(v.string(), v.minLength(1), v.maxLength(255)),
+  specification2: v.nullable(v.pipe(v.string(), v.maxLength(255))),
+  specification3: v.nullable(v.pipe(v.string(), v.maxLength(255))),
+  add_name1: v.nullable(v.pipe(v.string(), v.maxLength(255))),
+  comment: v.nullable(v.pipe(v.string(), v.maxLength(255))),
+  in: v.pipe(v.string(), v.minLength(1), v.maxLength(10)),
+  out: v.pipe(v.string(), v.minLength(1), v.maxLength(10)),
+  source: v.pipe(v.string(), v.minLength(1), v.maxLength(255)),
+  avg_value: v.pipe(v.number(), v.minValue(0)),
+  monthly_values: v.boolean(),
+  jan: v.nullable(v.pipe(v.number(), v.minValue(0))),
+  feb: v.nullable(v.pipe(v.number(), v.minValue(0))),
+  mar: v.nullable(v.pipe(v.number(), v.minValue(0))),
+  apr: v.nullable(v.pipe(v.number(), v.minValue(0))),
+  may: v.nullable(v.pipe(v.number(), v.minValue(0))),
+  jun: v.nullable(v.pipe(v.number(), v.minValue(0))),
+  jul: v.nullable(v.pipe(v.number(), v.minValue(0))),
+  aug: v.nullable(v.pipe(v.number(), v.minValue(0))),
+  sep: v.nullable(v.pipe(v.number(), v.minValue(0))),
+  oct: v.nullable(v.pipe(v.number(), v.minValue(0))),
+  nov: v.nullable(v.pipe(v.number(), v.minValue(0))),
+  dec: v.nullable(v.pipe(v.number(), v.minValue(0))),
+  parent: v.nullable(v.pipe(v.string(), v.maxLength(255))),
+  project: v.nullable(v.pipe(v.string(), v.minLength(3), v.maxLength(255))),
 });
+
+/*
+const formEntries = [
+  { label: 'ID*', key: 'id', type: 'text', required: true, validation: v.pick(equivalentSchema, ['id']) },
+  { label: 'Kategorie*', key: 'category', type: 'text', required: true, validation: v.pick(equivalentSchema, ['category']) },
+  { label: 'Scope*', key: 'scope', type: 'number', required: true, validation: v.pick(equivalentSchema, ['scope']) },
+  { label: 'Spezifikation 1*', key: 'specification1', type: 'text', required: true, validation: v.pick(equivalentSchema, ['specification1']) },
+  { label: 'Spezifikation 2', key: 'specification2', type: 'text', validation: v.pick(equivalentSchema, ['specification2']) },
+  { label: 'Spezifikation 3', key: 'specification3', type: 'text', validation: v.pick(equivalentSchema, ['specification3']) },
+  { label: 'Zusatzname', key: 'add_name1', type: 'text', validation: v.pick(equivalentSchema, ['add_name1']) },
+  { label: 'Kommentar', key: 'comment', type: 'textarea', validation: v.pick(equivalentSchema, ['comment']) },
+  { label: 'Eingangseinheit*', key: 'in', type: 'text', required: true, validation: v.pick(equivalentSchema, ['in']) },
+  { label: 'Ausgangseinheit*', key: 'out', type: 'text', required: true, validation: v.pick(equivalentSchema, ['out']) },
+  { label: 'Quelle*', key: 'source', type: 'text', required: true, validation: v.pick(equivalentSchema, ['source']) },
+  { label: 'Durchschnittswert*', key: 'avg_value', type: 'number', required: true, validation: v.pick(equivalentSchema, ['avg_value']) },
+  { label: 'Monatliche Werte', key: 'monthly_values', type: 'checkbox', validation: v.pick(equivalentSchema, ['monthly_values']) },
+  { label: 'Januar', key: 'jan', type: 'number', validation: v.pick(equivalentSchema, ['jan']) },
+  { label: 'Februar', key: 'feb', type: 'number', validation: v.pick(equivalentSchema, ['feb']) },
+  { label: 'März', key: 'mar', type: 'number', validation: v.pick(equivalentSchema, ['mar']) },
+  { label: 'April', key: 'apr', type: 'number', validation: v.pick(equivalentSchema, ['apr']) },
+  { label: 'Mai', key: 'may', type: 'number', validation: v.pick(equivalentSchema, ['may']) },
+  { label: 'Juni', key: 'jun', type: 'number', validation: v.pick(equivalentSchema, ['jun']) },
+  { label: 'Juli', key: 'jul', type: 'number', validation: v.pick(equivalentSchema, ['jul']) },
+  { label: 'August', key: 'aug', type: 'number', validation: v.pick(equivalentSchema, ['aug']) },
+  { label: 'September', key: 'sep', type: 'number', validation: v.pick(equivalentSchema, ['sep']) },
+  { label: 'Oktober', key: 'oct', type: 'number', validation: v.pick(equivalentSchema, ['oct']) },
+  { label: 'November', key: 'nov', type: 'number', validation: v.pick(equivalentSchema, ['nov']) },
+  { label: 'Dezember', key: 'dec', type: 'number', validation: v.pick(equivalentSchema, ['dec']) },
+  { label: 'Überliegendes Äquivalent', key: 'parent', type: 'text', validation: v.pick(equivalentSchema, ['parent']) },
+  { label: 'Projekt', key: 'project', type: 'text', validation: v.pick(equivalentSchema, ['project']) },
+];
+ */
 
 const selectedValue: Ref<EquivalentEntry> = ref(emptyEquivalent());
 
 // calculate avg value for the year
 watchEffect(() => {
-  if (selectedValue.value.monthlyValues) {
-    selectedValue.value.avgValue =
+  if (selectedValue.value.monthly_values) {
+    selectedValue.value.avg_value =
       Math.round(getAverageEquivalent(selectedValue.value) * 10000) / 10000;
   }
 });
@@ -656,10 +646,8 @@ watchEffect(() => {
 const save = async () => {
   // validate inputs
   try {
-    console.log(JSON.parse(JSON.stringify(selectedValue.value)));
-
     // set all monthly values to null if monthlyValues is false
-    if (!selectedValue.value.monthlyValues) {
+    if (!selectedValue.value.monthly_values) {
       selectedValue.value.jan = 0;
       selectedValue.value.feb = 0;
       selectedValue.value.mar = 0;
@@ -674,7 +662,7 @@ const save = async () => {
       selectedValue.value.dec = 0;
     }
 
-    parse(equivalentSchema, selectedValue.value);
+    v.parse(equivalentSchema, selectedValue.value);
 
     // check if parent is set. If not the output unit must be kg-CO-2
     if (
@@ -799,6 +787,17 @@ const csvDownload = async () => {
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
+};
+
+const requestPending = ref(false);
+const uploadCsv = async (event: any) => {
+  requestPending.value = true;
+  if (!event.files || event.files.length === 0) {
+    return;
+  }
+  const file = event.files[0];
+  await importCsvFile(file);
+  requestPending.value = false;
 };
 </script>
 

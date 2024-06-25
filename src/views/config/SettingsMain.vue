@@ -1,6 +1,6 @@
 <template>
   <div class="flex">
-    <!-- PanelMenu für das vertikale Menü auf der linken Seite -->
+    <!-- PanelMenu Left Side -->
     <PanelMenu
       :model="items"
       class="w-1/7 pr-3"
@@ -8,7 +8,7 @@
     >
       <template #item="{ item }">
         <router-link
-          v-if="!item.onlyAdmin || globalStore.isGlobalAdmin"
+          v-if="!item.onlyAdmin || userDebugMode"
           class="flex items-center px-3 py-2 cursor-pointer no-underline text-slate-800"
           style="color: var(--primary-color)"
           :to="item.to ?? ''"
@@ -25,7 +25,7 @@
       </template>
     </PanelMenu>
 
-    <!-- Bereich für die Anzeige der Komponenten auf der rechten Seite -->
+    <!-- Settings Content -->
     <div class="w-full p-5">
       <router-view :key="route.path" />
     </div>
@@ -33,7 +33,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import { useRoute } from 'vue-router';
 import { useGlobalStore } from '@/stores/global';
 import { useI18n } from 'vue-i18n';
@@ -109,9 +109,21 @@ const items = ref([
         icon: 'fa-solid fa-list',
         to: '/settings/project-equivalents',
       },
+      {
+        key: 'project-onboarding',
+        label: t('settings.wizard'),
+        icon: 'fa-solid fa-hat-wizard',
+        to: '/onboarding-wizard',
+      },
     ],
   },
 ]);
+
+const userDebugMode = computed(() => {
+  // check if "?debug=true" is in the URL
+  let url = new URL(window.location.href);
+  return url.href.indexOf('?debug=true') > -1 || globalStore.isGlobalAdmin;
+});
 </script>
 
 <style scoped>

@@ -100,7 +100,6 @@ export const generateImage = async (prompt: string) => {
   if (!image_url) {
     throw new Error('Failed to generate image');
   }
-  console.log('Image URL:', image_url);
   // download the image and save it to the images folder
   // the url will be a web url, so we need to download it
   const imageBuffer = await (await fetch(image_url)).arrayBuffer();

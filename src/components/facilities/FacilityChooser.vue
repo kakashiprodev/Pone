@@ -7,6 +7,7 @@
     :selection-mode="'single'"
     v-model:selection="selectedValue"
     key="id"
+    scrollHeight="300px"
   >
     <Column selectionMode="single" headerStyle="width: 3rem"></Column>
     <Column
@@ -44,8 +45,6 @@ const selectedValue: Ref<null | FacilityEntry> = ref(null);
 watch(
   () => selectedValue.value,
   () => {
-    console.log('selectedValue changed');
-    console.log(selectedValue.value);
     if (selectedValue.value == null) {
       return;
     }
@@ -62,7 +61,7 @@ const data: Ref<FacilityEntry[]> = ref([]);
 const getData = async () => {
   await global.refreshFacilities();
   const filtered = global.facilities.filter(
-    (f) => f.shutdownDate == null || f.shutdownDate === '',
+    (f) => f.shutdown_date == null || f.shutdown_date === '',
   );
   data.value = filtered.sort((a, b) => a.name.localeCompare(b.name));
   if (props.modelValue != null) {

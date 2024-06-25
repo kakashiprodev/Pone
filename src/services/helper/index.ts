@@ -103,3 +103,26 @@ export const toReadableDate = (date: string | Date | null) => {
   }
   return '';
 };
+
+export const toChartAxisDate = (date: string | Date | null) => {
+  if (date) {
+    return new Date(date).getTime();
+  }
+  return '';
+};
+
+export function debounce(func: Function, wait: number) {
+  let timeout: any;
+  return function executedFunction(...args: any) {
+    const later = () => {
+      clearTimeout(timeout);
+      func(...args);
+    };
+    clearTimeout(timeout);
+    timeout = setTimeout(later, wait);
+  };
+}
+
+export const numberToGroupedString = (value: number): string => {
+  return value.toLocaleString('de-DE');
+};

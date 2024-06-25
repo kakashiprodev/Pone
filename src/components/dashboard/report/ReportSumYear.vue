@@ -93,7 +93,12 @@
   <ReportSpacer />
 
   <!-- ZEILE -->
-  <HorizontalOneColLayout>
+  <HorizontalOneColLayout
+    v-if="
+      sumGroupedByCategory &&
+      Object.keys(sumGroupedByCategory.timeseries).length > 3
+    "
+  >
     <Card>
       <template #header>
         <div class="psm-report-header">
@@ -196,10 +201,7 @@ const props = defineProps({
 const selectedScopes = ref<number[]>([]);
 // years. the last year and the past 5 years before
 const availableYears: number[] = [];
-const lastYear = new Date().getFullYear() - 1;
-for (let i = 0; i < 5; i++) {
-  availableYears.push(lastYear - i);
-}
+
 // const selectedYears = ref<number[]>([lastYear]);
 
 // get all necessary data
@@ -222,7 +224,7 @@ const getData = async () => {
       siteIds: props.sites,
       filter: {
         scope:
-          selectedScopes.value.length > 0 ? selectedScopes.value : undefined,
+          selectedScopes.value.length > 0 ? selectedScopes.value : [1, 2, 3],
         years: [global.selectedReport?.year ?? -1],
       },
     },
@@ -235,7 +237,7 @@ const getData = async () => {
       siteIds: props.sites,
       filter: {
         scope:
-          selectedScopes.value.length > 0 ? selectedScopes.value : undefined,
+          selectedScopes.value.length > 0 ? selectedScopes.value : [1, 2, 3],
         years: availableYears,
       },
     },
@@ -269,7 +271,7 @@ const getData = async () => {
       siteIds: props.sites,
       filter: {
         scope:
-          selectedScopes.value.length > 0 ? selectedScopes.value : undefined,
+          selectedScopes.value.length > 0 ? selectedScopes.value : [1, 2, 3],
         years: availableYears,
       },
     },
@@ -278,6 +280,11 @@ const getData = async () => {
 };
 
 onMounted(() => {
+  let thisYear = new Date().getFullYear();
+  for (let i = 0; i < 5; i++) {
+    availableYears.push(thisYear);
+    thisYear--;
+  }
   getData();
 });
 </script>

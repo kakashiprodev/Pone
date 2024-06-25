@@ -71,8 +71,13 @@
     paginator
     :rows="rowsPerPage"
     v-if="true"
+    scrollHeight="300px"
   >
-    <Column selectionMode="single" headerStyle="width: 3rem"></Column>
+    <Column
+      selectionMode="single"
+      headerStyle="width: 3rem"
+      v-if="showChooseColumn"
+    ></Column>
     <!-- <Column field="id" header="Id"></Column> -->
     <Column
       field="scope"
@@ -108,7 +113,7 @@
     >
     </Column>
     <Column
-      field="addName1"
+      field="add_name1"
       :header="$t('equivalents.table.addName')"
       v-if="_visibleColumns.includes('addName1')"
       sortable
@@ -137,7 +142,7 @@
       sortable
     ></Column>
     <Column
-      field="avgValue"
+      field="avg_value"
       :header="$t('equivalents.table.factor')"
       v-if="_visibleColumns.includes('avgValue')"
     ></Column>
@@ -225,9 +230,7 @@ const filter: Ref<EquivalentFilter> = ref({});
 
 // funtion to filter the table by all filter criteria arrays
 const filterEquivalents = () => {
-  // console.log('filterEquivalents', filter.value);
   filteredEquivalents.value = global.equivalents.filter((equivalent) => {
-    // console.log('equivalent', equivalent);
     // scope
     if (filter.value.scope && filter.value.scope.length > 0) {
       if (!filter.value.scope.includes(equivalent.scope)) {
@@ -260,7 +263,7 @@ const filterEquivalents = () => {
     }
     // addName1
     if (filter.value.addName1 && filter.value.addName1.length > 0) {
-      if (!filter.value.addName1.includes(equivalent.addName1)) {
+      if (!filter.value.addName1.includes(equivalent.add_name1)) {
         return false;
       }
     }
@@ -298,7 +301,7 @@ const filterEquivalents = () => {
         !equivalent.specification1.toLowerCase().includes(filterNameLower) &&
         !equivalent.specification2.toLowerCase().includes(filterNameLower) &&
         !equivalent.specification3.toLowerCase().includes(filterNameLower) &&
-        !equivalent.addName1.toLowerCase().includes(filterNameLower)
+        !equivalent.add_name1.toLowerCase().includes(filterNameLower)
       ) {
         return false;
       }
@@ -309,7 +312,6 @@ const filterEquivalents = () => {
 watch(
   () => filter,
   () => {
-    console.log('filter changed');
     filterEquivalents();
   },
   { deep: true },
@@ -376,6 +378,11 @@ const props = defineProps({
     required: false,
     default: false,
   },
+  showChooseColumn: {
+    type: Boolean,
+    required: false,
+    default: true,
+  },
 });
 if (props.visibleColumns) {
   _visibleColumns.value = props.visibleColumns;
@@ -383,23 +390,19 @@ if (props.visibleColumns) {
   _visibleColumns.value = ['scope', 'category', 'source', 'in', 'fullName'];
 }
 if (props.filterBy) {
-  console.log('set filter by parent', props.filterBy);
   filter.value = props.filterBy;
 } else {
-  console.log('set filter by default');
   filter.value = {
     scope: [1, 2, 3],
   };
 }
 if (props.categoriesFilteredByScope) {
-  console.log('set categoriesFilteredByScope', props.categoriesFilteredByScope);
   filter.value.scope = [parseInt(props.categoriesFilteredByScope)];
 }
 
 const filteredCategories = ref<string[]>([]);
 const updateFilteredCategories = () => {
   const all: any = global.equivalentFilters.category;
-  console.log('updateFilteredCategories');
   if (props.categoriesFilteredByScope || props.comfortMode) {
     const scope =
       'scope' +
@@ -426,7 +429,6 @@ watch(
 const selection: Ref<null | EquivalentEntry> = ref(null);
 
 if (props.modelValue) {
-  console.log('set selection by prop', props.modelValue);
   const id = props.modelValue;
   const equivalent = global.equivalents.find(
     (equivalent) => equivalent.id === id,
@@ -447,7 +449,6 @@ const emits = defineEmits([
 ]);
 watch(selection, (value) => {
   if (value) {
-    console.log('selection changed', value);
     emits('update:modelValue', value.id);
     emits('update:selected', value);
     emits('change', true);
@@ -466,7 +467,6 @@ const forwardDelete = (data: EquivalentEntry, event: any) => {
 watch(
   () => props.refresh,
   () => {
-    console.log('refresh trigger');
     filterEquivalents();
   },
 );

@@ -1,16 +1,16 @@
 <template>
   <div class="action-characteristics">
     <Panel :header="$t('actions.charTable.is')" class="mb-3" toggleable>
-      <span v-html="action.descriptionBefore"></span>
+      <span v-html="action.description_before"></span>
     </Panel>
     <Panel :header="$t('actions.charTable.should')" toggleable class="mb-3">
-      <span v-html="action.descriptionAfter"></span>
+      <span v-html="action.description_after"></span>
     </Panel>
     <Panel :header="$t('actions.charTable.targetValuePlanned')" class="mb-3">
-      {{ action.targetValueAbsolutPlanned }} kg-CO<sub>2</sub>/Jahr
+      {{ action.target_value_absolut_planned }} kg-CO<sub>2</sub>/Jahr
     </Panel>
     <Panel :header="$t('actions.charTable.targetValueIs')" class="mb-3">
-      {{ action.targetValueAbsolutIs }} kg-CO<sub>2</sub>/{{
+      {{ action.target_value_absolut_is }} kg-CO<sub>2</sub>/{{
         $t('actions.charTable.year')
       }}
     </Panel>
@@ -19,7 +19,7 @@
       class="mb-3"
       toggleable
     >
-      <span v-html="action.descriptionTargetValue"></span>
+      <span v-html="action.description_target_value"></span>
     </Panel>
     <Panel :header="$t('actions.charTable.responsible')" class="mb-3">
       <span v-html="action.responsible"></span>
@@ -31,19 +31,19 @@
       <ProgressBar :value="action.progress" />
     </Panel>
     <Panel :header="$t('actions.charTable.finishedUntilPlanned')" class="mb-3">
-      {{ toReadableDate(action.finishedUntilPlanned) }}
+      {{ toReadableDate(action.finished_until_planned) }}
     </Panel>
     <Panel :header="$t('actions.charTable.finishedUntilIs')" class="mb-3">
-      {{ toReadableDate(action.finishedUntilIs) }}
+      {{ toReadableDate(action.finished_until_is) }}
     </Panel>
     <Panel :header="$t('actions.charTable.category')" class="mb-3">
       {{ action.category }}
     </Panel>
     <Panel :header="$t('actions.charTable.costsPlanned')" class="mb-3">
-      {{ action.costsPlanned.toLocaleString() }}
+      {{ action.costs_planned.toLocaleString() }}
     </Panel>
     <Panel :header="$t('actions.charTable.costsIs')" class="mb-3">
-      {{ action.costsIs.toLocaleString() }}
+      {{ action.costs_is.toLocaleString() }}
     </Panel>
     <Panel :header="$t('actions.charTable.roi')" class="mb-3">
       {{ action.roi }}
@@ -53,10 +53,10 @@
       class="mb-3"
       toggleable
     >
-      <span v-html="action.descriptionCosts.toLocaleString()"></span>
+      <span v-html="action.description_costs.toLocaleString()"></span>
     </Panel>
     <Panel :header="$t('actions.charTable.avoidanceCosts')" class="mb-3">
-      {{ action.avoidanceCosts.toLocaleString() }}
+      {{ action.avoidance_costs.toLocaleString() }}
     </Panel>
   </div>
 </template>
@@ -65,7 +65,7 @@
 import { PropType } from 'vue';
 import { ActionEntry } from '../../../services/types.ts';
 import statusTranslations from '../../../services/statusTranslations.ts';
-import { toReadableDate } from '../../../services/pipes';
+import { toReadableDate } from '../../../services/helper';
 
 defineProps({
   action: {

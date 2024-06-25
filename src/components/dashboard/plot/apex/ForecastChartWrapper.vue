@@ -50,6 +50,7 @@ const annotations = computed(() => {
           style: {
             color: '#fff',
             background: '#666666',
+            fontSize: '13px',
           },
           text: action.name,
         },
@@ -81,6 +82,7 @@ const chartOptions = ref({
   },
   legend: {
     position: 'top',
+    fontSize: '15px',
   },
   annotations,
   stroke: {
@@ -96,18 +98,26 @@ const chartOptions = ref({
   },
   xaxis: {
     categories: props.labels,
+    labels: {
+      style: {
+        fontSize: '12px',
+      },
+    },
   },
   dataLabels: {
     enabled: false,
   },
   yaxis: {
     labels: {
-      formatter: (value: number) => numbersFormatter(value, 0),
+      formatter: (value: number) => numbersFormatter(value, 0) + ' to',
+      style: {
+        fontSize: '12px',
+      },
     },
   },
   tooltip: {
     y: {
-      formatter: (value: number) => numbersFormatter(value, 2),
+      formatter: (value: number) => numbersFormatter(value, 0) + ' to',
     },
   },
 });

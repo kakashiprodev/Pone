@@ -95,7 +95,7 @@ import { useGlobalStore } from '../../stores/global';
 import { ref, Ref, watch } from 'vue';
 import { SiteEntry } from '../../services/types';
 import { useConfirm } from 'primevue/useconfirm';
-import { minLength, maxLength, object, string, parse } from 'valibot';
+import * as v from 'valibot';
 import { error, info } from '../../services/ui/toast';
 
 const global = useGlobalStore();
@@ -104,9 +104,9 @@ const confirm = useConfirm();
 const showEditEntry = ref(false);
 
 const siteForm: Ref<null | SiteEntry> = ref(global.selectedSite);
-const siteSchema = object({
-  id: string([minLength(1)]),
-  name: string([minLength(3), maxLength(255)]),
+const siteSchema = v.object({
+  id: v.pipe(v.string(), v.minLength(1)),
+  name: v.pipe(v.string(), v.minLength(1), v.maxLength(255)),
 });
 
 watch(
@@ -129,6 +129,8 @@ const addEntry = () => {
     id: 'new',
     name: '',
     project: global.selectedProject.id,
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
   };
 };
 
@@ -154,7 +156,7 @@ const saveEntry = async () => {
     return;
   }
   try {
-    parse(siteSchema, siteForm.value);
+    v.parse(siteSchema, siteForm.value);
     if (siteForm.value.id === 'new') {
       siteForm.value = await global.addSite(siteForm.value);
       global.selectedSite = siteForm.value;
@@ -176,10 +178,8 @@ const cancel = () => {
 
 const init = async () => {
   while (global.isLoading) {
-    console.log('waiting for global store to load');
     await new Promise((resolve) => setTimeout(resolve, 500));
   }
-  console.log('global store loaded');
   siteForm.value = global.selectedSite;
 };
 init();

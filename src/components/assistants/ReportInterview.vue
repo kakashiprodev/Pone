@@ -138,7 +138,6 @@ const startRecording = () => {
       mediaRecorder = new MediaRecorder(stream);
       mediaRecorder.start();
       mediaRecorder.ondataavailable = async (e) => {
-        console.log(e.data);
         const audio = new Blob([e.data], { type: 'audio/mp3' });
 
         ttsOrSttLoading.value = true;

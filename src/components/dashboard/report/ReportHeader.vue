@@ -8,62 +8,73 @@
     <template #content>
       <div class="report-section">
         <h3 class="report-section__heading mb-2">
-          {{ global.selectedReport.companyName }}
+          {{ global.selectedReport.company_name }}
         </h3>
         <div class="report-section__address mb-4">
           <p>
-            {{ global.selectedReport.companyStreet }},
-            {{ global.selectedReport.companyPostal }}
-            {{ global.selectedReport.companyCity }}
+            {{ global.selectedReport.company_street }},
+            {{ global.selectedReport.company_postal }}
+            {{ global.selectedReport.company_city }}
           </p>
-          <p>{{ global.selectedReport.companyCountry }}</p>
+          <p>{{ global.selectedReport.company_country }}</p>
         </div>
         <p class="report-row">
-          <span>{{ $t('report.year') }}:</span>
+          <span>{{ $t('report.year') }}</span>
           <span>{{ global.selectedReport.year }}</span>
         </p>
 
         <p class="report-row">
-          <span>{{ $t('report.domain') }}:</span>
-          <span>{{ global.selectedReport.companyDomain }}</span>
+          <span>{{ $t('report.domain') }}</span>
+          <span>{{ global.selectedReport.company_domain }}</span>
         </p>
       </div>
 
       <div class="report-section">
         <h3>{{ $t('report.contactPerson') }}</h3>
         <p class="report-row">
-          <span>{{ $t('report.contactName') }}:</span>
+          <span>{{ $t('report.contactName') }}</span>
           <span
-            ><span>{{ global.selectedReport.contactName }}</span></span
+            ><span>{{ global.selectedReport.contact_name }}</span></span
           >
         </p>
         <p class="report-row">
-          <span>{{ $t('report.contactPhone') }}:</span>
-          <span>{{ global.selectedReport.contactTelephone }}</span>
+          <span>E-Mail</span>
+          <span>{{ global.selectedReport.contact_email }}</span>
         </p>
         <p class="report-row">
-          <span>{{ $t('report.contactEmail') }}:</span>
-          <span>{{ global.selectedReport.contactEmail }}</span>
+          <span>{{ $t('report.contactPhone') }}</span>
+          <span>{{ global.selectedReport.contact_telephone }}</span>
         </p>
         <p class="report-row">
-          <span>{{ $t('report.contactDepartment') }}:</span>
-          <span>{{ global.selectedReport.contactDomain }}</span>
+          <span>{{ $t('report.contactEmail') }}</span>
+          <span>{{ global.selectedReport.contact_email }}</span>
+        </p>
+        <p class="report-row">
+          <span>{{ $t('report.contactDepartment') }}</span>
+          <span>{{ global.selectedReport.contact_domain }}</span>
         </p>
       </div>
 
       <div class="report-section">
         <h3>{{ $t('report.companyNumbers') }}</h3>
         <p class="report-row">
-          <span>{{ $t('report.countEmployees') }}:</span>
-          <span>{{ global.selectedReport.countEmployees }}</span>
+          <span>{{ $t('report.countEmployees') }}</span>
+          <span>
+            {{ numberToGroupedString(global.selectedReport.count_employees) }}
+          </span>
         </p>
         <p class="report-row">
-          <span>{{ $t('report.businessTurnover') }}:</span>
-          <span>{{ global.selectedReport.businessTurnover }}</span>
+          <span>{{ $t('report.businessTurnover') }}</span>
+          <span
+            >{{
+              numberToGroupedString(global.selectedReport.business_turnover)
+            }}
+            €</span
+          >
         </p>
         <p class="report-row">
-          <span>{{ $t('report.refYear') }}:</span>
-          <span>{{ global.selectedReport.baseYear }}</span>
+          <span>{{ $t('report.refYear') }}</span>
+          <span>{{ global.selectedReport.base_year }}</span>
         </p>
       </div>
     </template>
@@ -71,6 +82,7 @@
 </template>
 
 <script setup lang="ts">
+import { numberToGroupedString } from '@/services/helper';
 import { useGlobalStore } from '../../../stores/global';
 
 const global = useGlobalStore();

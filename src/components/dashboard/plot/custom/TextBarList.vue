@@ -3,7 +3,7 @@
     {{ label }}
   </h4>
   <DataTable class="cst-no-hover" :value="innerData" :showGridlines="false">
-    <Column field="name" :header="header[0]"></Column>
+    <Column field="name" :header="header[0]"> </Column>
     <Column field="status" :header="header[1]" v-if="showStatusColumn">
       <template #body="{ data }">
         <div
@@ -16,14 +16,17 @@
         ></div>
       </template>
     </Column>
-    <Column field="value" :header="header[2]">
+    <Column field="value">
+      <template #header>
+        <span v-html="header[2]"></span>
+      </template>
       <template #body="{ data }">
         <!-- <ProgressBar :value="data.percentage" v-if="!data.targetValue">
           {{ round(toTons(data.value, globalStore.displayInTons)) }}
         </ProgressBar> -->
         <ProgressBarWithTarget
           :value="data.percentage"
-          :target-value="data.targetValue ?? undefined"
+          :target-value="data.target_value ?? undefined"
           :color="data.color ?? Config.colors.data2"
         >
           {{ round(toTons(data.value)) }}
@@ -36,7 +39,7 @@
 
 <script setup lang="ts">
 import { PropType, ref, onMounted, watch } from 'vue';
-import { round, toTons } from '../../../../services/pipes/index';
+import { round, toTons } from '../../../../services/helper/index';
 import { useGlobalStore } from '../../../../stores/global';
 import ProgressBarWithTarget from './ProgressBarWithTarget.vue';
 import Config from '../../../../config';

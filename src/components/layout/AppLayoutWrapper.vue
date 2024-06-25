@@ -1,12 +1,22 @@
 <template>
   <Sidebar v-model:visible="showSidebar" position="right">
-    <div class="flex flex-col gap-3 w-full mt-3 rounded-xl bg-slate-100 p-3">
-      <Chip :label="global.selectedSite?.name" class="bg-slate-200">
+    <div
+      class="flex flex-col gap-3 w-full mt-3 rounded-xl p-3"
+      :class="{
+        'bg-slate-100': global.theme === 'light',
+        'bg-stone-900': global.theme !== 'light',
+      }"
+    >
+      <Chip
+        :label="global.selectedSite?.name"
+        :class="{
+          'bg-slate-200': global.theme === 'light',
+          'bg-stone-700': global.theme !== 'light',
+        }"
+      >
         <img
-          v-if="
-            global.selectedProject?.logo && global.selectedProject.logo !== ''
-          "
-          :src="global.selectedProject.logo"
+          v-if="logoUrl !== ''"
+          :src="logoUrl"
           class="rounded-lg object-scale-down"
         />
         <span>{{ global.selectedProject?.name }}</span>
@@ -21,7 +31,13 @@
       />
     </div>
 
-    <div class="flex flex-col gap-3 w-full mt-5 rounded-xl bg-slate-100 p-3">
+    <div
+      class="flex flex-col gap-3 w-full mt-5 rounded-xl p-3"
+      :class="{
+        'bg-slate-100': global.theme === 'light',
+        'bg-stone-900': global.theme !== 'light',
+      }"
+    >
       <span class="text-sm font-bold">{{ global.username }}</span>
 
       <div class="flex flex-col gap-2 mt-5 w-full">
@@ -53,7 +69,7 @@
       />
       <Button
         icon="fa-solid fa-right-from-bracket"
-        @click="logout"
+        @click="logoutApp"
         label="Abmelden"
       />
     </div>
@@ -70,7 +86,15 @@
     </template>
 
     <template #start>
-      <h3 class="text-slate-600 ml-5 text-2xl">Sustainability Management</h3>
+      <h3
+        class="ml-5 text-2xl"
+        :class="{
+          'text-slate-600': global.theme === 'light',
+          'text-stone-200': global.theme !== 'light',
+        }"
+      >
+        Sustainability Management
+      </h3>
     </template>
 
     <template #end>
@@ -86,17 +110,11 @@
         </li>
 
         <li class="ml-2">
-          <router-link
-            to="/settings/project-reports"
-            :exact-active-class="'active-route'"
-          >
+          <router-link to="/report-data" :exact-active-class="'active-route'">
             <Chip :label="global.selectedSite?.name">
               <img
-                v-if="
-                  global.selectedProject?.logo &&
-                  global.selectedProject.logo !== ''
-                "
-                :src="global.selectedProject.logo"
+                v-if="logoUrl !== ''"
+                :src="logoUrl"
                 class="rounded-lg object-scale-down"
               />
               <span>{{ global.selectedProject?.name }}</span>
@@ -118,38 +136,61 @@
       <div>
         <template v-for="item in sidebar.filter((i) => !i.hide)">
           <div
-            class="rounded-sm dark:bg-slate-700 mt-2 pt-1"
+            class="rounded-sm mt-2 pt-1 category-item"
             :class="{
               'bg-slate-100': global.theme === 'light',
-              'bg-slate-700': global.theme !== 'light',
+              'bg-stone-900': global.theme !== 'light',
             }"
           >
-            <h3 class="text-xs px-1 text-500">
-              {{ item.header }}
-            </h3>
-            <PanelMenu :model="item.items" class="less-padding">
-              <template #item="{ item }">
-                <router-link
-                  class="flex items-center px-3 py-2 cursor-pointer no-underline text-slate-600"
-                  :to="item.to ?? ''"
-                  :exact-active-class="'active-route'"
-                >
-                  <span
-                    :class="[item.icon, 'text-primary', 'sidebar-item-custom']"
-                    style="color: var(--primary-color)"
-                  />
-                  <span
-                    :class="[
-                      'ml-2',
-                      { 'font-semibold': item.items },
-                      'sidebar-item-custom',
-                    ]"
+            <div
+              @click="toggleMenu(item.key)"
+              class="cursor-pointer block"
+              :class="{ 'h-8': !sidebarItemsVisible[item.key] }"
+            >
+              <h3 class="text-xs px-3 text-500 flex justify-between">
+                <span>
+                  {{ item.header }}
+                </span>
+                <i class="fa-solid fa-chevron-down" />
+              </h3>
+            </div>
+            <Transition>
+              <PanelMenu
+                :model="item.items"
+                class="less-padding"
+                v-if="sidebarItemsVisible[item.key]"
+              >
+                <template #item="{ item }">
+                  <router-link
+                    class="flex items-center px-3 py-2 cursor-pointer no-underline"
+                    :class="{
+                      'text-white': global.theme !== 'light',
+                      'text-slate-600': global.theme === 'light',
+                    }"
+                    :to="item.to ?? ''"
+                    :exact-active-class="'active-route'"
                   >
-                    {{ item.label }}
-                  </span>
-                </router-link>
-              </template>
-            </PanelMenu>
+                    <span
+                      :class="[
+                        item.icon,
+                        'text-primary',
+                        'sidebar-item-custom',
+                      ]"
+                      style="color: var(--primary-color)"
+                    />
+                    <span
+                      :class="[
+                        'ml-2',
+                        { 'font-semibold': item.items },
+                        'sidebar-item-custom',
+                      ]"
+                    >
+                      {{ item.label }}
+                    </span>
+                  </router-link>
+                </template>
+              </PanelMenu>
+            </Transition>
           </div>
         </template>
       </div>
@@ -180,7 +221,7 @@
             <span>{{ $t('global.userProfile') }}</span>
           </a>
           <a
-            @click="logout()"
+            @click="logoutApp()"
             class="text-800 flex p-2 rounded-sm items-center hover:surface-hover transition-colors transition-duration-150 cursor-pointer"
           >
             <i class="fa-solid fa-right-from-bracket mr-3"></i>
@@ -200,11 +241,13 @@
 import AppLayout from './AppLayout.vue';
 import { useGlobalStore } from '../../stores/global';
 import { useRouter } from 'vue-router';
-import dataprovider from '../../services/dataprovider';
 import { useRoute } from 'vue-router';
 import { ref, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { useAuth0 } from '@auth0/auth0-vue';
+import dataprovider from '@/services/dataprovider';
 
+const { logout } = useAuth0();
 const { t } = useI18n();
 const route = useRoute();
 const router = useRouter();
@@ -212,9 +255,8 @@ const global = useGlobalStore();
 const loading = ref(false);
 const colorMode = computed(() => global.theme);
 
-const logout = async () => {
-  await dataprovider.logout();
-  router.push('/login');
+const logoutApp = async () => {
+  await logout();
 };
 
 const switchReport = async () => {
@@ -305,28 +347,75 @@ const sidebarActions = [
     to: '/report-data',
     visible: true,
   },
+  {
+    key: 'report-targets',
+    label: 'Ziele',
+    icon: 'fa-solid fa-bullseye',
+    to: '/report-targets',
+    visible: true,
+  },
 ];
 
 const sidebar = [
   {
+    key: 'analysis',
     header: t('global.sidebar.analysis'),
     items: sidebarAnalysis,
   },
   {
+    key: 'inputs',
     header: t('global.sidebar.inputs'),
     items: sidebarInputs,
   },
   {
-    header: t('global.sidebar.inputs'),
+    key: 'actions',
+    header: t('global.sidebar.reportSettings'),
     items: sidebarActions,
   },
   {
+    key: 'csrd',
     header: t('global.sidebar.reporting'),
     items: sidebarCsrd,
     hide: !global.isGlobalAdmin,
   },
 ];
+
+const sidebarItemsVisible = ref(<{ [key: string]: boolean }>{
+  analysis: true,
+  inputs: true,
+  actions: true,
+  csrd: true,
+});
+
+const toggleMenu = (key: string) => {
+  sidebarItemsVisible.value[key] = !sidebarItemsVisible.value[key];
+};
+
+const logoUrl = computed(() => {
+  if (
+    global.selectedProject?.logo_id != null &&
+    global.selectedProject?.logo_id !== ''
+  ) {
+    return `${dataprovider.getRestUrl()}/rpc/get_media_image?id=${
+      global.selectedProject.logo_id
+    }`;
+  } else {
+    return '';
+  }
+});
 </script>
+
+<style scoped>
+.v-enter-active,
+.v-leave-active {
+  transition: opacity 0.2s;
+}
+
+.v-enter-from,
+.v-leave-to {
+  opacity: 0;
+}
+</style>
 
 <style>
 .less-padding > .p-panelmenu-panel {
@@ -365,5 +454,17 @@ const sidebar = [
 
 .active-route .button-custom {
   border: 2px solid #888888;
+}
+
+.dark .category-item {
+  background-color: rgb(45 45 45);
+}
+
+a.category-item-color {
+  color: black;
+}
+
+.dark a.category-item-color {
+  color: white;
 }
 </style>

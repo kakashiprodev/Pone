@@ -1,4 +1,5 @@
 import * as VueRouter from 'vue-router';
+import { authGuard } from '@auth0/auth0-vue';
 
 const routes = [
   {
@@ -8,6 +9,7 @@ const routes = [
   },
   {
     path: '/',
+    beforeEnter: authGuard,
     component: () => import('../components/layout/AppLayoutWrapper.vue'),
     name: 'home',
     redirect: { name: 'dashboard' },
@@ -47,13 +49,11 @@ const routes = [
             path: 'scope/:scope',
             component: () => import('../views/inputs/Inputs.vue'),
             name: 'inputs-scope',
-            // params: { scope: null },
           },
           {
             path: 'facility/:facility',
             component: () => import('../views/inputs/Inputs.vue'),
             name: 'inputs-facility',
-            // params: { facility: null },
           },
         ],
       },
@@ -62,11 +62,6 @@ const routes = [
         component: () => import('../views/config/EquivalentList.vue'),
         name: 'equivalents',
       },
-      // {
-      //   path: '/report-config/',
-      //   component: () => import('../views/config/ReportConfig.vue'),
-      //   name: 'reportConfig',
-      // },
       {
         path: 'assistant/',
         component: () => import('../views/inputs/AiAssistentInput.vue'),
@@ -78,7 +73,7 @@ const routes = [
         name: 'csrd-report-interview',
       },
       {
-        path: 'settings', // :category?
+        path: 'settings',
         component: () => import('../views/config/SettingsMain.vue'),
         name: 'settings',
         redirect: { name: 'user-settings' },
@@ -102,13 +97,12 @@ const routes = [
           },
           {
             path: 'project-reports',
-            component: () => import('../views/config/ReportConfig.vue'),
+            component: () => import('../views/config/ReportConfigPage.vue'),
             name: 'project-reports',
           },
           {
             path: 'project-targets',
-            component: () =>
-              import('../components/targets/TargetDefinition.vue'),
+            component: () => import('../views/config/TargetConfigPage.vue'),
             name: 'project-targets',
           },
           {
@@ -120,8 +114,18 @@ const routes = [
       },
       {
         path: 'report-data',
-        component: () => import('../views/config/ReportConfig.vue'),
+        component: () => import('../views/config/ReportConfigPage.vue'),
         name: 'report-data',
+      },
+      {
+        path: 'report-targets',
+        component: () => import('../views/config/TargetConfigPage.vue'),
+        name: 'report-targets',
+      },
+      {
+        path: 'onboarding-wizard',
+        component: () => import('../views/user/Onboarding.vue'),
+        name: 'onboarding-wizard',
       },
     ],
   },
@@ -136,4 +140,16 @@ const routes = [
 export const router = VueRouter.createRouter({
   history: VueRouter.createWebHashHistory(),
   routes,
+});
+
+router.beforeEach((to, _from, next) => {
+  // check if fullPath is like this '/somepath&somequery'. The & is not allowed in the path after the main route string and must be replaced with ?
+  // check wih regex to be sure not to replace other & characters. So check for slash + text + & ?
+  const pattern = to.fullPath.match(/\/[^&\?]+&/);
+  if (pattern) {
+    const newPath = to.fullPath.replace('&', '?'); // replace first & with ?
+    next(newPath);
+  } else {
+    next();
+  }
 });

@@ -15,7 +15,7 @@
 <script setup lang="ts">
 import { ActionWithPercentage } from '@/services/types.ts';
 import { computed, ref } from 'vue';
-import { toReadableDate } from '@/services/pipes';
+import { toChartAxisDate } from '@/services/helper';
 import config from '@/config';
 
 const CHART_TYPE = 'rangeBar';
@@ -59,6 +59,7 @@ const chartOptions = ref<any>({
     position: 'top',
     horizontalAlign: 'left',
     customLegendItems: ['Geplantes Datum', 'Tatsächliches Datum'],
+    fontSize: '15px',
   },
   xaxis: {
     lines: {
@@ -67,6 +68,18 @@ const chartOptions = ref<any>({
     type: 'datetime',
     min: minDate,
     max: maxDate,
+    labels: {
+      style: {
+        fontSize: '12px',
+      },
+    },
+  },
+  yaxis: {
+    labels: {
+      style: {
+        fontSize: '12px',
+      },
+    },
   },
 });
 
@@ -85,10 +98,10 @@ const mapChartData = () => [
         x: action.name,
         y: [
           // if only "planned" or only "Is" is set, this ensures that the single point is displayed correctly
-          toReadableDate(action.finishedUntilPlanned) ||
-            toReadableDate(action.finishedUntilIs),
-          toReadableDate(action.finishedUntilIs) ||
-            toReadableDate(action.finishedUntilPlanned),
+          toChartAxisDate(action.finished_until_planned) ||
+            toChartAxisDate(action.finished_until_is),
+          toChartAxisDate(action.finished_until_is) ||
+            toChartAxisDate(action.finished_until_planned),
         ],
       };
     }),

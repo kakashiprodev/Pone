@@ -85,7 +85,6 @@ export function calculateEmissions(
   for (let year = startYear; year <= endYear; year++) {
     // check if a real value exists for the year. if not use the reference value
     const yearValue: number = emissions.get(year) ?? referenceValue;
-    // console.log('Jahr: ' + year + ' Wert: ' + yearValue);
 
     // check if a target in [%] exists for the year. if not use 0[%]
     const target = targets.find((t) => t.year === year);
@@ -106,21 +105,16 @@ export function calculateEmissions(
       // check if an action exists for the year and the actual pointer month. if not use 0.
       const actionsEffect = actions
         .filter((action) => {
-          if (!action.finishedUntilPlanned || !action.relevant) {
+          if (!action.finished_until_planned || !action.relevant) {
             return false;
           }
-          const date = new Date(action.finishedUntilPlanned);
+          const date = new Date(action.finished_until_planned);
           return date.getFullYear() === year && date.getMonth() === month - 1;
         })
-        .reduce((acc, action) => acc + action.targetValueAbsolutPlanned, 0);
+        .reduce((acc, action) => acc + action.target_value_absolut_planned, 0);
 
       // add this value (part for one month) to the floating subtraction value
       actualSustractionValue += actionsEffect / 12;
-      // debug
-      // if (actionsEffect > 0) {
-      //     console.log('Jahr: ' + year + ', Monat: ' + month + ' Ab jetzt spart eine Maßnahme: ' + actionsEffect);
-      // }
-      // console.log('Gesamteinsparung aktuell: ' + actualSustractionValue);
 
       // calculate the real value for the month minus the comulated actions
       const withActions = referenceValuePerMonth - actualSustractionValue;
@@ -141,13 +135,13 @@ export function calculateEmissions(
     // search again for all actions that are in this year
     const yearlyActionEffect = actions
       .filter((action) => {
-        if (!action.finishedUntilPlanned || !action.relevant) {
+        if (!action.finished_until_planned || !action.relevant) {
           return false;
         }
-        const date = new Date(action.finishedUntilPlanned);
+        const date = new Date(action.finished_until_planned);
         return date.getFullYear() === year;
       })
-      .reduce((acc, action) => acc + action.targetValueAbsolutPlanned, 0);
+      .reduce((acc, action) => acc + action.target_value_absolut_planned, 0);
 
     // actionbases only will be only set if new actions are done in this year
     // but also the first and the last year are needed to draw the graph
@@ -176,7 +170,6 @@ export function calculateEmissions(
       realValueWithActionsInterpolated,
       targetValueInterpolated,
     };
-    // console.log(yearResult);
     yearlyResults.push(yearResult);
   }
 

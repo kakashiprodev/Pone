@@ -9,7 +9,9 @@ export default {
   projectReports: 'Berichtszeiträume',
   projectTargets: 'Zieldefinition',
   equivalents: 'Äquivalente',
+  wizard: 'Ersteinrichtung',
   userSettings: {
+    name: 'Name',
     heading: 'Persönliche Einstellungen',
     displayInTons: 'Darstellung in Tonnen',
     subHeading: 'Angaben',

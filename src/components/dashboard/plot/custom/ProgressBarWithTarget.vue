@@ -1,5 +1,5 @@
 <template>
-  <div class="progress-bar-container">
+  <div class="progress-bar-container" :style="progressBarStyle">
     <div class="progress-bar" :style="progressStyle">
       <slot></slot>
     </div>
@@ -21,6 +21,11 @@ const props = defineProps({
 const progressStyle = computed(() => ({
   width: `${props.value}%`,
   backgroundColor: props.color,
+}));
+
+// Setze die Bar Farbe als Textschatten, notwendig für sehr kleine Balken mit Überlappung des Texts
+const progressBarStyle = computed(() => ({
+  textShadow: `-1px 0 ${props.color}, 0 1px ${props.color}, 1px 0 ${props.color}, 0 -1px ${props.color}`
 }));
 
 // Berechnete Eigenschaft für den Stil des Ziel-Indikators
@@ -45,6 +50,7 @@ const targetStyle = computed(() => ({
   border-top-left-radius: 4px;
   color: white;
   padding-left: 2px;
+  white-space: nowrap;
 }
 
 .target-marker {

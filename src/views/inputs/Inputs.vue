@@ -21,7 +21,7 @@
         <label class="ml-2">{{ $t('inputs.showScopes') }}:</label>
         <Checkbox
           id="scope1Active"
-          v-model="scope1Active"
+          v-model="filterScopes['1']"
           value="1"
           class="ml-3"
           :binary="true"
@@ -29,7 +29,7 @@
         <label class="ml-1" for="scope1Active">1</label>
         <Checkbox
           id="scope2Active"
-          v-model="scope2Active"
+          v-model="filterScopes['2']"
           value="1"
           class="ml-4"
           :binary="true"
@@ -37,7 +37,7 @@
         <label class="ml-1" for="scope2Active">2</label>
         <Checkbox
           id="scope3Active"
-          v-model="scope3Active"
+          v-model="filterScopes['3']"
           value="1"
           class="ml-4"
           :binary="true"
@@ -48,17 +48,19 @@
         >{{ $t('inputs.amount') }}:
         {{
           roundStringWithDecimals(
-            displayInTons ? toTons(sumValue) : sumValue,
+            globalStore.displayInTons ? toTons(sumValue) : sumValue,
             3,
           )
-        }}{{ displayInTons ? ' to' : ' kg' }}
+        }}{{ globalStore.displayInTons ? ' to' : ' kg' }}
       </span>
     </template>
     <template #end>
       <Button
         icon="fa-solid fa-wand-magic-sparkles"
         @click="
-          selectedValue = clone(emptyInput);
+          selectedValue = clone(
+            getEmptyInput(globalStore.selectedReport?.id ?? ''),
+          );
           showComfortInput = true;
         "
         class="mr-1"
@@ -66,7 +68,9 @@
       <Button
         icon="fa-solid fa-plus"
         @click="
-          selectedValue = clone(emptyInput);
+          selectedValue = clone(
+            getEmptyInput(globalStore.selectedReport?.id ?? ''),
+          );
           showDialog = true;
         "
         class="mr-1"
@@ -164,139 +168,12 @@
     :class="{ 'w-3/4': true }"
     maximizable
   >
-    <div class="flex flex-col gap-4">
-      <!-- step 1 -->
-      <div class="flex flex-col gap-2" v-if="actualComfortStep === 0">
-        <SmartEquivalentList
-          v-model="selectedValue.equivalent"
-          :comfort-mode="true"
-          :rowsPerPage="5"
-          :visible-columns="['source', 'in', 'out', 'fullName', 'avgValue']"
-          :showColumnChooser="false"
-          @change="updateNameAndCategory"
-          :hide-scope-input="preSelectedScope != 'all'"
-          :filter-by="{
-            scope:
-              preSelectedScope === 'all' ? [1] : [parseInt(preSelectedScope)],
-          }"
-        />
-      </div>
-
-      <!-- step 2 -->
-      <div class="flex flex-col gap-4" v-if="actualComfortStep === 1">
-        <div class="flex flex-col gap-2">
-          <label for="userinput-category">{{ $t('inputs.category') }}</label>
-          <InputText
-            class="w-full"
-            v-model="selectedValue.category"
-            id="userinput-category"
-          />
-        </div>
-        <div class="flex flex-col gap-2">
-          <label for="userinput-name">{{ $t('inputs.name') }}</label>
-          <InputText
-            class="w-full"
-            v-model="selectedValue.name"
-            id="userinput-name"
-          />
-        </div>
-        <div class="flex flex-col gap-2">
-          <label for="userinput-comment">{{ $t('inputs.comment') }}</label>
-          <InputText
-            class="w-full"
-            v-model="selectedValue.comment"
-            id="userinput-comment"
-          />
-        </div>
-      </div>
-
-      <!-- step 3 -->
-      <div class="flex flex-col gap-4" v-if="actualComfortStep === 2">
-        <p>{{ $t('inputs.assignFacility') }}</p>
-        <div class="flex flex-col gap-2">
-          <label for="userinput-equivalent">{{ $t('inputs.facility') }}</label>
-          <div>
-            <div
-              v-if="
-                selectedValue.facility != null && selectedValue.facility !== ''
-              "
-              @click="showChooseFacility = true"
-              class="bg-teal-300 text-white rounded-sm m-2 flex items-center justify-center cursor-pointer p-2"
-            >
-              {{
-                globalStore.facilitiesDict[selectedValue.facility]?.name ??
-                'Reference error'
-              }}
-            </div>
-            <Button
-              v-else
-              :label="$t('inputs.choose')"
-              @click="showChooseFacility = true"
-            />
-          </div>
-        </div>
-      </div>
-
-      <!-- step 4 -->
-      <div class="flex flex-col gap-4" v-if="actualComfortStep === 3">
-        <div>
-          <MonthlyOrYearlyInput
-            v-model="selectedValue"
-            :input-unit="choosenEquivalent ? ' ' + choosenEquivalent.in : ''"
-          />
-        </div>
-        <!-- helping information -->
-        <div
-          class="flex flex-col gap-2"
-          v-if="globalStore.showTooltips && computedSumCalculation !== ''"
-        >
-          <label for="userinput-sum">{{ $t('inputs.calcSteps') }}</label>
-          <p style="white-space: pre-wrap">
-            {{ computedSumCalculation }}
-          </p>
-        </div>
-
-        <div class="flex flex-col gap-2">
-          <label for="userinput-sum">{{ $t('inputs.amountCalc') }}</label>
-          <InputNumber
-            :disabled="true"
-            class="w-full"
-            v-model="scaledSumValue"
-            id="userinput-sum"
-            :use-grouping="true"
-            :min-fraction-digits="0"
-            :max-fraction-digits="3"
-            :suffix="displayInTons ? ' to' : ' kg'"
-          />
-        </div>
-      </div>
-
-      <!-- Step Buttons -->
-      <div class="flex items-center justify-center">
-        <Button
-          :label="$t('inputs.stepBack')"
-          @click="decStep"
-          class="grow mr-1"
-          :disabled="actualComfortStep === 0"
-        />
-        <Button
-          v-if="actualComfortStep < 3"
-          :label="$t('inputs.stepForward')"
-          @click="incStep"
-          class="grow ml-1"
-          :disabled="
-            actualComfortStep === 0 && selectedValue.equivalent == null
-          "
-        />
-        <Button
-          v-else
-          :label="$t('inputs.create')"
-          @click="save"
-          class="grow ml-1"
-          :disabled="selectedValue.rawValue == null"
-        />
-      </div>
-    </div>
+    <WizardInputForm
+      v-model:selectedValue="selectedValue"
+      v-model:showChooseFacility="showChooseFacility"
+      :preSelectedScope="preSelectedScope"
+      @save="save"
+    />
   </Dialog>
 
   <Dialog
@@ -312,376 +189,110 @@
       'h-screen': windowWidth < 990,
     }"
   >
-    <div class="flex flex-col gap-4">
-      <div class="flex flex-col gap-2">
-        <label for="userinput-scope">{{ $t('inputs.scope') }}</label>
-        <Dropdown
-          class="w-full"
-          id="userinput-scope"
-          v-model="selectedValue.scope"
-          :options="[1, 2, 3]"
-        />
-        <InlineMessage
-          v-if="globalStore.showTooltips"
-          class="w-full mt-1"
-          severity="info"
-        >
-          {{ $t('inputs.scopeInline') }}
-        </InlineMessage>
-      </div>
-      <div class="flex flex-col gap-2">
-        <label for="userinput-equivalent">{{ $t('inputs.equivalent') }}</label>
-        <div>
-          <div
-            v-if="
-              selectedValue.equivalent != null &&
-              selectedValue.equivalent !== ''
-            "
-            @click="showChooseEquivalent = true"
-            class="bg-teal-300 text-white rounded-sm m-2 flex items-center justify-center cursor-pointer p-2"
-          >
-            {{
-              globalStore.equivalentDict[selectedValue.equivalent]
-                ?.specification1 ?? 'Reference error'
-            }}
-          </div>
-          <Button
-            v-else
-            :label="$t('inputs.choose')"
-            @click="showChooseEquivalent = true"
-          />
-        </div>
-        <InlineMessage
-          v-if="globalStore.showTooltips"
-          class="w-full mt-1"
-          severity="info"
-          v-html="
-            $t('inputs.equivalentInline', {
-              units: displayInTons ? ' to' : ' kg',
-            })
-          "
-        >
-        </InlineMessage>
-      </div>
-      <div class="flex flex-col gap-2">
-        <label for="userinput-category">{{ $t('inputs.category') }}</label>
-        <InputText
-          class="w-full"
-          v-model="selectedValue.category"
-          id="userinput-category"
-        />
-        <InlineMessage
-          v-if="globalStore.showTooltips"
-          class="w-full mt-1"
-          severity="info"
-        >
-          {{ $t('inputs.categoryInline') }}
-        </InlineMessage>
-      </div>
-      <div class="flex flex-col gap-2">
-        <label for="userinput-equivalent">
-          {{ $t('inputs.facilityOptional') }}
-        </label>
-        <div>
-          <div
-            v-if="
-              selectedValue.facility != null && selectedValue.facility !== ''
-            "
-            @click="showChooseFacility = true"
-            class="bg-teal-300 text-white rounded-sm m-2 flex items-center justify-center cursor-pointer p-2"
-          >
-            {{
-              globalStore.facilitiesDict[selectedValue.facility]?.name ??
-              'Reference error'
-            }}
-          </div>
-          <Button v-else label="Auswählen" @click="showChooseFacility = true" />
-        </div>
-        <InlineMessage
-          v-if="globalStore.showTooltips"
-          class="w-full mt-1"
-          severity="info"
-        >
-          $t('inputs.facilityInline')
-        </InlineMessage>
-      </div>
-      <div class="flex flex-col gap-2">
-        <label for="userinput-name">{{ $t('inputs.name') }}</label>
-        <InputText
-          class="w-full"
-          v-model="selectedValue.name"
-          id="userinput-name"
-        />
-        <InlineMessage
-          v-if="globalStore.showTooltips"
-          class="w-full mt-1"
-          severity="info"
-          >{{ $t('inputs.nameInline') }}
-        </InlineMessage>
-      </div>
-      <div class="flex flex-col gap-2">
-        <label for="userinput-comment">{{ $t('inputs.comment') }}</label>
-        <InputText
-          class="w-full"
-          v-model="selectedValue.comment"
-          id="userinput-comment"
-        />
-        <InlineMessage
-          v-if="globalStore.showTooltips"
-          class="w-full mt-1"
-          severity="info"
-        >
-          {{ $t('inputs.commentInline') }}
-        </InlineMessage>
-      </div>
-      <div>
-        <MonthlyOrYearlyInput
-          v-model="selectedValue"
-          :input-unit="choosenEquivalent ? ' ' + choosenEquivalent.in : ''"
-        />
-        <InlineMessage
-          v-if="globalStore.showTooltips"
-          class="w-full mt-1"
-          severity="info"
-          :v-html="$t('inputs.selectedValueInline')"
-        ></InlineMessage>
-      </div>
-      <!-- helping information -->
-      <div
-        class="flex flex-col gap-2"
-        v-if="globalStore.showTooltips && computedSumCalculation !== ''"
-      >
-        <label for="userinput-sum">{{ $t('inputs.calcSteps') }}</label>
-        <p style="white-space: pre-wrap">
-          {{ computedSumCalculation }}
-        </p>
-        <InlineMessage
-          v-if="globalStore.showTooltips"
-          class="w-full mt-1"
-          severity="info"
-        >
-          {{ $t('inputs.calcStepsInline') }}
-        </InlineMessage>
-      </div>
-      <div class="flex flex-col gap-2">
-        <label for="userinput-sum">{{ $t('inputs.amountCalc') }}</label>
-        <InputNumber
-          :disabled="true"
-          class="w-full"
-          v-model="scaledSumValue"
-          id="userinput-sum"
-          :use-grouping="true"
-          :min-fraction-digits="0"
-          :max-fraction-digits="3"
-          :suffix="displayInTons ? ' to' : ' kg'"
-        />
-        <InlineMessage
-          v-if="globalStore.showTooltips"
-          class="w-full mt-1"
-          severity="info"
-        >
-          {{ $t('inputs.amountCalcInline') }}
-        </InlineMessage>
-      </div>
-      <div>
-        <Button
-          :label="selectedValue.id === 'new' ? 'Anlegen' : 'Speichern'"
-          @click="save"
-        />
-      </div>
+    <StandardInputForm
+      v-model:selectedValue="selectedValue"
+      v-model:showChooseEquivalent="showChooseEquivalent"
+      v-model:showChooseFacility="showChooseFacility"
+      :preSelectedScope="preSelectedScope"
+    />
+
+    <div class="mt-5 flex justify-end">
+      <Button
+        class="w-64"
+        icon="fa-solid fa-check"
+        :label="selectedValue.id === 'new' ? 'Anlegen' : 'Speichern'"
+        @click="save"
+      />
     </div>
   </Dialog>
 
   <ConfirmPopup></ConfirmPopup>
-  <DataTable
-    :showGridlines="false"
-    v-if="globalStore.equivalents.length > 0"
-    :value="data"
-    class="cst-no-hover text-sm"
-  >
-    <!-- <Column field="id" header="ID"></Column> -->
-    <Column
-      field="scope"
-      :header="$t('inputs.table.scope')"
-      sortable
-      v-if="preSelectedScope === 'all'"
-    >
-      <template #body="{ data }">
-        <span class="flex justify-center">
-          {{ data.scope }}
-        </span>
-      </template>
-    </Column>
-    <Column
-      field="category"
-      :header="$t('inputs.table.category')"
-      sortable
-    ></Column>
-    <Column field="name" :header="$t('inputs.table.name')" sortable></Column>
-    <Column field="rawValue" header="Eingabewert" sortable>
-      <template #body="{ data }">
-        <Chip class="flex justify-end text-right bg-slate-200 text-sm">
-          {{ roundStringWithDecimals(data.rawValue, 0) }}
-          {{
-            globalStore.equivalentDict[data.equivalent]?.in ?? 'Reference error'
-          }}
-        </Chip>
-      </template>
-    </Column>
-    <Column field="equivalent" :header="$t('inputs.table.equivalent')" sortable>
-      <template #body="{ data }">
-        <div v-if="data.equivalent != null && data.equivalent !== ''">
-          {{
-            globalStore.equivalentDict[data.equivalent]?.specification1 ??
-            'Reference error'
-          }}
-        </div>
-        <div v-else></div>
-      </template>
-    </Column>
-    <Column field="facility" :header="$t('inputs.table.facility')" sortable>
-      <template #body="{ data }">
-        {{ globalStore.facilitiesDict[data.facility]?.name ?? '' }}
-      </template>
-    </Column>
-    <Column field="sumValue" :header="$t('inputs.table.amountYear')" sortable>
-      <template #body="{ data }">
-        <Chip class="flex justify-end text-right bg-slate-200 text-sm">
-          {{
-            roundStringWithDecimals(
-              displayInTons ? toTons(data.sumValue) : data.sumValue,
-              0,
-            )
-          }}
-          {{ displayInTons ? ' to' : ' kg' }}
-        </Chip>
-      </template>
-    </Column>
-    <Column field="comment" :header="$t('inputs.table.comment')"></Column>
-    <Column header="">
-      <template #body="{ data }">
-        <div class="flex">
-          <Button
-            icon="fa-solid fa-edit"
-            @click="
-              selectedValue = data;
-              originalValue = clone(data);
-              showDialog = true;
-            "
-          />
-          <Button
-            icon="fa-solid fa-trash"
-            class="ml-1"
-            @click="deleteEntry(data, $event)"
-          />
-        </div>
-      </template>
-    </Column>
-  </DataTable>
+
+  <InputList
+    :inputs="data"
+    @edit="
+      (data) => {
+        selectedValue = data;
+        originalValue = clone(data);
+        showDialog = true;
+      }
+    "
+    @delete="deleteEntry"
+    :preSelectedScope="preSelectedScope"
+    :filter="filter"
+    :filterScopes="filterScopes"
+    :triggerRefresh="triggerRefresh"
+  />
 </template>
 
 <script setup lang="ts">
-import SmartEquivalentList from '../../components/equivalents/SmartEquivalentList.vue';
-import FacilityChooser from '../../components/facilities/FacilityChooser.vue';
-import ScopeInfoBox from '../../components/equivalents/ScopeInfoBox.vue';
-import MonthlyOrYearlyInput from '../../components/equivalents/MonthlyOrYearlyInput.vue';
-import { EquivalentEntry, InputEntry } from '../../services/types';
-import { Ref, ref, computed, watch, ComputedRef, onMounted } from 'vue';
+import InputList from '@/components/inputs/InputList.vue';
+import SmartEquivalentList from '@/components/equivalents/SmartEquivalentList.vue';
+import FacilityChooser from '@/components/facilities/FacilityChooser.vue';
+import ScopeInfoBox from '@/components/equivalents/ScopeInfoBox.vue';
+import { InputEntry } from '../../services/types';
+import { Ref, ref, computed, watch, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import { error } from '../../services/ui/toast';
 import { useConfirm } from 'primevue/useconfirm';
-import {
-  getSumForInput,
-  getCalculationSteps,
-} from '../../services/reporting/index';
-import {
-  parse,
-  string,
-  object,
-  number,
-  minLength,
-  maxLength,
-  minValue,
-  maxValue,
-  nullable,
-  boolean,
-} from 'valibot';
-import { round, roundStringWithDecimals, toTons } from '../../services/pipes';
+import { round, roundStringWithDecimals, toTons } from '../../services/helper';
 import { MeterItem } from 'primevue/metergroup';
 import { getMonochromeColorPalette } from '@/services/colors';
 import { globalStore, inputStore } from '@/main';
+import * as v from 'valibot';
+import { getEmptyInput } from '@/factory/input';
+import { getInputsAsCsv } from '@/services/csv/download';
+import StandardInputForm from '@/components/inputs/StandardInputForm.vue';
+import WizardInputForm from '@/components/inputs/WizardInputForm.vue';
 
 const route = useRoute();
 
 // input validation
-const inputEntrySchema = object({
-  id: string('Die ID scheint korrupt zu sein.'),
-  name: string([minLength(1, 'Name zu kurz'), maxLength(255, 'Name zu lang')]),
-  scope: number([
-    minValue(1, 'Scope muss zwischen 1 und 3 liegen'),
-    maxValue(3, 'Scope muss zwischen 1 und 3 liegen'),
-  ]),
-  comment: string([maxLength(255, 'Kommentar zu lang')]),
-  rawValue: number('Ein Wert muss angegeben werden.'),
-  parent: nullable(string([maxLength(255, 'Referenz auf parent zu lang')])),
-  monthlyValues: boolean('monthlyValues muss ein boolean sein.'),
-  rawValueJan: number('rawValueJan muss ein number sein.'),
-  rawValueFeb: number('rawValueFeb muss ein number sein.'),
-  rawValueMar: number('rawValueMar muss ein number sein.'),
-  rawValueApr: number('rawValueApr muss ein number sein.'),
-  rawValueMay: number('rawValueMay muss ein number sein.'),
-  rawValueJun: number('rawValueJun muss ein number sein.'),
-  rawValueJul: number('rawValueJul muss ein number sein.'),
-  rawValueAug: number('rawValueAug muss ein number sein.'),
-  rawValueSep: number('rawValueSep muss ein number sein.'),
-  rawValueOct: number('rawValueOct muss ein number sein.'),
-  rawValueNov: number('rawValueNov muss ein number sein.'),
-  rawValueDec: number('rawValueDec muss ein number sein.'),
-  equivalent: nullable(
-    string([maxLength(255, 'Referenz auf equivalents zu lang')]),
-  ),
-  report: string([
-    minLength(1, 'Referenz auf Report ist inkorrekt'),
-    maxLength(255, 'Referenz auf Report ist inkorrekt'),
-  ]),
-  category: nullable(string([maxLength(255, 'Kategorie zu lang')])),
+const inputEntrySchema = v.object({
+  id: v.pipe(v.string(), v.minLength(1), v.maxLength(255)),
+  name: v.pipe(v.string(), v.minLength(1), v.maxLength(255)),
+  scope: v.pipe(v.number(), v.minValue(1), v.maxValue(3)),
+  comment: v.pipe(v.string(), v.maxLength(255)),
+  raw_value: v.pipe(v.number(), v.minValue(0)),
+  parent: v.nullable(v.pipe(v.string(), v.maxLength(255))),
+  monthly_values: v.boolean(),
+  raw_value_jan: v.pipe(v.number(), v.minValue(0)),
+  raw_value_feb: v.pipe(v.number(), v.minValue(0)),
+  raw_value_mar: v.pipe(v.number(), v.minValue(0)),
+  raw_value_apr: v.pipe(v.number(), v.minValue(0)),
+  raw_value_may: v.pipe(v.number(), v.minValue(0)),
+  raw_value_jun: v.pipe(v.number(), v.minValue(0)),
+  raw_value_jul: v.pipe(v.number(), v.minValue(0)),
+  raw_value_aug: v.pipe(v.number(), v.minValue(0)),
+  raw_value_sep: v.pipe(v.number(), v.minValue(0)),
+  raw_value_oct: v.pipe(v.number(), v.minValue(0)),
+  raw_value_nov: v.pipe(v.number(), v.minValue(0)),
+  raw_value_dec: v.pipe(v.number(), v.minValue(0)),
+  equivalent: v.nullable(v.pipe(v.string(), v.maxLength(255))),
+  report: v.pipe(v.string(), v.minLength(1), v.maxLength(255)),
+  category: v.nullable(v.pipe(v.string(), v.maxLength(255))),
 });
 
 // inner state
-const scope1Active = ref(true);
-const scope2Active = ref(true);
-const scope3Active = ref(true);
-const windowWidth = ref(window.innerWidth);
-const displayInTons = computed(() => {
-  return globalStore.displayInTons;
+const filter = ref('');
+const filterScopes = ref({
+  '1': true,
+  '2': true,
+  '3': true,
 });
+const windowWidth = ref(window.innerWidth);
 
 // comfort input stepper
 const showComfortInput = ref(false);
-const actualComfortStep = ref(0);
-const incStep = () => {
-  actualComfortStep.value++;
-};
-const decStep = () => {
-  actualComfortStep.value--;
-};
-watch(
-  () => showComfortInput.value,
-  () => {
-    if (!showComfortInput.value) {
-      // reset all on close
-      actualComfortStep.value = 0;
-    }
-  },
-);
 
 // get "scope" from route
-const preSelectedScope = ref('all');
+const preSelectedScope: Ref<'all' | '1' | '2' | '3'> = ref('all');
 const preSelectedFacility = ref(null as null | string);
 
 /**
  * Set the filters depending on the route
  */
+const triggerRefresh = ref(false);
 const setRouteFilter = () => {
   // filter by scope if set
   const scopeParam = route.params.scope; // "1", "2", "3", "all"
@@ -691,22 +302,24 @@ const setRouteFilter = () => {
   preSelectedScope.value =
     !Array.isArray(scopeParam) &&
     ['1', '2', '3', 'all'].indexOf(scopeParam) > -1
-      ? scopeParam
+      ? (scopeParam as '1' | '2' | '3' | 'all')
       : 'all';
   if (preSelectedScope.value === 'all') {
-    scope1Active.value = true;
-    scope2Active.value = true;
-    scope3Active.value = true;
+    filterScopes.value['1'] = true;
+    filterScopes.value['2'] = true;
+    filterScopes.value['3'] = true;
   } else {
-    scope1Active.value = preSelectedScope.value === '1';
-    scope2Active.value = preSelectedScope.value === '2';
-    scope3Active.value = preSelectedScope.value === '3';
+    filterScopes.value['1'] = preSelectedScope.value === '1';
+    filterScopes.value['2'] = preSelectedScope.value === '2';
+    filterScopes.value['3'] = preSelectedScope.value === '3';
   }
 
   preSelectedFacility.value =
     !Array.isArray(facilityParam) && facilityParam != null
       ? facilityParam
       : null;
+
+  triggerRefresh.value = true;
 };
 
 // main data
@@ -727,13 +340,6 @@ watch(route, () => {
 
 // choose equivalent
 const showChooseEquivalent = ref(false);
-const choosenEquivalent: ComputedRef<null | EquivalentEntry> = computed(() => {
-  try {
-    return globalStore.equivalentDict[selectedValue.value.equivalent ?? ''];
-  } catch (e) {
-    return null;
-  }
-});
 
 // choose facility
 const showChooseFacility = ref(false);
@@ -749,32 +355,10 @@ watch(
 
 // new and empty input element
 const showDialog = ref(false);
-const emptyInput: InputEntry = {
-  id: 'new',
-  name: '',
-  comment: '',
-  report: globalStore.selectedReport?.id ?? '',
-  scope: 1,
-  sumValue: 0,
-  equivalent: null,
-  category: null,
-  facility: null,
-  parent: null,
-  rawValue: null as any,
-  monthlyValues: false,
-  rawValueJan: null as any,
-  rawValueFeb: null as any,
-  rawValueMar: null as any,
-  rawValueApr: null as any,
-  rawValueMay: null as any,
-  rawValueJun: null as any,
-  rawValueJul: null as any,
-  rawValueAug: null as any,
-  rawValueSep: null as any,
-  rawValueOct: null as any,
-  rawValueNov: null as any,
-  rawValueDec: null as any,
-};
+
+/**
+ * Clone the input and set the scope and facility by the route
+ */
 const clone = (input: InputEntry) => {
   const c = JSON.parse(JSON.stringify(input));
   if (preSelectedScope.value === '1') c.scope = 1;
@@ -783,37 +367,45 @@ const clone = (input: InputEntry) => {
   if (preSelectedFacility.value != null) c.facility = preSelectedFacility.value;
   return c;
 };
-const selectedValue: Ref<InputEntry> = ref(emptyInput);
-const originalValue: Ref<InputEntry> = ref(emptyInput);
+const selectedValue: Ref<InputEntry> = ref(
+  getEmptyInput(globalStore.selectedReport?.id ?? ''),
+);
+const originalValue: Ref<InputEntry> = ref(
+  getEmptyInput(globalStore.selectedReport?.id ?? ''),
+);
 
-// check selectedValue.rawValue for changes to update the input fields
+/**
+ * Watch the selectedValue and update the monthly values if the raw_value changes
+ */
 watch(
-  () => selectedValue.value.rawValue,
+  () => selectedValue.value.raw_value,
   () => {
-    if (!selectedValue.value.monthlyValues) {
+    if (!selectedValue.value.monthly_values) {
       const keys: (keyof InputEntry)[] = [
-        'rawValueJan',
-        'rawValueFeb',
-        'rawValueMar',
-        'rawValueApr',
-        'rawValueMay',
-        'rawValueJun',
-        'rawValueJul',
-        'rawValueAug',
-        'rawValueSep',
-        'rawValueOct',
-        'rawValueNov',
-        'rawValueDec',
+        'raw_value_jan',
+        'raw_value_feb',
+        'raw_value_mar',
+        'raw_value_apr',
+        'raw_value_may',
+        'raw_value_jun',
+        'raw_value_jul',
+        'raw_value_aug',
+        'raw_value_sep',
+        'raw_value_oct',
+        'raw_value_nov',
+        'raw_value_dec',
       ];
       keys.forEach((key) => {
         // @ts-ignore
-        selectedValue.value[key] = round(selectedValue.value.rawValue / 12, 3);
+        selectedValue.value[key] = round(selectedValue.value.raw_value / 12, 3);
       });
     }
   },
 );
 
-// watch selectedValue.equivalent in comfort mode to change the name and comment
+/**
+ * watch selectedValue.equivalent in comfort mode to change the name and comment
+ */
 const updateNameAndCategory = () => {
   if (
     selectedValue.value.equivalent != null &&
@@ -833,29 +425,13 @@ const updateNameAndCategory = () => {
   }
 };
 
-// sum calculation
-const computedSumValue = computed(() => {
-  return getSumForInput(selectedValue.value, globalStore.equivalentDict);
-});
-const scaledSumValue = computed(() => {
-  return displayInTons.value
-    ? toTons(computedSumValue.value)
-    : computedSumValue.value;
-});
-const computedSumCalculation: ComputedRef<string> = computed(() => {
-  if (
-    selectedValue.value.equivalent != null &&
-    selectedValue.value.equivalent !== '' &&
-    selectedValue.value.rawValue != null &&
-    selectedValue.value.rawValue > 0
-  ) {
-    return getCalculationSteps(
-      selectedValue.value,
-      globalStore.equivalentDict,
-    ).join('\n');
-  } else {
-    return '';
-  }
+/**
+ * watch data to caclulate the sum of all sumValues
+ */
+const sumValue = computed(() => {
+  return data.value.reduce((acc, item) => {
+    return acc + item.sum_value;
+  }, 0);
 });
 
 /**
@@ -863,19 +439,24 @@ const computedSumCalculation: ComputedRef<string> = computed(() => {
  */
 const save = async () => {
   try {
+    // drop unrelevant fields
+    // @ts-ignore
+    delete selectedValue.value.report_expanded;
+
     // validate
-    parse(inputEntrySchema, selectedValue.value);
+    v.parse(inputEntrySchema, selectedValue.value);
 
     if (selectedValue.value.id === 'new') {
       const toCreate = clone(selectedValue.value);
       delete toCreate.id;
-      const created = await inputStore.addInput(toCreate);
-      data.value.push(created);
+      await inputStore.addInput(toCreate);
 
       showDialog.value = false;
       showComfortInput.value = false;
-
-      selectedValue.value = clone(emptyInput);
+      // reset the form
+      selectedValue.value = clone(
+        getEmptyInput(globalStore.selectedReport?.id ?? ''),
+      );
     } else {
       const updated = await inputStore.updateInput(selectedValue.value);
       const index = data.value.findIndex((item) => item.id === updated.id);
@@ -908,13 +489,6 @@ const deleteEntry = async (entry: InputEntry, event: any) => {
   });
 };
 
-// watch data to caclulate the sum of all sumValues
-const sumValue = computed(() => {
-  return data.value.reduce((acc, item) => {
-    return acc + item.sumValue;
-  }, 0);
-});
-
 /**
  * Calculate the relative percentage part for the whole sum by category
  * Will get the sumValue as whole sum and calculate the percentage part for each category
@@ -929,11 +503,11 @@ const sumsByCategory = computed(() => {
       relativeSums.push({
         label: item.category ?? '',
         color: '#34d399',
-        value: item.sumValue,
+        value: item.sum_value,
         icon: '',
       });
     } else {
-      relativeSums[index].value += item.sumValue;
+      relativeSums[index].value += item.sum_value;
     }
   });
   // then calculate the percentage
@@ -952,32 +526,7 @@ const sumsByCategory = computed(() => {
  * Download the data as CSV
  */
 const download = async () => {
-  // export data as CSV and download
-  let csv =
-    'ID;Name;Kommentar;Projekt;Scope;Menge;Eingabewert;Äquivalent;Gültigkeit\r\n';
-  csv += data.value
-    .map((item) => {
-      return [
-        item.id,
-        item.name,
-        item.comment,
-        item.report,
-        item.scope,
-        item.sumValue,
-        item.rawValue,
-        item.equivalent,
-        'item.year', // HACK!!!
-      ].join(';');
-    })
-    .join('\r\n');
-  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement('a');
-  link.setAttribute('href', url);
-  link.setAttribute('download', 'Eingaben_Export.csv');
-  link.style.visibility = 'hidden';
-  document.body.appendChild(link);
-  link.click();
+  await getInputsAsCsv(data.value);
 };
 
 /**

@@ -6,13 +6,13 @@
       </label>
       <Checkbox
         id="monthly-inputs"
-        v-model="innerModelValue.monthlyValues"
+        v-model="innerModelValue.monthly_values"
         :binary="true"
         class="ml-3"
       />
     </div>
   </div>
-  <div v-if="innerModelValue.monthlyValues">
+  <div v-if="innerModelValue.monthly_values">
     <div class="grid grid-cols-4 mt-1">
       <div
         class="items-center justify-center bg-teal-100 font-bold text-gray-900 rounded-sm text-center"
@@ -39,7 +39,7 @@
       <div class="small-width-ctm">
         <InputNumber
           :use-grouping="false"
-          v-model="innerModelValue.rawValueJan"
+          v-model="innerModelValue.raw_value_jan"
           :min-fraction-digits="0"
           :max-fraction-digits="10"
           class="w-full"
@@ -49,7 +49,7 @@
       <div class="small-width-ctm">
         <InputNumber
           :use-grouping="false"
-          v-model="innerModelValue.rawValueFeb"
+          v-model="innerModelValue.raw_value_feb"
           :min-fraction-digits="0"
           :max-fraction-digits="10"
           class="w-full"
@@ -59,7 +59,7 @@
       <div class="small-width-ctm">
         <InputNumber
           :use-grouping="false"
-          v-model="innerModelValue.rawValueMar"
+          v-model="innerModelValue.raw_value_mar"
           :min-fraction-digits="0"
           :max-fraction-digits="10"
           class="w-full"
@@ -69,7 +69,7 @@
       <div class="small-width-ctm">
         <InputNumber
           :use-grouping="false"
-          v-model="innerModelValue.rawValueApr"
+          v-model="innerModelValue.raw_value_apr"
           :min-fraction-digits="0"
           :max-fraction-digits="10"
           class="w-full"
@@ -103,7 +103,7 @@
       <div class="small-width-ctm">
         <InputNumber
           :use-grouping="false"
-          v-model="innerModelValue.rawValueMay"
+          v-model="innerModelValue.raw_value_may"
           :min-fraction-digits="0"
           :max-fraction-digits="10"
           class="w-full"
@@ -113,7 +113,7 @@
       <div class="small-width-ctm">
         <InputNumber
           :use-grouping="false"
-          v-model="innerModelValue.rawValueJun"
+          v-model="innerModelValue.raw_value_jun"
           :min-fraction-digits="0"
           :max-fraction-digits="10"
           class="w-full"
@@ -123,7 +123,7 @@
       <div class="small-width-ctm">
         <InputNumber
           :use-grouping="false"
-          v-model="innerModelValue.rawValueJul"
+          v-model="innerModelValue.raw_value_jul"
           :min-fraction-digits="0"
           :max-fraction-digits="10"
           class="w-full"
@@ -133,7 +133,7 @@
       <div class="small-width-ctm">
         <InputNumber
           :use-grouping="false"
-          v-model="innerModelValue.rawValueAug"
+          v-model="innerModelValue.raw_value_aug"
           :min-fraction-digits="0"
           :max-fraction-digits="10"
           class="w-full"
@@ -167,7 +167,7 @@
       <div class="small-width-ctm">
         <InputNumber
           :use-grouping="false"
-          v-model="innerModelValue.rawValueSep"
+          v-model="innerModelValue.raw_value_sep"
           :min-fraction-digits="0"
           :max-fraction-digits="10"
           class="w-full"
@@ -177,7 +177,7 @@
       <div class="small-width-ctm">
         <InputNumber
           :use-grouping="false"
-          v-model="innerModelValue.rawValueOct"
+          v-model="innerModelValue.raw_value_oct"
           :min-fraction-digits="0"
           :max-fraction-digits="10"
           class="w-full"
@@ -187,7 +187,7 @@
       <div class="small-width-ctm">
         <InputNumber
           :use-grouping="false"
-          v-model="innerModelValue.rawValueNov"
+          v-model="innerModelValue.raw_value_nov"
           :min-fraction-digits="0"
           :max-fraction-digits="10"
           class="w-full"
@@ -197,7 +197,7 @@
       <div class="small-width-ctm">
         <InputNumber
           :use-grouping="false"
-          v-model="innerModelValue.rawValueDec"
+          v-model="innerModelValue.raw_value_dec"
           :min-fraction-digits="0"
           :max-fraction-digits="10"
           class="w-full"
@@ -212,7 +212,7 @@
       <InputNumber
         class="w-full"
         :disabled="true"
-        v-model="innerModelValue.rawValue"
+        v-model="innerModelValue.raw_value"
         id="userinput-rawvalue"
         :use-grouping="false"
         :suffix="inputUnit"
@@ -228,7 +228,7 @@
       </label>
       <InputNumber
         class="w-full"
-        v-model="innerModelValue.rawValue"
+        v-model="innerModelValue.raw_value"
         id="userinput-rawvalue"
         :use-grouping="false"
         :suffix="inputUnit"
@@ -260,21 +260,21 @@ watch(
   () => innerModelValue.value,
   (newValue: InputEntry) => {
     // update rawValue if monthlyValues is true. Then calculate the sum of all monthly values
-    if (newValue.monthlyValues) {
+    if (newValue.monthly_values) {
       let sum = 0;
-      sum += newValue.rawValueJan ?? 0;
-      sum += newValue.rawValueFeb ?? 0;
-      sum += newValue.rawValueMar ?? 0;
-      sum += newValue.rawValueApr ?? 0;
-      sum += newValue.rawValueMay ?? 0;
-      sum += newValue.rawValueJun ?? 0;
-      sum += newValue.rawValueJul ?? 0;
-      sum += newValue.rawValueAug ?? 0;
-      sum += newValue.rawValueSep ?? 0;
-      sum += newValue.rawValueOct ?? 0;
-      sum += newValue.rawValueNov ?? 0;
-      sum += newValue.rawValueDec ?? 0;
-      newValue.rawValue = sum;
+      sum += newValue.raw_value_jan ?? 0;
+      sum += newValue.raw_value_feb ?? 0;
+      sum += newValue.raw_value_mar ?? 0;
+      sum += newValue.raw_value_apr ?? 0;
+      sum += newValue.raw_value_may ?? 0;
+      sum += newValue.raw_value_jun ?? 0;
+      sum += newValue.raw_value_jul ?? 0;
+      sum += newValue.raw_value_aug ?? 0;
+      sum += newValue.raw_value_sep ?? 0;
+      sum += newValue.raw_value_oct ?? 0;
+      sum += newValue.raw_value_nov ?? 0;
+      sum += newValue.raw_value_dec ?? 0;
+      newValue.raw_value = sum;
     }
     emits('update:modelValue', newValue);
   },

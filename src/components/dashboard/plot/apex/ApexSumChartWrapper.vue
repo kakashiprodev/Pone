@@ -24,7 +24,7 @@ import {
   ComputedRef,
 } from 'vue';
 import { AggregatedReportResult } from '../../../../services/reporting/index';
-import { round, toTons } from '../../../../services/pipes/index';
+import { round, toTons } from '../../../../services/helper/index';
 import { useGlobalStore } from '../../../../stores/global';
 import { getMonochromeColorPalette } from './../../../../services/colors';
 
@@ -91,6 +91,11 @@ const chartOptions: ComputedRef<any> = computed(() => {
     },
     xaxis: {
       categories: categories.value,
+      labels: {
+        style: {
+          fontSize: '12px',
+        },
+      },
     },
     plotOptions: {
       [props.type === 'donut' ? 'pie' : '_']: {
@@ -98,6 +103,10 @@ const chartOptions: ComputedRef<any> = computed(() => {
           size: '20%',
         },
       },
+    },
+    legend: {
+      show: true,
+      position: 'bottom',
     },
     labels: categories.value,
     colors: colors.value,
