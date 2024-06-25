@@ -211,6 +211,7 @@ export const useGlobalStore = defineStore('global', {
       if (!this.selectedReport) {
         console.log('load latest report');
         await this.ensureLatestReport();
+        await this.refreshReports(true);
       }
       await this.refreshEquivalents(true);
       await this.refreshTargets();
