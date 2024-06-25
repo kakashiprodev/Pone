@@ -71,7 +71,7 @@ CREATE TABLE data.projects (
 
 -- Create the user_projects table
 CREATE TABLE data.user_projects (
-    user_id TEXT REFERENCES data.users(id),
+    user_id TEXT REFERENCES data.users(id) ON DELETE CASCADE,
     project_id UUID REFERENCES data.projects(id) ON DELETE CASCADE,
     PRIMARY KEY (user_id, project_id)
 );
@@ -247,7 +247,7 @@ CREATE POLICY actions_admin_policy ON data.actions FOR ALL TO admin
 -- Create the targets table
 CREATE TABLE data.targets (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    report UUID REFERENCES data.reports(id),
+    report UUID REFERENCES data.reports(id) ON DELETE CASCADE,
     year NUMERIC,
     percentage NUMERIC,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
@@ -294,7 +294,7 @@ CREATE TABLE data.equivalents (
     avg_value NUMERIC,
     monthly_values BOOLEAN,
     parent UUID REFERENCES data.equivalents(id),
-    project UUID REFERENCES data.projects(id),
+    project UUID REFERENCES data.projects(id) ON DELETE CASCADE,
     "in" TEXT NOT NULL DEFAULT '',
     "out" TEXT NOT NULL DEFAULT 'kg',
     import_ref TEXT NOT NULL DEFAULT '',
@@ -323,9 +323,9 @@ CREATE TABLE data.inputs (
     scope NUMERIC CHECK (scope >= 1 AND scope <= 3) NOT NULL,
     comment TEXT NOT NULL DEFAULT '',
     equivalent UUID REFERENCES data.equivalents(id) NULL,
-    report UUID REFERENCES data.reports(id) NOT NULL,
+    report UUID REFERENCES data.reports(id) NOT NULL ON DELETE CASCADE,
     category TEXT NOT NULL DEFAULT '',
-    facility UUID REFERENCES data.facilities(id) NULL,
+    facility UUID REFERENCES data.facilities(id) NULL ON DELETE SET NULL,
     sum_value NUMERIC NOT NULL,
     raw_value NUMERIC NOT NULL,
     raw_value_jan NUMERIC,
