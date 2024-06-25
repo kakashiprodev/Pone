@@ -154,7 +154,7 @@ CREATE POLICY sites_admin_policy ON data.sites FOR ALL TO admin
 -- Create the reports table
 CREATE TABLE data.reports (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    site UUID REFERENCES data.sites(id) NOT NULL ON DELETE CASCADE,
+    site UUID REFERENCES data.sites(id) ON DELETE CASCADE NOT NULL,
     year NUMERIC NOT NULL CHECK (year >= 1901 AND year <= 2500),
     company_name TEXT NOT NULL DEFAULT '',
     company_street TEXT NOT NULL DEFAULT '',
@@ -323,9 +323,9 @@ CREATE TABLE data.inputs (
     scope NUMERIC CHECK (scope >= 1 AND scope <= 3) NOT NULL,
     comment TEXT NOT NULL DEFAULT '',
     equivalent UUID REFERENCES data.equivalents(id) NULL,
-    report UUID REFERENCES data.reports(id) NOT NULL ON DELETE CASCADE,
+    report UUID REFERENCES data.reports(id) ON DELETE CASCADE NOT NULL,
     category TEXT NOT NULL DEFAULT '',
-    facility UUID REFERENCES data.facilities(id) NULL ON DELETE SET NULL,
+    facility UUID REFERENCES data.facilities(id) ON DELETE SET NULL,
     sum_value NUMERIC NOT NULL,
     raw_value NUMERIC NOT NULL,
     raw_value_jan NUMERIC,
