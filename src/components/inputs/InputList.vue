@@ -56,12 +56,9 @@
       <template #body="{ data }">
         <Chip class="flex justify-end text-right text-sm">
           {{
-            roundStringWithDecimals(
-              globalStore.displayInTons
-                ? toTons(data.sum_value)
-                : data.sum_value,
-              0,
-            )
+            globalStore.displayInTons
+              ? roundStringWithDecimals(toTons(data.sum_value), 2)
+              : roundStringWithDecimals(data.sum_value, 0)
           }}
           {{ globalStore.displayInTons ? ' to' : ' kg' }}
         </Chip>
