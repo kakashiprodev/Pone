@@ -128,7 +128,7 @@
     </div>
     <div>
       <MonthlyOrYearlyInput
-        v-model="_selectedValue"
+        v-model:valueInput="_selectedValue"
         :input-unit="choosenEquivalent ? ' ' + choosenEquivalent.in : ''"
       />
       <InlineMessage

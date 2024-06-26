@@ -75,7 +75,7 @@
     <div class="flex flex-col gap-4" v-if="actualComfortStep === 3">
       <div>
         <MonthlyOrYearlyInput
-          v-model="_selectedValue"
+          v-model:valueInput="_selectedValue"
           :input-unit="choosenEquivalent ? ' ' + choosenEquivalent.in : ''"
         />
       </div>
