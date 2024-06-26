@@ -59,7 +59,13 @@ export const roundStringWithDecimals = (
   value: number,
   decimals: number = 3,
 ): string => {
-  const rounded = round(value, decimals);
+  let rounded;
+  if (value < 1) {
+    decimals = 2; // overwrite decimals for small values
+    rounded = value;
+  } else {
+    rounded = round(value, decimals);
+  }
   return rounded.toLocaleString('de-DE', {
     minimumFractionDigits: decimals,
     maximumFractionDigits: decimals,
