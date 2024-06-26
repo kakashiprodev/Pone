@@ -387,7 +387,7 @@ export default class DataProvider {
       const { data, error } = await this.postgrest
         .from('inputs')
         .select(
-          '*,report_expanded:report(site_expanded:site(project_expanded:project(id)))',
+          '*,report_expanded:report!inner(site_expanded:site!inner(project_expanded:project!inner(id)))',
         )
         .eq('report.site.project.id', projectId)
         .in('report.year', years);
@@ -397,7 +397,7 @@ export default class DataProvider {
       const { data, error } = await this.postgrest
         .from('inputs')
         .select(
-          '*,report_expanded:report(site_expanded:site(project_expanded:project(id)))',
+          '*,report_expanded:report!inner(site_expanded:site!inner(project_expanded:project!inner(id)))',
         )
         .eq('report.site.project.id', projectId);
       if (error) throw error;
@@ -410,7 +410,9 @@ export default class DataProvider {
   ): Promise<InputEntryWithExpandedReportAndSite[]> {
     const { data, error } = await this.postgrest
       .from('inputs')
-      .select('*,report(*,site(*,project(id))),facility(*)')
+      .select(
+        '*,report!inner(*,site!inner(*,project!inner(id))),facility!inner(*)',
+      )
       .eq('report.site.project.id', projectId);
     if (error) throw error;
     return data as InputEntryWithExpandedReportAndSite[];
