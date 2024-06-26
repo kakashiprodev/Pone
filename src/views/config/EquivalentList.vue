@@ -10,7 +10,10 @@
       <Button
         icon="fa-solid fa-plus"
         @click="
-          selectedValue = emptyEquivalent();
+          selectedValue = getEmptyEquivalent(
+            1,
+            global.selectedProject?.id ?? '',
+          );
           showDialog = true;
         "
         class="ml-2"
@@ -54,14 +57,14 @@
     >
       <Column
         field="specification1"
-        :header="$t('equivalent.choose.name')"
+        :header="$t('equivalents.choose.name')"
       ></Column>
       <Column
         field="comment"
-        :header="$t('equivalent.choose.comment')"
+        :header="$t('equivalents.choose.comment')"
       ></Column>
-      <Column field="in" :header="$t('equivalent.choose.in')"></Column>
-      <Column field="out" :header="$t('equivalent.choose.out')"></Column>
+      <Column field="in" :header="$t('equivalents.choose.in')"></Column>
+      <Column field="out" :header="$t('equivalents.choose.out')"></Column>
       <Column header="">
         <template #body="{ data }">
           <Button
@@ -75,12 +78,12 @@
       </Column>
     </DataTable>
     <Button
-      :label="$t('equivalent.choose.cancel')"
+      :label="$t('equivalents.choose.cancel')"
       @click="showChooseEquivalent = false"
     />
   </Dialog>
 
-  <!-- Dialog to add a new equivalent -->
+  <!-- Dialog to add a new equivalent or edit one -->
   <Dialog
     v-model:visible="showDialog"
     modal
@@ -95,393 +98,46 @@
       'h-screen': windowWidth < 990,
     }"
   >
-    <div class="flex flex-col gap-4">
-      <!-- Naming -->
-      <div class="flex flex-col gap-2">
-        <label for="equivalent-name">{{ $t('equivalents.scope') }}*</label>
-        <InputNumber
-          class="w-full"
-          v-model="selectedValue.scope"
-          id="equivalent-scope"
-        />
-        <InlineMessage
-          v-if="global.showTooltips"
-          class="w-full mt-1"
-          severity="info"
-        >
-          {{ $t('equivalents.scopeInline') }}
-        </InlineMessage>
-      </div>
-      <div class="flex flex-col gap-2">
-        <label for="equivalent-category"
-          >{{ $t('equivalents.category') }}*</label
-        >
-        <InputText
-          class="w-full"
-          v-model="selectedValue.category"
-          id="equivalent-category"
-        />
-        <InlineMessage
-          v-if="global.showTooltips"
-          class="w-full mt-1"
-          severity="info"
-        >
-          {{ $t('equivalents.categoryInline') }}
-        </InlineMessage>
-      </div>
-      <div class="flex flex-col gap-2">
-        <label for="equivalent-spec1">{{ $t('equivalents.spec1') }}*</label>
-        <InputText
-          class="w-full"
-          v-model="selectedValue.specification1"
-          id="equivalent-spec1"
-        />
-        <InlineMessage
-          v-if="global.showTooltips"
-          class="w-full mt-1"
-          severity="info"
-        >
-          {{ $t('equivalents.spec1Inline') }}
-        </InlineMessage>
-      </div>
-      <div class="flex flex-col gap-2">
-        <label for="equivalent-spec2">{{ $t('equivalents.spec2') }}</label>
-        <InputText
-          class="w-full"
-          v-model="selectedValue.specification2"
-          id="equivalent-spec2"
-        />
-      </div>
-      <div class="flex flex-col gap-2">
-        <label for="equivalent-spec3">{{ $t('equivalents.spec3') }}</label>
-        <InputText
-          class="w-full"
-          v-model="selectedValue.specification3"
-          id="equivalent-spec3"
-        />
-      </div>
-      <div class="flex flex-col gap-2">
-        <label for="equivalent-alt-name">{{ $t('equivalents.addName') }}</label>
-        <InputText
-          class="w-full"
-          v-model="selectedValue.add_name1"
-          id="equivalent-alt-name"
-        />
-        <InlineMessage
-          v-if="global.showTooltips"
-          class="w-full mt-1"
-          severity="info"
-        >
-          {{ $t('equivalents.addNameInline') }}
-        </InlineMessage>
-      </div>
-      <div class="flex flex-col gap-2">
-        <label for="equivalent-comment">{{ $t('equivalents.comment') }}</label>
-        <InputText
-          class="w-full"
-          v-model="selectedValue.comment"
-          id="equivalent-comment"
-        />
-        <InlineMessage
-          v-if="global.showTooltips"
-          class="w-full mt-1"
-          severity="info"
-        >
-          {{ $t('equivalents.commentInline') }}
-        </InlineMessage>
-      </div>
+    <!-- form to edit the equivalent -->
+    <GenericForm :definition="formEntries" v-model="selectedValue" />
 
-      <!-- Technical -->
-      <div class="flex flex-col gap-2">
-        <label for="equivalent-unit-in">{{ $t('equivalents.unitIn') }}*</label>
-        <InputText
+    <!-- input for the monthly values -->
+    <MonthlyOrYearlyInput
+      v-model:value-equivalent="selectedValue"
+      input-unit=""
+    />
+
+    <!-- choose a parent -->
+    <div class="flex flex-col gap-2 mt-2">
+      <label for="equivalent-parent-selector">{{
+        $t('equivalents.wrappingCalcOptional')
+      }}</label>
+      <div class="flex flex-grow">
+        <Button
           class="w-full"
-          v-model="selectedValue.in"
-          id="equivalent-unit-in"
+          :label="
+            selectedValue.parent
+              ? global.equivalentDict[selectedValue.parent].specification1
+              : $t('equivalents.chooseFactor')
+          "
+          @click="showChooseEquivalent = true"
         />
-        <InlineMessage
-          v-if="global.showTooltips"
-          class="w-full mt-1"
-          severity="info"
-        >
-          {{ $t('equivalents.unitInInline') }}
-        </InlineMessage>
-      </div>
-      <div class="flex flex-col gap-2">
-        <label for="equivalent-unit-out"
-          >{{ $t('equivalents.unitOut') }}*</label
-        >
-        <InputText
-          class="w-full"
-          v-model="selectedValue.out"
-          id="equivalent-unit-out"
+        <Button
+          v-if="selectedValue.parent"
+          icon="fa-solid fa-trash"
+          @click="selectedValue.parent = null"
+          class="ml-1"
         />
-        <InlineMessage
-          v-if="global.showTooltips"
-          class="w-full mt-1"
-          severity="info"
-        >
-          <span v-html="$t('equivalents.unitOutInline')" />
-        </InlineMessage>
       </div>
-      <div class="flex flex-col gap-2">
-        <label for="equivalent-source">{{ $t('equivalents.source') }}*</label>
-        <InputText
-          class="w-full"
-          :value="'Benutzereingabe'"
-          id="equivalent-source"
-        />
-        <InlineMessage
-          v-if="global.showTooltips"
-          class="w-full mt-1"
-          severity="info"
-        >
-          {{ $t('equivalents.sourceInline') }}
-        </InlineMessage>
-      </div>
-      <div class="flex flex-col gap-2">
-        <label for="equivalent-monthlyValues"
-          >{{ $t('equivalents.monthlyValues') }}?</label
-        >
-        <div>
-          <Checkbox
-            v-model="selectedValue.monthly_values"
-            id="equivalent-monthlyValues"
-            :binary="true"
-          />
-        </div>
-        <InlineMessage
-          v-if="global.showTooltips"
-          class="w-full mt-1"
-          severity="info"
-          >{{ $t('equivalents.monthlyValuesInline') }}
-        </InlineMessage>
-      </div>
-      <div v-show="selectedValue.monthly_values">
-        <div class="grid grid-cols-12 mt-1">
-          <div
-            class="col-span-3 items-center justify-center bg-teal-100 font-bold text-gray-900 rounded-sm text-center"
-          >
-            {{ $t('equivalents.month.1') }}
-          </div>
-          <div
-            class="col-span-3 items-center justify-center bg-teal-100 font-bold text-gray-900 rounded-sm text-center"
-          >
-            {{ $t('equivalents.month.2') }}
-          </div>
-          <div
-            class="col-span-3 items-center justify-center bg-teal-100 font-bold text-gray-900 rounded-sm text-center"
-          >
-            {{ $t('equivalents.month.3') }}
-          </div>
-          <div
-            class="col-span-3 items-center justify-center bg-teal-100 font-bold text-gray-900 rounded-sm text-center"
-          >
-            {{ $t('equivalents.month.4') }}
-          </div>
-        </div>
-        <div class="grid grid-cols-12 mt-1">
-          <div class="col-span-3 small-width-ctm">
-            <InputNumber
-              :use-grouping="false"
-              v-model="selectedValue.jan"
-              :min-fraction-digits="0"
-              :max-fraction-digits="10"
-            />
-          </div>
-          <div class="col-span-3 small-width-ctm">
-            <InputNumber
-              :use-grouping="false"
-              v-model="selectedValue.feb"
-              :min-fraction-digits="0"
-              :max-fraction-digits="10"
-            />
-          </div>
-          <div class="col-span-3 small-width-ctm">
-            <InputNumber
-              :use-grouping="false"
-              v-model="selectedValue.mar"
-              :min-fraction-digits="0"
-              :max-fraction-digits="10"
-            />
-          </div>
-          <div class="col-span-3 small-width-ctm">
-            <InputNumber
-              :use-grouping="false"
-              v-model="selectedValue.apr"
-              :min-fraction-digits="0"
-              :max-fraction-digits="10"
-            />
-          </div>
-        </div>
-        <div class="grid grid-cols-12 mt-1">
-          <div
-            class="col-span-3 items-center justify-center bg-teal-100 font-bold text-gray-900 rounded-sm text-center"
-          >
-            {{ $t('equivalents.month.5') }}
-          </div>
-          <div
-            class="col-span-3 items-center justify-center bg-teal-100 font-bold text-gray-900 rounded-sm text-center"
-          >
-            {{ $t('equivalents.month.6') }}
-          </div>
-          <div
-            class="col-span-3 items-center justify-center bg-teal-100 font-bold text-gray-900 rounded-sm text-center"
-          >
-            {{ $t('equivalents.month.7') }}
-          </div>
-          <div
-            class="col-span-3 items-center justify-center bg-teal-100 font-bold text-gray-900 rounded-sm text-center"
-          >
-            {{ $t('equivalents.month.8') }}
-          </div>
-        </div>
-        <div class="grid grid-cols-12 mt-1">
-          <div class="col-span-3 small-width-ctm">
-            <InputNumber
-              :use-grouping="false"
-              v-model="selectedValue.may"
-              :min-fraction-digits="0"
-              :max-fraction-digits="10"
-            />
-          </div>
-          <div class="col-span-3 small-width-ctm">
-            <InputNumber
-              :use-grouping="false"
-              v-model="selectedValue.jun"
-              :min-fraction-digits="0"
-              :max-fraction-digits="10"
-            />
-          </div>
-          <div class="col-span-3 small-width-ctm">
-            <InputNumber
-              :use-grouping="false"
-              v-model="selectedValue.jul"
-              :min-fraction-digits="0"
-              :max-fraction-digits="10"
-            />
-          </div>
-          <div class="col-span-3 small-width-ctm">
-            <InputNumber
-              :use-grouping="false"
-              v-model="selectedValue.aug"
-              :min-fraction-digits="0"
-              :max-fraction-digits="10"
-            />
-          </div>
-        </div>
-        <div class="grid grid-cols-12 mt-1">
-          <div
-            class="col-span-3 items-center justify-center bg-teal-100 font-bold text-gray-900 rounded-sm text-center"
-          >
-            {{ $t('equivalents.month.9') }}
-          </div>
-          <div
-            class="col-span-3 items-center justify-center bg-teal-100 font-bold text-gray-900 rounded-sm text-center"
-          >
-            {{ $t('equivalents.month.10') }}
-          </div>
-          <div
-            class="col-span-3 items-center justify-center bg-teal-100 font-bold text-gray-900 rounded-sm text-center"
-          >
-            {{ $t('equivalents.month.11') }}
-          </div>
-          <div
-            class="col-span-3 items-center justify-center bg-teal-100 font-bold text-gray-900 rounded-sm text-center"
-          >
-            {{ $t('equivalents.month.12') }}
-          </div>
-        </div>
-        <div class="grid grid-cols-12 mt-1">
-          <div class="col-span-3 small-width-ctm">
-            <InputNumber
-              :use-grouping="false"
-              v-model="selectedValue.sep"
-              :min-fraction-digits="0"
-              :max-fraction-digits="10"
-            />
-          </div>
-          <div class="col-span-3 small-width-ctm">
-            <InputNumber
-              :use-grouping="false"
-              v-model="selectedValue.oct"
-              :min-fraction-digits="0"
-              :max-fraction-digits="10"
-            />
-          </div>
-          <div class="col-span-3 small-width-ctm">
-            <InputNumber
-              :use-grouping="false"
-              v-model="selectedValue.nov"
-              :min-fraction-digits="0"
-              :max-fraction-digits="10"
-            />
-          </div>
-          <div class="col-span-3 small-width-ctm">
-            <InputNumber
-              :use-grouping="false"
-              v-model="selectedValue.dec"
-              :min-fraction-digits="0"
-              :max-fraction-digits="10"
-            />
-          </div>
-        </div>
-      </div>
-      <div class="flex flex-col gap-2">
-        <label for="equivalent-value-year"
-          >{{ $t('equivalents.avgValue') }}*</label
-        >
-        <InputNumber
-          v-if="!selectedValue.monthly_values"
-          class="w-full"
-          v-model="selectedValue.avg_value"
-          id="equivalent-value-year"
-          :use-grouping="false"
-          :min-fraction-digits="0"
-          :max-fraction-digits="10"
-        />
-        <div v-else>
-          {{ roundString(selectedValue.avg_value) }} ({{
-            $t('equivalents.autoCalc')
-          }})
-        </div>
-        <InlineMessage
-          v-if="global.showTooltips"
-          class="w-full mt-1"
-          severity="info"
-          >{{ $t('equivalents.autoCalcInline') }}</InlineMessage
-        >
-      </div>
-      <div class="flex flex-col gap-2">
-        <label for="equivalent-parent-selector">{{
-          $t('equivalents.wrappingCalcOptional')
-        }}</label>
-        <div class="flex flex-grow">
-          <Button
-            class="w-full"
-            :label="
-              selectedValue.parent
-                ? global.equivalentDict[selectedValue.parent].specification1
-                : $t('equivalents.chooseFactor')
-            "
-            @click="showChooseEquivalent = true"
-          />
-          <Button
-            v-if="selectedValue.parent"
-            icon="fa-solid fa-trash"
-            @click="selectedValue.parent = null"
-            class="ml-1"
-          />
-        </div>
-        <InlineMessage
-          v-if="global.showTooltips"
-          class="w-full mt-1"
-          severity="info"
-        >
-          <span v-html="$t('equivalents.wrappingCalcOptionalInline')" />
-        </InlineMessage>
-      </div>
+      <InlineMessage
+        v-if="global.showTooltips"
+        class="w-full mt-1"
+        severity="info"
+      >
+        <span v-html="$t('equivalents.wrappingCalcOptionalInline')" />
+      </InlineMessage>
     </div>
+
     <div class="mt-5">
       <Button
         :label="
@@ -515,10 +171,14 @@ import { Ref, ref, watchEffect, computed } from 'vue';
 import { EquivalentEntry } from '../../services/types';
 import { error, info } from '../../services/ui/toast';
 import { useConfirm } from 'primevue/useconfirm';
-import { roundString } from '../../services/helper';
 import SmartEquivalentList from '../../components/equivalents/SmartEquivalentList.vue';
 import { importCsvFile } from '../../services/csv/import';
 import * as v from 'valibot';
+import { getEmptyEquivalent } from '@/factory/equivalent';
+import { getEquivalentsAsCsv } from '@/services/csv/download';
+import { GenericFormEntry } from '@/services/types/form';
+import GenericForm from '@/components/forms/GenericForm.vue';
+import MonthlyOrYearlyInput from '@/components/equivalents/MonthlyOrYearlyInput.vue';
 
 const windowWidth = ref(window.innerWidth);
 
@@ -536,40 +196,6 @@ const filteredEquivalents = computed(() => {
     return global.equivalents;
   }
 });
-
-const emptyEquivalent = (): EquivalentEntry => {
-  return {
-    id: 'new',
-    scope: 3,
-    add_name1: '',
-    category: 'Benutzereingaben',
-    specification1: '',
-    specification2: '',
-    specification3: '',
-    comment: '',
-    in: '',
-    out: '',
-    source: 'Benutzereingabe',
-    avg_value: null as any,
-    monthly_values: false,
-    project: global.selectedProject?.id ?? '',
-    jan: null,
-    feb: null,
-    mar: null,
-    apr: null,
-    may: null,
-    jun: null,
-    jul: null,
-    aug: null,
-    sep: null,
-    oct: null,
-    nov: null,
-    dec: null,
-    parent: null,
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString(),
-  };
-};
 
 const equivalentSchema = v.object({
   id: v.pipe(v.string(), v.minLength(3), v.maxLength(255)),
@@ -601,39 +227,100 @@ const equivalentSchema = v.object({
   project: v.nullable(v.pipe(v.string(), v.minLength(3), v.maxLength(255))),
 });
 
-/*
-const formEntries = [
-  { label: 'ID*', key: 'id', type: 'text', required: true, validation: v.pick(equivalentSchema, ['id']) },
-  { label: 'Kategorie*', key: 'category', type: 'text', required: true, validation: v.pick(equivalentSchema, ['category']) },
-  { label: 'Scope*', key: 'scope', type: 'number', required: true, validation: v.pick(equivalentSchema, ['scope']) },
-  { label: 'Spezifikation 1*', key: 'specification1', type: 'text', required: true, validation: v.pick(equivalentSchema, ['specification1']) },
-  { label: 'Spezifikation 2', key: 'specification2', type: 'text', validation: v.pick(equivalentSchema, ['specification2']) },
-  { label: 'Spezifikation 3', key: 'specification3', type: 'text', validation: v.pick(equivalentSchema, ['specification3']) },
-  { label: 'Zusatzname', key: 'add_name1', type: 'text', validation: v.pick(equivalentSchema, ['add_name1']) },
-  { label: 'Kommentar', key: 'comment', type: 'textarea', validation: v.pick(equivalentSchema, ['comment']) },
-  { label: 'Eingangseinheit*', key: 'in', type: 'text', required: true, validation: v.pick(equivalentSchema, ['in']) },
-  { label: 'Ausgangseinheit*', key: 'out', type: 'text', required: true, validation: v.pick(equivalentSchema, ['out']) },
-  { label: 'Quelle*', key: 'source', type: 'text', required: true, validation: v.pick(equivalentSchema, ['source']) },
-  { label: 'Durchschnittswert*', key: 'avg_value', type: 'number', required: true, validation: v.pick(equivalentSchema, ['avg_value']) },
-  { label: 'Monatliche Werte', key: 'monthly_values', type: 'checkbox', validation: v.pick(equivalentSchema, ['monthly_values']) },
-  { label: 'Januar', key: 'jan', type: 'number', validation: v.pick(equivalentSchema, ['jan']) },
-  { label: 'Februar', key: 'feb', type: 'number', validation: v.pick(equivalentSchema, ['feb']) },
-  { label: 'März', key: 'mar', type: 'number', validation: v.pick(equivalentSchema, ['mar']) },
-  { label: 'April', key: 'apr', type: 'number', validation: v.pick(equivalentSchema, ['apr']) },
-  { label: 'Mai', key: 'may', type: 'number', validation: v.pick(equivalentSchema, ['may']) },
-  { label: 'Juni', key: 'jun', type: 'number', validation: v.pick(equivalentSchema, ['jun']) },
-  { label: 'Juli', key: 'jul', type: 'number', validation: v.pick(equivalentSchema, ['jul']) },
-  { label: 'August', key: 'aug', type: 'number', validation: v.pick(equivalentSchema, ['aug']) },
-  { label: 'September', key: 'sep', type: 'number', validation: v.pick(equivalentSchema, ['sep']) },
-  { label: 'Oktober', key: 'oct', type: 'number', validation: v.pick(equivalentSchema, ['oct']) },
-  { label: 'November', key: 'nov', type: 'number', validation: v.pick(equivalentSchema, ['nov']) },
-  { label: 'Dezember', key: 'dec', type: 'number', validation: v.pick(equivalentSchema, ['dec']) },
-  { label: 'Überliegendes Äquivalent', key: 'parent', type: 'text', validation: v.pick(equivalentSchema, ['parent']) },
-  { label: 'Projekt', key: 'project', type: 'text', validation: v.pick(equivalentSchema, ['project']) },
+const formEntries: GenericFormEntry[] = [
+  {
+    label: 'Scope*',
+    key: 'scope',
+    type: 'number',
+    required: true,
+    validation: v.pick(equivalentSchema, ['scope']),
+  },
+  {
+    label: 'Kategorie*',
+    key: 'category',
+    type: 'text',
+    required: true,
+    validation: v.pick(equivalentSchema, ['category']),
+  },
+  {
+    label: 'Spezifikation 1*',
+    key: 'specification1',
+    type: 'text',
+    required: true,
+    validation: v.pick(equivalentSchema, ['specification1']),
+  },
+  {
+    label: 'Spezifikation 2',
+    key: 'specification2',
+    type: 'text',
+    validation: v.pick(equivalentSchema, ['specification2']),
+  },
+  {
+    label: 'Spezifikation 3',
+    key: 'specification3',
+    type: 'text',
+    validation: v.pick(equivalentSchema, ['specification3']),
+  },
+  {
+    label: 'Zusatzname',
+    key: 'add_name1',
+    type: 'text',
+    validation: v.pick(equivalentSchema, ['add_name1']),
+  },
+  {
+    label: 'Kommentar',
+    key: 'comment',
+    type: 'text',
+    validation: v.pick(equivalentSchema, ['comment']),
+  },
+  {
+    label: 'Eingangseinheit (welche Einheit soll der User eingeben?)*',
+    key: 'in',
+    type: 'select',
+    options: [
+      { label: 'kWh', value: 'kWh' },
+      { label: 'Tonnen km', value: 'Tonnen km' },
+      { label: 'km', value: 'km' },
+      { label: 'l', value: 'l' },
+      { label: 'm³', value: 'm³' },
+      { label: 'Nm³', value: 'Nm³' },
+      { label: 'kg', value: 'kg' },
+    ],
+    optionsKey: 'value',
+    optionsLabel: 'label',
+    required: true,
+    validation: v.pick(equivalentSchema, ['in']),
+  },
+  {
+    label: 'Ausgangseinheit (welche Einheit kommt heraus?)*',
+    key: 'out',
+    type: 'select',
+    options: [
+      { label: 'kWh', value: 'kWh' },
+      { label: 'Tonnen km', value: 'Tonnen km' },
+      { label: 'km', value: 'km' },
+      { label: 'l', value: 'l' },
+      { label: 'm³', value: 'm³' },
+      { label: 'Nm³', value: 'Nm³' },
+      { label: 'kg-CO2', value: 'kg' },
+    ],
+    optionsKey: 'value',
+    optionsLabel: 'label',
+    required: true,
+    validation: v.pick(equivalentSchema, ['out']),
+  },
+  {
+    label: 'Quelle*',
+    key: 'source',
+    type: 'text',
+    required: true,
+    validation: v.pick(equivalentSchema, ['source']),
+  },
 ];
- */
 
-const selectedValue: Ref<EquivalentEntry> = ref(emptyEquivalent());
+const selectedValue: Ref<EquivalentEntry> = ref(
+  getEmptyEquivalent(1, global.selectedProject?.id ?? ''),
+);
 
 // calculate avg value for the year
 watchEffect(() => {
@@ -727,66 +414,7 @@ const deleteEquivalent = async (equivalent: EquivalentEntry, event: any) => {
 };
 
 const csvDownload = async () => {
-  const delimiter = ';';
-  const eol = '\r\n';
-  const toLocalStr = (v: any | null) => {
-    if (v == null) {
-      return '';
-    } else if (typeof v === 'string') {
-      return v;
-    } else if (typeof v === 'number') {
-      return v.toLocaleString();
-    } else if (typeof v === 'boolean') {
-      return v ? '1' : '0';
-    } else {
-      return v;
-    }
-  };
-  const header = [
-    { val: 'id', name: 'ID' },
-    { val: 'scope', name: 'Scope' },
-    { val: 'category', name: 'Kategorie' },
-    { val: 'specification1', name: 'Spezifikation 1' },
-    { val: 'specification2', name: 'Spezifikation 2' },
-    { val: 'specification3', name: 'Spezifikation 3' },
-    { val: 'addName1', name: 'Zusatzname' },
-    { val: 'comment', name: 'Kommentar' },
-    { val: 'in', name: 'Eingang' },
-    { val: 'out', name: 'Ausgang' },
-    { val: 'source', name: 'Quelle' },
-    { val: 'avgValue', name: 'Faktor' },
-    { val: 'monthlyValues', name: 'Monatliche Eingaben' },
-    { val: 'jan', name: 'Wert-Jan (monatlich)' },
-    { val: 'feb', name: 'Wert Feb (monatlich)' },
-    { val: 'mar', name: 'Wert Mar (monatlich)' },
-    { val: 'apr', name: 'Wert Apr (monatlich)' },
-    { val: 'may', name: 'Wert May (monatlich)' },
-    { val: 'jun', name: 'Wert Jun (monatlich)' },
-    { val: 'jul', name: 'Wert Jul (monatlich)' },
-    { val: 'aug', name: 'Wert Aug (monatlich)' },
-    { val: 'sep', name: 'Wert Sep (monatlich)' },
-    { val: 'oct', name: 'Wert Oct (monatlich)' },
-    { val: 'nov', name: 'Wert Nov (monatlich)' },
-    { val: 'dec', name: 'Wert Dec (monatlich)' },
-    { val: 'parent', name: 'Überliegende Berechnung (ID)' },
-    { val: 'project', name: 'Projekt' },
-  ];
-
-  const lines = global.equivalents
-    .map((e: any) => {
-      return header.map((h) => toLocalStr(e[h.val])).join(delimiter);
-    })
-    .join(eol);
-  const csv = header.map((h) => h.name).join(delimiter) + eol + lines;
-  const blob = new Blob([csv], { type: 'text/csv;charset=windows-1252;' });
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement('a');
-  link.setAttribute('href', url);
-  link.setAttribute('download', 'equivalents.csv');
-  link.style.visibility = 'hidden';
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
+  await getEquivalentsAsCsv(global.equivalents);
 };
 
 const requestPending = ref(false);
