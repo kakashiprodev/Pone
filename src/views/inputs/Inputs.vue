@@ -344,11 +344,10 @@ const showChooseEquivalent = ref(false);
 // choose facility
 const showChooseFacility = ref(false);
 
-// watch globalStore.selectedReport to reload the report
+// watch globalStore.selectedReport to reload the reports inputs
 watch(
   () => globalStore.selectedReport,
   async () => {
-    await globalStore.changeReport();
     await inputStore.readUserInputs();
   },
 );
