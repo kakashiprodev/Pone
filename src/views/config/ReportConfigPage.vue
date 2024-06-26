@@ -159,6 +159,7 @@ const saveReport = async () => {
       reportForm.value = await global.addReport(reportForm.value);
       // if the report was added then copy all report targets to the new report. This will be the year before
       await copyTargetsFromYearBefore();
+      await global.changeReport();
     } else {
       reportForm.value = await global.updateReport(reportForm.value);
     }
