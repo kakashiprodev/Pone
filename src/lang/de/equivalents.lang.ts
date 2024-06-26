@@ -66,7 +66,7 @@ export default {
   autoCalc: 'automatisch berechnet',
   autoCalcInline:
     'Der Jahresdurchschnittswert als Faktor [Ausgangseinheit-pro-Eingangseinheit]',
-  wrappingCalcOptional: 'ÜberliegendeBerechnung (optional)',
+  wrappingCalcOptional: 'Überliegende Berechnung (optional)',
   wrappingCalcOptionalInline: `Wenn eine überliegende Berechnung gewählt wird, muss die
           Ausgangseinheit der überliegenden Berechnung mit der Eingangseinheit
           dieses Faktors übereinstimmen. In dem Fall wird beim Berechnen der
