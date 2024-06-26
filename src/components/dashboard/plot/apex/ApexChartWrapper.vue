@@ -191,7 +191,7 @@ const renderChart = () => {
       }
     }
   } catch (e) {
-    console.error('Error rendering chart', e);
+    console.warn('Error rendering chart', e);
   }
 };
 

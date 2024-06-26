@@ -183,7 +183,7 @@ const renderChart = () => {
       chartData.value = series;
     }
   } catch (error) {
-    console.error('Error rendering chart', error);
+    console.warn('Error rendering chart', error);
   }
 };
 

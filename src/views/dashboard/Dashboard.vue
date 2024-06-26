@@ -2,7 +2,7 @@
   <!-- <SmartInput :data="demo" /> -->
   <div
     class="report"
-    v-if="!loading && !global.isLoading && global.selectedReport"
+    v-if="!loading && global.selectedReport"
     style="max-width: 1200px"
   >
     <TabView v-if="!global.isLoading && !loading">
@@ -55,7 +55,8 @@ watch(
   () => global.selectedReport,
   async () => {
     loading.value = true;
-    await global.changeReport();
+    console.log('report changed to ', global.selectedReport?.year);
+    await new Promise((resolve) => setTimeout(resolve, 1000));
     loading.value = false;
   },
 );

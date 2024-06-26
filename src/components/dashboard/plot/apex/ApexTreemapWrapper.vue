@@ -148,7 +148,7 @@ const renderChart = () => {
       colors.value = Object.keys(props.data.timeseries);
     }
   } catch (e) {
-    console.error('Error rendering chart', e);
+    console.warn('Error rendering chart', e);
   }
 };
 
