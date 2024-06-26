@@ -181,24 +181,12 @@ const save = async () => {
     if (selectedValue.value.id === 'new') {
       const toCreate = clone(selectedValue.value);
       delete toCreate.id;
-      const created = await dataprovider.createFacility(toCreate);
-      created.shutdown_date =
-        created.shutdown_date && created.shutdown_date !== ''
-          ? new Date(created.shutdown_date)
-          : null;
+      await global.addFacility(toCreate);
       // add to global
-      global.facilities.push(created);
       showDialog.value = false;
       selectedValue.value = getEmtypFacility(global.selectedSite?.id ?? '');
     } else {
-      const updated = await dataprovider.updateFacility(selectedValue.value);
-      updated.shutdown_date =
-        updated.shutdown_date && updated.shutdown_date !== ''
-          ? new Date(updated.shutdown_date)
-          : null;
-      const index = data.value.findIndex((item) => item.id === updated.id);
-      global.facilities[index] = updated;
-
+      await global.updateFacility(selectedValue.value);
       showDialog.value = false;
     }
     triggerRefresh.value = true;
@@ -211,17 +199,14 @@ const save = async () => {
  * Delete an entry
  */
 const confirm = useConfirm();
-const deleteEntry = async (entry: InputEntry, event: any) => {
+const deleteEntry = async (entry: FacilityEntry, event: any) => {
   confirm.require({
     target: event.currentTarget,
     message: 'Soll der Eintrag wirklich gelöscht werden?',
     icon: 'fa-solid fa-question',
     accept: async () => {
       try {
-        await dataprovider.deleteFacility(entry.id);
-        const index = data.value.findIndex((item) => item.id === entry.id);
-        // remove from global
-        global.facilities.splice(index, 1);
+        await global.dropFacility(entry);
         info('Anlage wurde gelöscht');
         triggerRefresh.value = true;
       } catch (e) {

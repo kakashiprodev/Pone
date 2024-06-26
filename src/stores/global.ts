@@ -92,6 +92,9 @@ export interface GlobalActions {
   ensureSiteIsSelected: () => Promise<void>;
   changeSite: (site: SiteEntry) => Promise<void>;
   // facilities
+  addFacility: (facility: FacilityEntry) => Promise<FacilityEntry>;
+  updateFacility: (facility: FacilityEntry) => Promise<FacilityEntry>;
+  dropFacility: (facility: FacilityEntry) => Promise<void>;
   refreshFacilities: () => Promise<void>;
   // ui
   changeTheme: (theme: 'light' | 'dark') => void;
@@ -764,9 +767,48 @@ export const useGlobalStore = defineStore('global', {
     },
 
     // *************************************************************
-    // READ cache for "facilities"
+    // CRUD cache for "facilities"
     // *************************************************************
 
+    /**
+     * Add a new facility to the cache and backend.
+     */
+    async addFacility(facility: FacilityEntry) {
+      const created = await dataprovider.createFacility(facility);
+      this.facilities.push(created);
+      this.facilitiesDict[created.id] = created;
+      return created;
+    },
+
+    /**
+     * Update a facility in the cache and backend.
+     */
+    async updateFacility(facility: FacilityEntry) {
+      const updated = await dataprovider.updateFacility(facility);
+      const index = this.facilities.findIndex(
+        (f: FacilityEntry) => f.id === facility.id,
+      );
+      if (index > -1) {
+        this.facilities[index] = updated;
+      }
+      this.facilitiesDict[facility.id] = updated;
+      return updated;
+    },
+
+    /**
+     * Drop a facility from the cache and backend.
+     */
+    async dropFacility(facility: FacilityEntry) {
+      await dataprovider.deleteFacility(facility.id);
+      this.facilities = this.facilities.filter(
+        (f: FacilityEntry) => f.id !== facility.id,
+      );
+      delete this.facilitiesDict[facility.id];
+    },
+
+    /**
+     * reload the cache for "facilities" from backend.
+     */
     async refreshFacilities() {
       if (this.facilities.length === 0) {
         this.facilities = await dataprovider.readFacilities();
