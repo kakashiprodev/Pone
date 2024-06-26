@@ -194,6 +194,7 @@ const formEntries: GenericFormEntry[] = [
   },
   {
     label: t('actions.costsPlanned'),
+    settings: { suffix: ' €' },
     key: 'costs_planned',
     type: 'number',
     validation: v.pick(actionEntrySchema, ['costs_planned']),
@@ -201,6 +202,7 @@ const formEntries: GenericFormEntry[] = [
   {
     label: t('actions.costsIs'),
     key: 'costs_is',
+    settings: { suffix: ' €' },
     type: 'number',
     validation: v.pick(actionEntrySchema, ['costs_is']),
   },
