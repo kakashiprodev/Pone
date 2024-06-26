@@ -6,7 +6,7 @@
       class="flex flex-col gap-2"
     >
       <label :for="`field-${entry.key}`" class="w-full">
-        {{ entry.label }}
+        <span v-html="entry.label"></span>
       </label>
 
       <InlineMessage
