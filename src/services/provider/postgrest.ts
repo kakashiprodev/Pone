@@ -410,9 +410,7 @@ export default class DataProvider {
   ): Promise<InputEntryWithExpandedReportAndSite[]> {
     const { data, error } = await this.postgrest
       .from('inputs')
-      .select(
-        '*,report!inner(*,site!inner(*,project!inner(id))),facility!inner(*)',
-      )
+      .select('*,report!inner(*,site!inner(*,project!inner(id))),facility(*)')
       .eq('report.site.project.id', projectId);
     if (error) throw error;
     return data as InputEntryWithExpandedReportAndSite[];

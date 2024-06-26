@@ -1,6 +1,10 @@
 <template>
   <!-- <SmartInput :data="demo" /> -->
-  <div class="report" v-if="global.selectedReport" style="max-width: 1200px">
+  <div
+    class="report"
+    v-if="!loading && !global.isLoading && global.selectedReport"
+    style="max-width: 1200px"
+  >
     <TabView v-if="!global.isLoading && !loading">
       <TabPanel :header="$t('dashboard.reportSumYear')">
         <ReportSumYear :sites="[global.selectedSite?.id ?? '']" />
