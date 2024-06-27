@@ -419,7 +419,6 @@ const updateNameAndCategory = () => {
       return;
     }
     selectedValue.value.name = equivalent.specification1;
-    selectedValue.value.comment = equivalent.comment ?? '';
     selectedValue.value.category = equivalent.category;
   }
 };
