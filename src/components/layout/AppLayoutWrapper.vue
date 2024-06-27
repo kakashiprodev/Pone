@@ -256,7 +256,11 @@ const loading = ref(false);
 const colorMode = computed(() => global.theme);
 
 const logoutApp = async () => {
-  await logout();
+  await logout({
+    logoutParams: {
+      returnTo: window.location.origin,
+    },
+  });
 };
 
 const switchReport = async () => {
