@@ -77,8 +77,7 @@
 </template>
 
 <script setup lang="ts">
-import { FacilityEntry, InputEntry } from '../../services/types';
-import dataprovider from '../../services/dataprovider';
+import { FacilityEntry } from '../../services/types';
 import { ComputedRef, Ref, computed, ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { useGlobalStore } from '../../stores/global';
