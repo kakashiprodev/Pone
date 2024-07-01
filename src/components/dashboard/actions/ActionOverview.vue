@@ -28,7 +28,12 @@
         </div>
       </template>
 
-      <DataTable :value="actions" class="mt-5" :showGridlines="false">
+      <DataTable
+        :value="actions"
+        class="mt-5"
+        :showGridlines="false"
+        v-if="actions.length > 0"
+      >
         <Column header="Jahr">
           <template #body="{ data }">
             <span class="flex justify-end text-right font-bold">
@@ -98,17 +103,26 @@
           </template>
         </Column>
       </DataTable>
+      <div v-else>
+        <p>{{ $t('report.noActions') }}</p>
+      </div>
     </template>
   </Card>
 
-  <Card>
+  <Card class="mt-3">
     <template #header>
       <div class="psm-report-header">
         <h3>{{ $t('actions.overviewTab.roadmap') }}</h3>
       </div>
     </template>
     <template #content>
-      <action-dumbbell-chart-wrapper v-if="actions.length" :actions="actions" />
+      <action-dumbbell-chart-wrapper
+        v-if="actions.length > 0"
+        :actions="actions"
+      />
+      <div v-else>
+        <p>{{ $t('report.noActions') }}</p>
+      </div>
     </template>
   </Card>
 </template>

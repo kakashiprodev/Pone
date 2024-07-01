@@ -1,8 +1,17 @@
 <template>
-  <!-- ZEILE -->
+  <!-- ZEILE "Unternehmensanschrift und Kuchendiagramm" -->
   <HorizontalTwoColLayout>
     <template #left>
-      <ReportHeader />
+      <Card class="h-full">
+        <template #header>
+          <div class="psm-report-header">
+            <h3>{{ $t('report.company') }}</h3>
+          </div>
+        </template>
+        <template #content>
+          <ReportHeader />
+        </template>
+      </Card>
     </template>
     <template #right>
       <Card>
@@ -12,12 +21,17 @@
           </div>
         </template>
         <template #content>
-          <div class="report-chart-wrapper">
-            <ApexSumChartWrapper
-              v-if="sumGroupedByScope"
-              type="donut"
-              :data="sumGroupedByScope"
-            />
+          <div
+            class="report-chart-wrapper"
+            v-if="
+              sumGroupedByScope &&
+              Object.keys(sumGroupedByScope?.timeseries).length > 0
+            "
+          >
+            <ApexSumChartWrapper type="donut" :data="sumGroupedByScope" />
+          </div>
+          <div v-else>
+            <p>{{ $t('report.noDataForReport') }}</p>
           </div>
         </template>
       </Card>
@@ -25,47 +39,13 @@
   </HorizontalTwoColLayout>
   <ReportSpacer />
 
-  <!-- ZEILE -->
+  <!-- ZEILE  "Beschreibung "-->
   <HorizontalOneColLayout>
     <ScopeDescription scope="all" />
   </HorizontalOneColLayout>
   <ReportSpacer />
 
-  <div style="overflow-x: scroll; width: 100%" v-if="false">
-    <Timeline
-      layout="horizontal"
-      :align="'top'"
-      :value="[
-        {
-          year: 2019,
-          status: $t('report.sumYear.total') + ': 1000t',
-        },
-        {
-          year: 2020,
-          status: $t('report.sumYear.') + ': 1000t',
-        },
-      ]"
-    >
-      <template #opposite="{ item }">
-        <small class="p-text-secondary">{{ item.year }}</small>
-      </template>
-      <template #content="{ item }">
-        <div
-          style="
-            height: 180px;
-            width: 150px;
-            padding: 5px;
-            display: block;
-            background-color: aqua;
-          "
-        >
-          {{ item.status }}
-        </div>
-      </template>
-    </Timeline>
-  </div>
-
-  <!-- ZEILE -->
+  <!-- ZEILE "Mengen der letzten Berichtsjahre" -->
   <HorizontalOneColLayout>
     <Card>
       <template #header>
@@ -74,9 +54,11 @@
         </div>
       </template>
       <template #content>
-        <div class="report-chart-wrapper">
+        <div
+          class="report-chart-wrapper"
+          v-if="yearlyList && yearlyList.length > 0"
+        >
           <TextBarList
-            v-if="yearlyList"
             :data="yearlyList"
             :show-status-column="false"
             :header="[
@@ -87,12 +69,15 @@
             :use-maximum-as-reference="true"
           />
         </div>
+        <div v-else>
+          <p>{{ $t('report.noDataForReport') }}</p>
+        </div>
       </template>
     </Card>
   </HorizontalOneColLayout>
   <ReportSpacer />
 
-  <!-- ZEILE -->
+  <!-- ZEILE "Spiderdiagramm nach Kategorie" -->
   <HorizontalOneColLayout
     v-if="
       sumGroupedByCategory &&
@@ -102,23 +87,23 @@
     <Card>
       <template #header>
         <div class="psm-report-header">
-          <h3>{{ $t('report.sumYear.divisionOrigins') }}</h3>
+          <h3>
+            {{ $t('report.sumYear.divisionOrigins') }} ({{
+              availableYears.join(', ')
+            }})
+          </h3>
         </div>
       </template>
       <template #content>
         <div class="report-chart-wrapper">
-          <ApexSumChartWrapper
-            v-if="sumGroupedByCategory"
-            type="radar"
-            :data="sumGroupedByCategory"
-          />
+          <ApexSumChartWrapper type="radar" :data="sumGroupedByCategory" />
         </div>
       </template>
     </Card>
   </HorizontalOneColLayout>
   <ReportSpacer />
 
-  <!-- ZEILE -->
+  <!-- ZEILE "Jahre und Scopes als horizontaler Balken" -->
   <HorizontalTwoColLayout>
     <template #left>
       <Card>
@@ -148,11 +133,17 @@
           </div>
         </template>
         <template #content>
-          <div class="report-chart-wrapper">
-            <ApexTreemapWrapper
-              v-if="sumGroupedByScope"
-              :data="sumGroupedByScope"
-            />
+          <div
+            class="report-chart-wrapper"
+            v-if="
+              sumGroupedByScope &&
+              Object.keys(sumGroupedByScope?.timeseries).length > 0
+            "
+          >
+            <ApexTreemapWrapper :data="sumGroupedByScope" />
+          </div>
+          <div v-else>
+            <p>{{ $t('report.noDataForReport') }}</p>
           </div>
         </template>
       </Card>

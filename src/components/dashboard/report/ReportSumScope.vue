@@ -12,12 +12,17 @@
           </div>
         </template>
         <template #content>
-          <div class="report-chart-wrapper">
-            <ApexSumChartWrapper
-              v-if="sumGroupedByCategory"
-              type="donut"
-              :data="sumGroupedByCategory"
-            />
+          <div
+            class="report-chart-wrapper"
+            v-if="
+              sumGroupedByCategory &&
+              Object.keys(sumGroupedByCategory.timeseries).length > 0
+            "
+          >
+            <ApexSumChartWrapper type="donut" :data="sumGroupedByCategory" />
+          </div>
+          <div v-else>
+            <p>{{ $t('report.noDataForReport') }}</p>
           </div>
         </template>
       </Card>
@@ -56,7 +61,10 @@
         </div>
       </template>
       <template #content>
-        <div class="report-chart-wrapper">
+        <div
+          class="report-chart-wrapper"
+          v-if="facilityList && facilityList.length > 0"
+        >
           <TextBarList
             :data="facilityList"
             :header="[
@@ -66,6 +74,9 @@
             ]"
             :use-maximum-as-reference="false"
           />
+        </div>
+        <div v-else>
+          <p>{{ $t('report.noDataForReport') }}</p>
         </div>
       </template>
     </Card>
@@ -82,11 +93,17 @@
           </div>
         </template>
         <template #content>
-          <div class="report-chart-wrapper">
-            <ApexTreemapWrapper
-              v-if="sumGroupedByFacility"
-              :data="sumGroupedByFacility"
-            />
+          <div
+            class="report-chart-wrapper"
+            v-if="
+              sumGroupedByFacility &&
+              Object.keys(sumGroupedByFacility.timeseries).length > 0
+            "
+          >
+            <ApexTreemapWrapper :data="sumGroupedByFacility" />
+          </div>
+          <div v-else>
+            <p>{{ $t('report.noDataForReport') }}</p>
           </div>
         </template>
       </Card>
@@ -99,11 +116,17 @@
           </div>
         </template>
         <template #content>
-          <div class="report-chart-wrapper">
-            <ApexTreemapWrapper
-              v-if="sumGroupedByCategory"
-              :data="sumGroupedByCategory"
-            />
+          <div
+            class="report-chart-wrapper"
+            v-if="
+              sumGroupedByCategory &&
+              Object.keys(sumGroupedByCategory.timeseries).length > 0
+            "
+          >
+            <ApexTreemapWrapper :data="sumGroupedByCategory" />
+          </div>
+          <div v-else>
+            <p>{{ $t('report.noDataForReport') }}</p>
           </div>
         </template>
       </Card>

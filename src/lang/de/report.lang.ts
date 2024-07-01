@@ -24,7 +24,7 @@ export default {
     headingScope: 'CO<sub>2</sub> Emissionen, aufgeteilt nach Scope',
     total: 'Gesamt',
     amountLastYears: 'Mengen der letzten Berichtsjahre',
-    divisionOrigins: 'Aufteilung der Ursprünge',
+    divisionOrigins: 'Kategorien der Herkunft',
     headingScopeYear:
       'CO<sub>2</sub> Emissionen, aufgeteilt nach Scope und Jahr',
     headingReportTime:
@@ -33,4 +33,9 @@ export default {
     status: 'Status',
     amount: 'Menge',
   },
+  noData: 'Leider noch keine Daten zur Ansicht verfügbar.',
+  noDataForReport: 'Leider noch keine Daten für diesen Report verfügbar.',
+  noCompanyData:
+    'Bitte füllen Sie zuerst die Unternehmensdaten für den Bericht aus.',
+  noActions: 'Noch keine Maßnamen vorhanden.',
 };

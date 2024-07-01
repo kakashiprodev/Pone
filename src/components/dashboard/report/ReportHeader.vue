@@ -1,31 +1,33 @@
 <template>
-  <Card v-if="global.selectedReport" class="h-full">
-    <template #header>
-      <div class="psm-report-header">
-        <h3>{{ $t('report.company') }}</h3>
-      </div>
-    </template>
-    <template #content>
+  <template v-if="report">
+    <template
+      v-if="
+        report.company_name !== '' &&
+        report.company_street !== '' &&
+        report.company_postal !== '' &&
+        report.company_city !== ''
+      "
+    >
       <div class="report-section">
         <h3 class="report-section__heading mb-2">
-          {{ global.selectedReport.company_name }}
+          {{ report.company_name }}
         </h3>
         <div class="report-section__address mb-4">
           <p>
-            {{ global.selectedReport.company_street }},
-            {{ global.selectedReport.company_postal }}
-            {{ global.selectedReport.company_city }}
+            {{ report.company_street }},
+            {{ report.company_postal }}
+            {{ report.company_city }}
           </p>
-          <p>{{ global.selectedReport.company_country }}</p>
+          <p>{{ report.company_country }}</p>
         </div>
         <p class="report-row">
           <span>{{ $t('report.year') }}</span>
-          <span>{{ global.selectedReport.year }}</span>
+          <span>{{ report.year }}</span>
         </p>
 
         <p class="report-row">
           <span>{{ $t('report.domain') }}</span>
-          <span>{{ global.selectedReport.company_domain }}</span>
+          <span>{{ report.company_domain }}</span>
         </p>
       </div>
 
@@ -34,24 +36,24 @@
         <p class="report-row">
           <span>{{ $t('report.contactName') }}</span>
           <span
-            ><span>{{ global.selectedReport.contact_name }}</span></span
+            ><span>{{ report.contact_name }}</span></span
           >
         </p>
         <p class="report-row">
           <span>E-Mail</span>
-          <span>{{ global.selectedReport.contact_email }}</span>
+          <span>{{ report.contact_email }}</span>
         </p>
         <p class="report-row">
           <span>{{ $t('report.contactPhone') }}</span>
-          <span>{{ global.selectedReport.contact_telephone }}</span>
+          <span>{{ report.contact_telephone }}</span>
         </p>
         <p class="report-row">
           <span>{{ $t('report.contactEmail') }}</span>
-          <span>{{ global.selectedReport.contact_email }}</span>
+          <span>{{ report.contact_email }}</span>
         </p>
         <p class="report-row">
           <span>{{ $t('report.contactDepartment') }}</span>
-          <span>{{ global.selectedReport.contact_domain }}</span>
+          <span>{{ report.contact_domain }}</span>
         </p>
       </div>
 
@@ -60,32 +62,35 @@
         <p class="report-row">
           <span>{{ $t('report.countEmployees') }}</span>
           <span>
-            {{ numberToGroupedString(global.selectedReport.count_employees) }}
+            {{ numberToGroupedString(report.count_employees) }}
           </span>
         </p>
         <p class="report-row">
           <span>{{ $t('report.businessTurnover') }}</span>
-          <span
-            >{{
-              numberToGroupedString(global.selectedReport.business_turnover)
-            }}
-            €</span
-          >
+          <span>{{ numberToGroupedString(report.business_turnover) }} €</span>
         </p>
         <p class="report-row">
           <span>{{ $t('report.refYear') }}</span>
-          <span>{{ global.selectedReport.base_year }}</span>
+          <span>{{ report.base_year }}</span>
         </p>
       </div>
     </template>
-  </Card>
+  </template>
+  <template v-else>
+    <div class="report-no-data">
+      <p>{{ $t('report.noCompanyData') }}</p>
+    </div>
+  </template>
 </template>
 
 <script setup lang="ts">
 import { numberToGroupedString } from '@/services/helper';
 import { useGlobalStore } from '../../../stores/global';
+import { computed } from 'vue';
 
 const global = useGlobalStore();
+
+const report = computed(() => global.selectedReport);
 </script>
 
 <style scoped>
