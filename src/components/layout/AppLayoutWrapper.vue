@@ -7,6 +7,25 @@
         'bg-stone-900': global.theme !== 'light',
       }"
     >
+      <span>User</span>
+      <Chip
+        :label="global.selectedSite?.name"
+        :class="{
+          'bg-slate-200': global.theme === 'light',
+          'bg-stone-700': global.theme !== 'light',
+        }"
+      >
+        <span>{{ authStore.user.username }}</span>
+      </Chip>
+    </div>
+
+    <div
+      class="flex flex-col gap-3 w-full mt-3 rounded-xl p-3"
+      :class="{
+        'bg-slate-100': global.theme === 'light',
+        'bg-stone-900': global.theme !== 'light',
+      }"
+    >
       <Chip
         :label="global.selectedSite?.name"
         :class="{
@@ -246,6 +265,7 @@ import { ref, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useAuth0 } from '@auth0/auth0-vue';
 import dataprovider from '@/services/dataprovider';
+import { authStore } from '@/main';
 
 const { logout } = useAuth0();
 const { t } = useI18n();
