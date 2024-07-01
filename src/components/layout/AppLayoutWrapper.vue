@@ -152,7 +152,50 @@
     </template>
 
     <template #sidebar>
-      <div>
+      <div v-if="route.name === 'onboarding-wizard'">
+        <PanelMenu
+          :model="[
+            {
+              label: 'On-Boarding',
+              icon: 'fa-solid fa-home',
+              to: '/onboarding-wizard',
+            },
+            {
+              label: 'Überspringen',
+              icon: 'fa-solid fa-arrow-right',
+              to: '/inputs',
+            },
+          ]"
+          class="less-padding"
+        >
+          <template #item="{ item }">
+            <router-link
+              class="flex items-center px-3 py-2 cursor-pointer no-underline"
+              :class="{
+                'text-white': global.theme !== 'light',
+                'text-slate-600': global.theme === 'light',
+              }"
+              :to="item.to ?? ''"
+              :exact-active-class="'active-route'"
+            >
+              <span
+                :class="[item.icon, 'text-primary', 'sidebar-item-custom']"
+                style="color: var(--primary-color)"
+              />
+              <span
+                :class="[
+                  'ml-2',
+                  { 'font-semibold': item.items },
+                  'sidebar-item-custom',
+                ]"
+              >
+                {{ item.label }}
+              </span>
+            </router-link>
+          </template>
+        </PanelMenu>
+      </div>
+      <div v-else>
         <template v-for="item in sidebar.filter((i) => !i.hide)">
           <div
             class="rounded-sm mt-2 pt-1 category-item"

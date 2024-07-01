@@ -75,9 +75,7 @@
         </p>
       </div>
     </template>
-  </template>
-  <template v-else>
-    <div class="report-no-data">
+    <div v-else>
       <p>{{ $t('report.noCompanyData') }}</p>
     </div>
   </template>

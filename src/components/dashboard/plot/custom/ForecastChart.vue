@@ -16,7 +16,11 @@
     label="Soll/Ist-Analyse"
   />
   <div v-else>
-    <p>{{ $t('report.noDataForReport') }}</p>
+    <Card>
+      <template #content>
+        {{ $t('report.noDataForReport') }}
+      </template>
+    </Card>
   </div>
 </template>
 

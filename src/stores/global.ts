@@ -216,14 +216,24 @@ export const useGlobalStore = defineStore('global', {
         await this.refreshReports(true);
       }
       await this.refreshEquivalents(true);
+
+      // load the targets for the selected report
+      if (projectHadToBeCreated) {
+        console.log(
+          'A new project was created. Redirect to onboarding wizard and add the default target.',
+        );
+        dataprovider.createTarget({
+          id: 'new',
+          report: this.selectedReport?.id ?? '',
+          year: 2040,
+          percentage: 100,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        });
+      }
       await this.refreshTargets();
 
-      if (projectHadToBeCreated) {
-        console.log('projectHadToBeCreated');
-      }
-
       this.isLoading = false;
-
       return {
         redirect: projectHadToBeCreated ? 'onboarding-wizard' : undefined,
       };

@@ -113,14 +113,22 @@
           </div>
         </template>
         <template #content>
-          <div class="report-chart-wrapper">
+          <div
+            class="report-chart-wrapper"
+            v-if="
+              sumGroupedByScopeAndYear != null &&
+              Object.keys(sumGroupedByScopeAndYear?.yearlyGrouped).length > 0
+            "
+          >
             <ApexGroupedChartWrapper
-              v-if="sumGroupedByScopeAndYear != null"
               :data="sumGroupedByScopeAndYear"
               :horizontal="true"
               :stacked="true"
               type="bar"
             />
+          </div>
+          <div v-else>
+            <p>{{ $t('report.noDataForReport') }}</p>
           </div>
         </template>
       </Card>
