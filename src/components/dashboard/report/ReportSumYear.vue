@@ -170,7 +170,6 @@ import ApexGroupedChartWrapper from '../plot/apex/ApexGroupedChartWrapper.vue';
 import ReportSpacer from './ReportSpacer.vue';
 import TextBarList from '../plot/custom/TextBarList.vue';
 import ApexTreemapWrapper from '../plot/apex/ApexTreemapWrapper.vue';
-import Timeline from 'primevue/timeline';
 import HorizontalOneColLayout from './HorizontalOneColLayout.vue';
 import Config from '../../../config';
 // import { error } from '../../services/toast';

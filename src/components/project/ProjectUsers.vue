@@ -23,9 +23,7 @@
 import { ref, Ref, onMounted } from 'vue';
 import { useGlobalStore } from '../../stores/global';
 import { useConfirm } from 'primevue/useconfirm';
-import { ProjectEntry } from '../../services/types';
 import { error, info } from '../../services/ui/toast';
-import dataprovider from '@/services/dataprovider';
 
 const global = useGlobalStore();
 const confirm = useConfirm();
@@ -36,7 +34,7 @@ const add = () => {
   // ...
 };
 
-const confirmDrop = async (project: ProjectEntry, event: any) => {
+const confirmDrop = async (_data: any, event: any) => {
   confirm.require({
     target: event.currentTarget,
     message: 'Soll dieses Projekt wirklich gelöscht werden?',
@@ -44,6 +42,7 @@ const confirmDrop = async (project: ProjectEntry, event: any) => {
     accept: async () => {
       try {
         // ...
+        info('User entfernt');
       } catch (e) {
         error(e + '');
       }

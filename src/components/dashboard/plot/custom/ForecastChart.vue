@@ -15,22 +15,30 @@
     :annotations="annotations"
     label="Soll/Ist-Analyse"
   />
+  <div v-else>
+    <p>{{ $t('report.noDataForReport') }}</p>
+  </div>
 </template>
 
 <script setup lang="ts">
 import {
   calculateEmissions,
-  getAverageValues,
   EmissionResult,
   EmissionValue,
   OldReportValues,
 } from '../../../../services/reporting/forecast';
 import dataprovider from '../../../../services/dataprovider';
-import { ref, Ref } from 'vue';
-import { error, warn } from '../../../../services/ui/toast';
+import { PropType, ref, Ref } from 'vue';
 import ForecastChartWrapper from '../../../../components/dashboard/plot/apex/ForecastChartWrapper.vue';
 import { getPlainReportData } from '@/services/reporting';
 import { globalStore } from '@/main';
+
+const props = defineProps({
+  sites: {
+    type: Object as PropType<string[]>,
+    required: true,
+  },
+});
 
 function prepareAnnotationsData(options: {
   actions: any[];
@@ -114,7 +122,7 @@ function prepareChartData(emissionValues: EmissionValue[], actions: any[]) {
     {
       type: 'line',
       name: 'Zielwert nach Projektvorgaben (linear interpoliert)',
-      data: getAverageValues(targetValueInterpolated),
+      data: targetValueInterpolated,
     },
   ];
   return { labels, datasets };
@@ -139,11 +147,19 @@ const getData = async () => {
   const actions = await dataprovider.readActions(true); // get all actions with values in "to"
   const reports = await dataprovider.readReports();
 
+  if (targets.length === 0) {
+    console.error('No targets found');
+    return;
+  }
+
   const oldValues: OldReportValues[] = [];
+
+  // get all real real report values and get the sum
+  // this is the yearly report value
   for (const report of reports) {
     const inputs = await getPlainReportData({
       projectId: globalStore.selectedProject?.id ?? '',
-      siteIds: [], // HACK
+      siteIds: props.sites,
       filter: { years: [report.year] },
       scaling: 0.001, // get values in "to"
     });
@@ -156,29 +172,20 @@ const getData = async () => {
       });
     }
   }
-  // if (oldValues.length === 0) {
-  //   error(
-  //     'Es gibt noch keine nutzbaren Daten in den Berichten. Die Summe aus mind. einem Bericht muss > 0 sein.',
-  //   );
-  //   return;
-  // }
-  // if (targets.length === 0) {
-  //   error(
-  //     'Es wurden noch keine Ziele im Projekt definiert. Bitte legen Sie zuerst Ziele an.',
-  //   );
-  //   return;
-  // }
-  // if (actions.length === 0) {
-  //   warn(
-  //     'Es wurden noch keine Maßnahmen im Projekt definiert. Das Ergebnis resultiert nur aus den gesetzen Zielen.',
-  //   );
-  // }
+
+  if (oldValues.length === 0) {
+    console.error('No report values found');
+    return;
+  }
+
   reportData.value = calculateEmissions(
     oldValues,
     targets,
     actions,
-    oldValues[0].year,
+    oldValues[0].year, // the last year
+    oldValues[0].value, // the last value
   );
+
   barChartYear.value = prepareChartData(
     reportData.value.yearlyResults,
     actions,

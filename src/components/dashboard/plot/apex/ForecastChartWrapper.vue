@@ -87,6 +87,7 @@ const chartOptions = ref({
   annotations,
   stroke: {
     width: [0, 0],
+    curve: 'straight',
   },
   colors: ['#02434f', '#888888'],
   plotOptions: {

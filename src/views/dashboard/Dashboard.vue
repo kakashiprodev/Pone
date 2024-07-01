@@ -21,7 +21,7 @@
       </TabPanel>
 
       <TabPanel :header="$t('dashboard.comparison')">
-        <ForecastChart />
+        <ForecastChart :sites="[global.selectedSite?.id ?? '']" />
       </TabPanel>
 
       <TabPanel :header="$t('dashboard.actionsAndTargets')">

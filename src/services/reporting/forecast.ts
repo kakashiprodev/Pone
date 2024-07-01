@@ -41,184 +41,223 @@ export interface EmissionResult {
 }
 
 export function calculateEmissions(
-  oldValues: OldReportValues[],
+  reportValues: OldReportValues[],
   targets: TargetEntry[],
   actions: ActionEntry[],
   referenceYear: number,
+  referenceValue: number,
 ): EmissionResult {
-  if (oldValues.length === 0) {
+  if (reportValues.length === 0) {
     throw new Error('No old values given');
   }
 
-  // sort old values from old to new
-  oldValues.sort((a, b) => a.year - b.year);
-
-  // sort targets from old to new
+  // Sort old values and targets from old to new
+  reportValues.sort((a, b) => a.year - b.year);
   targets.sort((a, b) => a.year - b.year);
 
-  // create a map of the old values
+  // Create a map of the old values
   const emissions = new Map<number, number>();
-  oldValues.forEach((val) => emissions.set(val.year, val.value));
+  reportValues.forEach((val) => emissions.set(val.year, val.value));
 
-  // get the reference value
-  const referenceValue = emissions.get(referenceYear);
-  if (!referenceValue) {
-    throw new Error(`No reference value for year ${referenceYear}`);
-  }
-
-  // last year from old values
-  const startYear = oldValues[0].year;
-  // last year from targets
+  const startYear = reportValues[0].year;
   const endYear = targets[targets.length - 1].year;
 
-  // iterate from start to end and calculate the emissions per month
-  const monthlyResults = [];
-  const yearlyResults = [];
+  const monthlyResults: EmissionValue[] = [];
+  const yearlyResults: EmissionValue[] = [];
 
-  // set the main target percentage here since this will effect all years after start year of the target
-  let actualTargetPercentage = 0;
+  // set some starting values
+  let targetInPercentPointer = 0; // start with 0% target
+  let interpolatedPercentagePartPerYear = getInterpolationPartUntilNextTarget(
+    targets,
+    startYear,
+    0,
+    0,
+  );
+  let interpolatedPercentagePartPointer = 0;
   let actualSustractionValue = 0;
-
-  // calculate the fixes monthly value for the years without targets and actions
   const referenceValuePerMonth = referenceValue / 12;
 
+  // iterate over all years
   for (let year = startYear; year <= endYear; year++) {
-    // check if a real value exists for the year. if not use the reference value
-    const yearValue: number = emissions.get(year) ?? referenceValue;
+    const yearValue = emissions.get(year) ?? referenceValue; // use reference value if no report value exists for this year
+    const target = targets.find((t) => t.year === year); // check if a new target exists for this year. if not, use the last one
 
-    // check if a target in [%] exists for the year. if not use 0[%]
-    const target = targets.find((t) => t.year === year);
-    // overwrite the target percentage if a target exists. if not use the old target percentage
-    actualTargetPercentage = target
-      ? target.percentage
-      : actualTargetPercentage;
+    // is a new target set this year?
+    if (target) {
+      targetInPercentPointer = target.percentage; // else use the last one
 
-    // normal value for the month including calulations of targets
-    const absoluteValueForYear = yearValue * (1 - actualTargetPercentage / 100);
+      // find the next target
+      // if there is a next target, interpolate the percentage between the two targets as a yearly value
+      // e.g. target 1: 2020, 10%, target 2: 2022, 40%, ...
+      interpolatedPercentagePartPerYear = getInterpolationPartUntilNextTarget(
+        targets,
+        year,
+        target.percentage,
+        interpolatedPercentagePartPerYear,
+      );
+    }
 
-    // normal monthly value for the month without actions and targets
+    // calculate the interpolated absolute value that needs to be subtracted this year
+
+    const absoluteValueForYear = yearValue * (1 - targetInPercentPointer / 100);
+    const absoluteValueForYearInterpolated =
+      (referenceValue * (100 - interpolatedPercentagePartPointer)) / 100;
+    interpolatedPercentagePartPointer += interpolatedPercentagePartPerYear;
+
     const absoluteValuePerMonth = absoluteValueForYear / 12;
 
-    // iterate over the months of the year
     let amount = 0;
     for (let month = 1; month <= 12; month++) {
-      // check if an action exists for the year and the actual pointer month. if not use 0.
-      const actionsEffect = actions
-        .filter((action) => {
-          if (!action.finished_until_planned || !action.relevant) {
-            return false;
-          }
-          const date = new Date(action.finished_until_planned);
-          return date.getFullYear() === year && date.getMonth() === month - 1;
-        })
-        .reduce((acc, action) => acc + action.target_value_absolut_planned, 0);
-
-      // add this value (part for one month) to the floating subtraction value
+      const actionsEffect = calculateActionsEffect(actions, year, month);
       actualSustractionValue += actionsEffect / 12;
 
-      // calculate the real value for the month minus the comulated actions
       const withActions = referenceValuePerMonth - actualSustractionValue;
       amount += withActions;
 
-      monthlyResults.push({
-        realReportValue:
-          year === referenceYear && month === 1 ? referenceValue : null,
-        date: new Date(year, month - 1).toISOString(),
-        refValue: referenceValuePerMonth,
-        targetValue: absoluteValuePerMonth,
-        realValueWithActions: withActions,
-        savedAbsolut: absoluteValuePerMonth - withActions,
-        percentageToRef: actualTargetPercentage,
-      });
+      monthlyResults.push(
+        createMonthlyResult(
+          year,
+          month,
+          referenceYear,
+          referenceValue,
+          referenceValuePerMonth,
+          absoluteValuePerMonth,
+          withActions,
+          targetInPercentPointer,
+        ),
+      );
     }
 
-    // search again for all actions that are in this year
-    const yearlyActionEffect = actions
-      .filter((action) => {
-        if (!action.finished_until_planned || !action.relevant) {
-          return false;
-        }
-        const date = new Date(action.finished_until_planned);
-        return date.getFullYear() === year;
-      })
-      .reduce((acc, action) => acc + action.target_value_absolut_planned, 0);
+    const yearlyActionEffect = calculateYearlyActionsEffect(actions, year);
+    const realValueWithActionsInterpolated =
+      calculateRealValueWithActionsInterpolated(
+        year,
+        yearlyActionEffect,
+        startYear,
+        endYear,
+        amount,
+        referenceValue,
+      );
 
-    // actionbases only will be only set if new actions are done in this year
-    // but also the first and the last year are needed to draw the graph
-    let realValueWithActionsInterpolated = null;
-    if (yearlyActionEffect > 0 || year === endYear) {
-      realValueWithActionsInterpolated = amount;
-    } else if (year === startYear) {
-      realValueWithActionsInterpolated = referenceValue;
-    }
-    let targetValueInterpolated = null;
-    if (target) {
-      targetValueInterpolated = referenceValue * (1 - target.percentage / 100);
-    } else if (year === startYear) {
-      targetValueInterpolated = referenceValue;
-    }
-
-    // add values for the year
-    const yearResult: EmissionValue = {
-      realReportValue: year === referenceYear ? referenceValue : null,
-      date: new Date(year, 0).toISOString(),
-      refValue: referenceValue,
-      targetValue: referenceValue * (1 - actualTargetPercentage / 100),
-      realValueWithActions: amount,
-      percentageToRef: actualTargetPercentage,
-      savedAbsolut: absoluteValueForYear - amount,
-      realValueWithActionsInterpolated,
-      targetValueInterpolated,
-    };
-    yearlyResults.push(yearResult);
+    yearlyResults.push(
+      createYearlyResult(
+        year,
+        referenceYear,
+        referenceValue,
+        targetInPercentPointer,
+        absoluteValueForYear,
+        amount,
+        realValueWithActionsInterpolated,
+        absoluteValueForYearInterpolated,
+      ),
+    );
   }
 
   return { yearlyResults, monthlyResults };
 }
 
-// accepts an array of numbers or null values and gets the average values instead of the null values
-// Necessary for apexcharts to draw a line with interpolated values in a mixed chart
-export function getAverageValues(
-  arr: Array<number | null | undefined>,
-): Array<any> {
-  let result = [...arr];
-
-  for (let i = 0; i < result.length; i++) {
-    if (result[i] === null) {
-      // Find the previous non-null value
-      let startIndex = i - 1;
-      while (startIndex >= 0 && result[startIndex] === null) {
-        startIndex--;
-      }
-      const startValue = startIndex >= 0 ? result[startIndex] : null;
-
-      // Find the next non-null value
-      let endIndex = i + 1;
-      while (endIndex < result.length && result[endIndex] === null) {
-        endIndex++;
-      }
-      const endValue = endIndex < result.length ? result[endIndex] : null;
-
-      // If both startValue and endValue are non-null, interpolate
-      if (startValue && endValue) {
-        const gap = endIndex - startIndex;
-        const step = (endValue - startValue) / gap;
-        for (let j = startIndex + 1; j < endIndex; j++) {
-          result[j] = startValue + step * (j - startIndex);
-        }
-      } else {
-        // If one of the ends is null, fill all values with the non-null end value
-        // Or use 0 if both ends are null (though this case should ideally not happen in chart data)
-        const fillValue =
-          startValue !== null ? startValue : endValue !== null ? endValue : 0;
-        for (let j = startIndex + 1; j <= endIndex - 1; j++) {
-          result[j] = fillValue;
-        }
-      }
-    }
+function getInterpolationPartUntilNextTarget(
+  targets: TargetEntry[],
+  year: number,
+  lastValue: number,
+  interpolatedPercentagePartPerYear: number,
+) {
+  const nextTarget = targets.find((t) => t.year > year);
+  if (nextTarget) {
+    const yearsBetweenTargets = nextTarget.year - year;
+    const percentageDifference = nextTarget.percentage - lastValue;
+    interpolatedPercentagePartPerYear =
+      percentageDifference / yearsBetweenTargets;
   }
+  return interpolatedPercentagePartPerYear;
+}
 
-  return result;
+function calculateActionsEffect(
+  actions: ActionEntry[],
+  year: number,
+  month: number,
+): number {
+  return actions
+    .filter((action) => action.relevant && action.finished_until_planned)
+    .filter((action) => {
+      const date = new Date(action.finished_until_planned!);
+      return date.getFullYear() === year && date.getMonth() === month - 1;
+    })
+    .reduce((acc, action) => acc + action.target_value_absolut_planned, 0);
+}
+
+function calculateYearlyActionsEffect(
+  actions: ActionEntry[],
+  year: number,
+): number {
+  return actions
+    .filter((action) => action.relevant && action.finished_until_planned)
+    .filter(
+      (action) =>
+        new Date(action.finished_until_planned!).getFullYear() === year,
+    )
+    .reduce((acc, action) => acc + action.target_value_absolut_planned, 0);
+}
+
+function createMonthlyResult(
+  year: number,
+  month: number,
+  referenceYear: number,
+  referenceValue: number,
+  referenceValuePerMonth: number,
+  absoluteValuePerMonth: number,
+  withActions: number,
+  targetInPercentPointer: number,
+): EmissionValue {
+  return {
+    realReportValue:
+      year === referenceYear && month === 1 ? referenceValue : null,
+    date: new Date(year, month - 1).toISOString(),
+    refValue: referenceValuePerMonth,
+    targetValue: absoluteValuePerMonth,
+    realValueWithActions: withActions,
+    savedAbsolut: absoluteValuePerMonth - withActions,
+    percentageToRef: targetInPercentPointer,
+  };
+}
+
+function createYearlyResult(
+  year: number,
+  referenceYear: number,
+  referenceValue: number,
+  targetInPercentPointer: number,
+  absoluteValueForYear: number,
+  amount: number,
+  realValueWithActionsInterpolated: number | null,
+  targetValueInterpolated: number | null,
+): EmissionValue {
+  return {
+    realReportValue: year === referenceYear ? referenceValue : null,
+    date: new Date(year, 0).toISOString(),
+    refValue: referenceValue,
+    targetValue: referenceValue * (1 - targetInPercentPointer / 100),
+    realValueWithActions: amount,
+    percentageToRef: targetInPercentPointer,
+    savedAbsolut: absoluteValueForYear - amount,
+    realValueWithActionsInterpolated,
+    targetValueInterpolated,
+  };
+}
+
+function calculateRealValueWithActionsInterpolated(
+  year: number,
+  yearlyActionEffect: number,
+  startYear: number,
+  endYear: number,
+  amount: number,
+  referenceValue: number,
+): number | null {
+  if (yearlyActionEffect > 0 || year === endYear) {
+    return amount;
+  } else if (year === startYear) {
+    return referenceValue;
+  }
+  return null;
 }
 
 // formats numbers to the german format (1.000,00), optional number of fractiondigits
