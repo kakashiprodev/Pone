@@ -7,7 +7,7 @@
         'bg-stone-900': global.theme !== 'light',
       }"
     >
-      <span>User</span>
+      <span>Benutzer</span>
       <Chip
         :label="global.selectedSite?.name"
         :class="{
