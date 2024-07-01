@@ -42,11 +42,7 @@
       </template>
       <template #content>
         <div class="report-chart-wrapper">
-          <ApexSumChartWrapper
-            v-if="sumGroupedByCategory"
-            type="radar"
-            :data="sumGroupedByCategory"
-          />
+          <ApexSumChartWrapper type="radar" :data="sumGroupedByCategory" />
         </div>
       </template>
     </Card>
@@ -177,27 +173,29 @@ const facilityList: Ref<{ name: string; value: number; status: boolean }[]> =
  */
 const getData = async () => {
   // get the data
-  sumGroupedByCategory.value = await getGroupedReportData(
-    <ReportTimeseriesQuery>{
-      projectId: global.selectedProject?.id || '',
-      siteIds: props.sites,
-      filter: {
-        scope: [props.scope],
-        years: [global.selectedReport?.year ?? -1],
-      },
+  const queryCategory: ReportTimeseriesQuery = {
+    projectId: global.selectedProject?.id || '',
+    siteIds: props.sites,
+    filter: {
+      scope: [props.scope],
+      years: [global.selectedReport?.year ?? -1],
     },
+  };
+  sumGroupedByCategory.value = await getGroupedReportData(
+    queryCategory,
     'category',
   );
 
-  sumGroupedByFacility.value = await getGroupedReportData(
-    <ReportTimeseriesQuery>{
-      projectId: global.selectedProject?.id || '',
-      siteIds: props.sites,
-      filter: {
-        scope: [props.scope],
-        years: [global.selectedReport?.year ?? -1],
-      },
+  const queryFacility: ReportTimeseriesQuery = {
+    projectId: global.selectedProject?.id || '',
+    siteIds: props.sites,
+    filter: {
+      scope: [props.scope],
+      years: [global.selectedReport?.year ?? -1],
     },
+  };
+  sumGroupedByFacility.value = await getGroupedReportData(
+    queryFacility,
     'facility',
   );
 

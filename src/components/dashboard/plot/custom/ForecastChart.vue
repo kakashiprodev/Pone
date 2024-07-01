@@ -156,23 +156,23 @@ const getData = async () => {
       });
     }
   }
-  if (oldValues.length === 0) {
-    error(
-      'Es gibt noch keine nutzbaren Daten in den Berichten. Die Summe aus mind. einem Bericht muss > 0 sein.',
-    );
-    return;
-  }
-  if (targets.length === 0) {
-    error(
-      'Es wurden noch keine Ziele im Projekt definiert. Bitte legen Sie zuerst Ziele an.',
-    );
-    return;
-  }
-  if (actions.length === 0) {
-    warn(
-      'Es wurden noch keine Maßnahmen im Projekt definiert. Das Ergebnis resultiert nur aus den gesetzen Zielen.',
-    );
-  }
+  // if (oldValues.length === 0) {
+  //   error(
+  //     'Es gibt noch keine nutzbaren Daten in den Berichten. Die Summe aus mind. einem Bericht muss > 0 sein.',
+  //   );
+  //   return;
+  // }
+  // if (targets.length === 0) {
+  //   error(
+  //     'Es wurden noch keine Ziele im Projekt definiert. Bitte legen Sie zuerst Ziele an.',
+  //   );
+  //   return;
+  // }
+  // if (actions.length === 0) {
+  //   warn(
+  //     'Es wurden noch keine Maßnahmen im Projekt definiert. Das Ergebnis resultiert nur aus den gesetzen Zielen.',
+  //   );
+  // }
   reportData.value = calculateEmissions(
     oldValues,
     targets,

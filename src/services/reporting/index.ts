@@ -366,7 +366,7 @@ const calculateEquivalentFactorWithSteps = (
     // @ts-ignore
     const monthlyEquivalentFactor: number =
       equivalent[month as keyof EquivalentEntry] != null &&
-        equivalent[month as keyof EquivalentEntry] != ''
+      equivalent[month as keyof EquivalentEntry] != ''
         ? equivalent[month as keyof EquivalentEntry]
         : equivalent.avg_value;
     // @ts-ignore
@@ -552,7 +552,8 @@ export const getPlainReportData = async (
     littleDataCache.data = data;
     littleDataCache.lease = new Date();
   } else {
-    data = littleDataCache.data;
+    // clone
+    data = JSON.parse(JSON.stringify(littleDataCache.data));
   }
 
   // scale all values by the given factor if needed
@@ -580,7 +581,9 @@ export const getGroupedReportData = async (
   query: ReportTimeseriesQuery,
   groupBy: ReportGroupBy,
 ): Promise<AggregatedReportResult> => {
+  // get the plain data
   const plainData: TimeseriesDataEntry[] = await getPlainReportData(query);
+
   const result: AggregatedReportResult = {
     stat: {
       sum: 0,
