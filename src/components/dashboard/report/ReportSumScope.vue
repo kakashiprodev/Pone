@@ -8,7 +8,7 @@
       <Card>
         <template #header>
           <div class="psm-report-header">
-            <h3 v-html="$t('report.sumScope.headingScope')" />
+            <h3 v-html="$t('report.sumScope.headingCategory')" />
           </div>
         </template>
         <template #content>
