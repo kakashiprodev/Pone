@@ -3,7 +3,7 @@
   <p>
     Die Soll/Ist-Analyse wertet die bekannten Berichtsdaten aus und zeigt die
     gesetzten Jahresziele im Vergleich. Die angegebenen Maßnahmen im Projekt
-    werden dabei ab Ihrem Inbetriebnahmedatum berücksichtigt. Der Refernzwert
+    werden dabei ab Ihrem Inbetriebnahmedatum berücksichtigt. Der Referenzwert
     ist der älteste Berichtswert des Projekts.
   </p>
   <!-- Chart as Mixed-Chart -->
