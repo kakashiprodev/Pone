@@ -104,6 +104,7 @@ const props = defineProps<{
   };
   triggerRefresh?: boolean;
   preSelectedScope: '1' | '2' | '3' | 'all';
+  preSelectedFacility: null | string;
 }>();
 watch(props, () => {
   filterData();
@@ -160,6 +161,11 @@ const filterData = () => {
         (props.filterScopes['2'] && item.scope === 2) ||
         (props.filterScopes['3'] && item.scope === 3)
       );
+    });
+  }
+  if (props.preSelectedFacility && props.preSelectedFacility !== '') {
+    filtered = filtered.filter((item) => {
+      return item.facility === props.preSelectedFacility;
     });
   }
 

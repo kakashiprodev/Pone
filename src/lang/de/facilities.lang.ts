@@ -1,4 +1,6 @@
 export default {
+  facility: 'Anlage',
+  filterOnFacilityActive: 'Gefiltert auf Anlage',
   heading: 'Übersicht aller Anlagen',
   inlineMsg:
     'Hier können Sie alle Ihre Anlagen anlegen, einsehen und bearbeiten. Jede\n' +
@@ -7,6 +9,7 @@ export default {
   onlyActive: 'Nur aktive Einträge anzeigen',
   description: 'Beschreibung',
   descriptionInline: 'Eine detaillierte Beschreibung der Anlage',
+  add: 'Anlage hinzufügen',
   create: 'Anlegen',
   edit: 'Bearbeiten',
   save: 'Speichern',
@@ -33,4 +36,6 @@ export default {
     manufacturer: 'Hersteller',
     model: 'Modell/Typ',
   },
+  delete: 'Löschen',
+  showInputs: 'Eingaben zur Anlage anzeigen',
 };

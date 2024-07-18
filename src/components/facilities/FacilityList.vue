@@ -52,16 +52,34 @@
     <Column header="">
       <template #body="{ data }">
         <div class="flex">
-          <Button icon="fa-solid fa-table-list" @click="openFacility(data)" />
+          <Button
+            icon="fa-solid fa-table-list"
+            @click="openFacility(data)"
+            v-tooltip.bottom="{
+              value: $t('facilities.showInputs'),
+              showDelay: 500,
+              hideDelay: 300,
+            }"
+          />
           <Button
             icon="fa-solid fa-edit"
             class="ml-1"
             @click="emit('edit', data)"
+            v-tooltip.bottom="{
+              value: $t('facilities.edit'),
+              showDelay: 500,
+              hideDelay: 300,
+            }"
           />
           <Button
             icon="fa-solid fa-trash"
             class="ml-1"
             @click="emit('delete', data, $event)"
+            v-tooltip.bottom="{
+              value: $t('facilities.delete'),
+              showDelay: 500,
+              hideDelay: 300,
+            }"
           />
         </div>
       </template>

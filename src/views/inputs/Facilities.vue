@@ -25,6 +25,11 @@
           showDialog = true;
         "
         class="mr-1"
+        v-tooltip.bottom="{
+          value: $t('facilities.add'),
+          showDelay: 500,
+          hideDelay: 300,
+        }"
       />
     </template>
   </Toolbar>

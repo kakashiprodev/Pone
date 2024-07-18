@@ -43,6 +43,11 @@
           :binary="true"
         />
         <label class="ml-1" for="scope3Active">3</label>
+        <label class="ml-4" v-if="preSelectedFacility"
+          >({{ $t('facilities.filterOnFacilityActive') }}: "{{
+            globalStore.facilitiesDict[preSelectedFacility]?.name ?? ''
+          }}")
+        </label>
       </template>
       <span class="ml-4"
         >{{ $t('inputs.amount') }}:
@@ -219,6 +224,7 @@
     "
     @delete="deleteEntry"
     :preSelectedScope="preSelectedScope"
+    :preSelectedFacility="preSelectedFacility"
     :filter="filter"
     :filterScopes="filterScopes"
     :triggerRefresh="triggerRefresh"
