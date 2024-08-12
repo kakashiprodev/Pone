@@ -98,7 +98,7 @@ const actionEntrySchema = v.object({
   target_value_absolut_is: v.pipe(v.number(), v.minValue(0)),
   description_target_value: v.pipe(v.string(), v.maxLength(4000)),
   finished_until_planned: v.date(),
-  finished_until_is: v.nullable(v.string()),
+  finished_until_is: v.nullable(v.date()),
   category: v.pipe(v.string(), v.minLength(1), v.maxLength(255)),
   costs_planned: v.pipe(v.number(), v.minValue(0)),
   costs_is: v.pipe(v.number(), v.minValue(0)),

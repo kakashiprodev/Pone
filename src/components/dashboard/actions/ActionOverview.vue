@@ -139,39 +139,6 @@ import ApexGaugeWrapper from '../../dashboard/plot/apex/ApexGaugeWrapper.vue';
 import ActionDumbbellChartWrapper from './ActionDumbbellChartWrapper.vue';
 import Config from '../../../config';
 
-/*
-// table "actions"
-export interface ActionEntry {
-  id: string;
-
-  // PM
-  responsible: string;
-  status: 'open' | 'inProgress' | 'finished' | 'canceled';
-  progress: number; // 0-100
-
-  relevant: boolean; // if false the action is not used in the calculation
-  site: string; // reference on table sites
-  name: string; // normal text
-
-  descriptionBefore: string; // rich text
-  descriptionAfter: string; // rich text
-
-  targetValueAbsolutPlanned: number; // planned target value to save
-  targetValueAbsolutIs: number; // actual target value to save
-  descriptionTargetValue: string; // rich text
-
-  finishedUntilPlanned: string | Date | null; // date
-  finishedUntilIs: string | Date | null; // date
-
-  category: string;
-
-  costsPlanned: number;
-  costsIs: number;
-  roi: number; // return of investment
-  descriptionCosts: string; // description of costs
-  avoidanceCosts: number; // de="vermeidungskosten"
-}
-*/
 const global = useGlobalStore();
 const actionCharacteristicsVisible = ref(false);
 const selectedAction = ref<ActionEntry | null>(null);
