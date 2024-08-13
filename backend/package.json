@@ -1,0 +1,19 @@
+{
+  "name": "psm-backend",
+  "module": "index.ts",
+  "type": "module",
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "hono": "^4.3.0",
+    "llamaindex": "^0.3.14",
+    "openai": "^4.40.2",
+    "pg": "^8.11.5",
+    "pgvector": "^0.1.8",
+    "sequelize": "^6.37.3"
+  }
+}
