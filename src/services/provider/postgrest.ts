@@ -18,15 +18,18 @@ import { getSumForInput } from '../reporting';
 import { UsersTopicAnswer } from '../csrd-esrs/topics';
 
 const REST_URL = import.meta.env.VITE_POSTGREST_URL as string;
+const USE_PROXY_SERVER = import.meta.env.VITE_USE_PROXY_SERVER || 'false';
 if (!REST_URL) {
   throw new Error('REST URL not found');
 }
+const API_URL =
+  USE_PROXY_SERVER === 'true' ? REST_URL + '/v1/collections' : REST_URL;
 
 export default class DataProvider {
   private postgrest: PostgrestClient;
 
   constructor() {
-    this.postgrest = new PostgrestClient(REST_URL, {
+    this.postgrest = new PostgrestClient(API_URL, {
       fetch: (url: any, options: any = {}) => {
         return fetch(url, {
           ...options,
@@ -40,7 +43,7 @@ export default class DataProvider {
   }
 
   initPostgrestClient() {
-    this.postgrest = new PostgrestClient(REST_URL, {
+    this.postgrest = new PostgrestClient(API_URL, {
       fetch: (url: any, options: any = {}) => {
         return fetch(url, {
           ...options,
@@ -54,11 +57,14 @@ export default class DataProvider {
   }
 
   async ensureUserIsExisting() {
-    await fetch(`${REST_URL}/rpc/ensure_user`, {
+    await fetch(`${API_URL}/rpc/ensure_user`, {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${authStore.user.token}`,
       },
+    }).catch((err) => {
+      console.log('error, ensureUserIsExisting: ', err);
+      return false;
     });
   }
 
@@ -650,7 +656,7 @@ export default class DataProvider {
   }
 
   async uploadImage(file: File) {
-    const r = await fetch(REST_URL + '/rpc/upload_media_image', {
+    const r = await fetch(API_URL + '/rpc/upload_media_image', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/octet-stream',
@@ -670,6 +676,6 @@ export default class DataProvider {
   }
 
   getRestUrl() {
-    return REST_URL;
+    return API_URL;
   }
 }

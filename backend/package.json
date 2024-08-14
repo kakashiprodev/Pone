@@ -9,7 +9,7 @@
     "typescript": "^5.0.0"
   },
   "dependencies": {
-    "hono": "^4.3.0",
+    "hono": "^4.5.5",
     "llamaindex": "^0.3.14",
     "openai": "^4.40.2",
     "pg": "^8.11.5",

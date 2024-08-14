@@ -95,16 +95,25 @@ app.get('/v1/ai/:var', getUserId, async (c) => {
  */
 app.all('/v1/collections/*', async (c) => {
   const url = getPostgrestUrl(c.req.url);
+  const body = await c.req.text();
+  const headers = new Headers(c.req.raw.headers);
+  headers.delete('host');
+
   const res = await fetch(url, {
     method: c.req.method,
-    headers: {
-      'Content-Type': c.req.header('Content-Type') || '',
-      Authorization: c.req.header('Authorization') || '',
-    },
-    body: c.req.raw.body,
+    headers,
+    body: body.length > 0 ? body : undefined,
   });
-  const newResponse = new Response(res.body, res);
-  return newResponse;
+
+  // No-Content response
+  if (res.status === 204) {
+    return new Response(null, res);
+  }
+  // All other responses
+  else {
+    const newResponse = new Response(res.body, res);
+    return newResponse;
+  }
 });
 
 /*
