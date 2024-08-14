@@ -1,7 +1,7 @@
-import { collectionPermissions } from '../../../lib/db/db-collections';
-import { ErrorWithLogging } from '../../../lib/log';
-import type { CrudPermission } from '../../../lib/types/permissions';
-import type { QueryParams } from './url-parser';
+import { collectionPermissions } from "../../../lib/db/db-collections";
+import { ErrorWithLogging } from "../../../lib/log";
+import type { CrudPermission } from "../../../lib/types/permissions";
+import type { QueryParams } from "./url-parser";
 
 interface PermissionDefinition {
   neededParameters?: {
@@ -12,8 +12,11 @@ interface PermissionDefinition {
   }[]; // URL Parameters that are needed for the query
   checkPermissionsFor?: {
     name: string;
-    checker: (userId: string, value: string) => Promise<CrudPermission>;
-    permission: 'create' | 'read' | 'write' | 'delete';
+    checker: (
+      userId: string,
+      value: string | string[]
+    ) => Promise<CrudPermission>;
+    permission: "create" | "read" | "write" | "delete";
   }[];
   columns?: any;
   // custom SQL actions
@@ -38,11 +41,11 @@ export interface PermissionDefinitionPerTable {
 
 export const getValueForEquals = (params: QueryParams, name: string) => {
   const value = params[name];
-  if (!value || value.operator !== 'eq') {
+  if (!value || (value.operator !== "eq" && value.operator !== "or")) {
     throw new ErrorWithLogging(
       `"${name}[eq]=<value>" is required`,
-      'debug',
-      'getValueForEquals',
+      "debug",
+      "getValueForEquals"
     );
   }
   return value.value;
@@ -51,15 +54,15 @@ export const getValueForEquals = (params: QueryParams, name: string) => {
 export const permissionCheckerViaUrlParams = async (
   definition: PermissionDefinition,
   userId: string,
-  params: QueryParams,
+  params: QueryParams
 ) => {
   if (definition.neededParameters) {
     for (const { name, operator, valueType } of definition.neededParameters) {
       if (!params[name] || params[name].operator !== operator) {
         throw new ErrorWithLogging(
           `"${name}[${operator}]=<${valueType}>" is required`,
-          'debug',
-          'permissionCheckerViaUrlParams',
+          "debug",
+          "permissionCheckerViaUrlParams"
         );
       }
     }
@@ -74,9 +77,9 @@ export const permissionCheckerViaUrlParams = async (
       const p = await checker(userId, value);
       if (!p[permission]) {
         throw new ErrorWithLogging(
-          'No Permission',
-          'debug',
-          'permissionCheckerViaUrlParams',
+          "No Permission",
+          "debug",
+          "permissionCheckerViaUrlParams"
         );
       }
     }
@@ -86,7 +89,7 @@ export const permissionCheckerViaUrlParams = async (
 export const permissionCheckerViaBody = async (
   definition: PermissionDefinition,
   userId: string,
-  body: any,
+  body: any
 ) => {
   if (definition.checkPermissionsFor) {
     for (const {
@@ -98,9 +101,9 @@ export const permissionCheckerViaBody = async (
       const p = await checker(userId, value);
       if (!p[permission]) {
         throw new ErrorWithLogging(
-          'No Permission',
-          'debug',
-          'permissionCheckerViaBody',
+          "No Permission",
+          "debug",
+          "permissionCheckerViaBody"
         );
       }
     }
@@ -109,14 +112,14 @@ export const permissionCheckerViaBody = async (
 
 export const getPermissionDefinionForMethod = (
   tableName: string,
-  method: string,
+  method: string
 ): PermissionDefinition => {
   const definition = collectionPermissions[tableName]?.[method];
   if (!definition) {
     throw new ErrorWithLogging(
       `No permission definition found for table "${tableName}" and method "${method}"`,
-      'debug',
-      'getPermissionDefinionForMethod',
+      "debug",
+      "getPermissionDefinionForMethod"
     );
   }
   return definition;

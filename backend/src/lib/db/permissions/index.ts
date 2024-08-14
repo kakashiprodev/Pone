@@ -1,8 +1,8 @@
-import type { CrudPermission } from './../../types/permissions';
+import type { CrudPermission } from "./../../types/permissions";
 
 export const getPermissionForProject = async (
   userId: string,
-  projectId: string,
+  projectId: string | string[]
 ): Promise<CrudPermission> => {
   return {
     read: true,
@@ -14,7 +14,7 @@ export const getPermissionForProject = async (
 
 export const getPermissionForSite = async (
   userId: string,
-  siteId: string,
+  siteId: string | string[]
 ): Promise<CrudPermission> => {
   return {
     read: true,
@@ -26,7 +26,7 @@ export const getPermissionForSite = async (
 
 export const getPermissionsForReport = async (
   userId: string,
-  reportId: string,
+  reportId: string | string[]
 ): Promise<CrudPermission> => {
   return {
     read: true,
@@ -37,9 +37,9 @@ export const getPermissionsForReport = async (
 };
 
 export const getPermissionForSystemEquvalents = async (
-  userId: string,
+  userId: string
 ): Promise<CrudPermission> => {
-  if (userId === 'admin') {
+  if (userId === "admin") {
     return {
       read: true,
       write: true,
@@ -57,7 +57,7 @@ export const getPermissionForSystemEquvalents = async (
 };
 
 export const getPermissionForUserId = async (
-  userId: string,
+  userId: string
 ): Promise<CrudPermission> => {
   return {
     read: true,
