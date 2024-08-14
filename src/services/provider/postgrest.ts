@@ -23,7 +23,7 @@ if (!REST_URL) {
   throw new Error('REST URL not found');
 }
 const API_URL =
-  USE_PROXY_SERVER === 'true' ? REST_URL + '/v1/collections' : REST_URL;
+  USE_PROXY_SERVER === 'true' ? REST_URL + '/v1/db/postgrest' : REST_URL;
 
 export default class DataProvider {
   private postgrest: PostgrestClient;

@@ -125,7 +125,7 @@ app.all('/v1/db/collections/:name/:id?', async (c: Context) => {
 /**
  * PROXY for PostgREST
  */
-app.all('/v1/collections/*', async (c: Context) => {
+app.all('/v1/db/postgrest/*', async (c: Context) => {
   const url = getPostgrestUrl(c.req.url);
   const body = await c.req.text();
   const headers = new Headers(c.req.raw.headers);

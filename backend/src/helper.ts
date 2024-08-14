@@ -32,7 +32,7 @@ export const getPostgrestUrl = (fullUrl: string) => {
   return (
     POSTGREST_URL +
     fullUrl
-      .slice(fullUrl.indexOf('/v1/collections/'))
-      .replace('/v1/collections', '')
+      .slice(fullUrl.indexOf('/v1/db/postgrest/'))
+      .replace('/v1/db/postgrest', '')
   );
 };
