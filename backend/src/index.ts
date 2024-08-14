@@ -3,6 +3,16 @@ import { logger } from 'hono/logger';
 import { cors } from 'hono/cors';
 import { jwt } from 'hono/jwt';
 import { getPostgrestUrl, validateAllEnvVariables } from './helper';
+import { HTTPException } from 'hono/http-exception';
+import {
+  GET as collectionsGET,
+  POST as collectionsPOST,
+} from './routes/collections/[name]';
+import {
+  GET as collectionsWithIdGET,
+  PUT as collectionsWithIdPUT,
+  DELETE as collectionsWithIdDELETE,
+} from './routes/collections/[name]/[id]';
 
 /**
  * validate .ENV variables
@@ -91,9 +101,36 @@ app.get('/v1/ai/:var', getUserId, async (c) => {
 });
 
 /**
+ * Collections endpoint
+ */
+app.all('/v1/db/collections/:name/:id?', async (c: Context) => {
+  // check if id is set
+  const id = c.req.param('id');
+  if (!id) {
+    if (c.req.method === 'GET') {
+      return collectionsGET(c);
+    } else if (c.req.method === 'POST') {
+      return collectionsPOST(c);
+    } else {
+      throw new HTTPException(405, { message: 'Method not allowed' });
+    }
+  } else {
+    if (c.req.method === 'GET') {
+      return collectionsWithIdGET(c);
+    } else if (c.req.method === 'PUT') {
+      return collectionsWithIdPUT(c);
+    } else if (c.req.method === 'DELETE') {
+      return collectionsWithIdDELETE(c);
+    } else {
+      throw new HTTPException(405, { message: 'Method not allowed' });
+    }
+  }
+});
+
+/**
  * PROXY for PostgREST
  */
-app.all('/v1/collections/*', async (c) => {
+app.all('/v1/collections/*', async (c: Context) => {
   const url = getPostgrestUrl(c.req.url);
   const body = await c.req.text();
   const headers = new Headers(c.req.raw.headers);

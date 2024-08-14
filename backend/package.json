@@ -9,11 +9,19 @@
     "typescript": "^5.0.0"
   },
   "dependencies": {
+    "drizzle-kit": "^0.24.0",
+    "drizzle-orm": "^0.33.0",
     "hono": "^4.5.5",
     "llamaindex": "^0.3.14",
     "openai": "^4.40.2",
     "pg": "^8.11.5",
     "pgvector": "^0.1.8",
     "sequelize": "^6.37.3"
+  },
+  "scripts": {
+    "dev": "bun --hot run .\\src\\index.ts",
+    "migrate": "drizzle-kit migrate",
+    "push": "drizzle-kit push",
+    "generate": "drizzle-kit generate"
   }
 }

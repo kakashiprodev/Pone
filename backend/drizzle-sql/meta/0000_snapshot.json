@@ -1,0 +1,1471 @@
+{
+  "id": "d4e74820-56c6-4854-8285-a2860525ad2a",
+  "prevId": "00000000-0000-0000-0000-000000000000",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "data.actions": {
+      "name": "actions",
+      "schema": "data",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "responsible": {
+          "name": "responsible",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "progress": {
+          "name": "progress",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "site": {
+          "name": "site",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "relevant": {
+          "name": "relevant",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "description_before": {
+          "name": "description_before",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "description_after": {
+          "name": "description_after",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "target_value_absolut_planned": {
+          "name": "target_value_absolut_planned",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "target_value_absolut_is": {
+          "name": "target_value_absolut_is",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "description_target_value": {
+          "name": "description_target_value",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "finished_until_planned": {
+          "name": "finished_until_planned",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "finished_until_is": {
+          "name": "finished_until_is",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "category": {
+          "name": "category",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "costs_planned": {
+          "name": "costs_planned",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "costs_is": {
+          "name": "costs_is",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "roi": {
+          "name": "roi",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "description_costs": {
+          "name": "description_costs",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "avoidance_costs": {
+          "name": "avoidance_costs",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "start_date": {
+          "name": "start_date",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "actions_site_sites_id_fk": {
+          "name": "actions_site_sites_id_fk",
+          "tableFrom": "actions",
+          "tableTo": "sites",
+          "schemaTo": "data",
+          "columnsFrom": [
+            "site"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "data.csrdtopics": {
+      "name": "csrdtopics",
+      "schema": "data",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "topic_id": {
+          "name": "topic_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "topic_header": {
+          "name": "topic_header",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "summary": {
+          "name": "summary",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "collected_information": {
+          "name": "collected_information",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "is_done": {
+          "name": "is_done",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "report": {
+          "name": "report",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "csrdtopics_report_reports_id_fk": {
+          "name": "csrdtopics_report_reports_id_fk",
+          "tableFrom": "csrdtopics",
+          "tableTo": "reports",
+          "schemaTo": "data",
+          "columnsFrom": [
+            "report"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "data.equivalents": {
+      "name": "equivalents",
+      "schema": "data",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "category": {
+          "name": "category",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "''"
+        },
+        "scope": {
+          "name": "scope",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "specification1": {
+          "name": "specification1",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "''"
+        },
+        "specification2": {
+          "name": "specification2",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "''"
+        },
+        "specification3": {
+          "name": "specification3",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "''"
+        },
+        "add_name1": {
+          "name": "add_name1",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "''"
+        },
+        "comment": {
+          "name": "comment",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "''"
+        },
+        "source": {
+          "name": "source",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "''"
+        },
+        "jan": {
+          "name": "jan",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "feb": {
+          "name": "feb",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "mar": {
+          "name": "mar",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "apr": {
+          "name": "apr",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "may": {
+          "name": "may",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "jun": {
+          "name": "jun",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "jul": {
+          "name": "jul",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "aug": {
+          "name": "aug",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "sep": {
+          "name": "sep",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "oct": {
+          "name": "oct",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "nov": {
+          "name": "nov",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "dec": {
+          "name": "dec",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "avg_value": {
+          "name": "avg_value",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "monthly_values": {
+          "name": "monthly_values",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "parent": {
+          "name": "parent",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "project": {
+          "name": "project",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "in_unit": {
+          "name": "in_unit",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "''"
+        },
+        "out_unit": {
+          "name": "out_unit",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'kg'"
+        },
+        "import_ref": {
+          "name": "import_ref",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "''"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "equivalents_parent_equivalents_id_fk": {
+          "name": "equivalents_parent_equivalents_id_fk",
+          "tableFrom": "equivalents",
+          "tableTo": "equivalents",
+          "schemaTo": "data",
+          "columnsFrom": [
+            "parent"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        },
+        "equivalents_project_projects_id_fk": {
+          "name": "equivalents_project_projects_id_fk",
+          "tableFrom": "equivalents",
+          "tableTo": "projects",
+          "schemaTo": "data",
+          "columnsFrom": [
+            "project"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "data.facilities": {
+      "name": "facilities",
+      "schema": "data",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "site": {
+          "name": "site",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "manufacturer": {
+          "name": "manufacturer",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "''"
+        },
+        "model": {
+          "name": "model",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "''"
+        },
+        "description": {
+          "name": "description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "''"
+        },
+        "shutdown_date": {
+          "name": "shutdown_date",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "facilities_site_sites_id_fk": {
+          "name": "facilities_site_sites_id_fk",
+          "tableFrom": "facilities",
+          "tableTo": "sites",
+          "schemaTo": "data",
+          "columnsFrom": [
+            "site"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "data.files": {
+      "name": "files",
+      "schema": "data",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "bucket": {
+          "name": "bucket",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "file_type": {
+          "name": "file_type",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "file": {
+          "name": "file",
+          "type": "bytea",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "data.inputs": {
+      "name": "inputs",
+      "schema": "data",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "scope": {
+          "name": "scope",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "comment": {
+          "name": "comment",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "''"
+        },
+        "equivalent": {
+          "name": "equivalent",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "report": {
+          "name": "report",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "category": {
+          "name": "category",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "''"
+        },
+        "facility": {
+          "name": "facility",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "sum_value": {
+          "name": "sum_value",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "raw_value": {
+          "name": "raw_value",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "raw_value_jan": {
+          "name": "raw_value_jan",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "raw_value_feb": {
+          "name": "raw_value_feb",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "raw_value_mar": {
+          "name": "raw_value_mar",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "raw_value_apr": {
+          "name": "raw_value_apr",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "raw_value_may": {
+          "name": "raw_value_may",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "raw_value_jun": {
+          "name": "raw_value_jun",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "raw_value_jul": {
+          "name": "raw_value_jul",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "raw_value_aug": {
+          "name": "raw_value_aug",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "raw_value_sep": {
+          "name": "raw_value_sep",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "raw_value_oct": {
+          "name": "raw_value_oct",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "raw_value_nov": {
+          "name": "raw_value_nov",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "raw_value_dec": {
+          "name": "raw_value_dec",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "parent": {
+          "name": "parent",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "monthly_values": {
+          "name": "monthly_values",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "inputs_equivalent_equivalents_id_fk": {
+          "name": "inputs_equivalent_equivalents_id_fk",
+          "tableFrom": "inputs",
+          "tableTo": "equivalents",
+          "schemaTo": "data",
+          "columnsFrom": [
+            "equivalent"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "inputs_report_reports_id_fk": {
+          "name": "inputs_report_reports_id_fk",
+          "tableFrom": "inputs",
+          "tableTo": "reports",
+          "schemaTo": "data",
+          "columnsFrom": [
+            "report"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "inputs_facility_facilities_id_fk": {
+          "name": "inputs_facility_facilities_id_fk",
+          "tableFrom": "inputs",
+          "tableTo": "facilities",
+          "schemaTo": "data",
+          "columnsFrom": [
+            "facility"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        },
+        "inputs_parent_inputs_id_fk": {
+          "name": "inputs_parent_inputs_id_fk",
+          "tableFrom": "inputs",
+          "tableTo": "inputs",
+          "schemaTo": "data",
+          "columnsFrom": [
+            "parent"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "data.media": {
+      "name": "media",
+      "schema": "data",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "image": {
+          "name": "image",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "data.projects": {
+      "name": "projects",
+      "schema": "data",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "logo": {
+          "name": "logo",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "logo_id": {
+          "name": "logo_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "projects_logo_id_media_id_fk": {
+          "name": "projects_logo_id_media_id_fk",
+          "tableFrom": "projects",
+          "tableTo": "media",
+          "schemaTo": "data",
+          "columnsFrom": [
+            "logo_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "data.reports": {
+      "name": "reports",
+      "schema": "data",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "site": {
+          "name": "site",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "year": {
+          "name": "year",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "company_name": {
+          "name": "company_name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "''"
+        },
+        "company_street": {
+          "name": "company_street",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "''"
+        },
+        "company_postal": {
+          "name": "company_postal",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "''"
+        },
+        "company_country": {
+          "name": "company_country",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "''"
+        },
+        "company_city": {
+          "name": "company_city",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "''"
+        },
+        "company_domain": {
+          "name": "company_domain",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "''"
+        },
+        "contact_name": {
+          "name": "contact_name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "''"
+        },
+        "contact_telephone": {
+          "name": "contact_telephone",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "''"
+        },
+        "contact_email": {
+          "name": "contact_email",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "''"
+        },
+        "contact_domain": {
+          "name": "contact_domain",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "''"
+        },
+        "count_employees": {
+          "name": "count_employees",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'0'"
+        },
+        "business_turnover": {
+          "name": "business_turnover",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'0'"
+        },
+        "base_year": {
+          "name": "base_year",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'1901'"
+        },
+        "sum_emissions": {
+          "name": "sum_emissions",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'0'"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "reports_site_sites_id_fk": {
+          "name": "reports_site_sites_id_fk",
+          "tableFrom": "reports",
+          "tableTo": "sites",
+          "schemaTo": "data",
+          "columnsFrom": [
+            "site"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "data.sites": {
+      "name": "sites",
+      "schema": "data",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "project": {
+          "name": "project",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "sites_project_projects_id_fk": {
+          "name": "sites_project_projects_id_fk",
+          "tableFrom": "sites",
+          "tableTo": "projects",
+          "schemaTo": "data",
+          "columnsFrom": [
+            "project"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "data.targets": {
+      "name": "targets",
+      "schema": "data",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "report": {
+          "name": "report",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "year": {
+          "name": "year",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "percentage": {
+          "name": "percentage",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "targets_report_reports_id_fk": {
+          "name": "targets_report_reports_id_fk",
+          "tableFrom": "targets",
+          "tableTo": "reports",
+          "schemaTo": "data",
+          "columnsFrom": [
+            "report"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "data.user_projects": {
+      "name": "user_projects",
+      "schema": "data",
+      "columns": {
+        "user_id": {
+          "name": "user_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "project_id": {
+          "name": "project_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "user_projects_user_id_users_id_fk": {
+          "name": "user_projects_user_id_users_id_fk",
+          "tableFrom": "user_projects",
+          "tableTo": "users",
+          "schemaTo": "data",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "user_projects_project_id_projects_id_fk": {
+          "name": "user_projects_project_id_projects_id_fk",
+          "tableFrom": "user_projects",
+          "tableTo": "projects",
+          "schemaTo": "data",
+          "columnsFrom": [
+            "project_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "user_projects_user_id_project_id_pk": {
+          "name": "user_projects_user_id_project_id_pk",
+          "columns": [
+            "user_id",
+            "project_id"
+          ]
+        }
+      },
+      "uniqueConstraints": {}
+    },
+    "data.users": {
+      "name": "users",
+      "schema": "data",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "email": {
+          "name": "email",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "is_global_admin": {
+          "name": "is_global_admin",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "firstname": {
+          "name": "firstname",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "''"
+        },
+        "surname": {
+          "name": "surname",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "''"
+        },
+        "department": {
+          "name": "department",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "''"
+        },
+        "role": {
+          "name": "role",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "''"
+        },
+        "telephone": {
+          "name": "telephone",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "''"
+        },
+        "display_in_tons": {
+          "name": "display_in_tons",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": true
+        },
+        "last_selected_project": {
+          "name": "last_selected_project",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "last_selected_site": {
+          "name": "last_selected_site",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "last_selected_report": {
+          "name": "last_selected_report",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "selected_theme": {
+          "name": "selected_theme",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'light'"
+        },
+        "can_manage_projects": {
+          "name": "can_manage_projects",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'1'"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "users_last_selected_project_projects_id_fk": {
+          "name": "users_last_selected_project_projects_id_fk",
+          "tableFrom": "users",
+          "tableTo": "projects",
+          "schemaTo": "data",
+          "columnsFrom": [
+            "last_selected_project"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "users_last_selected_site_sites_id_fk": {
+          "name": "users_last_selected_site_sites_id_fk",
+          "tableFrom": "users",
+          "tableTo": "sites",
+          "schemaTo": "data",
+          "columnsFrom": [
+            "last_selected_site"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "users_last_selected_report_reports_id_fk": {
+          "name": "users_last_selected_report_reports_id_fk",
+          "tableFrom": "users",
+          "tableTo": "reports",
+          "schemaTo": "data",
+          "columnsFrom": [
+            "last_selected_report"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "users_email_unique": {
+          "name": "users_email_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "email"
+          ]
+        }
+      }
+    }
+  },
+  "enums": {},
+  "schemas": {},
+  "sequences": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}
