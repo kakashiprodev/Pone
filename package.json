@@ -22,6 +22,7 @@
     "@fortawesome/vue-fontawesome": "^3.0.3",
     "@supabase/postgrest-js": "^1.15.4",
     "apexcharts": "^3.46.0",
+    "jsonwebtoken": "^9.0.2",
     "keycloak-js": "^24.0.4",
     "openai": "^4.47.1",
     "pinia": "^2.1.6",

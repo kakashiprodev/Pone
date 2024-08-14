@@ -1,7 +1,6 @@
 import { Hono, type Context } from 'hono';
 import { logger } from 'hono/logger';
 import { cors } from 'hono/cors';
-import { jwt } from 'hono/jwt';
 import { getPostgrestUrl, validateAllEnvVariables } from './helper';
 import { HTTPException } from 'hono/http-exception';
 import {
@@ -13,6 +12,7 @@ import {
   PUT as collectionsWithIdPUT,
   DELETE as collectionsWithIdDELETE,
 } from './routes/collections/[name]/[id]';
+import jwtlib from 'jsonwebtoken';
 
 /**
  * validate .ENV variables
@@ -56,13 +56,17 @@ app.use(
 const jwtPublicKey = process.env.JWT_PUBLIC_KEY || '';
 // Hono can´t handle Auth0 JWT tokens
 // https://github.com/honojs/hono/issues/672
-// app.use(
-//   '/v1/*',
-//   jwt({
-//     secret: jwtPublicKey,
-//     alg: 'RS256',
-//   }),
-// );
+app.use('/v1/*', async (c, next) => {
+  try {
+    const bearer = (c.req.header('Authorization') || '').split(' ')[1];
+    jwtlib.verify(bearer, jwtPublicKey, {
+      algorithms: ['RS256'],
+    });
+  } catch (err) {
+    return c.text('Unauthorized', 401);
+  }
+  await next();
+});
 
 /**
  * A middleware to get the users id from the JWT token
@@ -88,15 +92,6 @@ An endpoint build directly on the ORM to have a CRUD API for all tables
 app.get('/ping', async (c) => {
   return c.json({
     online: true,
-  });
-});
-
-/**
- * A dynamic route to get data from a given table
- */
-app.get('/v1/ai/:var', getUserId, async (c) => {
-  return c.json({
-    message: '/v1/ai/:var',
   });
 });
 
