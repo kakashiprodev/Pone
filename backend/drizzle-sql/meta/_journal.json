@@ -29,6 +29,13 @@
       "when": 1723656905951,
       "tag": "0003_mushy_ted_forrester",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1723702238923,
+      "tag": "0004_magical_captain_cross",
+      "breakpoints": true
     }
   ]
 }

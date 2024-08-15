@@ -1,6 +1,6 @@
 {
-  "id": "115ca0c3-5d1f-4f87-8bba-911eb3dd7e7f",
-  "prevId": "954e454e-6db6-494c-a3d7-0efaa56b7982",
+  "id": "1d9fed9f-3ad1-4ce9-8f49-350fdd7776c5",
+  "prevId": "115ca0c3-5d1f-4f87-8bba-911eb3dd7e7f",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -29,9 +29,9 @@
         },
         "progress": {
           "name": "progress",
-          "type": "numeric",
+          "type": "integer",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         },
         "site": {
           "name": "site",
@@ -65,13 +65,13 @@
         },
         "target_value_absolut_planned": {
           "name": "target_value_absolut_planned",
-          "type": "numeric",
+          "type": "double precision",
           "primaryKey": false,
           "notNull": false
         },
         "target_value_absolut_is": {
           "name": "target_value_absolut_is",
-          "type": "numeric",
+          "type": "double precision",
           "primaryKey": false,
           "notNull": false
         },
@@ -101,19 +101,19 @@
         },
         "costs_planned": {
           "name": "costs_planned",
-          "type": "numeric",
+          "type": "integer",
           "primaryKey": false,
           "notNull": false
         },
         "costs_is": {
           "name": "costs_is",
-          "type": "numeric",
+          "type": "integer",
           "primaryKey": false,
           "notNull": false
         },
         "roi": {
           "name": "roi",
-          "type": "numeric",
+          "type": "integer",
           "primaryKey": false,
           "notNull": false
         },
@@ -125,7 +125,7 @@
         },
         "avoidance_costs": {
           "name": "avoidance_costs",
-          "type": "numeric",
+          "type": "integer",
           "primaryKey": false,
           "notNull": false
         },
@@ -163,7 +163,7 @@
           "columnsTo": [
             "id"
           ],
-          "onDelete": "no action",
+          "onDelete": "cascade",
           "onUpdate": "no action"
         }
       },
@@ -245,7 +245,7 @@
           "columnsTo": [
             "id"
           ],
-          "onDelete": "no action",
+          "onDelete": "cascade",
           "onUpdate": "no action"
         }
       },
@@ -320,79 +320,79 @@
         },
         "jan": {
           "name": "jan",
-          "type": "numeric",
+          "type": "double precision",
           "primaryKey": false,
           "notNull": false
         },
         "feb": {
           "name": "feb",
-          "type": "numeric",
+          "type": "double precision",
           "primaryKey": false,
           "notNull": false
         },
         "mar": {
           "name": "mar",
-          "type": "numeric",
+          "type": "double precision",
           "primaryKey": false,
           "notNull": false
         },
         "apr": {
           "name": "apr",
-          "type": "numeric",
+          "type": "double precision",
           "primaryKey": false,
           "notNull": false
         },
         "may": {
           "name": "may",
-          "type": "numeric",
+          "type": "double precision",
           "primaryKey": false,
           "notNull": false
         },
         "jun": {
           "name": "jun",
-          "type": "numeric",
+          "type": "double precision",
           "primaryKey": false,
           "notNull": false
         },
         "jul": {
           "name": "jul",
-          "type": "numeric",
+          "type": "double precision",
           "primaryKey": false,
           "notNull": false
         },
         "aug": {
           "name": "aug",
-          "type": "numeric",
+          "type": "double precision",
           "primaryKey": false,
           "notNull": false
         },
         "sep": {
           "name": "sep",
-          "type": "numeric",
+          "type": "double precision",
           "primaryKey": false,
           "notNull": false
         },
         "oct": {
           "name": "oct",
-          "type": "numeric",
+          "type": "double precision",
           "primaryKey": false,
           "notNull": false
         },
         "nov": {
           "name": "nov",
-          "type": "numeric",
+          "type": "double precision",
           "primaryKey": false,
           "notNull": false
         },
         "dec": {
           "name": "dec",
-          "type": "numeric",
+          "type": "double precision",
           "primaryKey": false,
           "notNull": false
         },
         "avg_value": {
           "name": "avg_value",
-          "type": "numeric",
+          "type": "double precision",
           "primaryKey": false,
           "notNull": false
         },
@@ -412,7 +412,7 @@
           "name": "project",
           "type": "uuid",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         },
         "in": {
           "name": "in",
@@ -562,7 +562,7 @@
           "columnsTo": [
             "id"
           ],
-          "onDelete": "no action",
+          "onDelete": "cascade",
           "onUpdate": "no action"
         }
       },
@@ -643,7 +643,7 @@
         },
         "scope": {
           "name": "scope",
-          "type": "numeric",
+          "type": "integer",
           "primaryKey": false,
           "notNull": true
         },
@@ -681,85 +681,85 @@
         },
         "sum_value": {
           "name": "sum_value",
-          "type": "numeric",
+          "type": "double precision",
           "primaryKey": false,
           "notNull": true
         },
         "raw_value": {
           "name": "raw_value",
-          "type": "numeric",
+          "type": "double precision",
           "primaryKey": false,
           "notNull": true
         },
         "raw_value_jan": {
           "name": "raw_value_jan",
-          "type": "numeric",
+          "type": "double precision",
           "primaryKey": false,
           "notNull": false
         },
         "raw_value_feb": {
           "name": "raw_value_feb",
-          "type": "numeric",
+          "type": "double precision",
           "primaryKey": false,
           "notNull": false
         },
         "raw_value_mar": {
           "name": "raw_value_mar",
-          "type": "numeric",
+          "type": "double precision",
           "primaryKey": false,
           "notNull": false
         },
         "raw_value_apr": {
           "name": "raw_value_apr",
-          "type": "numeric",
+          "type": "double precision",
           "primaryKey": false,
           "notNull": false
         },
         "raw_value_may": {
           "name": "raw_value_may",
-          "type": "numeric",
+          "type": "double precision",
           "primaryKey": false,
           "notNull": false
         },
         "raw_value_jun": {
           "name": "raw_value_jun",
-          "type": "numeric",
+          "type": "double precision",
           "primaryKey": false,
           "notNull": false
         },
         "raw_value_jul": {
           "name": "raw_value_jul",
-          "type": "numeric",
+          "type": "double precision",
           "primaryKey": false,
           "notNull": false
         },
         "raw_value_aug": {
           "name": "raw_value_aug",
-          "type": "numeric",
+          "type": "double precision",
           "primaryKey": false,
           "notNull": false
         },
         "raw_value_sep": {
           "name": "raw_value_sep",
-          "type": "numeric",
+          "type": "double precision",
           "primaryKey": false,
           "notNull": false
         },
         "raw_value_oct": {
           "name": "raw_value_oct",
-          "type": "numeric",
+          "type": "double precision",
           "primaryKey": false,
           "notNull": false
         },
         "raw_value_nov": {
           "name": "raw_value_nov",
-          "type": "numeric",
+          "type": "double precision",
           "primaryKey": false,
           "notNull": false
         },
         "raw_value_dec": {
           "name": "raw_value_dec",
-          "type": "numeric",
+          "type": "double precision",
           "primaryKey": false,
           "notNull": false
         },
@@ -804,7 +804,7 @@
           "columnsTo": [
             "id"
           ],
-          "onDelete": "no action",
+          "onDelete": "cascade",
           "onUpdate": "no action"
         },
         "inputs_report_reports_id_fk": {
@@ -947,7 +947,7 @@
           "columnsTo": [
             "id"
           ],
-          "onDelete": "no action",
+          "onDelete": "set null",
           "onUpdate": "no action"
         }
       },
@@ -973,7 +973,7 @@
         },
         "year": {
           "name": "year",
-          "type": "numeric",
+          "type": "integer",
           "primaryKey": false,
           "notNull": true
         },
@@ -1049,31 +1049,31 @@
         },
         "count_employees": {
           "name": "count_employees",
-          "type": "numeric",
+          "type": "integer",
           "primaryKey": false,
           "notNull": true,
-          "default": "'0'"
+          "default": 0
         },
         "business_turnover": {
           "name": "business_turnover",
-          "type": "numeric",
+          "type": "integer",
           "primaryKey": false,
           "notNull": true,
-          "default": "'0'"
+          "default": 0
         },
         "base_year": {
           "name": "base_year",
-          "type": "numeric",
+          "type": "integer",
           "primaryKey": false,
           "notNull": true,
-          "default": "'1901'"
+          "default": 1901
         },
         "sum_emissions": {
           "name": "sum_emissions",
-          "type": "numeric",
+          "type": "double precision",
           "primaryKey": false,
           "notNull": true,
-          "default": "'0'"
+          "default": 0
         },
         "created_at": {
           "name": "created_at",
@@ -1187,13 +1187,13 @@
         },
         "year": {
           "name": "year",
-          "type": "numeric",
+          "type": "integer",
           "primaryKey": false,
           "notNull": false
         },
         "percentage": {
           "name": "percentage",
-          "type": "numeric",
+          "type": "integer",
           "primaryKey": false,
           "notNull": false
         },
@@ -1383,10 +1383,10 @@
         },
         "can_manage_projects": {
           "name": "can_manage_projects",
-          "type": "numeric",
+          "type": "boolean",
           "primaryKey": false,
           "notNull": true,
-          "default": "'1'"
+          "default": false
         },
         "created_at": {
           "name": "created_at",
@@ -1416,7 +1416,7 @@
           "columnsTo": [
             "id"
           ],
-          "onDelete": "no action",
+          "onDelete": "set null",
           "onUpdate": "no action"
         },
         "users_last_selected_site_sites_id_fk": {
@@ -1430,7 +1430,7 @@
           "columnsTo": [
             "id"
           ],
-          "onDelete": "no action",
+          "onDelete": "set null",
           "onUpdate": "no action"
         },
         "users_last_selected_report_reports_id_fk": {
@@ -1444,7 +1444,7 @@
           "columnsTo": [
             "id"
           ],
-          "onDelete": "no action",
+          "onDelete": "set null",
           "onUpdate": "no action"
         }
       },
