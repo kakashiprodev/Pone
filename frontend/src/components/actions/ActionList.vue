@@ -12,25 +12,25 @@
       </template>
     </Column>
     <Column
-      field="finished_until_planned"
+      field="finishedUntilPlanned"
       :header="$t('actions.table.finishedUntilPlanned')"
     >
       <template #body="{ data }">
         <!-- formatiertes deutsches Datum -->
-        {{ new Date(data.finished_until_planned).getMonth() + 1 }}/{{
-          new Date(data.finished_until_planned).getFullYear()
+        {{ new Date(data.finishedUntilPlanned).getMonth() + 1 }}/{{
+          new Date(data.finishedUntilPlanned).getFullYear()
         }}
       </template>
     </Column>
     <!-- <Column field="shortDescription" header="Kurzbeschreibung"></Column>
         <Column field="longDescription" header="Langbeschreibung"></Column> -->
     <Column
-      field="target_value_absolut_planned"
+      field="targetValueAbsolutPlanned"
       :header="$t('actions.table.targetValueAbsolutePlanned')"
     >
       <template #body="{ data }">
         <Chip class="text-sm"
-          >{{ toTons(data.target_value_absolut_planned)
+          >{{ toTons(data.targetValueAbsolutPlanned)
           }}{{ getGlobalUnit() }}</Chip
         >
       </template>

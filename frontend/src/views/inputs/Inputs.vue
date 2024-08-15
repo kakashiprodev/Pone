@@ -259,21 +259,21 @@ const inputEntrySchema = v.object({
   name: v.pipe(v.string(), v.minLength(1), v.maxLength(255)),
   scope: v.pipe(v.number(), v.minValue(1), v.maxValue(3)),
   comment: v.pipe(v.string(), v.maxLength(255)),
-  raw_value: v.pipe(v.number(), v.minValue(0)),
+  rawValue: v.pipe(v.number(), v.minValue(0)),
   parent: v.nullable(v.pipe(v.string(), v.maxLength(255))),
-  monthly_values: v.boolean(),
-  raw_value_jan: v.pipe(v.number(), v.minValue(0)),
-  raw_value_feb: v.pipe(v.number(), v.minValue(0)),
-  raw_value_mar: v.pipe(v.number(), v.minValue(0)),
-  raw_value_apr: v.pipe(v.number(), v.minValue(0)),
-  raw_value_may: v.pipe(v.number(), v.minValue(0)),
-  raw_value_jun: v.pipe(v.number(), v.minValue(0)),
-  raw_value_jul: v.pipe(v.number(), v.minValue(0)),
-  raw_value_aug: v.pipe(v.number(), v.minValue(0)),
-  raw_value_sep: v.pipe(v.number(), v.minValue(0)),
-  raw_value_oct: v.pipe(v.number(), v.minValue(0)),
-  raw_value_nov: v.pipe(v.number(), v.minValue(0)),
-  raw_value_dec: v.pipe(v.number(), v.minValue(0)),
+  monthlyValues: v.boolean(),
+  rawValueJan: v.pipe(v.number(), v.minValue(0)),
+  rawValueFeb: v.pipe(v.number(), v.minValue(0)),
+  rawValueMar: v.pipe(v.number(), v.minValue(0)),
+  rawValueApr: v.pipe(v.number(), v.minValue(0)),
+  rawValueMay: v.pipe(v.number(), v.minValue(0)),
+  rawValueJun: v.pipe(v.number(), v.minValue(0)),
+  rawValueJul: v.pipe(v.number(), v.minValue(0)),
+  rawValueAug: v.pipe(v.number(), v.minValue(0)),
+  rawValueSep: v.pipe(v.number(), v.minValue(0)),
+  rawValueOct: v.pipe(v.number(), v.minValue(0)),
+  rawValueNov: v.pipe(v.number(), v.minValue(0)),
+  rawValueDec: v.pipe(v.number(), v.minValue(0)),
   equivalent: v.nullable(v.pipe(v.string(), v.maxLength(255))),
   report: v.pipe(v.string(), v.minLength(1), v.maxLength(255)),
   category: v.nullable(v.pipe(v.string(), v.maxLength(255))),
@@ -380,29 +380,29 @@ const originalValue: Ref<InputEntry> = ref(
 );
 
 /**
- * Watch the selectedValue and update the monthly values if the raw_value changes
+ * Watch the selectedValue and update the monthly values if the rawValue changes
  */
 watch(
-  () => selectedValue.value.raw_value,
+  () => selectedValue.value.rawValue,
   () => {
-    if (!selectedValue.value.monthly_values) {
+    if (!selectedValue.value.monthlyValues) {
       const keys: (keyof InputEntry)[] = [
-        'raw_value_jan',
-        'raw_value_feb',
-        'raw_value_mar',
-        'raw_value_apr',
-        'raw_value_may',
-        'raw_value_jun',
-        'raw_value_jul',
-        'raw_value_aug',
-        'raw_value_sep',
-        'raw_value_oct',
-        'raw_value_nov',
-        'raw_value_dec',
+        'rawValueJan',
+        'rawValueFeb',
+        'rawValueMar',
+        'rawValueApr',
+        'rawValueMay',
+        'rawValueJun',
+        'rawValueJul',
+        'rawValueAug',
+        'rawValueSep',
+        'rawValueOct',
+        'rawValueNov',
+        'rawValueDec',
       ];
       keys.forEach((key) => {
         // @ts-ignore
-        selectedValue.value[key] = round(selectedValue.value.raw_value / 12, 3);
+        selectedValue.value[key] = round(selectedValue.value.rawValue / 12, 3);
       });
     }
   },
@@ -434,7 +434,7 @@ const updateNameAndCategory = () => {
  */
 const sumValue = computed(() => {
   return data.value.reduce((acc, item) => {
-    return acc + item.sum_value;
+    return acc + item.sumValue;
   }, 0);
 });
 
@@ -507,11 +507,11 @@ const sumsByCategory = computed(() => {
       relativeSums.push({
         label: item.category ?? '',
         color: '#34d399',
-        value: item.sum_value,
+        value: item.sumValue,
         icon: '',
       });
     } else {
-      relativeSums[index].value += item.sum_value;
+      relativeSums[index].value += item.sumValue;
     }
   });
   // then calculate the percentage

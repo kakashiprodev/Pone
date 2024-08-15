@@ -204,13 +204,13 @@ const equivalentSchema = v.object({
   specification1: v.pipe(v.string(), v.minLength(1), v.maxLength(255)),
   specification2: v.nullable(v.pipe(v.string(), v.maxLength(255))),
   specification3: v.nullable(v.pipe(v.string(), v.maxLength(255))),
-  add_name1: v.nullable(v.pipe(v.string(), v.maxLength(255))),
+  addName1: v.nullable(v.pipe(v.string(), v.maxLength(255))),
   comment: v.nullable(v.pipe(v.string(), v.maxLength(255))),
   in: v.pipe(v.string(), v.minLength(1), v.maxLength(10)),
   out: v.pipe(v.string(), v.minLength(1), v.maxLength(10)),
   source: v.pipe(v.string(), v.minLength(1), v.maxLength(255)),
-  avg_value: v.pipe(v.number(), v.minValue(0)),
-  monthly_values: v.boolean(),
+  avgValue: v.pipe(v.number(), v.minValue(0)),
+  monthlyValues: v.boolean(),
   jan: v.nullable(v.pipe(v.number(), v.minValue(0))),
   feb: v.nullable(v.pipe(v.number(), v.minValue(0))),
   mar: v.nullable(v.pipe(v.number(), v.minValue(0))),
@@ -263,9 +263,9 @@ const formEntries: GenericFormEntry[] = [
   },
   {
     label: 'Zusatzname',
-    key: 'add_name1',
+    key: 'addName1',
     type: 'text',
-    validation: v.pick(equivalentSchema, ['add_name1']),
+    validation: v.pick(equivalentSchema, ['addName1']),
   },
   {
     label: 'Kommentar',
@@ -324,8 +324,8 @@ const selectedValue: Ref<EquivalentEntry> = ref(
 
 // calculate avg value for the year
 watchEffect(() => {
-  if (selectedValue.value.monthly_values) {
-    selectedValue.value.avg_value =
+  if (selectedValue.value.monthlyValues) {
+    selectedValue.value.avgValue =
       Math.round(getAverageEquivalent(selectedValue.value) * 10000) / 10000;
   }
 });
@@ -334,7 +334,7 @@ const save = async () => {
   // validate inputs
   try {
     // set all monthly values to null if monthlyValues is false
-    if (!selectedValue.value.monthly_values) {
+    if (!selectedValue.value.monthlyValues) {
       selectedValue.value.jan = 0;
       selectedValue.value.feb = 0;
       selectedValue.value.mar = 0;

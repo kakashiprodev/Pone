@@ -48,15 +48,15 @@ export const useInputStore = defineStore('inputs', {
         // inital value
         if (this.sumEmissions == null) {
           this.sumEmissions = this.scope1.reduce(
-            (acc, cur) => acc + cur.sum_value,
+            (acc, cur) => acc + cur.sumValue,
             0,
           );
           this.sumEmissions += this.scope2.reduce(
-            (acc, cur) => acc + cur.sum_value,
+            (acc, cur) => acc + cur.sumValue,
             0,
           );
           this.sumEmissions += this.scope3.reduce(
-            (acc, cur) => acc + cur.sum_value,
+            (acc, cur) => acc + cur.sumValue,
             0,
           );
         }
@@ -65,7 +65,7 @@ export const useInputStore = defineStore('inputs', {
         }
         await dataprovider.updateReport({
           ...globalStore.selectedReport,
-          sum_emissions: this.sumEmissions,
+          sumEmissions: this.sumEmissions,
         });
       } catch (error) {
         console.error('Error updating report sum', error);
@@ -125,7 +125,7 @@ export const useInputStore = defineStore('inputs', {
         else if (created.scope === 2) this.scope2.push(created);
         else if (created.scope === 3) this.scope3.push(created);
         // update the sum
-        await this.updateReportSum(created.sum_value);
+        await this.updateReportSum(created.sumValue);
         return created;
       } catch (error) {
         throw error;
@@ -154,7 +154,7 @@ export const useInputStore = defineStore('inputs', {
           obj[index] = updated;
         }
         // update the sum
-        await this.updateReportSum(updated.sum_value - input.sum_value);
+        await this.updateReportSum(updated.sumValue - input.sumValue);
         return updated;
       } catch (error) {
         throw error;
@@ -183,7 +183,7 @@ export const useInputStore = defineStore('inputs', {
           obj.splice(index, 1);
         }
         // update the sum
-        await this.updateReportSum(-input.sum_value);
+        await this.updateReportSum(-input.sumValue);
       } catch (error) {
         throw error;
       } finally {

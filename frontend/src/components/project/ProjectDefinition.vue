@@ -194,11 +194,11 @@ const uploadImage = async (event: any) => {
   }
 
   // delete old image if necessary
-  if (projectForm.value.logo_id) {
-    await dataprovider.deleteImage(projectForm.value.logo_id);
+  if (projectForm.value.logoId) {
+    await dataprovider.deleteImage(projectForm.value.logoId);
   }
   const uploadedMediaEntry = await dataprovider.uploadImage(file);
-  projectForm.value.logo_id = uploadedMediaEntry.id;
+  projectForm.value.logoId = uploadedMediaEntry.id;
   await global.updateProject(projectForm.value);
 };
 
@@ -212,7 +212,7 @@ const logoUrl = computed(() => {
     return '';
   }
   return `${dataprovider.getRestUrl()}/rpc/get_media_image?id=${
-    projectForm.value.logo_id
+    projectForm.value.logoId
   }`;
 });
 

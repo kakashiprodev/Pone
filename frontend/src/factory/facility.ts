@@ -8,8 +8,8 @@ export const getEmtypFacility = (siteId: string): FacilityEntry => {
     model: '',
     description: '',
     site: siteId,
-    shutdown_date: null,
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString(),
+    shutdownDate: null,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
   };
 };

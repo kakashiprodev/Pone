@@ -8,7 +8,7 @@ export const getEmptyEquivalent = (
     return {
       id: 'new',
       scope: scope,
-      add_name1: '',
+      addName1: '',
       category: 'Benutzereingaben',
       specification1: '',
       specification2: '',
@@ -17,8 +17,8 @@ export const getEmptyEquivalent = (
       in: '',
       out: 'kg',
       source: 'Benutzereingabe',
-      avg_value: null as any,
-      monthly_values: false,
+      avgValue: null as any,
+      monthlyValues: false,
       project: projectId,
       jan: null,
       feb: null,
@@ -33,8 +33,8 @@ export const getEmptyEquivalent = (
       nov: null,
       dec: null,
       parent: null,
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
     };
   }
 };

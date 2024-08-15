@@ -115,7 +115,7 @@ const facilityEntrySchema = v.object({
   manufacturer: v.pipe(v.string(), v.minLength(1), v.maxLength(255)),
   model: v.pipe(v.string(), v.maxLength(255)),
   description: v.pipe(v.string(), v.maxLength(255)),
-  shutdown_date: v.nullable(v.date()),
+  shutdownDate: v.nullable(v.date()),
 });
 
 const formEntries: GenericFormEntry[] = [
@@ -147,9 +147,9 @@ const formEntries: GenericFormEntry[] = [
   },
   {
     label: t('facilities.facilityShutdownDate'),
-    key: 'shutdown_date',
+    key: 'shutdownDate',
     type: 'date',
-    validation: v.pick(facilityEntrySchema, ['shutdown_date']),
+    validation: v.pick(facilityEntrySchema, ['shutdownDate']),
   },
 ];
 

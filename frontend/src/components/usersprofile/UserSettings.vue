@@ -10,7 +10,7 @@
           <InputSwitch
             id="displayInTons"
             class="ml-2"
-            v-model="user.display_in_tons"
+            v-model="user.displayInTons"
           />
         </div>
       </div>
@@ -123,7 +123,7 @@ const saveUser = async () => {
   try {
     if (user.value == null || user.value.id == null) return;
     await dataprovider.updateUser(user.value);
-    global.displayInTons = user.value.display_in_tons;
+    global.displayInTons = user.value.displayInTons;
   } catch (e: any) {
     error(e + '');
   }

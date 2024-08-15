@@ -61,7 +61,7 @@ const data: Ref<FacilityEntry[]> = ref([]);
 const getData = async () => {
   await global.refreshFacilities();
   const filtered = global.facilities.filter(
-    (f) => f.shutdown_date == null || f.shutdown_date === '',
+    (f) => f.shutdownDate == null || f.shutdownDate === '',
   );
   data.value = filtered.sort((a, b) => a.name.localeCompare(b.name));
   if (props.modelValue != null) {

@@ -92,19 +92,19 @@ const actionEntrySchema = v.object({
   progress: v.pipe(v.number(), v.minValue(0), v.maxValue(100)),
   relevant: v.boolean(),
   site: v.pipe(v.string(), v.minLength(1), v.maxLength(255)),
-  description_before: v.pipe(v.string(), v.minLength(1), v.maxLength(4000)),
-  description_after: v.pipe(v.string(), v.minLength(1), v.maxLength(4000)),
-  target_value_absolut_planned: v.pipe(v.number(), v.minValue(0)),
-  target_value_absolut_is: v.pipe(v.number(), v.minValue(0)),
-  description_target_value: v.pipe(v.string(), v.maxLength(4000)),
-  finished_until_planned: v.date(),
-  finished_until_is: v.nullable(v.date()),
+  descriptionBefore: v.pipe(v.string(), v.minLength(1), v.maxLength(4000)),
+  descriptionAfter: v.pipe(v.string(), v.minLength(1), v.maxLength(4000)),
+  targetValueAbsolutPlanned: v.pipe(v.number(), v.minValue(0)),
+  targetValueAbsolutIs: v.pipe(v.number(), v.minValue(0)),
+  descriptionTargetValue: v.pipe(v.string(), v.maxLength(4000)),
+  finishedUntilPlanned: v.date(),
+  finishedUntilIs: v.nullable(v.date()),
   category: v.pipe(v.string(), v.minLength(1), v.maxLength(255)),
-  costs_planned: v.pipe(v.number(), v.minValue(0)),
-  costs_is: v.pipe(v.number(), v.minValue(0)),
+  costsPlanned: v.pipe(v.number(), v.minValue(0)),
+  costsIs: v.pipe(v.number(), v.minValue(0)),
   roi: v.pipe(v.number(), v.minValue(0)),
-  description_costs: v.pipe(v.string(), v.maxLength(4000)),
-  avoidance_costs: v.pipe(v.number(), v.minValue(0)),
+  descriptionCosts: v.pipe(v.string(), v.maxLength(4000)),
+  avoidanceCosts: v.pipe(v.number(), v.minValue(0)),
 });
 
 const formEntries: GenericFormEntry[] = [
@@ -118,35 +118,35 @@ const formEntries: GenericFormEntry[] = [
   },
   {
     label: t('actions.descriptionBefore') + '*',
-    key: 'description_before',
+    key: 'descriptionBefore',
     type: 'textarea',
     required: true,
-    validation: v.pick(actionEntrySchema, ['description_before']),
+    validation: v.pick(actionEntrySchema, ['descriptionBefore']),
   },
   {
     label: t('actions.descriptionAfter'),
-    key: 'description_after',
+    key: 'descriptionAfter',
     type: 'textarea',
-    validation: v.pick(actionEntrySchema, ['description_after']),
+    validation: v.pick(actionEntrySchema, ['descriptionAfter']),
   },
   {
     label: t('actions.targetValuePlanned') + '*',
-    key: 'target_value_absolut_planned',
+    key: 'targetValueAbsolutPlanned',
     type: 'number',
     required: true,
-    validation: v.pick(actionEntrySchema, ['target_value_absolut_planned']),
+    validation: v.pick(actionEntrySchema, ['targetValueAbsolutPlanned']),
   },
   {
     label: t('actions.targetValueIs'),
-    key: 'target_value_absolut_is',
+    key: 'targetValueAbsolutIs',
     type: 'number',
-    validation: v.pick(actionEntrySchema, ['target_value_absolut_is']),
+    validation: v.pick(actionEntrySchema, ['targetValueAbsolutIs']),
   },
   {
     label: t('actions.targetValueDescription'),
-    key: 'description_target_value',
+    key: 'descriptionTargetValue',
     type: 'textarea',
-    validation: v.pick(actionEntrySchema, ['description_target_value']),
+    validation: v.pick(actionEntrySchema, ['descriptionTargetValue']),
   },
   {
     label: t('actions.responsible'),
@@ -170,15 +170,15 @@ const formEntries: GenericFormEntry[] = [
   { label: t('actions.progress'), key: 'progress', type: 'slider' },
   {
     label: t('actions.finishedUntilPlanned'),
-    key: 'finished_until_planned',
+    key: 'finishedUntilPlanned',
     type: 'datetime',
-    validation: v.pick(actionEntrySchema, ['finished_until_planned']),
+    validation: v.pick(actionEntrySchema, ['finishedUntilPlanned']),
   },
   {
     label: t('actions.finishedUntilIs'),
-    key: 'finished_until_is',
+    key: 'finishedUntilIs',
     type: 'datetime',
-    validation: v.pick(actionEntrySchema, ['finished_until_is']),
+    validation: v.pick(actionEntrySchema, ['finishedUntilIs']),
   },
   {
     label: t('actions.category'),
@@ -195,16 +195,16 @@ const formEntries: GenericFormEntry[] = [
   {
     label: t('actions.costsPlanned'),
     settings: { suffix: ' €' },
-    key: 'costs_planned',
+    key: 'costsPlanned',
     type: 'number',
-    validation: v.pick(actionEntrySchema, ['costs_planned']),
+    validation: v.pick(actionEntrySchema, ['costsPlanned']),
   },
   {
     label: t('actions.costsIs'),
-    key: 'costs_is',
+    key: 'costsIs',
     settings: { suffix: ' €' },
     type: 'number',
-    validation: v.pick(actionEntrySchema, ['costs_is']),
+    validation: v.pick(actionEntrySchema, ['costsIs']),
   },
   {
     label: t('actions.roi'),
@@ -214,15 +214,15 @@ const formEntries: GenericFormEntry[] = [
   },
   {
     label: t('actions.descriptionCosts') + '*',
-    key: 'description_costs',
+    key: 'descriptionCosts',
     type: 'textarea',
-    validation: v.pick(actionEntrySchema, ['description_costs']),
+    validation: v.pick(actionEntrySchema, ['descriptionCosts']),
   },
   {
     label: t('actions.avoidanceCosts'),
-    key: 'avoidance_costs',
+    key: 'avoidanceCosts',
     type: 'number',
-    validation: v.pick(actionEntrySchema, ['avoidance_costs']),
+    validation: v.pick(actionEntrySchema, ['avoidanceCosts']),
   },
 ];
 
@@ -245,9 +245,9 @@ const save = async () => {
       const toCreate = clone(selectedAction.value);
       delete toCreate.id;
       const created = await dataprovider.createAction(toCreate);
-      created.finished_until_planned =
-        created.finished_until_planned && created.finished_until_planned !== ''
-          ? new Date(created.finished_until_planned)
+      created.finishedUntilPlanned =
+        created.finishedUntilPlanned && created.finishedUntilPlanned !== ''
+          ? new Date(created.finishedUntilPlanned)
           : null;
       actions.value.push(created);
       showDialog.value = false;
@@ -256,9 +256,9 @@ const save = async () => {
       );
     } else {
       const updated = await dataprovider.updateAction(selectedAction.value);
-      updated.finished_until_planned =
-        updated.finished_until_planned && updated.finished_until_planned !== ''
-          ? new Date(updated.finished_until_planned)
+      updated.finishedUntilPlanned =
+        updated.finishedUntilPlanned && updated.finishedUntilPlanned !== ''
+          ? new Date(updated.finishedUntilPlanned)
           : null;
       const index = actions.value.findIndex((item) => item.id === updated.id);
       actions.value[index] = updated;

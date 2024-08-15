@@ -460,11 +460,11 @@ const toggleMenu = (key: string) => {
 
 const logoUrl = computed(() => {
   if (
-    global.selectedProject?.logo_id != null &&
-    global.selectedProject?.logo_id !== ''
+    global.selectedProject?.logoId != null &&
+    global.selectedProject?.logoId !== ''
   ) {
     return `${dataprovider.getRestUrl()}/rpc/get_media_image?id=${
-      global.selectedProject.logo_id
+      global.selectedProject.logoId
     }`;
   } else {
     return '';

@@ -125,7 +125,7 @@
         :label="$t('inputs.create')"
         @click="() => emit('save')"
         class="grow ml-1"
-        :disabled="_selectedValue.raw_value == null"
+        :disabled="_selectedValue.rawValue == null"
       />
     </div>
   </div>
@@ -175,8 +175,8 @@ const computedSumCalculation: ComputedRef<string> = computed(() => {
   if (
     _selectedValue.value.equivalent != null &&
     _selectedValue.value.equivalent !== '' &&
-    _selectedValue.value.raw_value != null &&
-    _selectedValue.value.raw_value > 0
+    _selectedValue.value.rawValue != null &&
+    _selectedValue.value.rawValue > 0
   ) {
     return getCalculationSteps(
       _selectedValue.value,

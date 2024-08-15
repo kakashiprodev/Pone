@@ -149,7 +149,7 @@ const filterData = () => {
     if (props.showOnlyActive === false) {
       return true;
     }
-    return item.shutdown_date == null || item.shutdown_date === '';
+    return item.shutdownDate == null || item.shutdownDate === '';
   });
   filteredData.value = filtered;
 };

@@ -158,7 +158,7 @@ const getRawInputValueForEquivalent = (
     {
       ...input,
       equivalent: equivalent.id,
-      raw_value: 1,
+      rawValue: 1,
     } as InputEntry,
     global.equivalentDict,
   );
@@ -200,45 +200,45 @@ const generateData = async () => {
         name: 'Demo Input ' + x,
         scope: scope,
         comment: 'Demo Comment ' + x,
-        sum_value: 0,
+        sumValue: 0,
         equivalent: e.id,
         report: report.id,
         category: e.category,
         facility,
         parent: null,
-        raw_value: 1,
-        monthly_values: false,
-        raw_value_jan: 1 / 12,
-        raw_value_feb: 1 / 12,
-        raw_value_mar: 1 / 12,
-        raw_value_apr: 1 / 12,
-        raw_value_may: 1 / 12,
-        raw_value_jun: 1 / 12,
-        raw_value_jul: 1 / 12,
-        raw_value_aug: 1 / 12,
-        raw_value_sep: 1 / 12,
-        raw_value_oct: 1 / 12,
-        raw_value_nov: 1 / 12,
-        raw_value_dec: 1 / 12,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
+        rawValue: 1,
+        monthlyValues: false,
+        rawValueJan: 1 / 12,
+        rawValueFeb: 1 / 12,
+        rawValueMar: 1 / 12,
+        rawValueApr: 1 / 12,
+        rawValueMay: 1 / 12,
+        rawValueJun: 1 / 12,
+        rawValueJul: 1 / 12,
+        rawValueAug: 1 / 12,
+        rawValueSep: 1 / 12,
+        rawValueOct: 1 / 12,
+        rawValueNov: 1 / 12,
+        rawValueDec: 1 / 12,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
       };
       // calculate the sumValue for the input
-      input.raw_value = getRawInputValueForEquivalent(
+      input.rawValue = getRawInputValueForEquivalent(
         input,
         e,
         rangeMin.value,
         rangeMax.value,
       );
-      if (input.raw_value == null) {
-        console.error('raw_value is null', input.raw_value);
+      if (input.rawValue == null) {
+        console.error('rawValue is null', input.rawValue);
       }
       await dataprovider.createUserInput(input);
-      reportSum += input.sum_value;
+      reportSum += input.sumValue;
     }
     await dataprovider.updateReport({
       ...report,
-      sum_emissions: reportSum,
+      sumEmissions: reportSum,
     });
   }
   info('Daten wurden generiert');

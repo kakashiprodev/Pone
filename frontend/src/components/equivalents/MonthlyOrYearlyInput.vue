@@ -296,7 +296,7 @@ watch(
     if (!newValue) return;
     if (props.valueEquivalent) {
       // also calculate the average of all monthly values if necessary
-      if (newValue.monthly_values) {
+      if (newValue.monthlyValues) {
         let sum = 0;
         sum += newValue.jan ?? 0;
         sum += newValue.feb ?? 0;
@@ -310,26 +310,26 @@ watch(
         sum += newValue.oct ?? 0;
         sum += newValue.nov ?? 0;
         sum += newValue.dec ?? 0;
-        newValue.avg_value = sum / 12;
+        newValue.avgValue = sum / 12;
       }
       emits('update:valueEquivalent', newValue);
     } else {
       // also calculate the sum of all monthly values if necessary
-      if (newValue.monthly_values) {
+      if (newValue.monthlyValues) {
         let sum = 0;
-        sum += newValue.raw_value_jan ?? 0;
-        sum += newValue.raw_value_feb ?? 0;
-        sum += newValue.raw_value_mar ?? 0;
-        sum += newValue.raw_value_apr ?? 0;
-        sum += newValue.raw_value_may ?? 0;
-        sum += newValue.raw_value_jun ?? 0;
-        sum += newValue.raw_value_jul ?? 0;
-        sum += newValue.raw_value_aug ?? 0;
-        sum += newValue.raw_value_sep ?? 0;
-        sum += newValue.raw_value_oct ?? 0;
-        sum += newValue.raw_value_nov ?? 0;
-        sum += newValue.raw_value_dec ?? 0;
-        newValue.raw_value = sum;
+        sum += newValue.rawValueJan ?? 0;
+        sum += newValue.rawValueFeb ?? 0;
+        sum += newValue.rawValueMar ?? 0;
+        sum += newValue.rawValueApr ?? 0;
+        sum += newValue.rawValueMay ?? 0;
+        sum += newValue.rawValueJun ?? 0;
+        sum += newValue.rawValueJul ?? 0;
+        sum += newValue.rawValueAug ?? 0;
+        sum += newValue.rawValueSep ?? 0;
+        sum += newValue.rawValueOct ?? 0;
+        sum += newValue.rawValueNov ?? 0;
+        sum += newValue.rawValueDec ?? 0;
+        newValue.rawValue = sum;
       }
       emits('update:valueInput', newValue);
     }
@@ -344,20 +344,20 @@ watch(
 const k: {
   [key: string]: [string, string];
 } = {
-  jan: ['jan', 'raw_value_jan'],
-  feb: ['feb', 'raw_value_feb'],
-  mar: ['mar', 'raw_value_mar'],
-  apr: ['apr', 'raw_value_apr'],
-  may: ['may', 'raw_value_may'],
-  jun: ['jun', 'raw_value_jun'],
-  jul: ['jul', 'raw_value_jul'],
-  aug: ['aug', 'raw_value_aug'],
-  sep: ['sep', 'raw_value_sep'],
-  oct: ['oct', 'raw_value_oct'],
-  nov: ['nov', 'raw_value_nov'],
-  dec: ['dec', 'raw_value_dec'],
-  monthlyValues: ['monthly_values', 'monthly_values'],
-  avgValue: ['avg_value', 'raw_value'],
+  jan: ['jan', 'rawValueJan'],
+  feb: ['feb', 'rawValueFeb'],
+  mar: ['mar', 'rawValueMar'],
+  apr: ['apr', 'rawValueApr'],
+  may: ['may', 'rawValueMay'],
+  jun: ['jun', 'rawValueJun'],
+  jul: ['jul', 'rawValueJul'],
+  aug: ['aug', 'rawValueAug'],
+  sep: ['sep', 'rawValueSep'],
+  oct: ['oct', 'rawValueOct'],
+  nov: ['nov', 'rawValueNov'],
+  dec: ['dec', 'rawValueDec'],
+  monthlyValues: ['monthlyValues', 'monthlyValues'],
+  avgValue: ['avgValue', 'rawValue'],
 };
 
 let labelIndex: 0 | 1 = 1;

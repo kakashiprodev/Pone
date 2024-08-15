@@ -14,8 +14,8 @@
           year: 2050,
           percentage: 0,
           report: global.selectedReport?.id ?? '',
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString(),
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
         })
       "
       :label="$t('settings.targetSettings.newStep')"

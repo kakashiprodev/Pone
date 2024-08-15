@@ -32,7 +32,7 @@
     <Column field="rawValue" header="Eingabewert" sortable>
       <template #body="{ data }">
         <Chip class="flex justify-end text-right text-sm">
-          {{ roundStringWithDecimals(data.raw_value, 0) }}
+          {{ roundStringWithDecimals(data.rawValue, 0) }}
           {{ globalStore.equivalentDict[data.equivalent]?.in ?? '' }}
         </Chip>
       </template>
@@ -57,8 +57,8 @@
         <Chip class="flex justify-end text-right text-sm">
           {{
             globalStore.displayInTons
-              ? roundStringWithDecimals(toTons(data.sum_value), 2)
-              : roundStringWithDecimals(data.sum_value, 0)
+              ? roundStringWithDecimals(toTons(data.sumValue), 2)
+              : roundStringWithDecimals(data.sumValue, 0)
           }}
           {{ globalStore.displayInTons ? ' to' : ' kg' }}
         </Chip>
