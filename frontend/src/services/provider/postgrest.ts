@@ -1,4 +1,3 @@
-import { PostgrestClient } from '@supabase/postgrest-js';
 import {
   ActionEntry,
   EquivalentEntry,
@@ -16,13 +15,7 @@ import { globalStore, authStore } from '../../main';
 import { getSumForInput } from '../reporting';
 import { UsersTopicAnswer } from '../csrd-esrs/topics';
 
-const REST_URL = import.meta.env.VITE_POSTGREST_URL as string;
-const USE_PROXY_SERVER = import.meta.env.VITE_USE_PROXY_SERVER || 'false';
-if (!REST_URL) {
-  throw new Error('REST URL not found');
-}
-
-const URL_BACKEND = 'http://localhost:3005';
+const URL_BACKEND = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3005';
 
 interface ApiRequest<T> {
   data: T | null;
@@ -96,40 +89,7 @@ const del = async <T>(
   }
 };
 
-const API_URL =
-  USE_PROXY_SERVER === 'true' ? REST_URL + '/v1/db/postgrest' : REST_URL;
-
 export default class DataProvider {
-  private postgrest: PostgrestClient;
-
-  constructor() {
-    this.postgrest = new PostgrestClient(API_URL, {
-      fetch: (url: any, options: any = {}) => {
-        return fetch(url, {
-          ...options,
-          headers: {
-            ...options.headers,
-            Authorization: `Bearer ${authStore.user.token}`,
-          },
-        });
-      },
-    });
-  }
-
-  initPostgrestClient() {
-    this.postgrest = new PostgrestClient(API_URL, {
-      fetch: (url: any, options: any = {}) => {
-        return fetch(url, {
-          ...options,
-          headers: {
-            ...options.headers,
-            Authorization: `Bearer ${authStore.user.token}`,
-          },
-        });
-      },
-    });
-  }
-
   async ensureUserIsExisting(): Promise<void> {
     await get('/v1/db/hooks/ensure-user');
   }
@@ -257,10 +217,7 @@ export default class DataProvider {
   }
 
   async getUser(): Promise<UserEntry> {
-    // HACK
-    const { data, error } = await get<UserEntry>(
-      '/v1/db/collections/users?id[eq]=auth0|666abe8a45413f914aa675c2&single=true',
-    );
+    const { data, error } = await get<UserEntry>('/v1/user/me');
     if (!data) throw error;
     return data;
   }
@@ -331,26 +288,8 @@ export default class DataProvider {
   }
 
   async readUserInputs(_query?: UserInputQuery): Promise<InputEntry[]> {
-    // const filter = `report.eq.${globalStore.selectedReport?.id}${
-    //   query?.scope
-    //     ? ' && (' + query.scope.map((s) => `scope.eq.${s}`).join(' || ') + ')'
-    //     : ''
-    // }${
-    //   query?.category
-    //     ? ' && (' +
-    //       query.category.map((c) => `category.eq.${c}`).join(' || ') +
-    //       ')'
-    //     : ''
-    // }${
-    //   query?.facility
-    //     ? ' && (' +
-    //       query.facility.map((f) => `facility.eq.${f}`).join(' || ') +
-    //       ')'
-    //     : ''
-    // }`;
-    // HACK
+    // HACK: unklar ob das nicht gefiltert werden muss
     const { data, error } = await get('/v1/db/collections/inputs');
-    //.filter(filter)
     if (error) throw error;
     return data as InputEntry[];
   }
@@ -359,41 +298,23 @@ export default class DataProvider {
     projectId: string,
     years?: number[],
   ): Promise<InputEntry[]> {
-    // if (years) {
-    //   const { data, error } = await this.postgrest
-    //     .from('inputs')
-    //     .select(
-    //       '*,report_expanded:report!inner(site_expanded:site!inner(project_expanded:project!inner(id)))',
-    //     )
-    //     .eq('report.site.project.id', projectId)
-    //     .in('report.year', years);
-    //   if (error) throw error;
-    //   return data as InputEntry[];
-    // } else {
-    //   const { data, error } = await this.postgrest
-    //     .from('inputs')
-    //     .select(
-    //       '*,report_expanded:report!inner(site_expanded:site!inner(project_expanded:project!inner(id)))',
-    //     )
-    //     .eq('report.site.project.id', projectId);
-    //   if (error) throw error;
-    //   return data as InputEntry[];
-    // }
-    // HACK
-    return [];
+    const { data, error } = await get<InputEntry[]>(
+      `/v1/db/inputs-for-project?project=${projectId}${
+        years ? `&years=${years.join(',')}` : ''
+      }`,
+    );
+    if (!data) throw error;
+    return data;
   }
 
   async readUserInputsForProjectExtendFields(
     projectId: string,
   ): Promise<InputEntryWithExpandedReportAndSite[]> {
-    // const { data, error } = await this.postgrest
-    //   .from('inputs')
-    //   .select('*,report!inner(*,site!inner(*,project!inner(id))),facility(*)')
-    //   .eq('report.site.project.id', projectId);
-    // if (error) throw error;
-    // return data as InputEntryWithExpandedReportAndSite[];
-    // HACK
-    return [];
+    const { data, error } = await get<InputEntryWithExpandedReportAndSite[]>(
+      `/v1/db/inputs-for-project?project=${projectId}&extend=true`,
+    );
+    if (!data) throw error;
+    return data;
   }
 
   async updateUserInput(input: InputEntry): Promise<InputEntry> {
@@ -477,10 +398,10 @@ export default class DataProvider {
   async createTarget(target: TargetEntry): Promise<TargetEntry> {
     const { data, error } = await post<TargetEntry>(
       '/v1/db/collections/targets',
-      target,
+      { ...target, id: undefined },
     );
     if (!data) throw error;
-    return target;
+    return data;
   }
 
   async readTarget(id: string): Promise<TargetEntry> {

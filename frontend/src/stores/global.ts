@@ -170,9 +170,7 @@ export const useGlobalStore = defineStore('global', {
         this.projects.length > 0 &&
         this.projects.find((p) => p.id === user.lastSelectedProject) != null
       ) {
-        const p = this.projects.find(
-          (p) => p.id === user.lastSelectedProject,
-        );
+        const p = this.projects.find((p) => p.id === user.lastSelectedProject);
         if (p) this.selectedProject = p;
       } else {
         // select another project or create a new one
@@ -185,10 +183,7 @@ export const useGlobalStore = defineStore('global', {
       await this.ensureSiteIsSelected();
 
       if (user.lastSelectedSite != null && user.lastSelectedSite !== '') {
-        console.log(
-          'select last selected site with id',
-          user.lastSelectedSite,
-        );
+        console.log('select last selected site with id', user.lastSelectedSite);
         const s = this.sites.find((s) => s.id === user.lastSelectedSite);
         if (s) this.selectedSite = s;
       } else {
@@ -200,10 +195,7 @@ export const useGlobalStore = defineStore('global', {
 
       // then load reports for the selected project and site
       await this.refreshReports(true);
-      if (
-        user.lastSelectedReport != null &&
-        user.lastSelectedReport !== ''
-      ) {
+      if (user.lastSelectedReport != null && user.lastSelectedReport !== '') {
         const r = this.reports.find((r) => r.id === user.lastSelectedReport);
         if (r) this.selectedReport = r;
       } else {

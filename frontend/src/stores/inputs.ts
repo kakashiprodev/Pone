@@ -14,7 +14,7 @@ export interface InputsState {
 }
 
 export interface InputsActions {
-  readUserInputs: () => Promise<void>;
+  readUserInputsForUi: () => Promise<void>;
   addInput: (input: InputEntry) => Promise<InputEntry>;
   updateInput: (input: InputEntry) => Promise<InputEntry>;
   dropInput: (input: InputEntry) => Promise<void>;
@@ -75,7 +75,7 @@ export const useInputStore = defineStore('inputs', {
     /**
      * Read user inputs for the selected report in the project
      */
-    async readUserInputs() {
+    async readUserInputsForUi() {
       try {
         if (
           !globalStore.selectedReport ||

@@ -354,7 +354,7 @@ const showChooseFacility = ref(false);
 watch(
   () => globalStore.selectedReport,
   async () => {
-    await inputStore.readUserInputs();
+    await inputStore.readUserInputsForUi();
   },
 );
 
@@ -445,6 +445,7 @@ const save = async () => {
   try {
     // drop unrelevant fields
     // @ts-ignore
+    // HACK. kann weg
     delete selectedValue.value.report_expanded;
 
     // validate
@@ -539,7 +540,7 @@ const download = async () => {
 onMounted(async () => {
   setRouteFilter();
   await globalStore.refreshEquivalents();
-  await inputStore.readUserInputs();
+  await inputStore.readUserInputsForUi();
 });
 </script>
 
