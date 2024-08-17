@@ -15,7 +15,7 @@ import { globalStore, authStore } from '../../main';
 import { getSumForInput } from '../reporting';
 import { UsersTopicAnswer } from '../csrd-esrs/topics';
 
-const URL_BACKEND = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3005';
+const URL_BACKEND = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3001';
 
 interface ApiRequest<T> {
   data: T | null;
@@ -271,7 +271,10 @@ export default class DataProvider {
   async createUserInput(input: InputEntry): Promise<InputEntry> {
     // HACK: this should be a preaction in the backend
     input.sumValue = getSumForInput(input, globalStore.equivalentDict);
-    const { data, error } = await post<InputEntry>('/v1/db/collections/inputs', input);
+    const { data, error } = await post<InputEntry>(
+      '/v1/db/collections/inputs',
+      input,
+    );
     if (!data) throw error;
     return data;
   }
