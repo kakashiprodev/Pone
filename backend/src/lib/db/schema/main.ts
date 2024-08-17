@@ -16,19 +16,9 @@ import {
   varchar,
   doublePrecision,
 } from "drizzle-orm/pg-core";
-import { sql } from "drizzle-orm";
+import { relations, sql } from "drizzle-orm";
 
 const dataSchema = pgSchema("data");
-
-// Media Table
-export const media = dataSchema.table("media", {
-  id: uuid("id")
-    .primaryKey()
-    .default(sql`gen_random_uuid()`),
-  image: text("image").notNull(), // BYTEA not directly supported in Drizzle; use TEXT or custom type instead.
-  createdAt: timestamp("created_at", { mode: "string" }).notNull().defaultNow(),
-  updatedAt: timestamp("updated_at", { mode: "string" }).notNull().defaultNow(),
-});
 
 // Users Table
 export const users = dataSchema.table("users", {
@@ -178,9 +168,11 @@ export const targets = dataSchema.table("targets", {
   id: uuid("id")
     .primaryKey()
     .default(sql`gen_random_uuid()`),
-  report: uuid("report").references(() => reports.id, { onDelete: "cascade" }),
-  year: integer("year"),
-  percentage: integer("percentage"),
+  report: uuid("report")
+    .notNull()
+    .references(() => reports.id, { onDelete: "cascade" }),
+  year: integer("year").notNull(),
+  percentage: integer("percentage").notNull(),
   createdAt: timestamp("created_at", { mode: "string" }).notNull().defaultNow(),
   updatedAt: timestamp("updated_at", { mode: "string" }).notNull().defaultNow(),
 });
@@ -191,7 +183,7 @@ export const equivalents = dataSchema.table("equivalents", {
     .primaryKey()
     .default(sql`gen_random_uuid()`),
   category: text("category").notNull().default(""),
-  scope: integer("scope"),
+  scope: integer("scope").notNull(),
   specification1: text("specification1").notNull().default(""),
   specification2: text("specification2").notNull().default(""),
   specification3: text("specification3").notNull().default(""),
@@ -301,3 +293,178 @@ export const files = dataSchema.table("files", {
   fileType: varchar("file_type", { length: 255 }).notNull(),
   file: bytea("file").notNull(),
 });
+
+// Relations
+
+// Relations between users and projects
+export const userProjectsRelations = relations(users, ({ many }) => ({
+  projects: many(userProjects),
+}));
+
+export const projectsUsersRelations = relations(projects, ({ many }) => ({
+  users: many(userProjects),
+}));
+
+// Relations between projects and sites
+export const projectSitesRelations = relations(projects, ({ many }) => ({
+  sites: many(sites),
+}));
+
+export const siteProjectRelations = relations(sites, ({ one }) => ({
+  project: one(projects, {
+    fields: [sites.project],
+    references: [projects.id],
+  }),
+}));
+
+// Relations between sites and facilities
+export const siteFacilitiesRelations = relations(sites, ({ many }) => ({
+  facilities: many(facilities),
+}));
+
+export const facilitySiteRelations = relations(facilities, ({ one }) => ({
+  site: one(sites, {
+    fields: [facilities.site],
+    references: [sites.id],
+  }),
+}));
+
+// Relations between sites and reports
+export const siteReportsRelations = relations(sites, ({ many }) => ({
+  reports: many(reports),
+}));
+
+export const reportSiteRelations = relations(reports, ({ one }) => ({
+  site: one(sites, {
+    fields: [reports.site],
+    references: [sites.id],
+  }),
+}));
+
+// Relations between reports and targets
+export const reportTargetsRelations = relations(reports, ({ many }) => ({
+  targets: many(targets),
+}));
+
+export const targetReportRelations = relations(targets, ({ one }) => ({
+  report: one(reports, {
+    fields: [targets.report],
+    references: [reports.id],
+  }),
+}));
+
+// Relations between reports and inputs
+export const reportInputsRelations = relations(reports, ({ many }) => ({
+  inputs: many(inputs),
+}));
+
+export const inputReportRelations = relations(inputs, ({ one }) => ({
+  report: one(reports, {
+    fields: [inputs.report],
+    references: [reports.id],
+  }),
+}));
+
+// Relations between facilities and inputs
+export const facilityInputsRelations = relations(facilities, ({ many }) => ({
+  inputs: many(inputs),
+}));
+
+export const inputFacilityRelations = relations(inputs, ({ one }) => ({
+  facility: one(facilities, {
+    fields: [inputs.facility],
+    references: [facilities.id],
+  }),
+}));
+
+// Relations between reports and CSRD topics
+export const reportCsrdTopicsRelations = relations(reports, ({ many }) => ({
+  csrdTopics: many(csrdTopics),
+}));
+
+export const csrdTopicReportRelations = relations(csrdTopics, ({ one }) => ({
+  report: one(reports, {
+    fields: [csrdTopics.report],
+    references: [reports.id],
+  }),
+}));
+
+// Relations between equivalents and inputs
+export const equivalentInputsRelations = relations(equivalents, ({ many }) => ({
+  inputs: many(inputs),
+}));
+
+export const inputEquivalentRelations = relations(inputs, ({ one }) => ({
+  equivalent: one(equivalents, {
+    fields: [inputs.equivalent],
+    references: [equivalents.id],
+  }),
+}));
+
+// Relations between equivalents and projects
+export const projectEquivalentsRelations = relations(projects, ({ many }) => ({
+  equivalents: many(equivalents),
+}));
+
+export const equivalentProjectRelations = relations(equivalents, ({ one }) => ({
+  project: one(projects, {
+    fields: [equivalents.project],
+    references: [projects.id],
+  }),
+}));
+
+// Relations between inputs and their parent input
+export const parentInputRelations = relations(inputs, ({ one }) => ({
+  parent: one(inputs, {
+    fields: [inputs.parent],
+    references: [inputs.id],
+  }),
+}));
+
+export const childInputsRelations = relations(inputs, ({ many }) => ({
+  children: many(inputs),
+}));
+
+// Relations between equivalents and their parent equivalent
+export const parentEquivalentRelations = relations(equivalents, ({ one }) => ({
+  parent: one(equivalents, {
+    fields: [equivalents.parent],
+    references: [equivalents.id],
+  }),
+}));
+
+export const childEquivalentsRelations = relations(equivalents, ({ many }) => ({
+  children: many(equivalents),
+}));
+
+// Relations between projects and users (for last selected project)
+export const lastSelectedProjectRelations = relations(users, ({ one }) => ({
+  lastSelectedProject: one(projects, {
+    fields: [users.lastSelectedProject],
+    references: [projects.id],
+  }),
+}));
+
+// Relations between users and sites (for last selected site)
+export const lastSelectedSiteRelations = relations(users, ({ one }) => ({
+  lastSelectedSite: one(sites, {
+    fields: [users.lastSelectedSite],
+    references: [sites.id],
+  }),
+}));
+
+// Relations between users and reports (for last selected report)
+export const lastSelectedReportRelations = relations(users, ({ one }) => ({
+  lastSelectedReport: one(reports, {
+    fields: [users.lastSelectedReport],
+    references: [reports.id],
+  }),
+}));
+
+// Relations between projects and media (for logo)
+export const projectLogoRelations = relations(projects, ({ one }) => ({
+  logo: one(files, {
+    fields: [projects.logoId],
+    references: [files.id],
+  }),
+}));

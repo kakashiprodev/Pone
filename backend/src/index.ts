@@ -19,7 +19,15 @@ import {
 import { POST as filesPOST } from "./routes/files/[bucket]";
 import jwtlib from "jsonwebtoken";
 import { getDb } from "./lib/db/db-connection";
-import { projects, userProjects, users } from "./lib/db/db-schema";
+import {
+  inputs,
+  projects,
+  reports,
+  sites,
+  userProjects,
+  users,
+} from "./lib/db/db-schema";
+import { and, eq, inArray } from "drizzle-orm";
 
 /**
  * validate .ENV variables
@@ -98,6 +106,21 @@ app.get("/ping", async (c) => {
 });
 
 /**
+ * Get the own user
+ */
+app.get("/v1/user/me", async (c: Context) => {
+  // check if id is set
+  const id = c.get("usersId");
+  const user = await getDb().select().from(users).where(eq(users.id, id));
+
+  if (!user || user.length === 0) {
+    throw new HTTPException(404, { message: "User not found" });
+  } else {
+    return c.json(user[0]);
+  }
+});
+
+/**
  * Collections endpoint
  */
 app.all("/v1/db/collections/:name/:id?", async (c: Context) => {
@@ -170,7 +193,7 @@ app.get("/v1/db/hooks/ensure-user", async (c: Context) => {
 /**
  * Create a new project
  */
-app.get("/v1/db/hooks/create-project", async (c: Context) => {
+app.post("/v1/db/hooks/create-project", async (c: Context) => {
   // HACK: check if user is allowed to create a project
   try {
     // add project
@@ -185,6 +208,84 @@ app.get("/v1/db/hooks/create-project", async (c: Context) => {
       });
 
     return c.json(created[0]);
+  } catch (err) {
+    throw new HTTPException(400, { message: err + "" });
+  }
+});
+
+/**
+ * Create a new project
+ */
+app.get("/v1/db/inputs-for-project", async (c: Context) => {
+  try {
+    const project = c.req.query("project");
+    const yearsList = c.req.query("years");
+    const extend =
+      c.req.query("extend") && c.req.query("extend") === "true" ? true : false;
+
+    const years: number[] =
+      yearsList && yearsList.length > 0
+        ? yearsList.split(",").map((y: string) => parseInt(y))
+        : [];
+
+    if (!project) {
+      throw new HTTPException(400, { message: "project is required" });
+    }
+
+    // create an dict from all keys in "inputs" with value=true
+    const cols: { [col: string]: boolean } = {};
+    for (const col of Object.keys(inputs)) {
+      cols[col] = true;
+    }
+
+    // extended result
+    if (extend) {
+      const userInputs = await getDb().query.inputs.findMany({
+        with: {
+          report: {
+            where: years.length > 0 ? inArray(reports.year, years) : undefined,
+            with: {
+              site: {
+                project: {
+                  where: eq(projects.id, project),
+                },
+              },
+            },
+          },
+          facility: true,
+        },
+      });
+
+      return c.json(userInputs);
+    }
+    // simple result
+    else {
+      const userInputs = await getDb()
+        .select()
+        .from(inputs)
+        .where(
+          eq(
+            inputs.report,
+            getDb()
+              .select({
+                reportId: reports.id,
+              })
+              .from(reports)
+              .innerJoin(sites, eq(reports.site, sites.id))
+              .where(
+                years.length > 0
+                  ? eq(sites.project, project)
+                  : and(
+                      eq(sites.project, project),
+                      inArray(reports.year, years)
+                    )
+              )
+              .limit(1)
+          )
+        );
+
+      return c.json(userInputs);
+    }
   } catch (err) {
     throw new HTTPException(400, { message: err + "" });
   }
