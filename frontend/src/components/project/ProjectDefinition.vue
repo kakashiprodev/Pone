@@ -207,15 +207,6 @@ const cancel = () => {
   projectForm.value = global.selectedProject;
 };
 
-const logoUrl = computed(() => {
-  if (!projectForm.value) {
-    return '';
-  }
-  return `${dataprovider.getRestUrl()}/rpc/get_media_image?id=${
-    projectForm.value.logoId
-  }`;
-});
-
 const init = async () => {
   while (global.isLoading) {
     await new Promise((resolve) => setTimeout(resolve, 500));
@@ -223,5 +214,15 @@ const init = async () => {
   projectForm.value = selectedProject.value ?? getEmptyProject();
 };
 
-onMounted(init);
+const logoUrl = ref('');
+onMounted(async () => {
+  init();
+  if (global.selectedProject?.logoId != null) {
+    logoUrl.value = await dataprovider.getImageAsObjectUrl(
+      global.selectedProject.logoId,
+    );
+  } else {
+    return '';
+  }
+});
 </script>

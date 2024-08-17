@@ -304,7 +304,7 @@ import AppLayout from './AppLayout.vue';
 import { useGlobalStore } from '../../stores/global';
 import { useRouter } from 'vue-router';
 import { useRoute } from 'vue-router';
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useAuth0 } from '@auth0/auth0-vue';
 import dataprovider from '@/services/dataprovider';
@@ -458,14 +458,12 @@ const toggleMenu = (key: string) => {
   sidebarItemsVisible.value[key] = !sidebarItemsVisible.value[key];
 };
 
-const logoUrl = computed(() => {
-  if (
-    global.selectedProject?.logoId != null &&
-    global.selectedProject?.logoId !== ''
-  ) {
-    return `${dataprovider.getRestUrl()}/rpc/get_media_image?id=${
-      global.selectedProject.logoId
-    }`;
+const logoUrl = ref('');
+onMounted(async () => {
+  if (global.selectedProject?.logoId != null) {
+    logoUrl.value = await dataprovider.getImageAsObjectUrl(
+      global.selectedProject.logoId,
+    );
   } else {
     return '';
   }
