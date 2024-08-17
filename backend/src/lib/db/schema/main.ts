@@ -64,8 +64,7 @@ export const projects = dataSchema.table("projects", {
     .primaryKey()
     .default(sql`gen_random_uuid()`),
   name: text("name").notNull(),
-  logo: text("logo"),
-  logoId: uuid("logo_id").references(() => media.id, { onDelete: "set null" }),
+  logoId: uuid("logo_id").references(() => files.id, { onDelete: "set null" }),
   createdAt: timestamp("created_at", { mode: "string" }).notNull().defaultNow(),
   updatedAt: timestamp("updated_at", { mode: "string" }).notNull().defaultNow(),
 });

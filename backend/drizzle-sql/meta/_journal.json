@@ -36,6 +36,20 @@
       "when": 1723702238923,
       "tag": "0004_magical_captain_cross",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1723881133906,
+      "tag": "0005_amusing_the_hand",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1723881502408,
+      "tag": "0006_familiar_spiral",
+      "breakpoints": true
     }
   ]
 }
