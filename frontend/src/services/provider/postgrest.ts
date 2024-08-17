@@ -271,7 +271,7 @@ export default class DataProvider {
   async createUserInput(input: InputEntry): Promise<InputEntry> {
     // HACK: this should be a preaction in the backend
     input.sumValue = getSumForInput(input, globalStore.equivalentDict);
-    const { data, error } = await post<InputEntry>('/inputs', input);
+    const { data, error } = await post<InputEntry>('/v1/db/collections/inputs', input);
     if (!data) throw error;
     return data;
   }
