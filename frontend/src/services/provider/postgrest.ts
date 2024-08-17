@@ -223,10 +223,7 @@ export default class DataProvider {
   }
 
   async updateUser(user: UserEntry): Promise<UserEntry> {
-    const { data, error } = await put<UserEntry>(
-      `/v1/db/collections/users/${user.id}`,
-      user,
-    );
+    const { data, error } = await put<UserEntry>(`/v1/user/me`, user);
     if (!data) throw error;
     return data;
   }

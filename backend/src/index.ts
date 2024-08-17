@@ -121,6 +121,29 @@ app.get("/v1/user/me", async (c: Context) => {
 });
 
 /**
+ * Update some users data
+ */
+app.put("/v1/user/me", async (c: Context) => {
+  // check if id is set
+  const id = c.get("usersId");
+  const body = await c.req.json();
+  const user = await getDb().select().from(users).where(eq(users.id, id));
+  if (!user || user.length === 0) {
+    throw new HTTPException(404, { message: "User not found" });
+  }
+
+  const updated = await getDb()
+    .update(users)
+    .set({
+      lastSelectedProject: body.lastSelectedProject ?? undefined,
+      lastSelectedSite: body.lastSelectedSite ?? undefined,
+      lastSelectedReport: body.lastSelectedReport ?? undefined,
+    });
+
+  return c.json(updated);
+});
+
+/**
  * Collections endpoint
  */
 app.all("/v1/db/collections/:name/:id?", async (c: Context) => {

@@ -51,13 +51,11 @@ export const GET = async (c: Context) => {
     const table = getDbSchemaTable(tableName);
     const where = mapConditionsToDrizzleWhereObject(table, parsedParams);
     if (!where) {
-      const data = await getDb().select().from(table);
-      console.log("no where", tableName);
       // @ts-ignore
-      // const data2 = await getDb().query[table].findMany({
-      //   orderBy: orderBy ? getOrderBy(orderBy, table, orderAsc) : undefined,
-      //   limit: limit ? parseInt(limit) : undefined,
-      // });
+      const data = await getDb().query[tableName].findMany({
+        orderBy: orderBy ? getOrderBy(orderBy, table, orderAsc) : undefined,
+        limit: limit ? parseInt(limit) : undefined,
+      });
 
       if (single && Array.isArray(data)) {
         if (data.length === 0) {
