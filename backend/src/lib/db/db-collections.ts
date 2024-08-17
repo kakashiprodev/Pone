@@ -1,11 +1,12 @@
-import type { PermissionDefinitionPerTable } from '../types/permission-checker';
+import type { PermissionDefinitionPerTable } from "../types/permission-checker";
 import {
   getPermissionForProject,
   getPermissionForSite,
   getPermissionForSystemEquvalents,
   getPermissionsForReport,
   getPermissionForUserId,
-} from './permissions';
+  getAllUsersProjects,
+} from "./permissions";
 
 export const collectionPermissions: PermissionDefinitionPerTable = {
   // Table "actions"
@@ -13,18 +14,18 @@ export const collectionPermissions: PermissionDefinitionPerTable = {
     POST: {
       checkPermissionsFor: [
         {
-          name: 'site',
-          permission: 'create',
+          name: "site",
+          permission: "create",
           checker: getPermissionForSite,
         },
       ],
     },
     GET: {
-      neededParameters: [{ name: 'site', operator: 'eq', valueType: 'uuid' }],
+      neededParameters: [{ name: "site", operator: "eq", valueType: "uuid" }],
       checkPermissionsFor: [
         {
-          name: 'site',
-          permission: 'read',
+          name: "site",
+          permission: "read",
           checker: getPermissionForSite,
         },
       ],
@@ -32,8 +33,8 @@ export const collectionPermissions: PermissionDefinitionPerTable = {
     PUT: {
       checkPermissionsFor: [
         {
-          name: 'site',
-          permission: 'write',
+          name: "site",
+          permission: "write",
           checker: getPermissionForSite,
         },
       ],
@@ -41,8 +42,8 @@ export const collectionPermissions: PermissionDefinitionPerTable = {
     DELETE: {
       checkPermissionsFor: [
         {
-          name: 'site',
-          permission: 'delete',
+          name: "site",
+          permission: "delete",
           checker: getPermissionForSite,
         },
       ],
@@ -54,18 +55,18 @@ export const collectionPermissions: PermissionDefinitionPerTable = {
     POST: {
       checkPermissionsFor: [
         {
-          name: 'report',
-          permission: 'create',
+          name: "report",
+          permission: "create",
           checker: getPermissionsForReport,
         },
       ],
     },
     GET: {
-      neededParameters: [{ name: 'report', operator: 'eq', valueType: 'uuid' }],
+      neededParameters: [{ name: "report", operator: "eq", valueType: "uuid" }],
       checkPermissionsFor: [
         {
-          name: 'report',
-          permission: 'read',
+          name: "report",
+          permission: "read",
           checker: getPermissionsForReport,
         },
       ],
@@ -73,8 +74,8 @@ export const collectionPermissions: PermissionDefinitionPerTable = {
     PUT: {
       checkPermissionsFor: [
         {
-          name: 'report',
-          permission: 'write',
+          name: "report",
+          permission: "write",
           checker: getPermissionsForReport,
         },
       ],
@@ -82,8 +83,8 @@ export const collectionPermissions: PermissionDefinitionPerTable = {
     DELETE: {
       checkPermissionsFor: [
         {
-          name: 'report',
-          permission: 'delete',
+          name: "report",
+          permission: "delete",
           checker: getPermissionsForReport,
         },
       ],
@@ -95,18 +96,20 @@ export const collectionPermissions: PermissionDefinitionPerTable = {
     POST: {
       checkPermissionsFor: [
         {
-          name: 'project',
-          permission: 'create',
+          name: "project",
+          permission: "create",
           checker: getPermissionForProject,
         },
       ],
     },
     GET: {
-      neededParameters: [{ name: 'system', operator: 'eq', valueType: 'uuid' }],
+      neededParameters: [
+        { name: "project", operator: "or", valueType: "uuid" },
+      ],
       checkPermissionsFor: [
         {
-          name: 'project',
-          permission: 'read',
+          name: "project",
+          permission: "read",
           checker: getPermissionForProject,
         },
       ],
@@ -114,8 +117,8 @@ export const collectionPermissions: PermissionDefinitionPerTable = {
     PUT: {
       checkPermissionsFor: [
         {
-          name: 'project',
-          permission: 'write',
+          name: "project",
+          permission: "write",
           checker: getPermissionForProject,
         },
       ],
@@ -123,8 +126,8 @@ export const collectionPermissions: PermissionDefinitionPerTable = {
     DELETE: {
       checkPermissionsFor: [
         {
-          name: 'project',
-          permission: 'delete',
+          name: "project",
+          permission: "delete",
           checker: getPermissionForProject,
         },
       ],
@@ -136,18 +139,18 @@ export const collectionPermissions: PermissionDefinitionPerTable = {
     POST: {
       checkPermissionsFor: [
         {
-          name: 'site',
-          permission: 'create',
+          name: "site",
+          permission: "create",
           checker: getPermissionForSite,
         },
       ],
     },
     GET: {
-      neededParameters: [{ name: 'site', operator: 'eq', valueType: 'uuid' }],
+      neededParameters: [{ name: "site", operator: "eq", valueType: "uuid" }],
       checkPermissionsFor: [
         {
-          name: 'site',
-          permission: 'read',
+          name: "site",
+          permission: "read",
           checker: getPermissionForSite,
         },
       ],
@@ -155,8 +158,8 @@ export const collectionPermissions: PermissionDefinitionPerTable = {
     PUT: {
       checkPermissionsFor: [
         {
-          name: 'site',
-          permission: 'write',
+          name: "site",
+          permission: "write",
           checker: getPermissionForSite,
         },
       ],
@@ -164,8 +167,8 @@ export const collectionPermissions: PermissionDefinitionPerTable = {
     DELETE: {
       checkPermissionsFor: [
         {
-          name: 'site',
-          permission: 'delete',
+          name: "site",
+          permission: "delete",
           checker: getPermissionForSite,
         },
       ],
@@ -177,18 +180,18 @@ export const collectionPermissions: PermissionDefinitionPerTable = {
     POST: {
       checkPermissionsFor: [
         {
-          name: 'report',
-          permission: 'create',
+          name: "report",
+          permission: "create",
           checker: getPermissionsForReport,
         },
       ],
     },
     GET: {
-      neededParameters: [{ name: 'report', operator: 'eq', valueType: 'uuid' }],
+      neededParameters: [{ name: "report", operator: "eq", valueType: "uuid" }],
       checkPermissionsFor: [
         {
-          name: 'report',
-          permission: 'read',
+          name: "report",
+          permission: "read",
           checker: getPermissionsForReport,
         },
       ],
@@ -196,8 +199,8 @@ export const collectionPermissions: PermissionDefinitionPerTable = {
     PUT: {
       checkPermissionsFor: [
         {
-          name: 'report',
-          permission: 'write',
+          name: "report",
+          permission: "write",
           checker: getPermissionsForReport,
         },
       ],
@@ -205,8 +208,8 @@ export const collectionPermissions: PermissionDefinitionPerTable = {
     DELETE: {
       checkPermissionsFor: [
         {
-          name: 'report',
-          permission: 'delete',
+          name: "report",
+          permission: "delete",
           checker: getPermissionsForReport,
         },
       ],
@@ -218,20 +221,20 @@ export const collectionPermissions: PermissionDefinitionPerTable = {
     POST: {
       checkPermissionsFor: [
         {
-          name: 'project',
-          permission: 'create',
+          name: "project",
+          permission: "create",
           checker: getPermissionForProject,
         },
       ],
     },
     GET: {
       neededParameters: [
-        { name: 'project', operator: 'eq', valueType: 'uuid' },
+        { name: "project", operator: "eq", valueType: "uuid" },
       ],
       checkPermissionsFor: [
         {
-          name: 'project',
-          permission: 'read',
+          name: "project",
+          permission: "read",
           checker: getPermissionForProject,
         },
       ],
@@ -239,8 +242,8 @@ export const collectionPermissions: PermissionDefinitionPerTable = {
     PUT: {
       checkPermissionsFor: [
         {
-          name: 'project',
-          permission: 'write',
+          name: "project",
+          permission: "write",
           checker: getPermissionForProject,
         },
       ],
@@ -248,8 +251,8 @@ export const collectionPermissions: PermissionDefinitionPerTable = {
     DELETE: {
       checkPermissionsFor: [
         {
-          name: 'project',
-          permission: 'delete',
+          name: "project",
+          permission: "delete",
           checker: getPermissionForProject,
         },
       ],
@@ -258,6 +261,7 @@ export const collectionPermissions: PermissionDefinitionPerTable = {
 
   // Table "projects"
   projects: {
+    // HACK: hier könnte man den anderen code rüberkopieren aus index.ts
     // POST: {
     //   checkPermissionsFor: [
     //     {
@@ -268,20 +272,15 @@ export const collectionPermissions: PermissionDefinitionPerTable = {
     //   ],
     // },
     GET: {
-      neededParameters: [{ name: 'id', operator: 'eq', valueType: 'uuid' }],
-      checkPermissionsFor: [
-        {
-          name: 'id',
-          permission: 'read',
-          checker: getPermissionForProject,
-        },
-      ],
+      async selector(userId: string) {
+        return await getAllUsersProjects(userId);
+      },
     },
     PUT: {
       checkPermissionsFor: [
         {
-          name: 'id',
-          permission: 'write',
+          name: "id",
+          permission: "write",
           checker: getPermissionForProject,
         },
       ],
@@ -289,8 +288,8 @@ export const collectionPermissions: PermissionDefinitionPerTable = {
     DELETE: {
       checkPermissionsFor: [
         {
-          name: 'id',
-          permission: 'delete',
+          name: "id",
+          permission: "delete",
           checker: getPermissionForProject,
         },
       ],
@@ -302,18 +301,18 @@ export const collectionPermissions: PermissionDefinitionPerTable = {
     POST: {
       checkPermissionsFor: [
         {
-          name: 'site',
-          permission: 'create',
+          name: "site",
+          permission: "create",
           checker: getPermissionForSite,
         },
       ],
     },
     GET: {
-      neededParameters: [{ name: 'site', operator: 'eq', valueType: 'uuid' }],
+      neededParameters: [{ name: "site", operator: "eq", valueType: "uuid" }],
       checkPermissionsFor: [
         {
-          name: 'site',
-          permission: 'read',
+          name: "site",
+          permission: "read",
           checker: getPermissionForSite,
         },
       ],
@@ -321,8 +320,8 @@ export const collectionPermissions: PermissionDefinitionPerTable = {
     PUT: {
       checkPermissionsFor: [
         {
-          name: 'site',
-          permission: 'write',
+          name: "site",
+          permission: "write",
           checker: getPermissionForSite,
         },
       ],
@@ -330,8 +329,8 @@ export const collectionPermissions: PermissionDefinitionPerTable = {
     DELETE: {
       checkPermissionsFor: [
         {
-          name: 'site',
-          permission: 'delete',
+          name: "site",
+          permission: "delete",
           checker: getPermissionForSite,
         },
       ],
@@ -343,20 +342,20 @@ export const collectionPermissions: PermissionDefinitionPerTable = {
     POST: {
       checkPermissionsFor: [
         {
-          name: 'project',
-          permission: 'create',
+          name: "project",
+          permission: "create",
           checker: getPermissionForProject,
         },
       ],
     },
     GET: {
       neededParameters: [
-        { name: 'project', operator: 'eq', valueType: 'uuid' },
+        { name: "project", operator: "eq", valueType: "uuid" },
       ],
       checkPermissionsFor: [
         {
-          name: 'project',
-          permission: 'read',
+          name: "project",
+          permission: "read",
           checker: getPermissionForProject,
         },
       ],
@@ -364,8 +363,8 @@ export const collectionPermissions: PermissionDefinitionPerTable = {
     PUT: {
       checkPermissionsFor: [
         {
-          name: 'project',
-          permission: 'write',
+          name: "project",
+          permission: "write",
           checker: getPermissionForProject,
         },
       ],
@@ -373,8 +372,8 @@ export const collectionPermissions: PermissionDefinitionPerTable = {
     DELETE: {
       checkPermissionsFor: [
         {
-          name: 'project',
-          permission: 'delete',
+          name: "project",
+          permission: "delete",
           checker: getPermissionForProject,
         },
       ],
@@ -386,18 +385,18 @@ export const collectionPermissions: PermissionDefinitionPerTable = {
     POST: {
       checkPermissionsFor: [
         {
-          name: 'report',
-          permission: 'create',
+          name: "report",
+          permission: "create",
           checker: getPermissionsForReport,
         },
       ],
     },
     GET: {
-      neededParameters: [{ name: 'report', operator: 'eq', valueType: 'uuid' }],
+      neededParameters: [{ name: "report", operator: "eq", valueType: "uuid" }],
       checkPermissionsFor: [
         {
-          name: 'report',
-          permission: 'read',
+          name: "report",
+          permission: "read",
           checker: getPermissionsForReport,
         },
       ],
@@ -405,8 +404,8 @@ export const collectionPermissions: PermissionDefinitionPerTable = {
     PUT: {
       checkPermissionsFor: [
         {
-          name: 'report',
-          permission: 'write',
+          name: "report",
+          permission: "write",
           checker: getPermissionsForReport,
         },
       ],
@@ -414,8 +413,8 @@ export const collectionPermissions: PermissionDefinitionPerTable = {
     DELETE: {
       checkPermissionsFor: [
         {
-          name: 'report',
-          permission: 'delete',
+          name: "report",
+          permission: "delete",
           checker: getPermissionsForReport,
         },
       ],
@@ -429,11 +428,11 @@ export const collectionPermissions: PermissionDefinitionPerTable = {
   // only get on own user
   users: {
     GET: {
-      neededParameters: [{ name: 'id', operator: 'eq', valueType: 'uuid' }],
+      neededParameters: [{ name: "id", operator: "eq", valueType: "uuid" }],
       checkPermissionsFor: [
         {
-          name: 'id',
-          permission: 'read',
+          name: "id",
+          permission: "read",
           checker: getPermissionForUserId,
         },
       ],

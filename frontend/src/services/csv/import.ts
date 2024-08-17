@@ -32,11 +32,11 @@ export const parseAndCheckFromText = (csv: string): EquivalentEntry[] => {
       specification1: parts[3],
       specification2: parts[4],
       specification3: parts[5],
-      add_name1: parts[6],
+      addName1: parts[6],
       comment: parts[7],
       source: parts[10],
-      avg_value: parseFloat(parts[11].replace(',', '.')),
-      monthly_values: parts[12] === '1',
+      avgValue: parseFloat(parts[11].replace(',', '.')),
+      monthlyValues: parts[12] === '1',
       jan: parts[13] === '0' ? null : parseFloat(parts[13].replace(',', '.')),
       feb: parts[14] === '0' ? null : parseFloat(parts[14].replace(',', '.')),
       mar: parts[15] === '0' ? null : parseFloat(parts[15].replace(',', '.')),
@@ -53,8 +53,8 @@ export const parseAndCheckFromText = (csv: string): EquivalentEntry[] => {
       in: parts[8],
       out: parts[9],
       project: null,
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
     };
     entries.push(entry);
   }

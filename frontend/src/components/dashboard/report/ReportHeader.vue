@@ -2,23 +2,23 @@
   <template v-if="report">
     <template
       v-if="
-        report.company_name !== '' &&
-        report.company_street !== '' &&
-        report.company_postal !== '' &&
-        report.company_city !== ''
+        report.companyName !== '' &&
+        report.companyStreet !== '' &&
+        report.companyPostal !== '' &&
+        report.companyCity !== ''
       "
     >
       <div class="report-section">
         <h3 class="report-section__heading mb-2">
-          {{ report.company_name }}
+          {{ report.companyName }}
         </h3>
         <div class="report-section__address mb-4">
           <p>
-            {{ report.company_street }},
-            {{ report.company_postal }}
-            {{ report.company_city }}
+            {{ report.companyStreet }},
+            {{ report.companyPostal }}
+            {{ report.companyCity }}
           </p>
-          <p>{{ report.company_country }}</p>
+          <p>{{ report.companyCountry }}</p>
         </div>
         <p class="report-row">
           <span>{{ $t('report.year') }}</span>
@@ -27,7 +27,7 @@
 
         <p class="report-row">
           <span>{{ $t('report.domain') }}</span>
-          <span>{{ report.company_domain }}</span>
+          <span>{{ report.companyDomain }}</span>
         </p>
       </div>
 
@@ -36,24 +36,24 @@
         <p class="report-row">
           <span>{{ $t('report.contactName') }}</span>
           <span
-            ><span>{{ report.contact_name }}</span></span
+            ><span>{{ report.contactName }}</span></span
           >
         </p>
         <p class="report-row">
           <span>E-Mail</span>
-          <span>{{ report.contact_email }}</span>
+          <span>{{ report.contactEmail }}</span>
         </p>
         <p class="report-row">
           <span>{{ $t('report.contactPhone') }}</span>
-          <span>{{ report.contact_telephone }}</span>
+          <span>{{ report.contactTelephone }}</span>
         </p>
         <p class="report-row">
           <span>{{ $t('report.contactEmail') }}</span>
-          <span>{{ report.contact_email }}</span>
+          <span>{{ report.contactEmail }}</span>
         </p>
         <p class="report-row">
           <span>{{ $t('report.contactDepartment') }}</span>
-          <span>{{ report.contact_domain }}</span>
+          <span>{{ report.contactDomain }}</span>
         </p>
       </div>
 
@@ -62,16 +62,16 @@
         <p class="report-row">
           <span>{{ $t('report.countEmployees') }}</span>
           <span>
-            {{ numberToGroupedString(report.count_employees) }}
+            {{ numberToGroupedString(report.countEmployees) }}
           </span>
         </p>
         <p class="report-row">
           <span>{{ $t('report.businessTurnover') }}</span>
-          <span>{{ numberToGroupedString(report.business_turnover) }} €</span>
+          <span>{{ numberToGroupedString(report.businessTurnover) }} €</span>
         </p>
         <p class="report-row">
           <span>{{ $t('report.refYear') }}</span>
-          <span>{{ report.base_year }}</span>
+          <span>{{ report.baseYear }}</span>
         </p>
       </div>
     </template>

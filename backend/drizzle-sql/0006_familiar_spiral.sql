@@ -1,0 +1,1 @@
+ALTER TABLE "data"."projects" DROP COLUMN IF EXISTS "logo";

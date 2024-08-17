@@ -6,11 +6,11 @@ export interface EquivalentEntry {
   specification1: string;
   specification2: string;
   specification3: string;
-  add_name1: string;
+  addName1: string;
   comment: string;
   source: string;
-  avg_value: number;
-  monthly_values: boolean;
+  avgValue: number;
+  monthlyValues: boolean;
   jan: null | number;
   feb: null | number;
   mar: null | number;
@@ -27,8 +27,8 @@ export interface EquivalentEntry {
   in: string; // input unit
   out: string; // output unit
   project: null | string; // reference on table projects. system values will be NULL
-  created_at: string; // date
-  updated_at: string; // date
+  createdAt: string; // date
+  updatedAt: string; // date
 }
 
 // table "inputs"
@@ -37,28 +37,28 @@ export interface InputEntry {
   name: string;
   scope: number; // 1-3
   comment: string;
-  sum_value: number;
+  sumValue: number;
   equivalent: null | string; // reference on table equivalents
   report: string; // reference on table reports
   category: null | string;
   facility: null | string; // references on table facilities 1:n
   parent: null | string; // reference on table inputs. set if the input belongs to a group
-  raw_value: number;
-  monthly_values: boolean;
-  raw_value_jan: number;
-  raw_value_feb: number;
-  raw_value_mar: number;
-  raw_value_apr: number;
-  raw_value_may: number;
-  raw_value_jun: number;
-  raw_value_jul: number;
-  raw_value_aug: number;
-  raw_value_sep: number;
-  raw_value_oct: number;
-  raw_value_nov: number;
-  raw_value_dec: number;
-  created_at: string; // date
-  updated_at: string; // date
+  rawValue: number;
+  monthlyValues: boolean;
+  rawValueJan: number;
+  rawValueFeb: number;
+  rawValueMar: number;
+  rawValueApr: number;
+  rawValueMay: number;
+  rawValueJun: number;
+  rawValueJul: number;
+  rawValueAug: number;
+  rawValueSep: number;
+  rawValueOct: number;
+  rawValueNov: number;
+  rawValueDec: number;
+  createdAt: string; // date
+  updatedAt: string; // date
 }
 
 // table "inputs" with expanded report and site
@@ -66,7 +66,7 @@ export interface InputEntryWithExpandedReportAndSite
   extends Omit<InputEntry, 'report' | 'facility' | 'site'> {
   report: {
     id: string;
-    base_year: number;
+    baseYear: number;
     year: number;
     site: {
       id: string;
@@ -93,22 +93,22 @@ export interface ReportEntry {
   id: string;
   site: string; // reference on table sites
   year: number;
-  company_name: string;
-  company_street: string;
-  company_postal: string;
-  company_city: string;
-  company_country: string;
-  company_domain: string;
-  contact_name: string;
-  contact_telephone: string;
-  contact_email: string;
-  contact_domain: string;
-  count_employees: number;
-  business_turnover: number;
-  base_year: number;
-  sum_emissions: number; // kann ggf. später weg?!
-  created_at: string; // date
-  updated_at: string; // date
+  companyName: string;
+  companyStreet: string;
+  companyPostal: string;
+  companyCity: string;
+  companyCountry: string;
+  companyDomain: string;
+  contactName: string;
+  contactTelephone: string;
+  contactEmail: string;
+  contactDomain: string;
+  countEmployees: number;
+  businessTurnover: number;
+  baseYear: number;
+  sumEmissions: number; // kann ggf. später weg?!
+  createdAt: string; // date
+  updatedAt: string; // date
 }
 
 // table "projects"
@@ -116,15 +116,15 @@ export interface ProjectEntry {
   id: string;
   name: string;
   logo: string; // url to the logo
-  logo_id: null | string; // reference on table files
-  created_at: string; // date
-  updated_at: string; // date
+  logoId: null | string; // reference on table files
+  createdAt: string; // date
+  updatedAt: string; // date
 }
 
 // table "user_projects"
 export interface UserProjectEntry {
-  user_id: string; // reference on table users
-  project_id: string; // reference on table projects
+  userId: string; // reference on table users
+  projectId: string; // reference on table projects
 }
 
 // table "sites"
@@ -132,8 +132,8 @@ export interface SiteEntry {
   id: string;
   name: string;
   project: string; // reference on table projects
-  created_at: string; // date
-  updated_at: string; // date
+  createdAt: string; // date
+  updatedAt: string; // date
 }
 
 // table "actions"
@@ -149,31 +149,31 @@ export interface ActionEntry {
   site: string; // reference on table sites
   name: string; // normal text
 
-  description_before: string; // rich text
-  description_after: string; // rich text
+  descriptionBefore: string; // rich text
+  descriptionAfter: string; // rich text
 
-  target_value_absolut_planned: number; // planned target value to save
-  target_value_absolut_is: number; // actual target value to save
-  description_target_value: string; // rich text
+  targetValueAbsolutPlanned: number; // planned target value to save
+  targetValueAbsolutIs: number; // actual target value to save
+  descriptionTargetValue: string; // rich text
 
-  finished_until_planned: string | Date | null; // date
-  finished_until_is: string | Date | null; // date
+  finishedUntilPlanned: string | Date | null; // date
+  finishedUntilIs: string | Date | null; // date
 
   category: string;
 
-  costs_planned: number;
-  costs_is: number;
+  costsPlanned: number;
+  costsIs: number;
   roi: number; // return of investment
-  description_costs: string; // description of costs
-  avoidance_costs: number; // de="vermeidungskosten"
+  descriptionCosts: string; // description of costs
+  avoidanceCosts: number; // de="vermeidungskosten"
 
-  created_at: string; // date
-  updated_at: string; // date
+  createdAt: string; // date
+  updatedAt: string; // date
 }
 
 export interface ActionWithPercentage extends ActionEntry {
-  target_value_planned: number;
-  target_value_is: number;
+  targetValuePlanned: number;
+  targetValueIs: number;
 }
 
 // table facilities
@@ -184,9 +184,9 @@ export interface FacilityEntry {
   manufacturer: string;
   model: null | string;
   description: string;
-  shutdown_date: null | string | Date; // if null or empty the facility is in use
-  created_at: string; // date
-  updated_at: string; // date
+  shutdownDate: null | string | Date; // if null or empty the facility is in use
+  createdAt: string; // date
+  updatedAt: string; // date
 }
 
 // table "users"
@@ -194,23 +194,23 @@ export interface UserEntry {
   id: string;
   username: string;
   email: string;
-  is_global_admin: boolean;
+  isGlobalAdmin: boolean;
   firstname: string;
   surname: string;
   department: string;
   role: string;
   telephone: string;
   // preferences:
-  display_in_tons: boolean;
-  last_selected_project: null | string; // reference on table projects. can be empty
-  last_selected_site: null | string; // reference on table sites. can be empty
-  last_selected_report: null | string; // reference on table reports. can be empty
-  selected_theme: string; // dark | light
+  displayInTons: boolean;
+  lastSelectedProject: null | string; // reference on table projects. can be empty
+  lastSelectedSite: null | string; // reference on table sites. can be empty
+  lastSelectedReport: null | string; // reference on table reports. can be empty
+  selectedTheme: string; // dark | light
   // admin
-  can_manage_projects: number;
+  canManageProjects: number;
 
-  created_at: string; // date
-  updated_at: string; // date
+  createdAt: string; // date
+  updatedAt: string; // date
 }
 
 // table "targets"
@@ -219,6 +219,6 @@ export interface TargetEntry {
   report: string; // reference on table reports
   year: number;
   percentage: number; // 0-100
-  created_at: string; // date
-  updated_at: string; // date
+  createdAt: string; // date
+  updatedAt: string; // date
 }

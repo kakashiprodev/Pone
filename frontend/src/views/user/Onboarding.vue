@@ -153,7 +153,7 @@ const reportFormIsValid = ref(false);
 const saveCompany = async () => {
   if (!global.selectedProject) return;
   if (reportForm.value) {
-    reportForm.value.company_name = global.selectedProject?.name || '';
+    reportForm.value.companyName = global.selectedProject?.name || '';
   }
   await global.updateProject(global.selectedProject);
 };

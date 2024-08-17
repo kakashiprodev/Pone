@@ -218,8 +218,8 @@ const computedSumCalculation: ComputedRef<string> = computed(() => {
   if (
     _selectedValue.value.equivalent != null &&
     _selectedValue.value.equivalent !== '' &&
-    _selectedValue.value.raw_value != null &&
-    _selectedValue.value.raw_value > 0
+    _selectedValue.value.rawValue != null &&
+    _selectedValue.value.rawValue > 0
   ) {
     return getCalculationSteps(
       _selectedValue.value,

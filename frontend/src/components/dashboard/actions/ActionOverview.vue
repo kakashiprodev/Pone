@@ -39,13 +39,13 @@
             <span class="flex justify-end text-right font-bold">
               <span
                 v-if="
-                  data.finished_until_is != null && data.finished_until_is != ''
+                  data.finishedUntilIs != null && data.finishedUntilIs != ''
                 "
               >
-                {{ dateToYear(data.finished_until_is) }}
+                {{ dateToYear(data.finishedUntilIs) }}
               </span>
               <span v-else>
-                {{ dateToYear(data.finished_until_planned) }}
+                {{ dateToYear(data.finishedUntilPlanned) }}
               </span>
             </span>
           </template>
@@ -55,7 +55,7 @@
           <template #body="{ data }">
             <div class="flex content-center flex-wrap">
               <span
-                v-html="data.description_target_value"
+                v-html="data.descriptionTargetValue"
                 style="cursor: pointer"
                 class="hover:text-blue-500"
                 @click="
@@ -72,16 +72,16 @@
             <ProgressBarWithTarget
               v-if="data.progress < 100"
               color="grey"
-              :value="data.target_value_planned"
-              :targetValue="data.target_value_planned"
+              :value="data.targetValuePlanned"
+              :targetValue="data.targetValuePlanned"
             >
             </ProgressBarWithTarget>
 
             <ProgressBarWithTarget
               v-else
               :color="Config.colors.data2"
-              :value="data.target_value_is"
-              :targetValue="data.target_value_is"
+              :value="data.targetValueIs"
+              :targetValue="data.targetValueIs"
             >
             </ProgressBarWithTarget>
           </template>
@@ -90,12 +90,12 @@
           <template #body="{ data }">
             <span class="flex justify-end text-right">
               <nobr v-if="data.progress < 100">
-                {{ toTons(data.target_value_absolut_planned).toLocaleString() }}
+                {{ toTons(data.targetValueAbsolutPlanned).toLocaleString() }}
                 to
               </nobr>
               <nobr v-else>
-                {{ toTons(data.target_value_absolut_is) }}/{{
-                  toTons(data.target_value_absolut_planned)
+                {{ toTons(data.targetValueAbsolutIs) }}/{{
+                  toTons(data.targetValueAbsolutPlanned)
                 }}
                 to
               </nobr>
@@ -163,8 +163,8 @@ const getData = async () => {
     // order by date. if "finishedUntilIs" is null or empty then use "finishedUntilPlanned"
     // both can be string, Date or null or ""
     acts.sort((a, b) => {
-      const aDate = a.finished_until_is ?? a.finished_until_planned;
-      const bDate = b.finished_until_is ?? b.finished_until_planned;
+      const aDate = a.finishedUntilIs ?? a.finishedUntilPlanned;
+      const bDate = b.finishedUntilIs ?? b.finishedUntilPlanned;
       if (aDate == null || aDate === '') {
         return 1;
       }
@@ -176,12 +176,12 @@ const getData = async () => {
 
     // calulate sum of all planned target values
     const sumPlanned = acts.reduce(
-      (acc, act) => acc + (act.target_value_absolut_planned ?? 0),
+      (acc, act) => acc + (act.targetValueAbsolutPlanned ?? 0),
       0,
     );
     // calulate sum of all actual target values
     const sumIs = acts.reduce(
-      (acc, act) => acc + (act.target_value_absolut_is ?? 0),
+      (acc, act) => acc + (act.targetValueAbsolutIs ?? 0),
       0,
     );
     const biggerValue = sumPlanned > sumIs ? sumPlanned : sumIs;
@@ -190,30 +190,30 @@ const getData = async () => {
     // also group all entries by category and creat a dictionary with the sum of all planned and actual target values
     const actsWithPercentage: ActionWithPercentage[] = acts.map((act) => {
       const plannedPercentage =
-        (act.target_value_absolut_planned / biggerValue) * 100;
-      const isPercentage = (act.target_value_absolut_is / biggerValue) * 100;
+        (act.targetValueAbsolutPlanned / biggerValue) * 100;
+      const isPercentage = (act.targetValueAbsolutIs / biggerValue) * 100;
 
       // add the planned and actual target value to the category dictionary
       if (categorySumDict.value[act.category]) {
         categorySumDict.value[act.category].sumAbsolute +=
           act.progress < 100
-            ? act.target_value_absolut_planned
-            : act.target_value_absolut_is;
+            ? act.targetValueAbsolutPlanned
+            : act.targetValueAbsolutIs;
       } else {
         categorySumDict.value[act.category] = {
           sumAbsolute:
             act.progress < 100
-              ? act.target_value_absolut_planned
-              : act.target_value_absolut_is,
+              ? act.targetValueAbsolutPlanned
+              : act.targetValueAbsolutIs,
           precentagePart: 0,
         };
       }
 
       return {
         ...act,
-        target_value_planned: plannedPercentage,
+        targetValuePlanned: plannedPercentage,
         // relation between the target value ant the real value
-        target_value_is: isPercentage,
+        targetValueIs: isPercentage,
       };
     });
 

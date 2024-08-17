@@ -53,9 +53,9 @@ function prepareAnnotationsData(options: {
   if (options.actions)
     annotations.value.actions = options.actions.map((action) => {
       return {
-        x:
-          action.finishedUntilIs?.getFullYear() ||
-          action.finishedUntilPlanned?.getFullYear(),
+        x: action.finishedUntilIs
+          ? new Date(action.finishedUntilIs).getFullYear()
+          : new Date(action.finishedUntilPlanned).getFullYear(),
         name: action.name,
       };
     });

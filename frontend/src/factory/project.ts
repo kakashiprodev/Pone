@@ -5,8 +5,8 @@ export const getEmptyProject = (): ProjectEntry => {
     id: 'new',
     name: '',
     logo: '',
-    logo_id: null,
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString(),
+    logoId: null,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
   };
 };

@@ -178,12 +178,12 @@ function calculateActionsEffect(
   month: number,
 ): number {
   return actions
-    .filter((action) => action.relevant && action.finished_until_planned)
+    .filter((action) => action.relevant && action.finishedUntilPlanned)
     .filter((action) => {
-      const date = new Date(action.finished_until_planned!);
+      const date = new Date(action.finishedUntilPlanned!);
       return date.getFullYear() === year && date.getMonth() === month - 1;
     })
-    .reduce((acc, action) => acc + action.target_value_absolut_planned, 0);
+    .reduce((acc, action) => acc + action.targetValueAbsolutPlanned, 0);
 }
 
 function calculateYearlyActionsEffect(
@@ -191,12 +191,12 @@ function calculateYearlyActionsEffect(
   year: number,
 ): number {
   return actions
-    .filter((action) => action.relevant && action.finished_until_planned)
+    .filter((action) => action.relevant && action.finishedUntilPlanned)
     .filter(
       (action) =>
-        new Date(action.finished_until_planned!).getFullYear() === year,
+        new Date(action.finishedUntilPlanned!).getFullYear() === year,
     )
-    .reduce((acc, action) => acc + action.target_value_absolut_planned, 0);
+    .reduce((acc, action) => acc + action.targetValueAbsolutPlanned, 0);
 }
 
 function createMonthlyResult(

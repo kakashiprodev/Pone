@@ -1,24 +1,24 @@
-import type { CrudPermission } from './permissions';
+import type { CrudPermission } from "./permissions";
 
-type Operator = 'eq' | 'gt' | 'lt' | 'or';
+type Operator = "eq" | "gt" | "lt" | "or";
 
 type QueryParamForEquals = {
-  operator: 'eq';
+  operator: "eq";
   value: string;
 };
 
 type QueryParamForOr = {
-  operator: 'or';
+  operator: "or";
   value: string[];
 };
 
 type QueryParamForLowerThan = {
-  operator: 'lt';
+  operator: "lt";
   value: string;
 };
 
 type QueryParamForGreaterThan = {
-  operator: 'gt';
+  operator: "gt";
   value: string;
 };
 
@@ -39,8 +39,11 @@ interface PermissionDefinition {
   }[]; // URL Parameters that are needed for the query
   checkPermissionsFor?: {
     name: string;
-    checker: (userId: string, value: string) => Promise<CrudPermission>;
-    permission: 'create' | 'read' | 'write' | 'delete';
+    checker: (
+      userId: string,
+      value: string | string[]
+    ) => Promise<CrudPermission>;
+    permission: "create" | "read" | "write" | "delete";
   }[];
   columns?: any;
   // custom SQL actions

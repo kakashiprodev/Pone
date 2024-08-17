@@ -165,14 +165,12 @@ export const useGlobalStore = defineStore('global', {
       let projectHadToBeCreated = false;
       // check the last selected entries if they are still valid
       if (
-        user.last_selected_project != null &&
-        user.last_selected_project !== '' &&
+        user.lastSelectedProject != null &&
+        user.lastSelectedProject !== '' &&
         this.projects.length > 0 &&
-        this.projects.find((p) => p.id === user.last_selected_project) != null
+        this.projects.find((p) => p.id === user.lastSelectedProject) != null
       ) {
-        const p = this.projects.find(
-          (p) => p.id === user.last_selected_project,
-        );
+        const p = this.projects.find((p) => p.id === user.lastSelectedProject);
         if (p) this.selectedProject = p;
       } else {
         // select another project or create a new one
@@ -184,12 +182,9 @@ export const useGlobalStore = defineStore('global', {
       this.sites = await dataprovider.readSitesForProject();
       await this.ensureSiteIsSelected();
 
-      if (user.last_selected_site != null && user.last_selected_site !== '') {
-        console.log(
-          'select last selected site with id',
-          user.last_selected_site,
-        );
-        const s = this.sites.find((s) => s.id === user.last_selected_site);
+      if (user.lastSelectedSite != null && user.lastSelectedSite !== '') {
+        console.log('select last selected site with id', user.lastSelectedSite);
+        const s = this.sites.find((s) => s.id === user.lastSelectedSite);
         if (s) this.selectedSite = s;
       } else {
         // select another site or create a new one
@@ -200,11 +195,8 @@ export const useGlobalStore = defineStore('global', {
 
       // then load reports for the selected project and site
       await this.refreshReports(true);
-      if (
-        user.last_selected_report != null &&
-        user.last_selected_report !== ''
-      ) {
-        const r = this.reports.find((r) => r.id === user.last_selected_report);
+      if (user.lastSelectedReport != null && user.lastSelectedReport !== '') {
+        const r = this.reports.find((r) => r.id === user.lastSelectedReport);
         if (r) this.selectedReport = r;
       } else {
         this.selectedReport = null;
@@ -227,8 +219,8 @@ export const useGlobalStore = defineStore('global', {
           report: this.selectedReport?.id ?? '',
           year: 2040,
           percentage: 100,
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString(),
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
         });
       }
       await this.refreshTargets();
@@ -384,9 +376,9 @@ export const useGlobalStore = defineStore('global', {
           id: 'new',
           name: 'Ihr Firmenname',
           logo: '',
-          logo_id: null,
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString(),
+          logoId: null,
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
         });
         projectHadToBeCreated = true;
         this.selectedProject = this.projects[0];
@@ -570,9 +562,9 @@ export const useGlobalStore = defineStore('global', {
       const user = await dataprovider.getUser();
       await dataprovider.updateUser({
         ...user,
-        last_selected_project: this.selectedProject?.id ?? '',
-        last_selected_site: this.selectedSite?.id ?? '',
-        last_selected_report: this.selectedReport?.id ?? '',
+        lastSelectedProject: this.selectedProject?.id ?? '',
+        lastSelectedSite: this.selectedSite?.id ?? '',
+        lastSelectedReport: this.selectedReport?.id ?? '',
       });
     },
 
@@ -592,8 +584,8 @@ export const useGlobalStore = defineStore('global', {
       const user = await dataprovider.getUser();
       await dataprovider.updateUser({
         ...user,
-        last_selected_project: this.selectedSite?.id ?? '',
-        last_selected_report: this.selectedReport?.id ?? '',
+        lastSelectedProject: this.selectedSite?.id ?? '',
+        lastSelectedReport: this.selectedReport?.id ?? '',
       });
     },
 
@@ -623,22 +615,22 @@ export const useGlobalStore = defineStore('global', {
         id: 'new',
         site: this.selectedSite?.id ?? '',
         year: new Date().getFullYear(),
-        company_name: '',
-        company_street: '',
-        company_postal: '',
-        company_city: '',
-        company_country: '',
-        company_domain: '',
-        contact_name: '',
-        contact_telephone: '',
-        contact_email: '',
-        contact_domain: '',
-        count_employees: 0,
-        business_turnover: 0,
-        base_year: new Date().getFullYear(),
-        sum_emissions: 0,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
+        companyName: '',
+        companyStreet: '',
+        companyPostal: '',
+        companyCity: '',
+        companyCountry: '',
+        companyDomain: '',
+        contactName: '',
+        contactTelephone: '',
+        contactEmail: '',
+        contactDomain: '',
+        countEmployees: 0,
+        businessTurnover: 0,
+        baseYear: new Date().getFullYear(),
+        sumEmissions: 0,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
       };
       return report;
     },
@@ -719,7 +711,7 @@ export const useGlobalStore = defineStore('global', {
       const user = await dataprovider.getUser();
       await dataprovider.updateUser({
         ...user,
-        last_selected_report: this.selectedReport?.id ?? '',
+        lastSelectedReport: this.selectedReport?.id ?? '',
       });
     },
 
@@ -767,8 +759,8 @@ export const useGlobalStore = defineStore('global', {
           id: 'new',
           name: 'Haupstandort',
           project: this.selectedProject?.id ?? '',
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString(),
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
         });
         this.selectedSite = this.sites[0];
       } else {

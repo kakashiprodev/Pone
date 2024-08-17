@@ -1,4 +1,3 @@
-import { PostgrestClient } from '@supabase/postgrest-js';
 import {
   ActionEntry,
   EquivalentEntry,
@@ -12,293 +11,229 @@ import {
   UserEntry,
   UserInputQuery,
 } from '../types';
-import { error } from '../ui/toast';
 import { globalStore, authStore } from '../../main';
 import { getSumForInput } from '../reporting';
 import { UsersTopicAnswer } from '../csrd-esrs/topics';
 
-const REST_URL = import.meta.env.VITE_POSTGREST_URL as string;
-const USE_PROXY_SERVER = import.meta.env.VITE_USE_PROXY_SERVER || 'false';
-if (!REST_URL) {
-  throw new Error('REST URL not found');
+const URL_BACKEND = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3005';
+
+interface ApiRequest<T> {
+  data: T | null;
+  error: any | null;
 }
-const API_URL =
-  USE_PROXY_SERVER === 'true' ? REST_URL + '/v1/db/postgrest' : REST_URL;
 
-export default class DataProvider {
-  private postgrest: PostgrestClient;
-
-  constructor() {
-    this.postgrest = new PostgrestClient(API_URL, {
-      fetch: (url: any, options: any = {}) => {
-        return fetch(url, {
-          ...options,
-          headers: {
-            ...options.headers,
-            Authorization: `Bearer ${authStore.user.token}`,
-          },
-        });
-      },
-    });
-  }
-
-  initPostgrestClient() {
-    this.postgrest = new PostgrestClient(API_URL, {
-      fetch: (url: any, options: any = {}) => {
-        return fetch(url, {
-          ...options,
-          headers: {
-            ...options.headers,
-            Authorization: `Bearer ${authStore.user.token}`,
-          },
-        });
-      },
-    });
-  }
-
-  async ensureUserIsExisting() {
-    await fetch(`${API_URL}/rpc/ensure_user`, {
-      method: 'POST',
+const get = async <T>(url: string): Promise<ApiRequest<T>> => {
+  try {
+    const response = await fetch(URL_BACKEND + url, {
       headers: {
         Authorization: `Bearer ${authStore.user.token}`,
       },
-    }).catch((err) => {
-      console.log('error, ensureUserIsExisting: ', err);
-      return false;
     });
+    const json = await response.json();
+    return { data: json, error: null };
+  } catch (err) {
+    return { data: null, error: err };
   }
-
-  async login(username: string, password: string): Promise<boolean> {
-    try {
-      if (!authStore.user.token || authStore.user.token === '') {
-        throw new Error('No token found in store');
-      }
-      // set postgrest client with user token
-      const { data, error } = await this.postgrest
-        .from('users')
-        .select('*')
-        .eq('username', username)
-        .eq('password', password);
-      if (error || data.length === 0) {
-        throw error || new Error('Invalid username or password');
-      }
-      return this.checkLogin();
-    } catch (err) {
-      error(err + '');
-      return false;
+};
+const post = async <T>(url: string, body: any): Promise<ApiRequest<T>> => {
+  try {
+    const response = await fetch(URL_BACKEND + url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${authStore.user.token}`,
+      },
+      body: JSON.stringify(body),
+    });
+    const json = await response.json();
+    return { data: json, error: null };
+  } catch (err) {
+    return { data: null, error: err };
+  }
+};
+const put = async <T>(url: string, body: any): Promise<ApiRequest<T>> => {
+  try {
+    const response = await fetch(URL_BACKEND + url, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${authStore.user.token}`,
+      },
+      body: JSON.stringify(body),
+    });
+    const json = await response.json();
+    return { data: json, error: null };
+  } catch (err) {
+    return { data: null, error: err };
+  }
+};
+const del = async <T>(
+  url: string,
+  parseResult = false,
+): Promise<ApiRequest<T>> => {
+  try {
+    const response = await fetch(URL_BACKEND + url, {
+      method: 'DELETE',
+      headers: {
+        Authorization: `Bearer ${authStore.user.token}`,
+      },
+    });
+    if (parseResult) {
+      const json = await response.json();
+      return { data: json, error: null };
+    } else {
+      return { data: null, error: null };
     }
+  } catch (err) {
+    return { data: null, error: err };
+  }
+};
+
+export default class DataProvider {
+  async ensureUserIsExisting(): Promise<void> {
+    await get('/v1/db/hooks/ensure-user');
   }
 
-  async loginWithMicrosoft(): Promise<boolean> {
-    // Implement OAuth2 login with Microsoft here
-    return false;
-  }
-
-  async checkLogin(): Promise<boolean> {
-    try {
-      this.initPostgrestClient();
-
-      console.log('ensureUserIsExisting');
-      await this.ensureUserIsExisting();
-
-      const { data, error } = await this.postgrest
-        .from('users')
-        .select('*')
-        .limit(1)
-        .returns<UserEntry[]>();
-      if (error || data.length === 0) {
-        throw error || new Error('User not logged in');
-      }
-      globalStore.username = data[0].email;
-      globalStore.isLoggedIn = true;
-      globalStore.isGlobalAdmin = data[0].is_global_admin;
-      globalStore.displayInTons = data[0].display_in_tons;
-      return true;
-    } catch (err) {
-      console.log('error, checking login: ', err);
-      globalStore.isLoggedIn = false;
-      return false;
-    }
-  }
-
-  async createProject(data: ProjectEntry): Promise<ProjectEntry> {
-    const { error } = await this.postgrest
-      .from('projects')
-      .insert({ ...data, id: undefined });
-    // then select the created project by sort by "created_at" and limit to 1
-    const { data: created } = await this.postgrest
-      .from('projects')
-      .select('*')
-      .order('created_at', { ascending: false })
-      .limit(1)
-      .single();
-    if (error) throw error;
-    return created as ProjectEntry;
-  }
-
-  async readProject(id: string): Promise<ProjectEntry> {
-    const { data, error } = await this.postgrest
-      .from('projects')
-      .select('*')
-      .eq('id', id)
-      .single();
-    if (error) throw error;
-    return data as ProjectEntry;
-  }
-
-  async readProjects(): Promise<ProjectEntry[]> {
-    const { data, error } = await this.postgrest.from('projects').select('*');
-    if (error) throw error;
-    return data as ProjectEntry[];
-  }
-
-  async updateProject(data: ProjectEntry): Promise<ProjectEntry> {
-    const { data: updated, error } = await this.postgrest
-      .from('projects')
-      .update(data)
-      .eq('id', data.id)
-      .single();
-    if (error) throw error;
-    return updated as ProjectEntry;
-  }
-
-  async deleteProject(id: string) {
-    const { data, error } = await this.postgrest
-      .from('projects')
-      .delete()
-      .eq('id', id);
-    if (error) throw error;
+  async createProject(project: ProjectEntry): Promise<ProjectEntry> {
+    const { data, error } = await post<ProjectEntry>(
+      '/v1/db/hooks/create-project',
+      project,
+    );
+    if (!data) throw error;
     return data;
   }
 
-  async createSite(data: SiteEntry): Promise<SiteEntry> {
-    const { data: created, error } = await this.postgrest
-      .from('sites')
-      .insert({ ...data, id: undefined })
-      .select()
-      .single();
-    if (error) throw error;
-    return created as SiteEntry;
+  async readProject(id: string): Promise<ProjectEntry> {
+    const { data, error } = await get<ProjectEntry>(
+      `/v1/db/collections/projects?id[eq]=${id}&single=true`,
+    );
+    if (!data) throw error;
+    return data;
+  }
+
+  async readProjects(): Promise<ProjectEntry[]> {
+    const { data, error } = await get<ProjectEntry[]>(
+      `/v1/db/collections/projects`,
+    );
+    if (!data) throw error;
+    return data;
+  }
+
+  async updateProject(project: ProjectEntry): Promise<ProjectEntry> {
+    const { data, error } = await put<ProjectEntry>(
+      `/v1/db/collections/projects/${project.id}`,
+      project,
+    );
+    if (!data) throw error;
+    return data;
+  }
+
+  async deleteProject(id: string): Promise<void> {
+    const { data, error } = await del(`/v1/db/collections/projects/${id}`);
+    if (!data) throw error;
+    return;
+  }
+
+  async createSite(site: SiteEntry): Promise<SiteEntry> {
+    const { data, error } = await post<SiteEntry>(
+      '/v1/db/collections/sites',
+      site,
+    );
+    if (!data) throw error;
+    return data;
   }
 
   async readSitesForProject(): Promise<SiteEntry[]> {
     if (!globalStore.selectedProject) throw new Error('No project selected');
-    const { data, error } = await this.postgrest
-      .from('sites')
-      .select('*')
-      .eq('project', globalStore.selectedProject.id);
-    if (error) throw error;
-    return data as SiteEntry[];
+    const { data, error } = await get<SiteEntry[]>(
+      `/v1/db/collections/sites?project[eq]=${globalStore.selectedProject.id}`,
+    );
+    if (!data) throw error;
+    return data;
   }
 
   async readSite(id: string): Promise<SiteEntry> {
-    const { data, error } = await this.postgrest
-      .from('sites')
-      .select('*')
-      .eq('id', id)
-      .single();
-    if (error) throw error;
-    return data as SiteEntry;
+    const { data, error } = await get<SiteEntry>(
+      `/v1/db/collections/sites?id[eq]=${id}&single=true`,
+    );
+    if (!data) throw error;
+    return data;
   }
 
-  async updateSite(data: SiteEntry): Promise<SiteEntry> {
-    if (!data.id) throw new Error('Site ID is missing');
-    const { data: updated, error } = await this.postgrest
-      .from('sites')
-      .update(data)
-      .eq('id', data.id)
-      .select()
-      .single();
-    if (error) throw error;
-    return updated as SiteEntry;
+  async updateSite(site: SiteEntry): Promise<SiteEntry> {
+    if (!site.id) throw new Error('Site ID is missing');
+    const { data, error } = await put<SiteEntry>(`/sites/${site.id}`, site);
+    if (!data) throw error;
+    return data;
   }
 
-  async deleteSite(id: string) {
-    const { error } = await this.postgrest.from('sites').delete().eq('id', id);
+  async deleteSite(id: string): Promise<void> {
+    const { error } = await del(`/v1/db/collections/sites/${id}`);
     if (error) throw error;
   }
 
-  async createReport(data: ReportEntry): Promise<ReportEntry> {
-    const { data: created, error } = await this.postgrest
-      .from('reports')
-      .insert({ ...data, id: undefined })
-      .select()
-      .single();
-    if (error) throw error;
-    return created as ReportEntry;
+  async createReport(report: ReportEntry): Promise<ReportEntry> {
+    const { data, error } = await post<ReportEntry>(
+      '/v1/db/collections/reports',
+      report,
+    );
+    if (!data) throw error;
+    return data;
   }
 
   async readReport(id: string): Promise<ReportEntry> {
-    const { data, error } = await this.postgrest
-      .from('reports')
-      .select('*')
-      .eq('id', id)
-      .single();
-    if (error) throw error;
-    return data as ReportEntry;
+    const { data, error } = await get<ReportEntry>(
+      `/v1/db/collections/reports?id[eq]=${id}&single=true`,
+    );
+    if (!data) throw error;
+    return data;
   }
 
   async readReports(siteId?: string): Promise<ReportEntry[]> {
     if (!globalStore.selectedSite && !siteId)
       throw new Error('No site selected in (readReports)');
-    const { data, error } = await this.postgrest
-      .from('reports')
-      .select('*')
-      .eq('site', siteId ?? globalStore.selectedSite?.id);
-    if (error) throw error;
-    return data as ReportEntry[];
-  }
-
-  async updateReport(data: ReportEntry): Promise<ReportEntry> {
-    if (!data.id) throw new Error('Report ID is missing');
-    const { data: updated, error } = await this.postgrest
-      .from('reports')
-      .update(data)
-      .eq('id', data.id)
-      .select()
-      .single();
-    if (error) throw error;
-    return updated as ReportEntry;
-  }
-
-  async deleteReport(id: string) {
-    const { data, error } = await this.postgrest
-      .from('reports')
-      .delete()
-      .eq('id', id);
-    if (error) throw error;
+    const { data, error } = await get<ReportEntry[]>(
+      `/v1/db/collections/reports?site[eq]=${
+        siteId ?? globalStore.selectedSite?.id
+      }`,
+    );
+    if (!data) throw error;
     return data;
+  }
+
+  async updateReport(report: ReportEntry): Promise<ReportEntry> {
+    if (!report.id) throw new Error('Report ID is missing');
+    const { data, error } = await put<ReportEntry>(
+      `/v1/db/collections/reports/${report.id}`,
+      report,
+    );
+    if (!data) throw error;
+    return data;
+  }
+
+  async deleteReport(id: string): Promise<void> {
+    const { error } = await del(`/v1/db/collections/reports/${id}`);
+    if (error) throw error;
   }
 
   async getUser(): Promise<UserEntry> {
-    const { data, error } = await this.postgrest
-      .from('users')
-      .select('*')
-      .limit(1)
-      .single();
-    if (error) throw error;
+    const { data, error } = await get<UserEntry>('/v1/user/me');
+    if (!data) throw error;
     return data;
   }
 
-  async updateUser(data: UserEntry): Promise<UserEntry> {
-    const { data: updated, error } = await this.postgrest
-      .from('users')
-      .update(data)
-      .eq('id', data.id)
-      .select()
-      .single();
-    if (error) throw error;
-    return updated as UserEntry;
+  async updateUser(user: UserEntry): Promise<UserEntry> {
+    const { data, error } = await put<UserEntry>(`/v1/user/me`, user);
+    if (!data) throw error;
+    return data;
   }
 
   async readEquivalents(): Promise<EquivalentEntry[]> {
-    const { data, error } = await this.postgrest
-      .from('equivalents')
-      .select('*')
-      .or(`project.eq.${globalStore.selectedProject?.id},project.is.null`);
-    // .or('id.eq.2,name.eq.Algeria')
-    if (error) throw error;
-    return data as EquivalentEntry[];
+    const { data, error } = await get<EquivalentEntry[]>(
+      `/v1/db/collections/equivalents?project[or]=${globalStore.selectedProject?.id},null`,
+    );
+    if (!data) throw error;
+    return data;
   }
 
   async readEquivalentsAsDict(): Promise<{ [key: string]: EquivalentEntry }> {
@@ -310,77 +245,48 @@ export default class DataProvider {
     return dict as { [key: string]: EquivalentEntry };
   }
 
-  async createEquivalent(data: EquivalentEntry): Promise<EquivalentEntry> {
-    const { data: created, error } = await this.postgrest
-      .from('equivalents')
-      .insert({ ...data, id: undefined })
-      .select()
-      .single();
-    if (error) throw error;
-    return created as EquivalentEntry;
-  }
-
-  async updateEquivalents(data: EquivalentEntry): Promise<EquivalentEntry> {
-    const { data: updated, error } = await this.postgrest
-      .from('equivalents')
-      .update(data)
-      .eq('id', data.id)
-      .select()
-      .single();
-    if (error) throw error;
-    return updated as EquivalentEntry;
-  }
-
-  async deleteEquivalent(id: string) {
-    const { data, error } = await this.postgrest
-      .from('equivalents')
-      .delete()
-      .eq('id', id);
-    if (error) throw error;
+  async createEquivalent(eq: EquivalentEntry): Promise<EquivalentEntry> {
+    const { data, error } = await post<EquivalentEntry>(
+      '/v1/db/collections/equivalents',
+      eq,
+    );
+    if (!data) throw error;
     return data;
   }
 
-  async createUserInput(data: InputEntry): Promise<InputEntry> {
-    data.sum_value = getSumForInput(data, globalStore.equivalentDict);
-    const { data: created, error } = await this.postgrest
-      .from('inputs')
-      .insert({ ...data, id: undefined })
-      .select()
-      .single();
+  async updateEquivalents(eq: EquivalentEntry): Promise<EquivalentEntry> {
+    const { data, error } = await put<EquivalentEntry>(
+      `/v1/db/collections/equivalents/${eq.id}`,
+      eq,
+    );
+    if (!data) throw error;
+    return data;
+  }
+
+  async deleteEquivalent(id: string): Promise<void> {
+    const { error } = await del(`/v1/db/collections/equivalents/${id}`);
     if (error) throw error;
-    return created as InputEntry;
+  }
+
+  async createUserInput(input: InputEntry): Promise<InputEntry> {
+    // HACK: this should be a preaction in the backend
+    input.sumValue = getSumForInput(input, globalStore.equivalentDict);
+    const { data, error } = await post<InputEntry>('/v1/db/collections/inputs', input);
+    if (!data) throw error;
+    return data;
   }
 
   async readUserInput(id: string): Promise<InputEntry> {
-    const { data, error } = await this.postgrest
-      .from('inputs')
-      .select('*')
-      .eq('id', id)
-      .single();
-    if (error) throw error;
-    return data as InputEntry;
+    const { data, error } = await get<InputEntry>(
+      `/v1/db/collections/inputs?id[eq]=${id}&single=true`,
+    );
+    if (!data) throw error;
+    return data;
   }
 
   async readUserInputs(_query?: UserInputQuery): Promise<InputEntry[]> {
-    // const filter = `report.eq.${globalStore.selectedReport?.id}${
-    //   query?.scope
-    //     ? ' && (' + query.scope.map((s) => `scope.eq.${s}`).join(' || ') + ')'
-    //     : ''
-    // }${
-    //   query?.category
-    //     ? ' && (' +
-    //       query.category.map((c) => `category.eq.${c}`).join(' || ') +
-    //       ')'
-    //     : ''
-    // }${
-    //   query?.facility
-    //     ? ' && (' +
-    //       query.facility.map((f) => `facility.eq.${f}`).join(' || ') +
-    //       ')'
-    //     : ''
-    // }`;
-    const { data, error } = await this.postgrest.from('inputs').select('*');
-    //.filter(filter)
+    // HACK: unklar ob das nicht gefiltert werden muss
+    const { data, error } = await get('/v1/db/collections/inputs');
     if (error) throw error;
     return data as InputEntry[];
   }
@@ -389,293 +295,247 @@ export default class DataProvider {
     projectId: string,
     years?: number[],
   ): Promise<InputEntry[]> {
-    if (years) {
-      const { data, error } = await this.postgrest
-        .from('inputs')
-        .select(
-          '*,report_expanded:report!inner(site_expanded:site!inner(project_expanded:project!inner(id)))',
-        )
-        .eq('report.site.project.id', projectId)
-        .in('report.year', years);
-      if (error) throw error;
-      return data as InputEntry[];
-    } else {
-      const { data, error } = await this.postgrest
-        .from('inputs')
-        .select(
-          '*,report_expanded:report!inner(site_expanded:site!inner(project_expanded:project!inner(id)))',
-        )
-        .eq('report.site.project.id', projectId);
-      if (error) throw error;
-      return data as InputEntry[];
-    }
+    const { data, error } = await get<InputEntry[]>(
+      `/v1/db/inputs-for-project?project=${projectId}${
+        years ? `&years=${years.join(',')}` : ''
+      }`,
+    );
+    if (!data) throw error;
+    return data;
   }
 
   async readUserInputsForProjectExtendFields(
     projectId: string,
   ): Promise<InputEntryWithExpandedReportAndSite[]> {
-    const { data, error } = await this.postgrest
-      .from('inputs')
-      .select('*,report!inner(*,site!inner(*,project!inner(id))),facility(*)')
-      .eq('report.site.project.id', projectId);
-    if (error) throw error;
-    return data as InputEntryWithExpandedReportAndSite[];
-  }
-
-  async updateUserInput(data: InputEntry): Promise<InputEntry> {
-    data.sum_value = getSumForInput(data, globalStore.equivalentDict);
-    const { data: updated, error } = await this.postgrest
-      .from('inputs')
-      .update(data)
-      .eq('id', data.id)
-      .select()
-      .single();
-    if (error) throw error;
-    return updated as InputEntry;
-  }
-
-  async deleteUserInput(id: string) {
-    const { data, error } = await this.postgrest
-      .from('inputs')
-      .delete()
-      .eq('id', id);
-    if (error) throw error;
+    const { data, error } = await get<InputEntryWithExpandedReportAndSite[]>(
+      `/v1/db/inputs-for-project?project=${projectId}&extend=true`,
+    );
+    if (!data) throw error;
     return data;
   }
 
-  async deleteAllUserInputsForReport(reportId: string) {
-    const { data, error } = await this.postgrest
-      .from('inputs')
-      .delete()
-      .eq('report', reportId);
-    if (error) throw error;
+  async updateUserInput(input: InputEntry): Promise<InputEntry> {
+    // HACK: this should be a preaction in the backend
+    input.sumValue = getSumForInput(input, globalStore.equivalentDict);
+    const { data, error } = await put<InputEntry>(
+      `/v1/db/collections/inputs/${input.id}`,
+      input,
+    );
+    if (!data) throw error;
     return data;
   }
 
-  async createAction(data: ActionEntry): Promise<ActionEntry> {
-    const { data: created, error } = await this.postgrest
-      .from('actions')
-      .insert({ ...data, id: undefined })
-      .select()
-      .single();
+  async deleteUserInput(id: string): Promise<void> {
+    const { error } = await del(`/v1/db/collections/inputs/${id}`);
     if (error) throw error;
-    return created as ActionEntry;
+  }
+
+  async deleteAllUserInputsForReport(reportId: string): Promise<void> {
+    // get all inputs for report
+    const { data: inputs, error: errorGet } = await get<InputEntry[]>(
+      `/v1/db/collections/inputs?report[eq]=${reportId}`,
+    );
+    if (!inputs) throw errorGet;
+    // delte in loop
+    for (const input of inputs) {
+      const { error } = await del(`/v1/db/collections/inputs/${input.id}`);
+      if (error) throw error;
+    }
+  }
+
+  async createAction(action: ActionEntry): Promise<ActionEntry> {
+    const { data, error } = await post<ActionEntry>(
+      '/v1/db/collections/actions',
+      action,
+    );
+    if (!data) throw error;
+    return data;
   }
 
   async readAction(id: string): Promise<ActionEntry> {
-    const { data, error } = await this.postgrest
-      .from('actions')
-      .select('*')
-      .eq('id', id)
-      .single();
-    if (error) throw error;
-    return data as ActionEntry;
+    const { data, error } = await get<ActionEntry>(
+      `/v1/db/collections/actions?id[eq]=${id}&single=true`,
+    );
+    if (!data) throw error;
+    return data;
   }
 
   async readActions(getValuesInTons = false): Promise<ActionEntry[]> {
     if (!globalStore.selectedSite)
       throw new Error('No site selected in (readActions)');
-    const { data, error } = await this.postgrest
-      .from('actions')
-      .select('*')
-      .eq('site', globalStore.selectedSite.id);
-    if (error) throw error;
+    const { data, error } = await get<ActionEntry[]>(
+      `/v1/db/collections/actions?site[eq]=${globalStore.selectedSite.id}`,
+    );
+    if (!data) throw error;
 
     if (getValuesInTons) {
       data.forEach((action) => {
-        action.target_value_absolut_planned =
-          action.target_value_absolut_planned / 1000;
-        action.target_value_absolut_is = action.target_value_absolut_is / 1000;
+        action.targetValueAbsolutPlanned =
+          action.targetValueAbsolutPlanned / 1000;
+        action.targetValueAbsolutIs = action.targetValueAbsolutIs / 1000;
       });
     }
-    return data as ActionEntry[];
+    return data;
   }
 
   async updateAction(data: ActionEntry): Promise<ActionEntry> {
-    const { data: updated, error } = await this.postgrest
-      .from('actions')
-      .update(data)
-      .eq('id', data.id)
-      .select()
-      .single();
-    if (error) throw error;
+    const { data: updated, error } = await put(
+      `/v1/db/collections/actions/${data.id}`,
+      data,
+    );
+    if (!data) throw error;
     return updated as ActionEntry;
   }
 
-  async deleteAction(id: string) {
-    const { error } = await this.postgrest
-      .from('actions')
-      .delete()
-      .eq('id', id);
+  async deleteAction(id: string): Promise<void> {
+    const { error } = await del(`/v1/db/collections/actions/${id}`);
     if (error) throw error;
   }
 
-  async createTarget(data: TargetEntry): Promise<TargetEntry> {
-    const { data: created, error } = await this.postgrest
-      .from('targets')
-      .insert({ ...data, id: undefined })
-      .select()
-      .single();
-    if (error) throw error;
-    return created as TargetEntry;
+  async createTarget(target: TargetEntry): Promise<TargetEntry> {
+    const { data, error } = await post<TargetEntry>(
+      '/v1/db/collections/targets',
+      { ...target, id: undefined },
+    );
+    if (!data) throw error;
+    return data;
   }
 
   async readTarget(id: string): Promise<TargetEntry> {
-    const { data, error } = await this.postgrest
-      .from('targets')
-      .select('*')
-      .eq('id', id)
-      .single();
-    if (error) throw error;
-    return data as TargetEntry;
+    const { data, error } = await get<TargetEntry>(
+      `/v1/db/collections/targets?id[eq]=${id}&single=true`,
+    );
+    if (!data) throw error;
+    return data;
   }
 
   async readTargets(reportId?: string): Promise<TargetEntry[]> {
     if (!globalStore.selectedReport) throw new Error('No report selected');
-    const { data, error } = await this.postgrest
-      .from('targets')
-      .select('*')
-      .eq('report', reportId ?? globalStore.selectedReport.id);
-    if (error) throw error;
-    return data as TargetEntry[];
+    const { data, error } = await get<TargetEntry[]>(
+      `/v1/db/collections/targets?report[eq]=${
+        reportId ?? globalStore.selectedReport.id
+      }`,
+    );
+    if (!data) throw error;
+    return data;
   }
 
-  async updateTarget(data: TargetEntry): Promise<TargetEntry> {
-    const { data: updated, error } = await this.postgrest
-      .from('targets')
-      .update(data)
-      .eq('id', data.id)
-      .select()
-      .single();
-    if (error) throw error;
-    return updated as TargetEntry;
+  async updateTarget(target: TargetEntry): Promise<TargetEntry> {
+    const { data, error } = await put<TargetEntry>(
+      `/v1/db/collections/targets/${target.id}`,
+      target,
+    );
+    if (!data) throw error;
+    return data;
   }
 
-  async deleteTarget(id: string) {
-    const { error } = await this.postgrest
-      .from('targets')
-      .delete()
-      .eq('id', id);
+  async deleteTarget(id: string): Promise<void> {
+    const { error } = await del(`/v1/db/collections/targets/${id}`);
     if (error) throw error;
   }
 
-  async createFacility(data: FacilityEntry): Promise<FacilityEntry> {
-    const { data: created, error } = await this.postgrest
-      .from('facilities')
-      .insert({ ...data, id: undefined })
-      .select()
-      .single();
-    if (error) throw error;
-    return created as FacilityEntry;
+  async createFacility(facility: FacilityEntry): Promise<FacilityEntry> {
+    const { data, error } = await post<FacilityEntry>(
+      '/v1/db/collections/facilities',
+      facility,
+    );
+    if (!data) throw error;
+    return data;
   }
 
   async readFacility(id: string): Promise<FacilityEntry> {
-    const { data, error } = await this.postgrest
-      .from('facilities')
-      .select('*')
-      .eq('id', id)
-      .select()
-      .single();
-    if (error) throw error;
-    return data as FacilityEntry;
+    const { data, error } = await get<FacilityEntry>(
+      `/v1/db/collections/facilities?id[eq]=${id}&single=true`,
+    );
+    if (!data) throw error;
+    return data;
   }
 
   async readFacilities(): Promise<FacilityEntry[]> {
     if (!globalStore.selectedSite)
       throw new Error('No site selected in (readFacilities)');
-    const { data, error } = await this.postgrest
-      .from('facilities')
-      .select('*')
-      .eq('site', globalStore.selectedSite.id);
-    if (error) throw error;
-    data.forEach((facility: FacilityEntry) => {
-      if (facility.shutdown_date && facility.shutdown_date !== '') {
-        facility.shutdown_date = new Date(facility.shutdown_date);
-      }
-    });
-    return data as FacilityEntry[];
-  }
-
-  async updateFacility(data: FacilityEntry): Promise<FacilityEntry> {
-    const { data: updated, error } = await this.postgrest
-      .from('facilities')
-      .update(data)
-      .eq('id', data.id)
-      .select()
-      .single();
-    if (error) throw error;
-    return updated as FacilityEntry;
-  }
-
-  async deleteFacility(id: string) {
-    const { data, error } = await this.postgrest
-      .from('facilities')
-      .delete()
-      .eq('id', id);
-    if (error) throw error;
+    const { data, error } = await get<FacilityEntry[]>(
+      `/v1/db/collections/facilities?site[eq]=${globalStore.selectedSite.id}`,
+    );
+    if (!data) throw error;
     return data;
   }
 
-  async createCsrdTopic(data: UsersTopicAnswer): Promise<UsersTopicAnswer> {
-    const { data: created, error } = await this.postgrest
-      .from('csrdtopics')
-      .insert({ ...data, id: undefined })
-      .select()
-      .single();
-    if (error) throw error;
-    return created as UsersTopicAnswer;
+  async updateFacility(facility: FacilityEntry): Promise<FacilityEntry> {
+    const { data, error } = await put<FacilityEntry>(
+      `/v1/db/collections/facilities/${facility.id}`,
+      facility,
+    );
+    if (!data) throw error;
+    return facility;
   }
 
-  async readCsrdTopics() {
-    const { data, error } = await this.postgrest
-      .from('csrdtopics')
-      .select('*')
-      .eq('report', globalStore.selectedReport?.id);
+  async deleteFacility(id: string): Promise<void> {
+    const { error } = await del(`/v1/db/collections/facilities/${id}`);
     if (error) throw error;
+  }
+
+  async createCsrdTopic(csrd: UsersTopicAnswer): Promise<UsersTopicAnswer> {
+    const { data, error } = await post<UsersTopicAnswer>(
+      '/v1/db/collections/csrdtopics',
+      csrd,
+    );
+    if (!data) throw error;
     return data;
   }
 
-  async updateCsrdTopic(data: UsersTopicAnswer) {
-    const { data: updated, error } = await this.postgrest
-      .from('csrdtopics')
-      .update(data)
-      .eq('id', data.id)
-      .select()
-      .single();
-    if (error) throw error;
-    return updated;
-  }
-
-  async deleteCsrdTopic(id: string) {
-    const { data, error } = await this.postgrest
-      .from('csrdtopics')
-      .delete()
-      .eq('id', id);
-    if (error) throw error;
+  async readCsrdTopics(): Promise<UsersTopicAnswer[]> {
+    const { data, error } = await get<UsersTopicAnswer[]>(
+      `/v1/db/collections/csrdtopics?report=${globalStore.selectedReport?.id}`,
+    );
+    if (!data) throw error;
     return data;
   }
 
-  async uploadImage(file: File) {
-    const r = await fetch(API_URL + '/rpc/upload_media_image', {
+  async updateCsrdTopic(csrd: UsersTopicAnswer): Promise<UsersTopicAnswer> {
+    const { data, error } = await put<UsersTopicAnswer>(
+      `/v1/db/collections/csrdtopics/${csrd.id}`,
+      csrd,
+    );
+    if (!data) throw error;
+    return data;
+  }
+
+  async deleteCsrdTopic(id: string): Promise<void> {
+    const { error } = await del(`/v1/db/collections/csrdtopics/${id}`);
+    if (error) throw error;
+  }
+
+  async uploadImage(file: File): Promise<{ id: string }> {
+    const form = new FormData();
+    form.append('file', file);
+    const r = await fetch(URL_BACKEND + '/v1/db/files/images', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/octet-stream',
         Authorization: `Bearer ${authStore.user.token}`,
-        Accept: 'application/json',
       },
-      body: file,
+      body: form,
     });
     const j: { id: string } = await r.json();
     return j;
   }
 
-  async deleteImage(id: string) {
-    const { error } = await this.postgrest.from('media').delete().eq('id', id);
-    if (error) throw error;
-    return true;
+  async getImageAsObjectUrl(id: string): Promise<string> {
+    const r = await fetch(URL_BACKEND + `/v1/db/files/images/${id}`, {
+      headers: {
+        Authorization: `Bearer ${authStore.user.token}`,
+      },
+    });
+    const blob = await r.blob();
+    return URL.createObjectURL(blob);
   }
 
-  getRestUrl() {
-    return API_URL;
+  async deleteImage(id: string): Promise<void> {
+    const { error } = await del(`/v1/db/files/images/${id}`);
+    if (error) throw error;
+  }
+
+  getRestUrl(): string {
+    return URL_BACKEND;
   }
 }
