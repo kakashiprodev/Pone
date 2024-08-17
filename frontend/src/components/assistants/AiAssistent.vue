@@ -121,7 +121,7 @@ interface AssistentMessage {
 const globalStore = useGlobalStore();
 
 const openai = new OpenAI({
-  apiKey: import.meta.env.VITE_OPENAI_API_KEY,
+  apiKey: import.meta.env.VITE_OPENAI_API_KEY ?? '',
   dangerouslyAllowBrowser: true,
 });
 const loading = ref(false);
