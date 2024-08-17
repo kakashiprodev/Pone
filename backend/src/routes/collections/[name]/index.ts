@@ -51,7 +51,6 @@ export const GET = async (c: Context) => {
     const table = getDbSchemaTable(tableName);
     const where = mapConditionsToDrizzleWhereObject(table, parsedParams);
     if (!where) {
-      
       const data = await getDb().select().from(table);
       console.log("no where", tableName);
       // @ts-ignore
@@ -104,7 +103,6 @@ export const POST = async (c: Context) => {
     // check table-name and get schema
     const tableName = normalizeTableName(tableNameRaw ?? "");
 
-    // check for some hidden tables
     // check permissions on the ressource for GET
     const definition = getPermissionDefinionForMethod(tableName, "POST");
     await permissionCheckerViaBody(definition, userId, body);
