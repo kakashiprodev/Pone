@@ -23,7 +23,7 @@ import { getDb } from "../../../lib/db/db-connection";
  */
 export const GET = async (c: Context) => {
   try {
-    const userId = "";
+    const userId = c.get("usersId");
     const tableNameRaw = c.req.param("name");
 
     // check table-name and get schema
@@ -45,6 +45,13 @@ export const GET = async (c: Context) => {
     // check for some hidden tables
     // check permissions on the ressource for GET
     const definition = getPermissionDefinionForMethod(tableName, "GET");
+
+    // check if there is a special selector
+    if (definition.selector) {
+      const data = await definition.selector(userId, parsedParams);
+      return c.json(data);
+    }
+
     await permissionCheckerViaUrlParams(definition, userId, parsedParams);
 
     // start query
@@ -93,7 +100,7 @@ export const GET = async (c: Context) => {
  */
 export const POST = async (c: Context) => {
   try {
-    const userId = "";
+    const userId = c.get("usersId");
 
     let body = await c.req.json();
     const tableNameRaw = c.req.param("name");

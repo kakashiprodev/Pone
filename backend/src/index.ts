@@ -1,7 +1,7 @@
 import { Hono, type Context } from "hono";
 import { logger } from "hono/logger";
 import { cors } from "hono/cors";
-import { getPostgrestUrl, validateAllEnvVariables } from "./helper";
+import { validateAllEnvVariables } from "./helper";
 import { HTTPException } from "hono/http-exception";
 import {
   GET as collectionsGET,
@@ -311,32 +311,6 @@ app.get("/v1/db/inputs-for-project", async (c: Context) => {
     }
   } catch (err) {
     throw new HTTPException(400, { message: err + "" });
-  }
-});
-
-/**
- * PROXY for PostgREST
- */
-app.all("/v1/db/postgrest/*", async (c: Context) => {
-  const url = getPostgrestUrl(c.req.url);
-  const body = await c.req.text();
-  const headers = new Headers(c.req.raw.headers);
-  headers.delete("host");
-
-  const res = await fetch(url, {
-    method: c.req.method,
-    headers,
-    body: body.length > 0 ? body : undefined,
-  });
-
-  // No-Content response
-  if (res.status === 204) {
-    return new Response(null, res);
-  }
-  // All other responses
-  else {
-    const newResponse = new Response(res.body, res);
-    return newResponse;
   }
 });
 

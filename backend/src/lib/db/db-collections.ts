@@ -5,6 +5,7 @@ import {
   getPermissionForSystemEquvalents,
   getPermissionsForReport,
   getPermissionForUserId,
+  getAllUsersProjects,
 } from "./permissions";
 
 export const collectionPermissions: PermissionDefinitionPerTable = {
@@ -102,7 +103,9 @@ export const collectionPermissions: PermissionDefinitionPerTable = {
       ],
     },
     GET: {
-      neededParameters: [{ name: "project", operator: "or", valueType: "uuid" }],
+      neededParameters: [
+        { name: "project", operator: "or", valueType: "uuid" },
+      ],
       checkPermissionsFor: [
         {
           name: "project",
@@ -258,6 +261,7 @@ export const collectionPermissions: PermissionDefinitionPerTable = {
 
   // Table "projects"
   projects: {
+    // HACK: hier könnte man den anderen code rüberkopieren aus index.ts
     // POST: {
     //   checkPermissionsFor: [
     //     {
@@ -268,14 +272,9 @@ export const collectionPermissions: PermissionDefinitionPerTable = {
     //   ],
     // },
     GET: {
-      // neededParameters: [{ name: 'id', operator: 'eq', valueType: 'uuid' }],
-      checkPermissionsFor: [
-        // {
-        //   name: "id",
-        //   permission: "read",
-        //   checker: getPermissionForProject,
-        // },
-      ],
+      async selector(userId: string) {
+        return await getAllUsersProjects(userId);
+      },
     },
     PUT: {
       checkPermissionsFor: [

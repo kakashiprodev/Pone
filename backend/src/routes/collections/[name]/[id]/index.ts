@@ -19,7 +19,7 @@ import { getDb } from "../../../../lib/db/db-connection";
  */
 export const GET = async (c: Context) => {
   try {
-    const userId = "";
+    const userId = c.get("usersId");
     const tableNameRaw = c.req.param("name");
     const id = c.req.param("id");
 
@@ -63,7 +63,7 @@ export const GET = async (c: Context) => {
  */
 export const PUT = async (c: Context) => {
   try {
-    const userId = "";
+    const userId = c.get("usersId");
 
     let body = await c.req.json();
     const tableNameRaw = c.req.param("name");
@@ -123,7 +123,7 @@ export const PUT = async (c: Context) => {
  */
 export const DELETE = async (c: Context) => {
   try {
-    const userId = "";
+    const userId = c.get("usersId");
     const tableNameRaw = c.req.param("name");
     const id = c.req.param("id");
 
@@ -158,9 +158,9 @@ export const DELETE = async (c: Context) => {
     const where = mapConditionsToDrizzleWhereObject(table, parsedParams);
 
     // pre-fetch data to check permissions on the item
-    // @ts-ignore
     const item = await getDb()
       .select()
+      // @ts-ignore
       .from(getDbSchemaTable(tableName))
       // @ts-ignore
       .where([where]);
