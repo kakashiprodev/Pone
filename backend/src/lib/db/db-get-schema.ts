@@ -9,7 +9,7 @@ export function getDbSchemaTable<K extends keyof DatabaseSchema>(
   tableName: K,
 ): DatabaseSchema[K] {
   if (!Object.keys(getDb().query).includes(tableName)) {
-    throw new Error(`Invalid table name: ${name}`);
+    throw new Error(`Invalid table name: ${tableName}`);
   } else {
     const db = getDb();
     const key = tableName as keyof typeof db.query;
@@ -32,7 +32,7 @@ export const normalizeTableName = (name: string): keyof DatabaseSchema => {
   // replace '-'-string to a camelCase string
   const tableName = name.replace(/-([a-z])/g, (g) => g[1].toUpperCase());
   if (!isValidTablename(tableName)) {
-    throw new Error(`Invalid table name: ${name}`);
+    throw new Error(`Provided an invalid table name: ${name}`);
   }
   return tableName as keyof DatabaseSchema;
 };

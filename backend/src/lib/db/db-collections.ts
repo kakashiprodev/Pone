@@ -51,7 +51,7 @@ export const collectionPermissions: PermissionDefinitionPerTable = {
   },
 
   // Table "csrdtopics"
-  csrdtopics: {
+  csrdTopics: {
     POST: {
       checkPermissionsFor: [
         {

@@ -193,8 +193,7 @@ export default class DataProvider {
     if (!globalStore.selectedSite && !siteId)
       throw new Error('No site selected in (readReports)');
     const { data, error } = await get<ReportEntry[]>(
-      `/v1/db/collections/reports?site[eq]=${
-        siteId ?? globalStore.selectedSite?.id
+      `/v1/db/collections/reports?site[eq]=${siteId ?? globalStore.selectedSite?.id
       }`,
     );
     if (!data) throw error;
@@ -299,8 +298,7 @@ export default class DataProvider {
     years?: number[],
   ): Promise<InputEntry[]> {
     const { data, error } = await get<InputEntry[]>(
-      `/v1/db/inputs-for-project?project=${projectId}${
-        years ? `&years=${years.join(',')}` : ''
+      `/v1/db/inputs-for-project?project=${projectId}${years ? `&years=${years.join(',')}` : ''
       }`,
     );
     if (!data) throw error;
@@ -415,8 +413,7 @@ export default class DataProvider {
   async readTargets(reportId?: string): Promise<TargetEntry[]> {
     if (!globalStore.selectedReport) throw new Error('No report selected');
     const { data, error } = await get<TargetEntry[]>(
-      `/v1/db/collections/targets?report[eq]=${
-        reportId ?? globalStore.selectedReport.id
+      `/v1/db/collections/targets?report[eq]=${reportId ?? globalStore.selectedReport.id
       }`,
     );
     if (!data) throw error;
@@ -480,7 +477,7 @@ export default class DataProvider {
 
   async createCsrdTopic(csrd: UsersTopicAnswer): Promise<UsersTopicAnswer> {
     const { data, error } = await post<UsersTopicAnswer>(
-      '/v1/db/collections/csrdtopics',
+      '/v1/db/collections/csrd-topics',
       csrd,
     );
     if (!data) throw error;
@@ -489,7 +486,7 @@ export default class DataProvider {
 
   async readCsrdTopics(): Promise<UsersTopicAnswer[]> {
     const { data, error } = await get<UsersTopicAnswer[]>(
-      `/v1/db/collections/csrdtopics?report=${globalStore.selectedReport?.id}`,
+      `/v1/db/collections/csrd-topics?report[eq]=${globalStore.selectedReport?.id}`,
     );
     if (!data) throw error;
     return data;
@@ -497,7 +494,7 @@ export default class DataProvider {
 
   async updateCsrdTopic(csrd: UsersTopicAnswer): Promise<UsersTopicAnswer> {
     const { data, error } = await put<UsersTopicAnswer>(
-      `/v1/db/collections/csrdtopics/${csrd.id}`,
+      `/v1/db/collections/csrd-topics/${csrd.id}`,
       csrd,
     );
     if (!data) throw error;
@@ -505,7 +502,7 @@ export default class DataProvider {
   }
 
   async deleteCsrdTopic(id: string): Promise<void> {
-    const { error } = await del(`/v1/db/collections/csrdtopics/${id}`);
+    const { error } = await del(`/v1/db/collections/csrd-topics/${id}`);
     if (error) throw error;
   }
 

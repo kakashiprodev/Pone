@@ -93,8 +93,13 @@ import { error } from './../../services/ui/toast';
 const interviewStatus = ref<TopicState>({});
 const userAnswers = ref<UsersTopicAnswerDict>({});
 
+let langCode = navigator.language.split('-')[0];
+if (langCode !== 'de' && langCode !== 'en') {
+  langCode = 'en';
+}
+
 const items = computed(() => {
-  return esrsTopics.map((topic) => ({
+  return esrsTopics[langCode].map((topic) => ({
     key: topic.id,
     label: topic.name,
     data: topic,
@@ -161,36 +166,4 @@ const init = async () => {
 onMounted(() => {
   init();
 });
-
-/*
-sample EsrsTopic:
-{
-    id: 'E1-01',
-    esrsGroup: 'ESRS E1',
-    name: 'Klimaschutz (Minderung)',
-    tags: ['Klimaschutz', 'Minderung'],
-    descriptionForInterviewModerator:
-      'Diskutieren Sie Initiativen und Strategien zur Reduzierung des CO2-Fußabdrucks und der Treibhausgasemissionen.',
-    interviewTopics: [
-      {
-        id: 'E1-01-01',
-        name: 'Ziele zur Emissionsreduktion',
-        description:
-          'Welche aktuellen Ziele zur Emissionsreduktion gibt es und welche Strategien sind zur Erreichung dieser Ziele vorhanden?',
-      },
-      {
-        id: 'E1-01-02',
-        name: 'Nutzung erneuerbarer Energien',
-        description:
-          'Welcher Prozentsatz Ihrer Energie stammt aus erneuerbaren Quellen und welche Pläne gibt es, diesen Anteil zu erhöhen?',
-      },
-      {
-        id: 'E1-01-03',
-        name: 'Maßnahmen zur Energieeffizienz',
-        description:
-          'Welche Verbesserungen der Energieeffizienz wurden implementiert oder sind in den Betriebsprozessen geplant?',
-      },
-    ],
-  }
-*/
 </script>
