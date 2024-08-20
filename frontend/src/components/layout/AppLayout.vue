@@ -34,16 +34,16 @@
       <!-- Center Items. Only visible if Desktop -->
       <div
         v-if="!mobile"
-        class="grow flex items-center items-center justify-center m-1"
+        class="grow flex items-center justify-center m-1"
       >
         <slot name="center"></slot>
       </div>
       <!-- Last Items. Only visible if Desktop -->
-      <div class="flex-none flex items-center items-center justify-center m-1">
+      <div class="flex-none flex items-center justify-center m-1">
         <slot name="before-end"></slot>
       </div>
       <!-- Menu Items. Will be behind a menu if not Desktop -->
-      <div class="flex-none flex items-center items-center justify-center m-1">
+      <div class="flex-none flex items-center justify-center m-1">
         <!-- Desktop Menu -->
         <div
           v-if="!mobile"
@@ -100,7 +100,7 @@
       <slot name="sidebar" />
     </div>
 
-    <div class="grow pl-5 pr-2 pb-2">
+    <div class="grow pl-5 pr-2 pb-2 overflow-auto h-[85vh]">
       <slot name="content" />
     </div>
   </div>

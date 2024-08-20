@@ -213,7 +213,12 @@
                 <span>
                   {{ item.header }}
                 </span>
-                <i class="fa-solid fa-chevron-down" />
+                <i
+                  class="fa-solid duration-200 fa-chevron-down"
+                  :class="[
+                    sidebarItemsVisible[item.key] ? 'rotate-0' : 'rotate-180',
+                  ]"
+                />
               </h3>
             </div>
             <Transition>
